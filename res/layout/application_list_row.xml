@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="fill_parent"
+	android:paddingTop="1dp"
+    android:orientation="horizontal" >
+
+	<ImageView
+	    android:id="@+id/icon"
+	    android:layout_width="42dp"
+	    android:layout_height="fill_parent"
+	    android:contentDescription="Application icon"
+	    android:scaleType="fitCenter"
+	    android:gravity="center_vertical" />
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="2dp">
+	    <TextView
+	        android:id="@+id/appName"
+	        android:layout_width="wrap_content"
+	        android:layout_height="fill_parent"
+	        android:gravity="center_vertical"
+	        android:textColor="#000000"
+	        android:textSize="18dp"
+	        android:padding="1dp" />
+		<LinearLayout
+		    android:orientation="horizontal"
+		    android:layout_height="wrap_content"
+		    android:layout_width="wrap_content">
+		    <TextView
+		        android:text="@string/profile_title"
+		        android:layout_width="wrap_content"
+		        android:layout_height="fill_parent"
+		        android:gravity="center_vertical"
+		        android:textColor="#000000"
+		        android:textSize="14dp" />
+		    <TextView
+		        android:id="@+id/versionName"
+		        android:layout_width="wrap_content"
+		        android:layout_height="fill_parent"
+		        android:lines="1"
+		        android:gravity="center_vertical"
+		        android:textColor="#000000"
+		        android:textSize="14dp" />
+		</LinearLayout>
+	</LinearLayout>
+
+</LinearLayout>

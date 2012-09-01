@@ -1,0 +1,10 @@
+<resources>
+
+    <string name="app_name">PDroid Manager</string>
+    <string name="profile_title">Profile:</string>
+    <string name="menu_settings">Settings</string>
+    <string name="title_activity_main">PDroid Manager</string>
+    <string name="writePrivacySettings_label">Modify privacy settings</string>
+    <string name="writePrivacySettings_description">Allows modification of privacy settings associated with applications.</string>
+    
+</resources>
