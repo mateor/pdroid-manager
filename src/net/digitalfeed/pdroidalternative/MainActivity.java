@@ -1,8 +1,35 @@
+/**
+ * Copyright (C) 2012 Simeon J. Morgan (smorgan@digitalfeed.net)
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 3 of the License, or (at your option) any later version.
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License along with
+ * this program; if not, see <http://www.gnu.org/licenses>.
+ * The software has the following requirements (GNU GPL version 3 section 7):
+ * You must retain in pdroid-manager, any modifications or derivatives of
+ * pdroid-manager, or any code or components taken from pdroid-manager the author
+ * attribution included in the files.
+ * In pdroid-manager, any modifications or derivatives of pdroid-manager, or any
+ * application utilizing code or components taken from pdroid-manager must include
+ * in any display or listing of its creators, authors, contributors or developers
+ * the names or pseudonyms included in the author attributions of pdroid-manager
+ * or pdroid-manager derived code.
+ * Modified or derivative versions of the pdroid-manager application must use an
+ * alternative name, rather than the name pdroid-manager.
+ */
+
+/**
+ * @author Simeon J. Morgan <smorgan@digitalfeed.net>
+ */
 package net.digitalfeed.pdroidalternative;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+
 
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -29,12 +56,13 @@ import android.privacy.PrivacySettings;
 import android.privacy.PrivacySettingsManager;
 
 
-public class MainActivity extends Activity {
+public class MainActivity extends Activity implements IAppListListener {
 
-	Application[] appList;
 	String[] appTitleList;
 	ListView listView;
 	Context context;
+
+	Application[] appList; 
 	
 	int pkgCounter = 0;
 	
@@ -80,17 +108,12 @@ public class MainActivity extends Activity {
 	    		PrivacySettingsManager psm = (PrivacySettingsManager)context.getSystemService("privacy");
 	    		PrivacySettings pset = psm.getSettings(appList[position].packageName);
 	    		if (pset != null) {
-		    		Log.d("PDroidAlternative", appList[position].label + " " + Byte.toString(pset.getOutgoingCallsSetting()));
+		    		Log.d("PDroidAlternative", appList[position].packageName + " " + Byte.toString(pset.getOutgoingCallsSetting()));
 		    		Toast.makeText(context, appList[position].packageName + ": " + Byte.toString(pset.getOutgoingCallsSetting()), Toast.LENGTH_SHORT).show();
 	    		} else {
-	    			Log.d("PDroidAlternative", appList[position].label + " null");
+	    			Log.d("PDroidAlternative", appList[position].packageName + " null");
 	    			Toast.makeText(context, appList[position].packageName + ": null =(", Toast.LENGTH_SHORT).show();
 	    		}
-	    		
-	    		view.getTag();
-	    		view.inflate(context, R.layout.application_list_row_expanded, parent)
-	    		LayoutInflater inflater = ((Activity)context).getLayoutInflater();
-				view = inflater.inflate(this.textViewResourceId,  parent, false);
 			}
         	
         });
@@ -105,118 +128,17 @@ public class MainActivity extends Activity {
     public void updateApplicationList() {
     	Log.d("PDroidAlternative", "starting updateApplicationList");
     	//int appTypes = ApplicationListRetriever.TYPE_USER | ApplicationListRetriever.TYPE_SYSTEM;
-    	//int appTypes = ApplicationListRetriever.TYPE_USER;
-    	int appTypes = ApplicationListRetriever.TYPE_SYSTEM;
+    	int appTypes = AppListRetriever.TYPE_USER;
+    	//int appTypes = ApplicationListRetriever.TYPE_SYSTEM;
     	Log.d("PDroidAlternative", "set app types");
-    	ApplicationListRetriever applicationListRetriever = new ApplicationListRetriever(this);
+    	AppListRetriever applicationListRetriever = new AppListRetriever(this, this);
     	Log.d("PDroidAlternative", "Created applicationListRetriever");
     	applicationListRetriever.execute(appTypes);
     }
-    
-	public class ApplicationListRetriever extends AsyncTask<Integer, Integer, Application[]> {
 
-		public static final int TYPE_USER = 1;
-		public static final int TYPE_SYSTEM = 2;
-		
-		Context context;
-		ProgressDialog progDialog;
-		int includeAppTypes;
-		
-		public ApplicationListRetriever(Context context) {
-			this.context = context;
-		}
-	
-		@Override
-		protected void onPreExecute(){ 
-			super.onPreExecute();
-	        this.progDialog = new ProgressDialog(this.context);
-	        this.progDialog.setMessage("Loading Application List");
-	        this.progDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-		}
-		
-		/**
-		 * Retrieves the list of applications, and returns as an array of Application objects
-		 * 
-		 * @param	appTypes	A two-item array, in which if appTypes[0] == true, normal applications are retrieved; if appTypes[1] == true, system apps are included
-		 */
-		@Override
-		protected Application[] doInBackground(Integer... appTypes) {
-			LinkedList<Application> appList = new LinkedList<Application>();
-			PackageManager pkgMgr = context.getPackageManager();
-			
-			List<ApplicationInfo> installedApps = pkgMgr.getInstalledApplications(PackageManager.GET_META_DATA);
-
-			Integer[] progressObject = new Integer[2];
-			progressObject[0] = 0;
-			
-			if (appTypes[0] == (ApplicationListRetriever.TYPE_USER | ApplicationListRetriever.TYPE_SYSTEM)) {
-				progressObject[1] = installedApps.size(); 
-			} else {
-				progressObject[1] = 0;
-				for (ApplicationInfo appInfo : installedApps) {
-					if ((((appInfo.flags & ApplicationInfo.FLAG_SYSTEM) == ApplicationInfo.FLAG_SYSTEM) && ((appTypes[0] & ApplicationListRetriever.TYPE_SYSTEM) == ApplicationListRetriever.TYPE_SYSTEM)) ||
-							(((appInfo.flags & ApplicationInfo.FLAG_SYSTEM) != ApplicationInfo.FLAG_SYSTEM) && ((appTypes[0] & ApplicationListRetriever.TYPE_USER) == ApplicationListRetriever.TYPE_USER))) {
-						progressObject[1]++;
-					}
-				}
-			}
-			
-			publishProgress(progressObject.clone());
-	        Log.d("PDroidAlternative", "Showed");
-
-			for (ApplicationInfo appInfo : installedApps) {
-				progressObject[0] += 1;
-				try {
-					if ((((appInfo.flags & ApplicationInfo.FLAG_SYSTEM) == ApplicationInfo.FLAG_SYSTEM) && ((appTypes[0] & ApplicationListRetriever.TYPE_SYSTEM) == ApplicationListRetriever.TYPE_SYSTEM)) ||
-							(((appInfo.flags & ApplicationInfo.FLAG_SYSTEM) != ApplicationInfo.FLAG_SYSTEM) && ((appTypes[0] & ApplicationListRetriever.TYPE_USER) == ApplicationListRetriever.TYPE_USER))) {
-						PackageInfo pkgInfo = pkgMgr.getPackageInfo(appInfo.packageName, PackageManager.GET_PERMISSIONS);
-					
-						Application thisApp = new Application(
-								appInfo.packageName,
-								appInfo.name,
-								pkgMgr.getApplicationLabel(appInfo).toString(),
-								pkgInfo.versionCode,
-								pkgInfo.versionName,
-								(appInfo.flags & ApplicationInfo.FLAG_SYSTEM) == ApplicationInfo.FLAG_SYSTEM,
-								appInfo.uid,
-								pkgMgr.getApplicationIcon(appInfo.packageName),
-								pkgInfo.requestedPermissions
-								);
-						
-						appList.add(thisApp);
-					}
-				} catch (NameNotFoundException e) {	
-					Log.d("PDroidAlternative", String.format("Application %s went missing from installed applications list", appInfo.packageName));
-				}
-				
-				publishProgress(progressObject.clone());
-			}
-			
-			return appList.toArray(new Application[appList.size()]);
-		}
-		
-		@Override
-		protected void onProgressUpdate(Integer... progress) {
-			if (this.progDialog.isShowing()) {
-				this.progDialog.setProgress(progress[0]);
-			} else {
-				this.progDialog.setMax(progress[1]);
-				this.progDialog.setProgress(progress[0]);
-				this.progDialog.show();
-			}
-		}
-		
-		@Override
-		protected void onPostExecute(Application[] result) {
-			super.onPostExecute(result);
-			appList = result;
-			appTitleList = new String[appList.length];
-			for (int i=0;i<appList.length;i++) {
-				appTitleList[i] = appList[i].label;
-			}
-	        //listView.setAdapter(new ArrayAdapter<Application>(context, R.id.applicationItem, appList));
-			listView.setAdapter(new AppListAdapter(context, R.layout.application_list_row, appList));
-			progDialog.dismiss();
-		}
+	@Override
+	public void appListLoadCompleted(Application[] appList) {
+		this.appList = appList;
+		listView.setAdapter(new AppListAdapter(context, R.layout.application_list_row, this.appList));
 	}
 }
