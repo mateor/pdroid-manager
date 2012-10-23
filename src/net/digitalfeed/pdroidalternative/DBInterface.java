@@ -1,57 +1,69 @@
 package net.digitalfeed.pdroidalternative;
 
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Map;
-
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.text.TextUtils;
 
 public class DBInterface {
 	private static DBHelper dbhelper = null;
 	private static DBInterface dbinterface = null;
-	
+		
 	public static final class ApplicationTable {
 		public ApplicationTable(){}
 		public static final String TABLE_NAME = "application";
-		public static final String COLUMN_NAME_NAME = "name";
+		public static final String COLUMN_NAME_LABEL = "label";
 		public static final String COLUMN_NAME_PACKAGENAME = "packageName";
 		public static final String COLUMN_NAME_UID = "uid";
-		public static final String COLUMN_NAME_VERSION = "version";
+		public static final String COLUMN_NAME_VERSIONCODE = "versionCode";
 		public static final String COLUMN_NAME_PERMISSIONS = "permissions";
 		public static final String COLUMN_NAME_ICON = "icon";
-		public static final String COLUMN_NAME_FLAGS = "flags";
+		public static final String COLUMN_NAME_FLAGS = "app_flags";
 		
 		public static final int FLAG_IS_SYSTEM_APP = 0x1;
-		public static final int HAS_INTERNET = 0x2;
+		public static final int FLAG_HAS_INTERNET = 0x2;
 		
 		public static final String CREATE_SQL = "CREATE TABLE " + TABLE_NAME + "(" + 
 				"_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-				COLUMN_NAME_NAME + " TEXT NOT NULL, " +
+				COLUMN_NAME_LABEL + " TEXT NOT NULL, " +
 				COLUMN_NAME_PACKAGENAME + " TEXT NOT NULL, " + 
 				COLUMN_NAME_UID + " INTEGER NOT NULL, " +
-				COLUMN_NAME_VERSION + " INTEGER NOT NULL, " +
+				COLUMN_NAME_VERSIONCODE + " INTEGER NOT NULL, " +
 				COLUMN_NAME_PERMISSIONS + " TEXT, " + 
 				COLUMN_NAME_ICON + " BLOB, " +
 				COLUMN_NAME_FLAGS + "  INTEGER NOT NULL" + 
 				");";
+		
+		public static final ContentValues getContentValues(Application application) {
+			ContentValues contentValues = new ContentValues();
+			contentValues.put(COLUMN_NAME_LABEL, application.getLabel());
+			contentValues.put(COLUMN_NAME_PACKAGENAME, application.getPackageName());
+			contentValues.put(COLUMN_NAME_UID, application.getUid());
+			contentValues.put(COLUMN_NAME_VERSIONCODE, application.getVersionCode());
+			//contentValues.put(COLUMN_NAME_ICON, application.getIcon();
+			String[] permissions = application.getPermissions();
+			if (permissions != null) {
+				contentValues.put(COLUMN_NAME_PERMISSIONS, TextUtils.join(",", application.getPermissions()));
+			}
+			return contentValues;
+		}
 	}
 	
 	public static final class ApplicationStatusTable {
 		public ApplicationStatusTable(){}
 		public static final String TABLE_NAME = "application_status";
-		public static final String COLUMN_NAME_APPLICATION_ID = "application_id";
-		public static final String COLUMN_NAME_FLAGS = "flags";
+		public static final String COLUMN_NAME_PACKAGENAME = "packageName";
+		public static final String COLUMN_NAME_FLAGS = "status_flags";
 
 		public static final int FLAGS_UNTRUSTED = 0x1;
+		public static final int FLAG_NOTIFY_ON_ACCESS = 0x2;
 		
 		public static final String CREATE_SQL = "CREATE TABLE " + TABLE_NAME + "(" + 
 				"_id INTEGER PRIMARY KEY AUTOINCREMENT, " + 
-				COLUMN_NAME_APPLICATION_ID + " INTEGER, " + 
+				COLUMN_NAME_PACKAGENAME + " TEXT, " + 
 				COLUMN_NAME_FLAGS + " INTEGER, " + 
-				"FOREIGN KEY(" + COLUMN_NAME_APPLICATION_ID + ") REFERENCES " + ApplicationTable.TABLE_NAME + "(_id)" + 
+				"FOREIGN KEY(" + COLUMN_NAME_PACKAGENAME + ") REFERENCES " + ApplicationTable.TABLE_NAME + "(packageName)" + 
 				");";
 	}
 	
@@ -60,15 +72,38 @@ public class DBInterface {
 		public static final String TABLE_NAME = "application_log";
 		public static final String COLUMN_NAME_DATETIME = "datetime";
 		public static final String COLUMN_NAME_PACKAGENAME = "packageName";
+		public static final String COLUMN_NAME_UID = "uid";
+		public static final String COLUMN_NAME_VERSIONCODE = "versionCode";
 		public static final String COLUMN_NAME_OPERATION = "operation";
 		public static final String COLUMN_NAME_FLAGS = "flags";
+		
+		public static final int FLAGS_ALLOWED = 0x1;
+		
 		public static final String CREATE_SQL = "CREATE TABLE " + TABLE_NAME + "(" + 
 				"_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
 				COLUMN_NAME_DATETIME + " REAL, " + 
 				COLUMN_NAME_PACKAGENAME + " TEXT, " + 
+				COLUMN_NAME_UID + " INTEGER, " +
+				COLUMN_NAME_VERSIONCODE + " INTEGER, " +
 				COLUMN_NAME_OPERATION + " TEXT, " +
 				COLUMN_NAME_FLAGS + " INTEGER" + 
 				");";
+		
+		public static final ContentValues getContentValues(String packageName, int uid, int versionCode,
+				String operation) {
+			return getContentValues(packageName, uid, versionCode, operation, 0);	
+		}
+		
+		public static final ContentValues getContentValues(String packageName, int uid, int versionCode,
+				String operation, int flags) {
+			ContentValues contentValues = new ContentValues();
+			contentValues.put(COLUMN_NAME_PACKAGENAME, packageName);
+			contentValues.put(COLUMN_NAME_UID, uid);
+			contentValues.put(COLUMN_NAME_VERSIONCODE, versionCode);
+			contentValues.put(COLUMN_NAME_OPERATION, operation);
+			contentValues.put(COLUMN_NAME_FLAGS, flags);
+			return contentValues;
+		}
 	}
 	
 	public Context context;
@@ -80,19 +115,38 @@ public class DBInterface {
 		return dbinterface; 
 	}
 	
+	public DBHelper getDBHelper() {
+		if (dbhelper == null) {
+			dbhelper = new DBHelper(this.context);
+		}
+		
+		return dbhelper;
+	}
+	
+	public void addLogEntry(String packageName, int uid, byte accessMode, String dataType) {
+		if (dbhelper == null) {
+			getDBHelper();
+		}
+		
+		ContentValues contentValues = ApplicationLogTable.getContentValues(packageName, uid, 0, dataType,
+				0);
+		
+		SQLiteDatabase write_db = dbhelper.getWritableDatabase();
+		write_db.insert(ApplicationLogTable.TABLE_NAME, null, contentValues);
+		write_db.close();
+	}
+	
 	private DBInterface(Context context) {
 		this.context = context;
 	}
 	
-	public getApplicationList
-	
-	class DBHelper extends SQLiteOpenHelper {
+	public class DBHelper extends SQLiteOpenHelper {
 		public static final String DATABASE_NAME = "pdroidmgr.db";
 		public static final int DATABASE_VERSION = 1;
 		
 		private SQLiteDatabase db;
 		
-		public DBHelper(Context context) {
+		private DBHelper(Context context) {
 			super(context, DATABASE_NAME, null, DATABASE_VERSION);
 		}
 	

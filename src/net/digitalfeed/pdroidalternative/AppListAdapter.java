@@ -70,9 +70,9 @@ public class AppListAdapter extends ArrayAdapter<Application>{
 		}
 		
 		Application app = appList[position];
-		holder.appName.setText(app.label);
-		holder.icon.setImageDrawable(app.icon);
-		holder.versionName.setText(app.versionName);
+		holder.icon.setImageDrawable(app.getIcon());
+		holder.appName.setText(app.getLabel());
+		holder.versionName.setText(app.getPackageName());
 		
 		return row;
 	}

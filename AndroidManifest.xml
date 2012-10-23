@@ -23,6 +23,19 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+<!-- 		<receiver android:name=".IntentHandler.PackageChange">
+            <intent-filter>
+                <action android:name="android.intent.action.PACKAGE_ADDED" />
+                <action android:name="android.intent.action.PACKAGE_REMOVED" />
+                <data android:scheme="package" />
+            </intent-filter>
+        </receiver>
+        <receiver android:name=".IntentHandler.PrivacyNotification">
+			<intent-filter>
+                <action android:name="com.privacy.pdroid.PRIVACY_NOTIFICATION" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </receiver>-->
     </application>
 
 </manifest>

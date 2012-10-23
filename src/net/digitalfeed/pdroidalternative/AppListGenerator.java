@@ -20,7 +20,6 @@ public class AppListGenerator extends AsyncTask<Integer, Integer, Application[]>
 	IAppListListener listener;
 	
 	Context context;
-	ProgressDialog progDialog;
 	int includeAppTypes;
 	
 	public AppListGenerator(Context context, IAppListListener listener) {
@@ -31,9 +30,6 @@ public class AppListGenerator extends AsyncTask<Integer, Integer, Application[]>
 	@Override
 	protected void onPreExecute(){ 
 		super.onPreExecute();
-        this.progDialog = new ProgressDialog(this.context);
-        this.progDialog.setMessage("Loading Application List");
-        this.progDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
 	}
 	
 	/**
@@ -52,7 +48,8 @@ public class AppListGenerator extends AsyncTask<Integer, Integer, Application[]>
 		progressObject[0] = 0;
 		
 		if (appTypes[0] == (AppListGenerator.TYPE_USER | AppListGenerator.TYPE_SYSTEM)) {
-			progressObject[1] = installedApps.size(); 
+			progressObject[1] = installedApps.size();
+			//Log.d("PDroidAlternative", "Total number of relevant apps is " + Integer.toString(progressObject[1]));
 		} else {
 			progressObject[1] = 0;
 			for (ApplicationInfo appInfo : installedApps) {
@@ -61,21 +58,21 @@ public class AppListGenerator extends AsyncTask<Integer, Integer, Application[]>
 					progressObject[1]++;
 				}
 			}
+			//Log.d("PDroidAlternative", "Total number of relevant apps is " + Integer.toString(progressObject[1]));
 		}
 		
 		publishProgress(progressObject.clone());
-        Log.d("PDroidAlternative", "Showed");
+        //Log.d("PDroidAlternative", "Showed");
 
 		for (ApplicationInfo appInfo : installedApps) {
-			progressObject[0] += 1;
 			try {
 				if ((((appInfo.flags & ApplicationInfo.FLAG_SYSTEM) == ApplicationInfo.FLAG_SYSTEM) && ((appTypes[0] & AppListGenerator.TYPE_SYSTEM) == AppListGenerator.TYPE_SYSTEM)) ||
 						(((appInfo.flags & ApplicationInfo.FLAG_SYSTEM) != ApplicationInfo.FLAG_SYSTEM) && ((appTypes[0] & AppListGenerator.TYPE_USER) == AppListGenerator.TYPE_USER))) {
+					progressObject[0] += 1;
 					PackageInfo pkgInfo = pkgMgr.getPackageInfo(appInfo.packageName, PackageManager.GET_PERMISSIONS);
 				
 					Application thisApp = new Application(
 							appInfo.packageName,
-							appInfo.name,
 							pkgMgr.getApplicationLabel(appInfo).toString(),
 							pkgInfo.versionCode,
 							pkgInfo.versionName,
@@ -90,7 +87,7 @@ public class AppListGenerator extends AsyncTask<Integer, Integer, Application[]>
 			} catch (NameNotFoundException e) {	
 				Log.d("PDroidAlternative", String.format("Application %s went missing from installed applications list", appInfo.packageName));
 			}
-			
+			//Log.d("PDroidAlternative", "Showed: " + progressObject[0].toString() + "/" + progressObject[1].toString());
 			publishProgress(progressObject.clone());
 		}
 		
@@ -99,20 +96,14 @@ public class AppListGenerator extends AsyncTask<Integer, Integer, Application[]>
 	
 	@Override
 	protected void onProgressUpdate(Integer... progress) {
-		if (this.progDialog.isShowing()) {
-			this.progDialog.setProgress(progress[0]);
-		} else {
-			this.progDialog.setMax(progress[1]);
-			this.progDialog.setProgress(progress[0]);
-			this.progDialog.show();
-		}
+		listener.appListProgressUpdate(progress);
 	}
 	
 	@Override
 	protected void onPostExecute(Application[] result) {
 		super.onPostExecute(result);
+		//Log.d("PDroidAlternative", "Completed loading application list: number of apps listed is " + Integer.toString(result.length));
 		listener.appListLoadCompleted(result);
         //listView.setAdapter(new ArrayAdapter<Application>(context, R.id.applicationItem, appList));
-		progDialog.dismiss();
 	}
 }

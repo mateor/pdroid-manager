@@ -28,22 +28,16 @@ package net.digitalfeed.pdroidalternative;
 
 import android.graphics.drawable.Drawable;
 
-public class Application {
+public class ApplicationStub {
 	public static final int FLAG_IS_SYSTEM_APP = 0x1;
 	public static final int FLAG_UNTRUSTED = 0x2;
 	public static final int HAS_INTERNET = 0x4;
-
-	//indicates whether this has a full data complement, or just the minimum data set
-	private Boolean hasAllData;
 	
 	private long id;
 	private String packageName;
 	private String label;
-	private int versionCode;
 	private int flags;
-	int uid;
 	private Drawable icon;
-	private String[] permissions;
 	
 	public long getId() {
 		return this.id;
@@ -61,16 +55,8 @@ public class Application {
 		this.label = label;
 	}
 
-	public int getVersionCode() {
-		return versionCode;
-	}
-
-	public void setVersionCode(int versionCode) {
-		this.versionCode = versionCode;
-	}
-
-	public int getFlags() {
-		return this.flags;
+	public boolean isSystemApp() {
+		return (this.flags & FLAG_IS_SYSTEM_APP == FLAG_IS_SYSTEM_APP);
 	}
 
 	public void setFlags(int flags) {
