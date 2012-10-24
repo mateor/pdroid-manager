@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
+<!-- 
 /**
  * Copyright (C) 2012 Simeon J. Morgan (smorgan@digitalfeed.net)
  * This program is free software; you can redistribute it and/or modify it under
@@ -27,19 +27,18 @@
  * @author Simeon J. Morgan <smorgan@digitalfeed.net>
  */
 -->
-<resources>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+	android:paddingTop="1dp"
+    android:orientation="horizontal" >
 
-    <string name="app_name">PDroid Manager</string>
-    <string name="profile_title">Profile:</string>
-    <string name="menu_search">Search</string>
-    <string name="title_activity_main">PDroid Manager</string>
-    <string name="writePrivacySettings_label">Modify privacy settings</string>
-    <string name="writePrivacySettings_description">Allows modification of privacy settings associated with applications.</string>
-    <string name="title_section3">Section 3</string>
-    <string name="title_section2">Section 2</string>
-    <string name="title_section1">Section 1</string>
-    <string name="menu_settings">Settings</string>
-    <string name="title_activity_app_detail">BlahBLah?</string>
-    <string name="title_activity_app_detail_activity2">BlahBlah</string>
-
-</resources>
+    <TextView
+        android:id="@+id/settingName"
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
+        android:gravity="center_vertical"
+        android:textColor="#000000"
+        android:textSize="18dp"
+        android:padding="1dp" />
+</LinearLayout>

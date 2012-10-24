@@ -1,16 +1,42 @@
 package net.digitalfeed.pdroidalternative;
 
 import java.util.HashMap;
+import java.util.HashSet;
 
 public class PermissionSettingMapper {
 	private static HashMap<String, String[]> permissionToSettingsMap;
 	private static HashMap<String, String[]> settingToPermissionsMap;
+	
 	
 	public static String[] getSettings(String permission) {	
 		if (permissionToSettingsMap == null) {
 			buildMaps();
 		}
 		return permissionToSettingsMap.get(permission);
+	}
+	
+	public static Setting[] getSettingsObjects(String [] permissions) {
+		if (permissions == null) {
+			return null;
+		}
+		
+		if (permissionToSettingsMap == null) {
+			buildMaps();
+		}
+		
+		HashSet<Setting> settingsSet = new HashSet<Setting>();
+
+		if (permissions != null) {
+			for (String permission : permissions) {
+				String [] settingsForPermission = PermissionSettingMapper.getSettings(permission);
+				if (settingsForPermission != null) {
+					for (String setting : settingsForPermission) {
+						settingsSet.add(new Setting(setting));
+					}
+				}
+			}
+		}
+		return settingsSet.toArray(new Setting[settingsSet.size()]);	
 	}
 	
 	public static String[] getPermissions(String setting) {	
@@ -24,73 +50,73 @@ public class PermissionSettingMapper {
 		permissionToSettingsMap = new HashMap<String, String[]>();
 		settingToPermissionsMap = new HashMap<String, String[]>();
 		
-		settingToPermissionsMap.put(Settings.ALLOW_READ_DEVICE_ID, new String[]{"android.permission.READ_PHONE_STATE"});
-		settingToPermissionsMap.put(Settings.ALLOW_READ_PHONE_NUMBER, new String[]{"android.permission.READ_PHONE_STATE"});
-		settingToPermissionsMap.put(Settings.ALLOW_READ_SIM_SERIAL, new String[]{"android.permission.READ_PHONE_STATE"});
-		settingToPermissionsMap.put(Settings.ALLOW_READ_SUBSCRIBER_ID, new String[]{"android.permission.READ_PHONE_STATE"});
-		settingToPermissionsMap.put(Settings.ALLOW_READ_INCOMING_CALL_NUMBER, new String[]{"android.permission.READ_PHONE_STATE"});
-		settingToPermissionsMap.put(Settings.ALLOW_READ_OUTGOING_CALL_NUMBER, new String[]{"android.permission.PROCESS_OUTGOING_CALLS"});
-		settingToPermissionsMap.put(Settings.ALLOW_INITIATE_PHONE_CALL, new String[]{"android.permission.CALL_PHONE", "android.permission.CALL_PRIVILEGED"});
-		settingToPermissionsMap.put(Settings.ALLOW_READ_NETWORK_LOCATION, new String[]{"android.permission.ACCESS_COARSE_LOCATION", "android.permission.ACCESS_FINE_LOCATION"});
-		settingToPermissionsMap.put(Settings.ALLOW_READ_GPS_LOCATION, new String[]{"android.permission.ACCESS_FINE_LOCATION"});
-		settingToPermissionsMap.put(Settings.ALLOW_USE_ACCOUNT_CREDENTIALS, new String[]{"android.permission.USE_CREDENTIALS","android.permission.ACCOUNT_MANAGER","android.permission.AUTHENTICATE_ACCOUNTS","android.permission.MANAGE_ACCOUNTS"});
-		settingToPermissionsMap.put(Settings.ALLOW_READ_ACCOUNTS_LIST, new String[]{"android.permission.ACCOUNT_MANAGER","android.permission.MANAGE_ACCOUNTS","android.permission.GET_ACCOUNTS"});
-		settingToPermissionsMap.put(Settings.ALLOW_READ_CONTACTS, new String[]{"android.permission.READ_CONTACTS"});
-		settingToPermissionsMap.put(Settings.ALLOW_READ_CALL_LOG, new String[]{"android.permission.READ_CONTACTS","android.permission.READ_CALL_LOG"});
-		settingToPermissionsMap.put(Settings.ALLOW_READ_CALENDAR, new String[]{"android.permission.READ_CALENDAR"});
-		settingToPermissionsMap.put(Settings.ALLOW_READ_SMS, new String[]{"android.permission.READ_SMS","android.permission.RECEIVE_SMS"});
-		settingToPermissionsMap.put(Settings.ALLOW_SEND_SMS, new String[]{"android.permission.SEND_SMS"});
-		settingToPermissionsMap.put(Settings.ALLOW_READ_MMS, new String[]{"android.permission.READ_SMS","android.permission.RECEIVE_SMS","android.permission.RECEIVE_MMS","android.permission.RECEIVE_WAP_PUSH"});
-		settingToPermissionsMap.put(Settings.ALLOW_SEND_MMS, new String[]{"android.permission.SEND_SMS"});
-		settingToPermissionsMap.put(Settings.ALLOW_RECORD_AUDIO, new String[]{"android.permission.RECORD_AUDIO"});
-		settingToPermissionsMap.put(Settings.ALLOW_CAMERA, new String[]{"android.permission.CAMERA"});
-		settingToPermissionsMap.put(Settings.ALLOW_READ_BOOKMARKS_AND_HISTORY, new String[]{"com.android.browser.permission.READ_HISTORY_BOOKMARKS"});
-		settingToPermissionsMap.put(Settings.ALLOW_READ_SYSTEM_LOGS, new String[]{"android.permission.READ_LOGS"});
-		settingToPermissionsMap.put(Settings.ALLOW_RECEIVE_BOOT_COMPLETED_INTENT, new String[]{"android.permission.RECEIVE_BOOT_COMPLETED"});
-		settingToPermissionsMap.put(Settings.ALLOW_READ_WIFI_INFO, new String[]{"android.permission.ACCESS_WIFI_STATE"});
-		settingToPermissionsMap.put(Settings.ALLOW_CHANGE_WIFI_STATE, new String[]{"android.permission.CHANGE_WIFI_STATE","android.permission.CHANGE_WIFI_MULTICAST_STATE"});
-		settingToPermissionsMap.put(Settings.ALLOW_CHANGE_MOBILE_DATA_STATE, new String[]{"android.permission.CHANGE_NETWORK_STATE"});
-		settingToPermissionsMap.put(Settings.ALLOW_READ_NETWORK_INFO, null);
-		settingToPermissionsMap.put(Settings.ALLOW_READ_ANDROID_ID, null);
-		settingToPermissionsMap.put(Settings.ALLOW_READ_SIM_INFO, null);
-		settingToPermissionsMap.put(Settings.ALLOW_ACCESS_IP_TABLES, null);
-		settingToPermissionsMap.put(Settings.ALLOW_READ_ICC_ID, null);
-		settingToPermissionsMap.put(Settings.FAKE_ALWAYS_ONLINE, new String[]{"android.permission.ACCESS_NETWORK_STATE"});
+		settingToPermissionsMap.put(Setting.ALLOW_READ_DEVICE_ID, new String[]{"android.permission.READ_PHONE_STATE"});
+		settingToPermissionsMap.put(Setting.ALLOW_READ_PHONE_NUMBER, new String[]{"android.permission.READ_PHONE_STATE"});
+		settingToPermissionsMap.put(Setting.ALLOW_READ_SIM_SERIAL, new String[]{"android.permission.READ_PHONE_STATE"});
+		settingToPermissionsMap.put(Setting.ALLOW_READ_SUBSCRIBER_ID, new String[]{"android.permission.READ_PHONE_STATE"});
+		settingToPermissionsMap.put(Setting.ALLOW_READ_INCOMING_CALL_NUMBER, new String[]{"android.permission.READ_PHONE_STATE"});
+		settingToPermissionsMap.put(Setting.ALLOW_READ_OUTGOING_CALL_NUMBER, new String[]{"android.permission.PROCESS_OUTGOING_CALLS"});
+		settingToPermissionsMap.put(Setting.ALLOW_INITIATE_PHONE_CALL, new String[]{"android.permission.CALL_PHONE", "android.permission.CALL_PRIVILEGED"});
+		settingToPermissionsMap.put(Setting.ALLOW_READ_NETWORK_LOCATION, new String[]{"android.permission.ACCESS_COARSE_LOCATION", "android.permission.ACCESS_FINE_LOCATION"});
+		settingToPermissionsMap.put(Setting.ALLOW_READ_GPS_LOCATION, new String[]{"android.permission.ACCESS_FINE_LOCATION"});
+		settingToPermissionsMap.put(Setting.ALLOW_USE_ACCOUNT_CREDENTIALS, new String[]{"android.permission.USE_CREDENTIALS","android.permission.ACCOUNT_MANAGER","android.permission.AUTHENTICATE_ACCOUNTS","android.permission.MANAGE_ACCOUNTS"});
+		settingToPermissionsMap.put(Setting.ALLOW_READ_ACCOUNTS_LIST, new String[]{"android.permission.ACCOUNT_MANAGER","android.permission.MANAGE_ACCOUNTS","android.permission.GET_ACCOUNTS"});
+		settingToPermissionsMap.put(Setting.ALLOW_READ_CONTACTS, new String[]{"android.permission.READ_CONTACTS"});
+		settingToPermissionsMap.put(Setting.ALLOW_READ_CALL_LOG, new String[]{"android.permission.READ_CONTACTS","android.permission.READ_CALL_LOG"});
+		settingToPermissionsMap.put(Setting.ALLOW_READ_CALENDAR, new String[]{"android.permission.READ_CALENDAR"});
+		settingToPermissionsMap.put(Setting.ALLOW_READ_SMS, new String[]{"android.permission.READ_SMS","android.permission.RECEIVE_SMS"});
+		settingToPermissionsMap.put(Setting.ALLOW_SEND_SMS, new String[]{"android.permission.SEND_SMS"});
+		settingToPermissionsMap.put(Setting.ALLOW_READ_MMS, new String[]{"android.permission.READ_SMS","android.permission.RECEIVE_SMS","android.permission.RECEIVE_MMS","android.permission.RECEIVE_WAP_PUSH"});
+		settingToPermissionsMap.put(Setting.ALLOW_SEND_MMS, new String[]{"android.permission.SEND_SMS"});
+		settingToPermissionsMap.put(Setting.ALLOW_RECORD_AUDIO, new String[]{"android.permission.RECORD_AUDIO"});
+		settingToPermissionsMap.put(Setting.ALLOW_CAMERA, new String[]{"android.permission.CAMERA"});
+		settingToPermissionsMap.put(Setting.ALLOW_READ_BOOKMARKS_AND_HISTORY, new String[]{"com.android.browser.permission.READ_HISTORY_BOOKMARKS"});
+		settingToPermissionsMap.put(Setting.ALLOW_READ_SYSTEM_LOGS, new String[]{"android.permission.READ_LOGS"});
+		settingToPermissionsMap.put(Setting.ALLOW_RECEIVE_BOOT_COMPLETED_INTENT, new String[]{"android.permission.RECEIVE_BOOT_COMPLETED"});
+		settingToPermissionsMap.put(Setting.ALLOW_READ_WIFI_INFO, new String[]{"android.permission.ACCESS_WIFI_STATE"});
+		settingToPermissionsMap.put(Setting.ALLOW_CHANGE_WIFI_STATE, new String[]{"android.permission.CHANGE_WIFI_STATE","android.permission.CHANGE_WIFI_MULTICAST_STATE"});
+		settingToPermissionsMap.put(Setting.ALLOW_CHANGE_MOBILE_DATA_STATE, new String[]{"android.permission.CHANGE_NETWORK_STATE"});
+		settingToPermissionsMap.put(Setting.ALLOW_READ_NETWORK_INFO, null);
+		settingToPermissionsMap.put(Setting.ALLOW_READ_ANDROID_ID, null);
+		settingToPermissionsMap.put(Setting.ALLOW_READ_SIM_INFO, null);
+		settingToPermissionsMap.put(Setting.ALLOW_ACCESS_IP_TABLES, null);
+		settingToPermissionsMap.put(Setting.ALLOW_READ_ICC_ID, null);
+		settingToPermissionsMap.put(Setting.FAKE_ALWAYS_ONLINE, new String[]{"android.permission.ACCESS_NETWORK_STATE"});
 		
-		permissionToSettingsMap.put("android.permission.READ_PHONE_STATE", new String[]{Settings.ALLOW_READ_DEVICE_ID,
-				Settings.ALLOW_READ_PHONE_NUMBER,
-				Settings.ALLOW_READ_SIM_SERIAL,
-				Settings.ALLOW_READ_SUBSCRIBER_ID,
-				Settings.ALLOW_READ_INCOMING_CALL_NUMBER});
-		permissionToSettingsMap.put("android.permission.PROCESS_OUTGOING_CALLS", new String[]{Settings.ALLOW_READ_OUTGOING_CALL_NUMBER});
-		permissionToSettingsMap.put("android.permission.CALL_PHONE", new String[]{Settings.ALLOW_INITIATE_PHONE_CALL});
-		permissionToSettingsMap.put("android.permission.CALL_PRIVILEGED", new String[]{Settings.ALLOW_INITIATE_PHONE_CALL});
-		permissionToSettingsMap.put("android.permission.ACCESS_COARSE_LOCATION", new String[]{Settings.ALLOW_READ_NETWORK_LOCATION});
-		permissionToSettingsMap.put("android.permission.ACCESS_FINE_LOCATION", new String[]{Settings.ALLOW_READ_NETWORK_LOCATION, Settings.ALLOW_READ_GPS_LOCATION});
-		permissionToSettingsMap.put("android.permission.USE_CREDENTIALS", new String[]{Settings.ALLOW_USE_ACCOUNT_CREDENTIALS});
-		permissionToSettingsMap.put("android.permission.ACCOUNT_MANAGER", new String[]{Settings.ALLOW_USE_ACCOUNT_CREDENTIALS, Settings.ALLOW_READ_ACCOUNTS_LIST});
-		permissionToSettingsMap.put("android.permission.AUTHENTICATE_ACCOUNTS", new String[]{Settings.ALLOW_USE_ACCOUNT_CREDENTIALS});
-		permissionToSettingsMap.put("android.permission.MANAGE_ACCOUNTS", new String[]{Settings.ALLOW_USE_ACCOUNT_CREDENTIALS, Settings.ALLOW_READ_ACCOUNTS_LIST});
-		permissionToSettingsMap.put("android.permission.GET_ACCOUNTS", new String[]{Settings.ALLOW_READ_ACCOUNTS_LIST});
-		permissionToSettingsMap.put("android.permission.READ_CONTACTS", new String[]{Settings.ALLOW_READ_CONTACTS, Settings.ALLOW_READ_CALL_LOG});
-		permissionToSettingsMap.put("android.permission.READ_CALL_LOG", new String[]{Settings.ALLOW_READ_CALL_LOG});
-		permissionToSettingsMap.put("android.permission.READ_CALENDAR", new String[]{Settings.ALLOW_READ_CALENDAR});
-		permissionToSettingsMap.put("android.permission.READ_SMS", new String[]{Settings.ALLOW_READ_SMS, Settings.ALLOW_READ_MMS});
-		permissionToSettingsMap.put("android.permission.RECEIVE_SMS", new String[]{Settings.ALLOW_READ_SMS, Settings.ALLOW_READ_MMS});
-		permissionToSettingsMap.put("android.permission.RECEIVE_MMS", new String[]{Settings.ALLOW_READ_MMS});
-		permissionToSettingsMap.put("android.permission.RECEIVE_WAP_PUSH", new String[]{Settings.ALLOW_READ_MMS});
-		permissionToSettingsMap.put("android.permission.SEND_SMS", new String[]{Settings.ALLOW_SEND_SMS, Settings.ALLOW_SEND_MMS});
-		permissionToSettingsMap.put("android.permission.RECORD_AUDIO", new String[]{Settings.ALLOW_RECORD_AUDIO});
-		permissionToSettingsMap.put("android.permission.CAMERA", new String[]{Settings.ALLOW_CAMERA});
-		permissionToSettingsMap.put("com.android.browser.permission.READ_HISTORY_BOOKMARKS", new String[]{Settings.ALLOW_READ_BOOKMARKS_AND_HISTORY});
-		permissionToSettingsMap.put("android.permission.READ_LOGS", new String[]{Settings.ALLOW_READ_SYSTEM_LOGS});
-		permissionToSettingsMap.put("android.permission.RECEIVE_BOOT_COMPLETED", new String[]{Settings.ALLOW_RECEIVE_BOOT_COMPLETED_INTENT});
-		permissionToSettingsMap.put("android.permission.ACCESS_WIFI_STATE", new String[]{Settings.ALLOW_READ_WIFI_INFO});
-		permissionToSettingsMap.put("android.permission.CHANGE_WIFI_STATE", new String[]{Settings.ALLOW_CHANGE_WIFI_STATE});
-		permissionToSettingsMap.put("android.permission.CHANGE_WIFI_MULTICAST_STATE", new String[]{Settings.ALLOW_CHANGE_WIFI_STATE});
-		permissionToSettingsMap.put("android.permission.CHANGE_NETWORK_STATE", new String[]{Settings.ALLOW_CHANGE_MOBILE_DATA_STATE});
-		permissionToSettingsMap.put(null, new String[]{Settings.ALLOW_READ_NETWORK_INFO, Settings.ALLOW_READ_ANDROID_ID, Settings.ALLOW_READ_SIM_INFO, Settings.ALLOW_ACCESS_IP_TABLES, Settings.ALLOW_READ_ICC_ID});
-		permissionToSettingsMap.put("android.permission.ACCESS_NETWORK_STATE", new String[]{Settings.FAKE_ALWAYS_ONLINE});
+		permissionToSettingsMap.put("android.permission.READ_PHONE_STATE", new String[]{Setting.ALLOW_READ_DEVICE_ID,
+				Setting.ALLOW_READ_PHONE_NUMBER,
+				Setting.ALLOW_READ_SIM_SERIAL,
+				Setting.ALLOW_READ_SUBSCRIBER_ID,
+				Setting.ALLOW_READ_INCOMING_CALL_NUMBER});
+		permissionToSettingsMap.put("android.permission.PROCESS_OUTGOING_CALLS", new String[]{Setting.ALLOW_READ_OUTGOING_CALL_NUMBER});
+		permissionToSettingsMap.put("android.permission.CALL_PHONE", new String[]{Setting.ALLOW_INITIATE_PHONE_CALL});
+		permissionToSettingsMap.put("android.permission.CALL_PRIVILEGED", new String[]{Setting.ALLOW_INITIATE_PHONE_CALL});
+		permissionToSettingsMap.put("android.permission.ACCESS_COARSE_LOCATION", new String[]{Setting.ALLOW_READ_NETWORK_LOCATION});
+		permissionToSettingsMap.put("android.permission.ACCESS_FINE_LOCATION", new String[]{Setting.ALLOW_READ_NETWORK_LOCATION, Setting.ALLOW_READ_GPS_LOCATION});
+		permissionToSettingsMap.put("android.permission.USE_CREDENTIALS", new String[]{Setting.ALLOW_USE_ACCOUNT_CREDENTIALS});
+		permissionToSettingsMap.put("android.permission.ACCOUNT_MANAGER", new String[]{Setting.ALLOW_USE_ACCOUNT_CREDENTIALS, Setting.ALLOW_READ_ACCOUNTS_LIST});
+		permissionToSettingsMap.put("android.permission.AUTHENTICATE_ACCOUNTS", new String[]{Setting.ALLOW_USE_ACCOUNT_CREDENTIALS});
+		permissionToSettingsMap.put("android.permission.MANAGE_ACCOUNTS", new String[]{Setting.ALLOW_USE_ACCOUNT_CREDENTIALS, Setting.ALLOW_READ_ACCOUNTS_LIST});
+		permissionToSettingsMap.put("android.permission.GET_ACCOUNTS", new String[]{Setting.ALLOW_READ_ACCOUNTS_LIST});
+		permissionToSettingsMap.put("android.permission.READ_CONTACTS", new String[]{Setting.ALLOW_READ_CONTACTS, Setting.ALLOW_READ_CALL_LOG});
+		permissionToSettingsMap.put("android.permission.READ_CALL_LOG", new String[]{Setting.ALLOW_READ_CALL_LOG});
+		permissionToSettingsMap.put("android.permission.READ_CALENDAR", new String[]{Setting.ALLOW_READ_CALENDAR});
+		permissionToSettingsMap.put("android.permission.READ_SMS", new String[]{Setting.ALLOW_READ_SMS, Setting.ALLOW_READ_MMS});
+		permissionToSettingsMap.put("android.permission.RECEIVE_SMS", new String[]{Setting.ALLOW_READ_SMS, Setting.ALLOW_READ_MMS});
+		permissionToSettingsMap.put("android.permission.RECEIVE_MMS", new String[]{Setting.ALLOW_READ_MMS});
+		permissionToSettingsMap.put("android.permission.RECEIVE_WAP_PUSH", new String[]{Setting.ALLOW_READ_MMS});
+		permissionToSettingsMap.put("android.permission.SEND_SMS", new String[]{Setting.ALLOW_SEND_SMS, Setting.ALLOW_SEND_MMS});
+		permissionToSettingsMap.put("android.permission.RECORD_AUDIO", new String[]{Setting.ALLOW_RECORD_AUDIO});
+		permissionToSettingsMap.put("android.permission.CAMERA", new String[]{Setting.ALLOW_CAMERA});
+		permissionToSettingsMap.put("com.android.browser.permission.READ_HISTORY_BOOKMARKS", new String[]{Setting.ALLOW_READ_BOOKMARKS_AND_HISTORY});
+		permissionToSettingsMap.put("android.permission.READ_LOGS", new String[]{Setting.ALLOW_READ_SYSTEM_LOGS});
+		permissionToSettingsMap.put("android.permission.RECEIVE_BOOT_COMPLETED", new String[]{Setting.ALLOW_RECEIVE_BOOT_COMPLETED_INTENT});
+		permissionToSettingsMap.put("android.permission.ACCESS_WIFI_STATE", new String[]{Setting.ALLOW_READ_WIFI_INFO});
+		permissionToSettingsMap.put("android.permission.CHANGE_WIFI_STATE", new String[]{Setting.ALLOW_CHANGE_WIFI_STATE});
+		permissionToSettingsMap.put("android.permission.CHANGE_WIFI_MULTICAST_STATE", new String[]{Setting.ALLOW_CHANGE_WIFI_STATE});
+		permissionToSettingsMap.put("android.permission.CHANGE_NETWORK_STATE", new String[]{Setting.ALLOW_CHANGE_MOBILE_DATA_STATE});
+		permissionToSettingsMap.put(null, new String[]{Setting.ALLOW_READ_NETWORK_INFO, Setting.ALLOW_READ_ANDROID_ID, Setting.ALLOW_READ_SIM_INFO, Setting.ALLOW_ACCESS_IP_TABLES, Setting.ALLOW_READ_ICC_ID});
+		permissionToSettingsMap.put("android.permission.ACCESS_NETWORK_STATE", new String[]{Setting.FAKE_ALWAYS_ONLINE});
 	}
 	
 	private PermissionSettingMapper() {

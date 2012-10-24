@@ -26,23 +26,32 @@
  */
 package net.digitalfeed.pdroidalternative;
 
+import java.io.ByteArrayOutputStream;
+
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 
 public class Application {
-	public static final int FLAG_IS_SYSTEM_APP = 0x1;
-	public static final int FLAG_UNTRUSTED = 0x2;
-	public static final int HAS_INTERNET = 0x4;
+	public static final int APP_FLAG_IS_SYSTEM_APP = 0x1;
+	public static final int APP_FLAG_HAS_INTERNET = 0x2;
+	public static final int STATUS_FLAG_IS_UNTRUSTED = 0x1;
+	public static final int STATUS_FLAG_NOTIFY_ON_ACCESS = 0x2;
+	
 
 	//indicates whether this has a full data complement, or just the minimum data set
-	private Boolean hasAllData;
+	private boolean isStub;
 	
 	private long id;
 	private String packageName;
 	private String label;
 	private int versionCode;
-	private int flags;
+	private int appFlags;
+	private int statusFlags;
 	int uid;
 	private Drawable icon;
+	
+	//The value in permissions is only valid if the Application entry is not a stub
 	private String[] permissions;
 	
 	public long getId() {
@@ -56,7 +65,7 @@ public class Application {
 	public String getLabel() {
 		return this.label;
 	}
-
+	
 	public void setLabel(String label) {
 		this.label = label;
 	}
@@ -69,14 +78,46 @@ public class Application {
 		this.versionCode = versionCode;
 	}
 
-	public int getFlags() {
-		return this.flags;
+	public int getAppFlags() {
+		return this.appFlags;
 	}
 
-	public void setFlags(int flags) {
-		this.flags = flags;
+	public void setAppFlags(int appFlags) {
+		this.appFlags = appFlags;
 	}
 
+	public boolean getIsSystemApp() {
+		return (this.appFlags & APP_FLAG_IS_SYSTEM_APP) == APP_FLAG_IS_SYSTEM_APP;
+	}
+	
+	public void setIsSystemApp(boolean isSystemApp) {
+		this.appFlags = this.appFlags & ~APP_FLAG_IS_SYSTEM_APP;
+	}
+
+	public boolean getHasInternet() {
+		return (this.appFlags & APP_FLAG_HAS_INTERNET) == APP_FLAG_HAS_INTERNET;
+	}
+
+	public void setHasInternet(boolean hasInternet) {
+		this.appFlags = this.appFlags & ~APP_FLAG_HAS_INTERNET;
+	} 
+	
+	public boolean getIsUntrusted() {
+		return (this.statusFlags & STATUS_FLAG_IS_UNTRUSTED) == STATUS_FLAG_IS_UNTRUSTED;
+	}
+	
+	public void setIsUntrusted(boolean isUntrusted) {
+		this.statusFlags = this.statusFlags & ~STATUS_FLAG_IS_UNTRUSTED;
+	} 
+
+	public boolean getNotifyOnAccess() {
+		return (this.statusFlags & STATUS_FLAG_NOTIFY_ON_ACCESS) == STATUS_FLAG_NOTIFY_ON_ACCESS;
+	}
+	
+	public void setNotifyOnAccess(boolean isUntrusted) {
+		this.statusFlags = this.statusFlags & ~STATUS_FLAG_NOTIFY_ON_ACCESS;
+	}
+	
 	public int getUid() {
 		return this.uid;
 	}
@@ -89,6 +130,22 @@ public class Application {
 		return this.icon;
 	}
 
+	public Bitmap getIconBitmap() {
+		//Thanks go to André on http://stackoverflow.com/questions/3035692/how-to-convert-a-drawable-to-a-bitmap
+        Bitmap bitmap = Bitmap.createBitmap(this.icon.getIntrinsicWidth(), this.icon.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(bitmap);
+        icon.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+        icon.draw(canvas);
+        return bitmap;
+	}
+	
+	public byte[] getIconByteArray() {
+		Bitmap bitmap = getIconBitmap();
+		ByteArrayOutputStream byteArrayBitmapStream = new ByteArrayOutputStream();
+		bitmap.compress(Bitmap.CompressFormat.PNG, DBInterface.ApplicationTable.COMPRESS_ICON_QUALITY, byteArrayBitmapStream);
+		return byteArrayBitmapStream.toByteArray();
+	}
+	
 	public void setIcon(Drawable icon) {
 		this.icon = icon;
 	}
@@ -109,22 +166,27 @@ public class Application {
 		this.packageName = packageName;
 	}
 	
-	Application(String packageName, String label, boolean isSystemApp, Drawable icon) {
-		this.hasAllData = false;
-		
-	}
-	
-	Application(String packageName, String label, int versionCode, String versionName, boolean isSystemApp, int uid, Drawable icon, String[] permissions) {
-		this.hasAllData = true;
+	Application(String packageName, String label, int versionCode, int appFlags, int statusFlags, int uid, Drawable icon) {
+		this.isStub = true;
 		this.packageName = packageName;
 		this.label = label;
 		this.versionCode = versionCode;
-		if (isSystemApp) {
-			this.flags = this.flags | this.FLAG_IS_SYSTEM_APP;
-		}
+		this.appFlags = appFlags;
+		this.statusFlags = statusFlags;
 		this.uid = uid;
 		this.icon = icon;
-		if (this.permissions != null) { 
+	}	
+	
+	Application(String packageName, String label, int versionCode, int appFlags, int statusFlags, int uid, Drawable icon, String[] permissions) {
+		this.isStub = false;
+		this.packageName = packageName;
+		this.label = label;
+		this.versionCode = versionCode;
+		this.appFlags = appFlags;
+		this.statusFlags = statusFlags;
+		this.uid = uid;
+		this.icon = icon;
+		if (permissions != null) { 
 			this.permissions = permissions.clone();
 		} else {
 			this.permissions = null;

@@ -1,6 +1,5 @@
 package net.digitalfeed.pdroidalternative;
 
-import android.R.bool;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -12,7 +11,7 @@ public class Preferences {
 	private SharedPreferences prefs;
 	
 	public Preferences(Context context) {
-		this.prefs = context.getSharedPreferences(SHARED_PREFERENCES_NAME, context.MODE_PRIVATE);
+		this.prefs = context.getSharedPreferences(SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
 	}
 	
 	public Boolean getIsApplicationListCacheValid() {

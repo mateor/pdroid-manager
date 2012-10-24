@@ -4,18 +4,17 @@
     android:versionName="1.0" >
 
     <uses-sdk
-        android:minSdkVersion="8"
-        android:targetSdkVersion="15" />
-    <!-- 
-    <permission android:label="@string/writePrivacySettings_label" android:name="android.privacy.WRITE_PRIVACY_SETTINGS" android:protectionLevel="signature" android:permissionGroup="android.permission-group.PERSONAL_INFO" android:description="@string/writePrivacySettings_description" />
-    -->
+        android:minSdkVersion="16"
+        android:targetSdkVersion="16" />
+    <!-- <permission android:label="@string/writePrivacySettings_label" android:name="android.privacy.WRITE_PRIVACY_SETTINGS" android:protectionLevel="signature" android:permissionGroup="android.permission-group.PERSONAL_INFO" android:description="@string/writePrivacySettings_description" /> -->
     <uses-permission android:name="android.privacy.WRITE_PRIVACY_SETTINGS" />
+
     <application
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name=".MainActivity"
+            android:name=".AppListActivity"
             android:label="@string/title_activity_main" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -23,7 +22,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-<!-- 		<receiver android:name=".IntentHandler.PackageChange">
+        <!--
+     		<receiver android:name=".IntentHandler.PackageChange">
             <intent-filter>
                 <action android:name="android.intent.action.PACKAGE_ADDED" />
                 <action android:name="android.intent.action.PACKAGE_REMOVED" />
@@ -35,7 +35,18 @@
                 <action android:name="com.privacy.pdroid.PRIVACY_NOTIFICATION" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
-        </receiver>-->
+        </receiver>
+        -->
+        <activity
+            android:name=".AppDetailActivity"
+            android:exported="false"
+            android:label="@string/title_activity_app_detail" >
+            <intent-filter>
+                <action android:name="net.digitalfeed.pdroidalternative.APP_DETAIL" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

@@ -1,8 +1,7 @@
 package net.digitalfeed.pdroidalternative;
 
-public class Settings {
-
-	public static final String ALLOW_READ_DEVICE_ID = "deviceIdSetting";
+class Setting {
+	public static final String ALLOW_READ_DEVICE_ID = "deviceIdSetting";;
 	public static final String ALLOW_READ_PHONE_NUMBER = "line1NumberSetting";
 	public static final String ALLOW_READ_SIM_SERIAL = "simSerialNumberSetting";
 	public static final String ALLOW_READ_SUBSCRIBER_ID = "subscriberIdSetting";
@@ -35,8 +34,18 @@ public class Settings {
 	public static final String ALLOW_READ_ICC_ID = "iccAccessSetting";
 	public static final String FAKE_ALWAYS_ONLINE = "forceOnlineState";
 	
-		
-	private Settings() {
+	private String type;
+	private String friendlyName;
+	
+	public Setting(String type) {
+		this.type = type;
 	}
-
+	
+	public String getType() {
+		return this.type;
+	}
+	
+	public void setType(String type) {
+		this.type = type;
+	}
 }

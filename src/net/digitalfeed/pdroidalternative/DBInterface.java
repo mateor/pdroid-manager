@@ -9,9 +9,12 @@ import android.text.TextUtils;
 public class DBInterface {
 	private static DBHelper dbhelper = null;
 	private static DBInterface dbinterface = null;
-		
+	
 	public static final class ApplicationTable {
 		public ApplicationTable(){}
+		
+		public static final int COMPRESS_ICON_QUALITY = 100;
+		
 		public static final String TABLE_NAME = "application";
 		public static final String COLUMN_NAME_LABEL = "label";
 		public static final String COLUMN_NAME_PACKAGENAME = "packageName";
@@ -19,10 +22,10 @@ public class DBInterface {
 		public static final String COLUMN_NAME_VERSIONCODE = "versionCode";
 		public static final String COLUMN_NAME_PERMISSIONS = "permissions";
 		public static final String COLUMN_NAME_ICON = "icon";
-		public static final String COLUMN_NAME_FLAGS = "app_flags";
+		public static final String COLUMN_NAME_FLAGS = "appFlags";
 		
 		public static final int FLAG_IS_SYSTEM_APP = 0x1;
-		public static final int FLAG_HAS_INTERNET = 0x2;
+		public static final int FLAG_HAS_INTERNET_ACCESS = 0x2;
 		
 		public static final String CREATE_SQL = "CREATE TABLE " + TABLE_NAME + "(" + 
 				"_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
@@ -41,7 +44,9 @@ public class DBInterface {
 			contentValues.put(COLUMN_NAME_PACKAGENAME, application.getPackageName());
 			contentValues.put(COLUMN_NAME_UID, application.getUid());
 			contentValues.put(COLUMN_NAME_VERSIONCODE, application.getVersionCode());
-			//contentValues.put(COLUMN_NAME_ICON, application.getIcon();
+			contentValues.put(COLUMN_NAME_FLAGS, application.getAppFlags());
+			contentValues.put(COLUMN_NAME_ICON, application.getIconByteArray());
+			
 			String[] permissions = application.getPermissions();
 			if (permissions != null) {
 				contentValues.put(COLUMN_NAME_PERMISSIONS, TextUtils.join(",", application.getPermissions()));
@@ -54,9 +59,9 @@ public class DBInterface {
 		public ApplicationStatusTable(){}
 		public static final String TABLE_NAME = "application_status";
 		public static final String COLUMN_NAME_PACKAGENAME = "packageName";
-		public static final String COLUMN_NAME_FLAGS = "status_flags";
+		public static final String COLUMN_NAME_FLAGS = "statusFlags";
 
-		public static final int FLAGS_UNTRUSTED = 0x1;
+		public static final int FLAG_IS_UNTRUSTED = 0x1;
 		public static final int FLAG_NOTIFY_ON_ACCESS = 0x2;
 		
 		public static final String CREATE_SQL = "CREATE TABLE " + TABLE_NAME + "(" + 
@@ -75,7 +80,7 @@ public class DBInterface {
 		public static final String COLUMN_NAME_UID = "uid";
 		public static final String COLUMN_NAME_VERSIONCODE = "versionCode";
 		public static final String COLUMN_NAME_OPERATION = "operation";
-		public static final String COLUMN_NAME_FLAGS = "flags";
+		public static final String COLUMN_NAME_FLAGS = "logFlags";
 		
 		public static final int FLAGS_ALLOWED = 0x1;
 		
@@ -105,6 +110,34 @@ public class DBInterface {
 			return contentValues;
 		}
 	}
+
+	public static final String ApplicationListQuery = "SELECT " + 
+			ApplicationTable.TABLE_NAME + "." + ApplicationTable.COLUMN_NAME_LABEL + ", " +  
+			ApplicationTable.TABLE_NAME + "." + ApplicationTable.COLUMN_NAME_PACKAGENAME + ", " + 
+			ApplicationTable.TABLE_NAME + "." + ApplicationTable.COLUMN_NAME_UID + ", " +
+			ApplicationTable.TABLE_NAME + "." + ApplicationTable.COLUMN_NAME_VERSIONCODE + ", " +
+			ApplicationTable.TABLE_NAME + "." + ApplicationTable.COLUMN_NAME_ICON + ", " +
+			ApplicationTable.TABLE_NAME + "." + ApplicationTable.COLUMN_NAME_FLAGS + ", " +
+			ApplicationStatusTable.TABLE_NAME + "." + ApplicationStatusTable.COLUMN_NAME_FLAGS +   
+			" FROM " + ApplicationTable.TABLE_NAME + 
+			" LEFT OUTER JOIN " + ApplicationStatusTable.TABLE_NAME +
+			" ON " + ApplicationTable.TABLE_NAME + "." + ApplicationTable.COLUMN_NAME_PACKAGENAME + " =  " +
+			ApplicationStatusTable.TABLE_NAME + "." + ApplicationStatusTable.COLUMN_NAME_PACKAGENAME;
+	
+	public static final String ApplicationListTitleSubsetQuery = ApplicationListQuery + 
+			" WHERE " + ApplicationTable.TABLE_NAME + "." + ApplicationTable.COLUMN_NAME_LABEL + " LIKE ?";
+	
+	public static final String ApplicationSingleQuery = "SELECT " + 
+			ApplicationTable.TABLE_NAME + "." + ApplicationTable.COLUMN_NAME_LABEL + ", " +  
+			ApplicationTable.TABLE_NAME + "." + ApplicationTable.COLUMN_NAME_PACKAGENAME + ", " + 
+			ApplicationTable.TABLE_NAME + "." + ApplicationTable.COLUMN_NAME_UID + ", " +
+			ApplicationTable.TABLE_NAME + "." + ApplicationTable.COLUMN_NAME_VERSIONCODE + ", " +
+			ApplicationTable.TABLE_NAME + "." + ApplicationTable.COLUMN_NAME_ICON + ", " +
+			ApplicationTable.TABLE_NAME + "." + ApplicationTable.COLUMN_NAME_FLAGS + ", " +
+			ApplicationTable.TABLE_NAME + "." + ApplicationTable.COLUMN_NAME_PERMISSIONS +   
+			" FROM " + ApplicationTable.TABLE_NAME + 
+			" WHERE " + ApplicationTable.TABLE_NAME + "." + ApplicationTable.COLUMN_NAME_PACKAGENAME + " = ?";
+	
 	
 	public Context context;
 	
@@ -112,7 +145,7 @@ public class DBInterface {
 		if (dbinterface == null) {
 			dbinterface = new DBInterface(context.getApplicationContext());
 		}
-		return dbinterface; 
+		return dbinterface;
 	}
 	
 	public DBHelper getDBHelper() {
@@ -144,7 +177,7 @@ public class DBInterface {
 		public static final String DATABASE_NAME = "pdroidmgr.db";
 		public static final int DATABASE_VERSION = 1;
 		
-		private SQLiteDatabase db;
+		//private SQLiteDatabase db;
 		
 		private DBHelper(Context context) {
 			super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -152,7 +185,7 @@ public class DBInterface {
 	
 		@Override
 		public void onCreate(SQLiteDatabase db) {
-			this.db = db;  
+			//this.db = db;  
 			db.execSQL(ApplicationTable.CREATE_SQL);
 			//db.execSQL("CREATE TABLE permission (_id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, label TEXT NOT NULL, description TEXT);");
 			//db.execSQL("CREATE TABLE setting (_id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, label TEXT NOT NULL, permission_id INTEGER, options INTEGER, fake_type INTEGER, description TEXT, FOREIGN KEY(permission_id) REFERENCES permission(_id));");
@@ -168,7 +201,7 @@ public class DBInterface {
 			// At version 1 - no upgrades yet!
 		}
 		
-		private void loadDefaultData() {
+		//private void loadDefaultData() {
 			/*
 			 * The idea here is/was to have Settings and Permissions tables which declare the settings associated with each permission
 			 * and then provide the settings (and relevant options) based on the table content. Maybe later.
@@ -230,6 +263,6 @@ public class DBInterface {
 				} 
 			}
 			*/
-		}
+		//}
 	}
 }
