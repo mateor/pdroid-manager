@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="SETTING_LABEL_ALLOW_READ_DEVICE_ID">Device ID</string>
+	<string name="SETTING_LABEL_ALLOW_READ_PHONE_NUMBER">Phone Number</string>
+	<string name="SETTING_LABEL_ALLOW_READ_SIM_SERIAL">Sim Card Serial</string>
+	<string name="SETTING_LABEL_ALLOW_READ_SUBSCRIBER_ID">Subscriber ID</string>
+	<string name="SETTING_LABEL_ALLOW_READ_INCOMING_CALL_NUMBER">Incoming Call Number</string>
+	<string name="SETTING_LABEL_ALLOW_READ_OUTGOING_CALL_NUMBER">Outgoing Call Number</string>
+	<string name="SETTING_LABEL_ALLOW_INITIATE_PHONE_CALL">Call Phone</string>
+	<string name="SETTING_LABEL_ALLOW_READ_NETWORK_LOCATION">Network Location</string>
+	<string name="SETTING_LABEL_ALLOW_READ_GPS_LOCATION">GPS Location</string>
+	<string name="SETTING_LABEL_ALLOW_USE_ACCOUNT_CREDENTIALS">Account Credentials</string>
+	<string name="SETTING_LABEL_ALLOW_READ_ACCOUNTS_LIST">Accounts</string>
+	<string name="SETTING_LABEL_ALLOW_READ_CONTACTS">Contacts</string>
+	<string name="SETTING_LABEL_ALLOW_READ_CALL_LOG">Call Log</string>
+	<string name="SETTING_LABEL_ALLOW_READ_CALENDAR">Calendar</string>
+	<string name="SETTING_LABEL_ALLOW_READ_SMS">Access SMS</string>
+	<string name="SETTING_LABEL_ALLOW_SEND_SMS">Send SMS</string>
+	<string name="SETTING_LABEL_ALLOW_READ_MMS">Access MMS</string>
+	<string name="SETTING_LABEL_ALLOW_SEND_MMS">Send MMS</string>
+	<string name="SETTING_LABEL_ALLOW_RECORD_AUDIO">Record Audio</string>
+	<string name="SETTING_LABEL_ALLOW_CAMERA">Camera</string>
+	<string name="SETTING_LABEL_ALLOW_READ_BOOKMARKS_AND_HISTORY">Bookmarks and History</string>
+	<string name="SETTING_LABEL_ALLOW_READ_SYSTEM_LOGS">System Logs</string>
+	<string name="SETTING_LABEL_ALLOW_RECEIVE_BOOT_COMPLETED_INTENT">Start on Boot</string>
+	<string name="SETTING_LABEL_ALLOW_READ_WIFI_INFO">Wifi Info</string>
+	<string name="SETTING_LABEL_ALLOW_CHANGE_WIFI_STATE">Switch Wifi State</string>
+	<string name="SETTING_LABEL_ALLOW_CHANGE_MOBILE_DATA_STATE">Switch Network State</string>
+	<string name="SETTING_LABEL_ALLOW_READ_NETWORK_INFO">Network Info</string>
+	<string name="SETTING_LABEL_ALLOW_READ_ANDROID_ID">Android ID</string>
+	<string name="SETTING_LABEL_ALLOW_READ_SIM_INFO">Sim INfo</string>
+	<string name="SETTING_LABEL_ALLOW_ACCESS_IP_TABLES">IP Tables</string>
+	<string name="SETTING_LABEL_ALLOW_READ_ICC_ID">ICC Access</string>
+	<string name="SETTING_LABEL_FAKE_ALWAYS_ONLINE">Force Online State</string>   
+	
+	<string name="SETTING_GROUP_LABEL_GENERAL">General</string>
+	<string name="SETTING_GROUP_LABEL_PHONE">Phone &amp; Calls</string>
+	<string name="SETTING_GROUP_LABEL_MESSAGES">Messages</string>
+	<string name="SETTING_GROUP_LABEL_PERSONAL_DATA">Personal Data</string>
+	<string name="SETTING_GROUP_LABEL_MEDIA">Media</string>
+	<string name="SETTING_GROUP_LABEL_NETWORK">Network</string>
+	<string name="SETTING_GROUP_LABEL_LOCATION">Location</string>
+</resources>

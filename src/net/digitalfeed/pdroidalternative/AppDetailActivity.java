@@ -1,9 +1,9 @@
 package net.digitalfeed.pdroidalternative;
 
-import android.media.audiofx.BassBoost.Settings;
+import java.util.Set;
+
 import android.os.Bundle;
 import android.app.Activity;
-import android.util.Log;
 import android.view.Menu;
 import android.widget.ListView;
 
@@ -40,8 +40,12 @@ public class AppDetailActivity extends Activity implements IAppDetailListener {
 	@Override
 	public void appDetailLoadCompleted(Application app) {
 		this.setTitle(app.getLabel());
-		settingList = PermissionSettingMapper.getSettingsObjects(app.getPermissions());
-        listView = (ListView)findViewById(R.id.settingList);
-        listView.setAdapter(new AppDetailAdapter(this, R.layout.setting_list_row_allow_deny, this.settingList));
+		String [] permissions = app.getPermissions();
+		Set<Setting> settings = PermissionSettingMapper.getMapper(this).getSettings(permissions);
+		if (settings != null) {
+			this.settingList = settings.toArray(new Setting[settings.size()]); 
+			listView = (ListView)findViewById(R.id.settingList);
+			listView.setAdapter(new AppDetailAdapter(this, R.layout.setting_list_row_allow_deny, this.settingList));
+		}
 	}
 }

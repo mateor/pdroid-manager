@@ -1,4 +1,4 @@
-package net.digitalfeed.pdroidalternative;
+package net.digitalfeed.pdroidalternative.intenthandler;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;

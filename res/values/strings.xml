@@ -28,7 +28,6 @@
  */
 -->
 <resources>
-
     <string name="app_name">PDroid Manager</string>
     <string name="profile_title">Profile:</string>
     <string name="menu_search">Search</string>
@@ -41,5 +40,4 @@
     <string name="menu_settings">Settings</string>
     <string name="title_activity_app_detail">BlahBLah?</string>
     <string name="title_activity_app_detail_activity2">BlahBlah</string>
-
 </resources>

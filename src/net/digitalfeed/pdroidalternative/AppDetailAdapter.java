@@ -39,7 +39,7 @@ public class AppDetailAdapter extends ArrayAdapter<Setting>{
 		}
 		
 		Setting setting = settingList[position];
-		holder.settingName.setText(setting.getType());
+		holder.settingName.setText(setting.getLabel());
 		
 		return row;
 	}

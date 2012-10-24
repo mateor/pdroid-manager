@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<permissions>
+<resource>
     <permission id="android.permission.READ_PHONE_STATE">
 	    <setting id="ALLOW_READ_DEVICE_ID" />
 	    <setting id="ALLOW_READ_PHONE_NUMBER" />
@@ -63,4 +63,4 @@
 	    <setting id="ALLOW_READ_ICC_ID" />
 	</permission>
 	<permission name="android.permission.ACCESS_NETWORK_STATE"><setting id="FAKE_ALWAYS_ONLINE" /></permission>
-</permissions>
+</resource>
