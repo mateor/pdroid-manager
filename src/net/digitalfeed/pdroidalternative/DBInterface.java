@@ -192,6 +192,34 @@ public class DBInterface {
 
 	}
 	
+	public static final class PermissionApplicationTable {
+		public PermissionApplicationTable(){}
+		public static final String TABLE_NAME = "permission_application";
+		public static final String COLUMN_NAME_PERMISSION = "permission";
+		public static final String COLUMN_NAME_PACKAGENAME = "packageName";
+		
+		public static final String CREATE_SQL = "CREATE TABLE " + TABLE_NAME + "(" + 
+				"_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+				COLUMN_NAME_PERMISSION + " TEXT NOT NULL, " + 
+				COLUMN_NAME_PACKAGENAME + " TEXT NOT NULL, " + 
+				"FOREIGN KEY(" + COLUMN_NAME_PERMISSION + ") REFERENCES " + PermissionSettingTable.TABLE_NAME + "(" + PermissionSettingTable.COLUMN_NAME_PERMISSION + ")" + 
+				"FOREIGN KEY(" + COLUMN_NAME_PACKAGENAME + ") REFERENCES " + ApplicationTable.TABLE_NAME + "(" + ApplicationTable.COLUMN_NAME_PACKAGENAME + ")" +
+				");";
+		
+		public static final String DROP_SQL = "DROP TABLE " + TABLE_NAME + ";";
+		
+		public static final ContentValues getContentValues(String permission, String packageName) {
+			ContentValues contentValues = new ContentValues();
+			contentValues.put(COLUMN_NAME_PERMISSION, permission);
+			contentValues.put(COLUMN_NAME_PACKAGENAME, packageName);		
+			return contentValues;
+		}
+		
+		public static final ContentValues getContentValues(String permission, Application application) {
+			return getContentValues(permission, application.getPackageName());
+		}
+	}
+	
 	public static final String ApplicationListQuery = "SELECT " + 
 			ApplicationTable.TABLE_NAME + "." + ApplicationTable.COLUMN_NAME_LABEL + ", " +  
 			ApplicationTable.TABLE_NAME + "." + ApplicationTable.COLUMN_NAME_PACKAGENAME + ", " + 
@@ -208,7 +236,7 @@ public class DBInterface {
 	public static final String ApplicationListTitleSubsetQuery = ApplicationListQuery + 
 			" WHERE " + ApplicationTable.TABLE_NAME + "." + ApplicationTable.COLUMN_NAME_LABEL + " LIKE ?";
 	
-	public static final String ApplicationSingleQuery = "SELECT " + 
+	public static final String ApplicationByName = "SELECT " + 
 			ApplicationTable.TABLE_NAME + "." + ApplicationTable.COLUMN_NAME_LABEL + ", " +  
 			ApplicationTable.TABLE_NAME + "." + ApplicationTable.COLUMN_NAME_PACKAGENAME + ", " + 
 			ApplicationTable.TABLE_NAME + "." + ApplicationTable.COLUMN_NAME_UID + ", " +
@@ -218,6 +246,20 @@ public class DBInterface {
 			ApplicationTable.TABLE_NAME + "." + ApplicationTable.COLUMN_NAME_PERMISSIONS +   
 			" FROM " + ApplicationTable.TABLE_NAME + 
 			" WHERE " + ApplicationTable.TABLE_NAME + "." + ApplicationTable.COLUMN_NAME_PACKAGENAME + " = ?";
+	
+	public static final String ApplicationByPermission = "SELECT " + 
+			ApplicationTable.TABLE_NAME + "." + ApplicationTable.COLUMN_NAME_LABEL + ", " +  
+			ApplicationTable.TABLE_NAME + "." + ApplicationTable.COLUMN_NAME_PACKAGENAME + ", " + 
+			ApplicationTable.TABLE_NAME + "." + ApplicationTable.COLUMN_NAME_UID + ", " +
+			ApplicationTable.TABLE_NAME + "." + ApplicationTable.COLUMN_NAME_VERSIONCODE + ", " +
+			ApplicationTable.TABLE_NAME + "." + ApplicationTable.COLUMN_NAME_ICON + ", " +
+			ApplicationTable.TABLE_NAME + "." + ApplicationTable.COLUMN_NAME_FLAGS + ", " +
+			ApplicationTable.TABLE_NAME + "." + ApplicationTable.COLUMN_NAME_PERMISSIONS +   
+			" FROM " + ApplicationTable.TABLE_NAME + 
+			" INNER JOIN " + PermissionApplicationTable.TABLE_NAME +
+			" ON " + ApplicationTable.TABLE_NAME + "." + ApplicationTable.COLUMN_NAME_PACKAGENAME + " =  " +
+			PermissionApplicationTable.TABLE_NAME + "." + ApplicationStatusTable.COLUMN_NAME_PACKAGENAME + 
+			" WHERE " + PermissionApplicationTable.TABLE_NAME + "." + PermissionApplicationTable.COLUMN_NAME_PERMISSION+ " = ?";
 	
 	
 	public Context context;

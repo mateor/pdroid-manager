@@ -7,7 +7,7 @@ import android.app.Activity;
 import android.view.Menu;
 import android.widget.ListView;
 
-public class AppDetailActivity extends Activity implements IAppDetailListener {
+public class AppDetailActivity extends Activity implements IAsyncTaskCallback<Application> {
 	
 	public static final String BUNDLE_PACKAGE_NAME = "packageName";
 	
@@ -27,7 +27,7 @@ public class AppDetailActivity extends Activity implements IAppDetailListener {
         Bundle bundle = getIntent().getExtras();
         packageName = bundle.getString(BUNDLE_PACKAGE_NAME);
         //this.setTitle(packageName);
-        AppDetailLoader appDetailLoader = new AppDetailLoader(this, this);
+        AppDetailLoaderTask appDetailLoader = new AppDetailLoaderTask(this, this);
         appDetailLoader.execute(packageName);
     }
     
@@ -38,7 +38,7 @@ public class AppDetailActivity extends Activity implements IAppDetailListener {
     }
 
 	@Override
-	public void appDetailLoadCompleted(Application app) {
+	public void asyncTaskComplete(Application app) {
 		this.setTitle(app.getLabel());
 		String [] permissions = app.getPermissions();
 		Set<Setting> settings = PermissionSettingMapper.getMapper(this).getSettings(permissions);

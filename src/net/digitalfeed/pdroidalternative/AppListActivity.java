@@ -38,7 +38,7 @@ import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
-public class AppListActivity extends Activity implements IAppListListener {
+public class AppListActivity extends Activity {
 
 	String[] appTitleList;
 	ListView listView;
@@ -120,13 +120,63 @@ public class AppListActivity extends Activity implements IAppListListener {
         return true;
     }
 
+    private void updateProgressDialog(int currentValue, int maxValue) {
+		if (progDialog != null) {
+			if (progDialog.isShowing()) {
+				progDialog.setProgress(currentValue);
+			} else {
+				progDialog.setMax(maxValue);
+				progDialog.setProgress(currentValue);
+				progDialog.show();
+			}
+		}
+    }
+    
+    class AppListGeneratorCallback implements IAsyncTaskCallbackWithProgress<Application []>{
+    	@Override
+    	public void asyncTaskComplete(Application[] returnedAppList) {
+    		if (progDialog != null) {
+    			progDialog.dismiss();
+    		}
+    		
+    		appList = returnedAppList;
+    		
+    		//If the list was rebuilt because the cache was invalid, then we should rewrite to the database
+    		if (!prefs.getIsApplicationListCacheValid()) {
+    			//We've built the app list. Now we write it to the DB, and mark it as valid in the prefs
+    			AppListWriter applicationListWriter = new AppListWriter(context);
+    			//this is using a shallow clone, so if the Application objects change then there could be trouble
+    			//Also, the application objects are not synchronized, so if they change while being written to the database
+    			//then there could be trouble
+    			applicationListWriter.execute(returnedAppList.clone());
+    		}
+    		listView.setAdapter(new AppListAdapter(context, R.layout.application_list_row, appList));
+    	}
+    	
+    	@Override
+    	public void asyncTaskProgressUpdate(Integer... progress) {
+    		updateProgressDialog(progress[0], progress[1]);
+    	}
+    }
+
+    class AppListLoaderCallback implements IAsyncTaskCallback<Application []>{
+    	@Override
+    	public void asyncTaskComplete(Application[] returnedAppList) {
+    		if (progDialog != null) {
+    			progDialog.dismiss();
+    		}
+    		appList = returnedAppList;
+    		listView.setAdapter(new AppListAdapter(context, R.layout.application_list_row, appList));
+    	}
+    }
+    
     public void loadApplicationList() {
         this.progDialog = new ProgressDialog(this);
         this.progDialog.setMessage("Loading Application List");
         this.progDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
 
-    	AppListLoader applicationListLoader = new AppListLoader(this, this);
-    	applicationListLoader.execute();
+    	AppListLoaderTask appListLoader = new AppListLoaderTask(this, new AppListLoaderCallback());
+    	appListLoader.execute();
     }
     
     public void rebuildApplicationList() {
@@ -134,40 +184,7 @@ public class AppListActivity extends Activity implements IAppListListener {
         this.progDialog.setMessage("Generating Application List");
         this.progDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
 
-    	AppListGenerator applicationListRetriever = new AppListGenerator(this, this);
-    	applicationListRetriever.execute();
+    	AppListGeneratorTask appListGenerator = new AppListGeneratorTask(this, new AppListGeneratorCallback());
+    	appListGenerator.execute();
     }
-
-	@Override
-	public void appListLoadCompleted(Application[] appList) {
-		if (this.progDialog != null) {
-			this.progDialog.dismiss();
-		}
-		
-		this.appList = appList;
-		
-		//If the list was rebuilt because the cache was invalid, then we should rewrite to the database
-		if (!prefs.getIsApplicationListCacheValid()) {
-			//We've built the app list. Now we write it to the DB, and mark it as valid in the prefs
-			AppListWriter applicationListWriter = new AppListWriter(this);
-			//this is using a shallow clone, so if the Application objects change then there could be trouble
-			//Also, the application objects are not synchronized, so if they change while being written to the database
-			//then there could be trouble
-			applicationListWriter.execute(this.appList.clone());
-		}
-		listView.setAdapter(new AppListAdapter(context, R.layout.application_list_row, this.appList));
-	}
-	
-	@Override
-	public void appListProgressUpdate(Integer... progress) {
-		if (this.progDialog != null) {
-			if (this.progDialog.isShowing()) {
-				this.progDialog.setProgress(progress[0]);
-			} else {
-				this.progDialog.setMax(progress[1]);
-				this.progDialog.setProgress(progress[0]);
-				this.progDialog.show();
-			}
-		}
-	}
 }

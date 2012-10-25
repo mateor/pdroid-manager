@@ -1,14 +1,10 @@
 package net.digitalfeed.pdroidalternative.intenthandler;
 
-import javax.xml.datatype.Duration;
-
-import android.privacy.PrivacySettings; 
 import android.widget.Toast;
 import net.digitalfeed.pdroidalternative.DBInterface;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 
 public class NotificationHandler extends BroadcastReceiver {

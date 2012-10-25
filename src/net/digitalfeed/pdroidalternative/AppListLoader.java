@@ -8,33 +8,34 @@ import android.database.sqlite.SQLiteDatabase;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.os.AsyncTask;
 
-public class AppListLoader extends AsyncTask<Void, Integer, Application[]> {
-	
-	IAppListListener listener;
-	
-	Context context;
-	
-	public AppListLoader(Context context, IAppListListener listener) {
+public class AppListLoader {
+
+	private Context context;
+	private String query;
+	private String [] projectionIn;
+
+	enum SearchType { PACKAGE_NAME, PERMISSION }
+
+	public AppListLoader(Context context, SearchType searchType, String [] projectionIn) throws Exception {
 		this.context = context;
-		this.listener = listener;
+		switch (searchType) {
+		case PACKAGE_NAME:
+			this.query = DBInterface.ApplicationByName;
+			break;
+		case PERMISSION:
+			this.query = DBInterface.ApplicationByName;
+			break;
+		default:
+			throw new Exception("Unsupported application list search type");
+		}
+		this.projectionIn = projectionIn.clone(); 
 	}
 	
-	@Override
-	protected void onPreExecute(){ 
-		super.onPreExecute();
-	}
-	
-	@Override
-	protected Application[] doInBackground(Void... params) {
+	public Application [] getMatchingApplications() {
 		LinkedList<Application> appList = new LinkedList<Application>();
 		SQLiteDatabase db = DBInterface.getInstance(context).getDBHelper().getReadableDatabase();
-    	Cursor cursor = db.rawQuery(DBInterface.ApplicationListQuery, null);
-
-		Integer[] progressObject = new Integer[2];
-		progressObject[0] = 0;
-		progressObject[1] = cursor.getCount();
+    	Cursor cursor = db.rawQuery(this.query, this.projectionIn);
 
 		cursor.moveToFirst();
     	int labelColumn = cursor.getColumnIndex(DBInterface.ApplicationTable.TABLE_NAME + "." + DBInterface.ApplicationTable.COLUMN_NAME_LABEL);
@@ -56,8 +57,6 @@ public class AppListLoader extends AsyncTask<Void, Integer, Application[]> {
 
     		Drawable icon = new BitmapDrawable(context.getResources(),BitmapFactory.decodeByteArray(iconBlob, 0, iconBlob.length));
     		appList.add(new Application(packageName, label, versionCode, appFlags, statusFlags, uid, icon));
-    		progressObject[0]++;
-    		publishProgress(progressObject.clone());
     	} while (cursor.moveToNext());
 
     	cursor.close();
@@ -65,16 +64,4 @@ public class AppListLoader extends AsyncTask<Void, Integer, Application[]> {
     	
     	return appList.toArray(new Application[appList.size()]);
 	}
-
-	@Override
-	protected void onProgressUpdate(Integer... progress) {
-		listener.appListProgressUpdate(progress);
-	}
-	
-	@Override
-	protected void onPostExecute(Application[] result) {
-		super.onPostExecute(result);
-		listener.appListLoadCompleted(result);
-	}
-	
 }

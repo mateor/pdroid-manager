@@ -1,6 +1,5 @@
 package net.digitalfeed.pdroidalternative;
 
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -9,20 +8,17 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
-import android.content.res.Resources;
-import android.content.res.XmlResourceParser;
 import android.os.AsyncTask;
-import android.text.TextUtils;
 import android.util.Log;
 
-public class AppListGenerator extends AsyncTask<Void, Integer, Application[]> {
+public class AppListGeneratorTask extends AsyncTask<Void, Integer, Application[]> {
 	
-	IAppListListener listener;
+	IAsyncTaskCallbackWithProgress<Application[]> listener;
 	
 	Context context;
 	int includeAppTypes;
 	
-	public AppListGenerator(Context context, IAppListListener listener) {
+	public AppListGeneratorTask(Context context, IAsyncTaskCallbackWithProgress<Application[]> listener) {
 		this.context = context;
 		this.listener = listener;
 	}
@@ -149,12 +145,12 @@ public class AppListGenerator extends AsyncTask<Void, Integer, Application[]> {
 	
 	@Override
 	protected void onProgressUpdate(Integer... progress) {
-		listener.appListProgressUpdate(progress);
+		listener.asyncTaskProgressUpdate(progress);
 	}
 	
 	@Override
 	protected void onPostExecute(Application[] result) {
 		super.onPostExecute(result);
-		listener.appListLoadCompleted(result);
+		listener.asyncTaskComplete(result);
 	}
 }

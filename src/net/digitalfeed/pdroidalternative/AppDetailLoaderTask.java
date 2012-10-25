@@ -16,13 +16,13 @@ import android.util.Log;
  * Maybe should be merged into AppListLoader? There is mostly duplicate functionality
  * @author smorgan
  */
-public class AppDetailLoader extends AsyncTask<String, Integer, Application> {
+public class AppDetailLoaderTask extends AsyncTask<String, Integer, Application> {
 	
-	IAppDetailListener listener;
+	IAsyncTaskCallback<Application> listener;
 	
 	Context context;
 	
-	public AppDetailLoader(Context context, IAppDetailListener listener) {
+	public AppDetailLoaderTask(Context context, IAsyncTaskCallback<Application> listener) {
 		this.context = context;
 		this.listener = listener;
 	}
@@ -32,7 +32,7 @@ public class AppDetailLoader extends AsyncTask<String, Integer, Application> {
 		Log.d("PDroidAlternative","Looking up package name: " + selectPackageName[0]);
 		
 		SQLiteDatabase db = DBInterface.getInstance(context).getDBHelper().getReadableDatabase();
-    	Cursor cursor = db.rawQuery(DBInterface.ApplicationSingleQuery, selectPackageName);
+    	Cursor cursor = db.rawQuery(DBInterface.ApplicationByName, selectPackageName);
     	Log.d("PDroidAlternative","Returned item count: " + Integer.toString(cursor.getCount()));
 		
 		cursor.moveToFirst();
@@ -78,7 +78,7 @@ public class AppDetailLoader extends AsyncTask<String, Integer, Application> {
 	@Override
 	protected void onPostExecute(Application result) {
 		super.onPostExecute(result);
-		listener.appDetailLoadCompleted(result);
+		listener.asyncTaskComplete(result);
 	}
 	
 }
