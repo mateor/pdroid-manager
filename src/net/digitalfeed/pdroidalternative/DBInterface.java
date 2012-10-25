@@ -1,10 +1,19 @@
 package net.digitalfeed.pdroidalternative;
 
+import java.io.IOException;
+import java.util.LinkedList;
+
+import org.xmlpull.v1.XmlPullParserException;
+
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.res.Resources;
+import android.content.res.Resources.NotFoundException;
+import android.content.res.XmlResourceParser;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.text.TextUtils;
+import android.util.Log;
 
 public class DBInterface {
 	private static DBHelper dbhelper = null;
@@ -38,6 +47,8 @@ public class DBInterface {
 				COLUMN_NAME_FLAGS + "  INTEGER NOT NULL" + 
 				");";
 		
+		public static final String DROP_SQL = "DROP TABLE " + TABLE_NAME + ";";
+		
 		public static final ContentValues getContentValues(Application application) {
 			ContentValues contentValues = new ContentValues();
 			contentValues.put(COLUMN_NAME_LABEL, application.getLabel());
@@ -70,6 +81,9 @@ public class DBInterface {
 				COLUMN_NAME_FLAGS + " INTEGER, " + 
 				"FOREIGN KEY(" + COLUMN_NAME_PACKAGENAME + ") REFERENCES " + ApplicationTable.TABLE_NAME + "(packageName)" + 
 				");";
+		
+		public static final String DROP_SQL = "DROP TABLE " + TABLE_NAME + ";";
+		
 	}
 	
 	public static final class ApplicationLogTable {
@@ -94,6 +108,8 @@ public class DBInterface {
 				COLUMN_NAME_FLAGS + " INTEGER" + 
 				");";
 		
+		public static final String DROP_SQL = "DROP TABLE " + TABLE_NAME + ";";
+		
 		public static final ContentValues getContentValues(String packageName, int uid, int versionCode,
 				String operation) {
 			return getContentValues(packageName, uid, versionCode, operation, 0);	
@@ -110,7 +126,72 @@ public class DBInterface {
 			return contentValues;
 		}
 	}
+	
+	public static final class SettingTable {
+		public SettingTable(){}
+		public static final String TABLE_NAME = "setting";
+		public static final String COLUMN_NAME_ID = "id";
+		public static final String COLUMN_NAME_NAME = "name";
+		public static final String COLUMN_NAME_TITLE = "title"; //Used to store the 'friendly' title of the setting, which may be language specific.
+																//If we start adding support for multiple languages, possibly we should be handling this better; maybe having another table with all the language text in it?
+																//The point of this is to avoid using reflection to get the titles from resources all the time
+		public static final String COLUMN_NAME_GROUP = "group"; //Stored as a string, but maybe better in another table and linked?
+		public static final String COLUMN_NAME_GROUP_TITLE = "groupTitle"; //As with the above 'group' column, may be better in a separate column, but then we need to be doing joins.
+		public static final String COLUMN_NAME_OPTIONS = "options"; //Options are stored as a string array
+		
+		public static final String CREATE_SQL = "CREATE TABLE " + TABLE_NAME + "(" + 
+				"_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+				COLUMN_NAME_ID + " TEXT NOT NULL, " + 
+				COLUMN_NAME_NAME + " TEXT NOT NULL, " +
+				COLUMN_NAME_TITLE + " TEXT, " +
+				COLUMN_NAME_GROUP + " TEXT NOT NULL, " +
+				COLUMN_NAME_GROUP_TITLE + " TEXT, " +
+				COLUMN_NAME_OPTIONS + " TEXT NOT NULL, " +
+				");";
+		
+		public static final String DROP_SQL = "DROP TABLE " + TABLE_NAME + ";";
+		
+		public static final ContentValues getContentValues(Setting setting) {
+			ContentValues contentValues = new ContentValues();
+			contentValues.put(COLUMN_NAME_ID, setting.getId());
+			contentValues.put(COLUMN_NAME_NAME, setting.getName());
+			//contentValues.put(COLUMN_NAME_TITLE, setting.getTitle());
+			contentValues.put(COLUMN_NAME_GROUP, setting.getGroup());
+			//contentValues.put(COLUMN_NAME_GROUP_TITLE, setting.getGroupTitle());
+			contentValues.put(COLUMN_NAME_OPTIONS, TextUtils.join(",",setting.getOptions()));
+			
+			return contentValues;
+		}
+	}
 
+	public static final class PermissionSettingTable {
+		public PermissionSettingTable(){}
+		public static final String TABLE_NAME = "permission_setting";
+		public static final String COLUMN_NAME_PERMISSION = "permission";
+		public static final String COLUMN_NAME_SETTING = "setting";
+		
+		public static final String CREATE_SQL = "CREATE TABLE " + TABLE_NAME + "(" + 
+				"_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+				COLUMN_NAME_PERMISSION + " TEXT NOT NULL, " + 
+				COLUMN_NAME_SETTING + " TEXT NOT NULL, " + 
+				"FOREIGN KEY(" + COLUMN_NAME_SETTING + ") REFERENCES " + SettingTable.TABLE_NAME + "(ID)" + 
+				");";
+		
+		public static final String DROP_SQL = "DROP TABLE " + TABLE_NAME + ";";
+		
+		public static final ContentValues getContentValues(String permission, String settingId) {
+			ContentValues contentValues = new ContentValues();
+			contentValues.put(COLUMN_NAME_PERMISSION, permission);
+			contentValues.put(COLUMN_NAME_SETTING, settingId);		
+			return contentValues;
+		}
+		
+		public static final ContentValues getContentValues(String permission, Setting setting) {
+			return getContentValues(permission, setting.getId());
+		}
+
+	}
+	
 	public static final String ApplicationListQuery = "SELECT " + 
 			ApplicationTable.TABLE_NAME + "." + ApplicationTable.COLUMN_NAME_LABEL + ", " +  
 			ApplicationTable.TABLE_NAME + "." + ApplicationTable.COLUMN_NAME_PACKAGENAME + ", " + 
@@ -175,7 +256,7 @@ public class DBInterface {
 	
 	public class DBHelper extends SQLiteOpenHelper {
 		public static final String DATABASE_NAME = "pdroidmgr.db";
-		public static final int DATABASE_VERSION = 1;
+		public static final int DATABASE_VERSION = 2;
 		
 		//private SQLiteDatabase db;
 		
@@ -185,6 +266,29 @@ public class DBInterface {
 	
 		@Override
 		public void onCreate(SQLiteDatabase db) {
+			createTables(db);
+			loadDefaultData(db);
+		}
+	
+		
+		
+		@Override
+		public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+			// At version 1 - no upgrades yet!
+			deleteTables(db);
+			createTables(db);
+			loadDefaultData(db);
+		}
+
+		public void deleteTables(SQLiteDatabase db) {
+			db.execSQL(ApplicationLogTable.DROP_SQL);
+			db.execSQL(ApplicationStatusTable.DROP_SQL);
+			db.execSQL(ApplicationTable.DROP_SQL);
+			db.execSQL(PermissionSettingTable.DROP_SQL);
+			db.execSQL(SettingTable.DROP_SQL);
+		}
+
+		public void createTables(SQLiteDatabase db) {
 			//this.db = db;  
 			db.execSQL(ApplicationTable.CREATE_SQL);
 			//db.execSQL("CREATE TABLE permission (_id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, label TEXT NOT NULL, description TEXT);");
@@ -192,16 +296,108 @@ public class DBInterface {
 			//db.execSQL("CREATE TABLE application_permission (application_id INTEGER, permission_id INTEGER, FOREIGN KEY(application_id) REFERENCES application(_id), FOREIGN KEY(permission_id) REFERENCES permission(_id));");
 			db.execSQL(ApplicationStatusTable.CREATE_SQL);
 			db.execSQL(ApplicationLogTable.CREATE_SQL);
-	
-			//loadDefaultData();
+
+			db.execSQL(SettingTable.CREATE_SQL);
+			db.execSQL(PermissionSettingTable.CREATE_SQL);
 		}
-	
-		@Override
-		public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-			// At version 1 - no upgrades yet!
-		}
+
 		
-		//private void loadDefaultData() {
+		private void loadDefaultData(SQLiteDatabase db) {
+			Resources resources = context.getResources();
+			String packageName = context.getPackageName();
+			
+			XmlResourceParser xrp = resources.getXml(R.xml.pdroid_settings);
+			try {
+				int eventType = xrp.next();
+				while(!(eventType == XmlResourceParser.START_TAG && xrp.getName().equals("setting")) && eventType != XmlResourceParser.END_DOCUMENT) {
+					eventType = xrp.next();
+				}
+				while (eventType == XmlResourceParser.START_TAG && xrp.getName().equals("setting")) {
+		        	String name = xrp.getAttributeValue(null, "name");
+		        	String id = xrp.getIdAttribute();
+		        	String group = xrp.getAttributeValue(null, "group");
+		        	//I wish there were a nicer way to get this string. Maybe a pair of arrays - one with identifiers, one with labels?
+		        	String label = resources.getString(resources.getIdentifier("SETTING_LABEL_" + id, "string", packageName));
+		        	eventType = xrp.next();
+		 			while(eventType == XmlResourceParser.TEXT && xrp.isWhitespace()) {
+		 				eventType = xrp.next();
+		 	 		}
+			        LinkedList<String> options = new LinkedList<String>();
+		        	while (eventType == XmlResourceParser.START_TAG && xrp.getName().equals("option")) {
+		        		options.add(xrp.getText());
+			        	eventType = xrp.next();
+						while(eventType == XmlResourceParser.TEXT && xrp.isWhitespace()) {
+							eventType = xrp.next();
+						}
+				        if (eventType == XmlResourceParser.END_TAG && xrp.getName().equals("option")) {
+				       	eventType = xrp.next();
+							while(eventType == XmlResourceParser.TEXT && xrp.isWhitespace()) {
+								eventType = xrp.next();
+							}
+				        } else {
+				        	break;
+				        }
+		        	}
+			        if (eventType == XmlResourceParser.END_TAG && xrp.getName().equals("setting")) {
+			       	eventType = xrp.next();
+						while(eventType == XmlResourceParser.TEXT && xrp.isWhitespace()) {
+							eventType = xrp.next();
+						}
+			        } else {
+			        	break;
+			        }
+					Log.d("PDroidAlternative","New Setting: id=" + id + " name=" + name + " group=" + group + " label=" + label + " options=" + TextUtils.join(",",options.toArray(new String[options.size()])));
+			        Setting newSetting = new Setting(id, name, group, label, options.toArray(new String[options.size()]));
+			        db.insert(SettingTable.TABLE_NAME, null, SettingTable.getContentValues(newSetting));
+		       }
+		       
+				xrp = resources.getXml(R.xml.permission_setting_map);
+				eventType = xrp.next();
+				while(!(eventType == XmlResourceParser.START_TAG && xrp.getName().equals("permission")) && eventType != XmlResourceParser.END_DOCUMENT) {
+					eventType = xrp.next();
+				}
+				while (eventType == XmlResourceParser.START_TAG && xrp.getName().equals("permission")) {
+					String id = xrp.getIdAttribute();
+					Log.d("PDroidAlternative","ID:" + id);
+
+					eventType = xrp.next();
+					while(eventType == XmlResourceParser.TEXT && xrp.isWhitespace()) {
+						eventType = xrp.next();
+					}
+					while (eventType == XmlResourceParser.START_TAG && xrp.getName().equals("setting")) {
+						String settingId = xrp.getIdAttribute();
+						Log.d("PDroidAlternative","permission ID:" + id + " setting ID: " + settingId);
+						db.insert(PermissionSettingTable.TABLE_NAME, null, PermissionSettingTable.getContentValues(id, settingId));
+						eventType = xrp.next();
+						while(eventType == XmlResourceParser.TEXT && xrp.isWhitespace()) {
+							eventType = xrp.next();
+						}
+				        if (eventType == XmlResourceParser.END_TAG && xrp.getName().equals("setting")) {
+				        	eventType = xrp.next();
+							while(eventType == XmlResourceParser.TEXT && xrp.isWhitespace()) {
+								eventType = xrp.next();
+							}
+				        } else {
+				        	break;
+				        }
+					}
+					if (eventType == XmlResourceParser.END_TAG && xrp.getName().equals("setting")) {
+						eventType = xrp.next();
+						while(eventType == XmlResourceParser.TEXT && xrp.isWhitespace()) {
+							eventType = xrp.next();
+						}
+					} else {
+						break;
+					}
+				}
+			} catch (XmlPullParserException e) {
+				Log.d("PDroidAlternative",e.getMessage());
+				//TODO: Exception handling, mayhaps?
+			} catch (IOException e) {
+				Log.d("PDroidAlternative",e.getMessage());
+			} catch (NotFoundException e) {
+				Log.d("PDroidAlternative",e.getMessage());
+			}
 			/*
 			 * The idea here is/was to have Settings and Permissions tables which declare the settings associated with each permission
 			 * and then provide the settings (and relevant options) based on the table content. Maybe later.
@@ -263,6 +459,6 @@ public class DBInterface {
 				} 
 			}
 			*/
-		//}
+		}
 	}
 }
