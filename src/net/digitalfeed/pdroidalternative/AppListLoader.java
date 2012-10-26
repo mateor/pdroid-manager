@@ -21,10 +21,10 @@ public class AppListLoader {
 		this.context = context;
 		switch (searchType) {
 		case PACKAGE_NAME:
-			this.query = DBInterface.ApplicationByName;
+			this.query = DBInterface.QUERY_GET_APPS_BY_NAME_WITH_PERMISSIONS;
 			break;
 		case PERMISSION:
-			this.query = DBInterface.ApplicationByName;
+			this.query = DBInterface.QUERY_GET_APPS_BY_NAME_WITH_PERMISSIONS;
 			break;
 		default:
 			throw new Exception("Unsupported application list search type");

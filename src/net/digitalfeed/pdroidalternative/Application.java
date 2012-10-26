@@ -131,19 +131,11 @@ public class Application {
 	}
 
 	public Bitmap getIconBitmap() {
-		//Thanks go to André on http://stackoverflow.com/questions/3035692/how-to-convert-a-drawable-to-a-bitmap
-        Bitmap bitmap = Bitmap.createBitmap(this.icon.getIntrinsicWidth(), this.icon.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(bitmap);
-        icon.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
-        icon.draw(canvas);
-        return bitmap;
+        return IconHelper.getIconBitmap(this.icon);
 	}
 	
 	public byte[] getIconByteArray() {
-		Bitmap bitmap = getIconBitmap();
-		ByteArrayOutputStream byteArrayBitmapStream = new ByteArrayOutputStream();
-		bitmap.compress(Bitmap.CompressFormat.PNG, DBInterface.ApplicationTable.COMPRESS_ICON_QUALITY, byteArrayBitmapStream);
-		return byteArrayBitmapStream.toByteArray();
+		return IconHelper.getIconByteArray(this.icon);
 	}
 	
 	public void setIcon(Drawable icon) {

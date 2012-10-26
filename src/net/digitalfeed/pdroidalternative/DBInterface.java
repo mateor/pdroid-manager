@@ -220,7 +220,7 @@ public class DBInterface {
 		}
 	}
 	
-	public static final String ApplicationListQuery = "SELECT " + 
+	public static final String QUERY_GET_ALL_APPS_WITH_STATUS_WITHOUT_PERMISSIONS = "SELECT " + 
 			ApplicationTable.TABLE_NAME + "." + ApplicationTable.COLUMN_NAME_LABEL + ", " +  
 			ApplicationTable.TABLE_NAME + "." + ApplicationTable.COLUMN_NAME_PACKAGENAME + ", " + 
 			ApplicationTable.TABLE_NAME + "." + ApplicationTable.COLUMN_NAME_UID + ", " +
@@ -233,10 +233,10 @@ public class DBInterface {
 			" ON " + ApplicationTable.TABLE_NAME + "." + ApplicationTable.COLUMN_NAME_PACKAGENAME + " =  " +
 			ApplicationStatusTable.TABLE_NAME + "." + ApplicationStatusTable.COLUMN_NAME_PACKAGENAME;
 	
-	public static final String ApplicationListTitleSubsetQuery = ApplicationListQuery + 
+	public static final String QUERY_GET_APPS_BY_NAME_WITH_STATUS_WITHOUT_PERMISSIONS = QUERY_GET_ALL_APPS_WITH_STATUS_WITHOUT_PERMISSIONS + 
 			" WHERE " + ApplicationTable.TABLE_NAME + "." + ApplicationTable.COLUMN_NAME_LABEL + " LIKE ?";
 	
-	public static final String ApplicationByName = "SELECT " + 
+	public static final String QUERY_GET_APPS_BY_NAME_WITH_PERMISSIONS = "SELECT " + 
 			ApplicationTable.TABLE_NAME + "." + ApplicationTable.COLUMN_NAME_LABEL + ", " +  
 			ApplicationTable.TABLE_NAME + "." + ApplicationTable.COLUMN_NAME_PACKAGENAME + ", " + 
 			ApplicationTable.TABLE_NAME + "." + ApplicationTable.COLUMN_NAME_UID + ", " +
@@ -247,7 +247,7 @@ public class DBInterface {
 			" FROM " + ApplicationTable.TABLE_NAME + 
 			" WHERE " + ApplicationTable.TABLE_NAME + "." + ApplicationTable.COLUMN_NAME_PACKAGENAME + " = ?";
 	
-	public static final String ApplicationByPermission = "SELECT " + 
+	public static final String QUERY_GET_APPS_BY_PERMISSION_WITH_PERMISSIONS = "SELECT " + 
 			ApplicationTable.TABLE_NAME + "." + ApplicationTable.COLUMN_NAME_LABEL + ", " +  
 			ApplicationTable.TABLE_NAME + "." + ApplicationTable.COLUMN_NAME_PACKAGENAME + ", " + 
 			ApplicationTable.TABLE_NAME + "." + ApplicationTable.COLUMN_NAME_UID + ", " +
@@ -258,9 +258,20 @@ public class DBInterface {
 			" FROM " + ApplicationTable.TABLE_NAME + 
 			" INNER JOIN " + PermissionApplicationTable.TABLE_NAME +
 			" ON " + ApplicationTable.TABLE_NAME + "." + ApplicationTable.COLUMN_NAME_PACKAGENAME + " =  " +
-			PermissionApplicationTable.TABLE_NAME + "." + ApplicationStatusTable.COLUMN_NAME_PACKAGENAME + 
-			" WHERE " + PermissionApplicationTable.TABLE_NAME + "." + PermissionApplicationTable.COLUMN_NAME_PERMISSION+ " = ?";
+			PermissionApplicationTable.TABLE_NAME + "." + PermissionApplicationTable.COLUMN_NAME_PACKAGENAME + 
+			" WHERE " + PermissionApplicationTable.TABLE_NAME + "." + PermissionApplicationTable.COLUMN_NAME_PERMISSION + " = ?";
 	
+	public static final String QUERY_DELETE_APPS_WITHOUT_STATUS = "DELETE FROM " + 
+			ApplicationStatusTable.TABLE_NAME + 
+			" WHERE " + ApplicationStatusTable.COLUMN_NAME_PACKAGENAME + 
+			" NOT IN (" +
+				" SELECT " + ApplicationTable.COLUMN_NAME_PACKAGENAME + 
+				" FROM " + ApplicationTable.TABLE_NAME + 
+			");";
+	
+	public static final String QUERY_GET_PERMISSIONS_OF_INTEREST = "SELECT DISTINCT " + 
+			PermissionSettingTable.COLUMN_NAME_PERMISSION + 
+			" FROM " + PermissionSettingTable.TABLE_NAME;
 	
 	public Context context;
 	

@@ -141,15 +141,6 @@ public class AppListActivity extends Activity {
     		
     		appList = returnedAppList;
     		
-    		//If the list was rebuilt because the cache was invalid, then we should rewrite to the database
-    		if (!prefs.getIsApplicationListCacheValid()) {
-    			//We've built the app list. Now we write it to the DB, and mark it as valid in the prefs
-    			AppListWriter applicationListWriter = new AppListWriter(context);
-    			//this is using a shallow clone, so if the Application objects change then there could be trouble
-    			//Also, the application objects are not synchronized, so if they change while being written to the database
-    			//then there could be trouble
-    			applicationListWriter.execute(returnedAppList.clone());
-    		}
     		listView.setAdapter(new AppListAdapter(context, R.layout.application_list_row, appList));
     	}
     	
