@@ -26,10 +26,7 @@
  */
 package net.digitalfeed.pdroidalternative;
 
-import java.io.ByteArrayOutputStream;
-
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 
 public class Application {

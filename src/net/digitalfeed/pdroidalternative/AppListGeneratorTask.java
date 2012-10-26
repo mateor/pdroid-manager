@@ -1,7 +1,5 @@
 package net.digitalfeed.pdroidalternative;
 
-import java.io.ByteArrayOutputStream;
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -12,7 +10,6 @@ import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.database.DatabaseUtils.InsertHelper;
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.text.TextUtils;
 import android.util.Log;
@@ -23,12 +20,12 @@ public class AppListGeneratorTask extends AsyncTask<Void, Integer, Application [
 	protected static final int PERMISSIONS_TABLE_COLUMN_NUMBER_OFFSET_PERMISSION = 1;
 	
 	protected static final int APPLICATION_TABLE_COLUMN_NUMBER_OFFSET_LABEL = 0;
-	protected static final int APPLICATION_TABLE_COLUMN_NUMBER_OFFSET_PACKAGENAME = 0;
-	protected static final int APPLICATION_TABLE_COLUMN_NUMBER_OFFSET_UID = 0;
-	protected static final int APPLICATION_TABLE_COLUMN_NUMBER_OFFSET_VERSIONCODE = 0;
-	protected static final int APPLICATION_TABLE_COLUMN_NUMBER_OFFSET_PERMISSIONS = 0;
-	protected static final int APPLICATION_TABLE_COLUMN_NUMBER_OFFSET_ICON = 0;
-	protected static final int APPLICATION_TABLE_COLUMN_NUMBER_OFFSET_APPFLAGS = 0;
+	protected static final int APPLICATION_TABLE_COLUMN_NUMBER_OFFSET_PACKAGENAME = 1;
+	protected static final int APPLICATION_TABLE_COLUMN_NUMBER_OFFSET_UID = 2;
+	protected static final int APPLICATION_TABLE_COLUMN_NUMBER_OFFSET_VERSIONCODE = 3;
+	protected static final int APPLICATION_TABLE_COLUMN_NUMBER_OFFSET_PERMISSIONS = 4;
+	protected static final int APPLICATION_TABLE_COLUMN_NUMBER_OFFSET_ICON = 5;
+	protected static final int APPLICATION_TABLE_COLUMN_NUMBER_OFFSET_APPFLAGS = 6;
 	
 	IAsyncTaskCallbackWithProgress<Application []> listener;
 	
@@ -115,12 +112,6 @@ public class AppListGeneratorTask extends AsyncTask<Void, Integer, Application [
 				 * An alternative to putting the apps in the database and simultaneously creating a list of them
 				 * to return is to just write to the database, then re-read them afterwards. Since we
 				 * want the app list anyway, this makes more sense to me.
-				 */
-				
-				/* A smarter way to do this may be using the InsertHelper (see http://www.outofwhatbox.com/blog/2010/12/android-using-databaseutils-inserthelper-for-faster-insertions-into-sqlite-database/)
-				 * but then we need to run several arrays to accumulate the data (which isn't necessarily a big deal).
-				 * The downside is that we then wouldn't wind up with the app list which we hand back to the calling activity.
-				 * Maybe worth performance testing
 				 */
 				
 				applicationsInsertHelper.prepareForInsert();
