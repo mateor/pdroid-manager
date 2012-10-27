@@ -26,6 +26,8 @@
  */
 package net.digitalfeed.pdroidalternative;
 
+import java.security.InvalidParameterException;
+
 import android.os.Bundle;
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -63,14 +65,12 @@ public class AppListActivity extends Activity {
     	super.onStart();
         listView = (ListView)findViewById(R.id.applicationList);
         
+        context = this;
         //Do we have an application list already? is it valid?
-        Log.d("PDroidAlternative", "Checking cache, and appList");
-        prefs.setIsApplicationListCacheValid(false);
+        //prefs.setIsApplicationListCacheValid(false);
         if (appList == null || !prefs.getIsApplicationListCacheValid()) {
-        	Log.d("PDroidAlternative", "Cache invalid or appList not present");
             //Either we don't have an app list, or it isn't valid
         	if (!prefs.getIsApplicationListCacheValid()) {
-        		Log.d("PDroidAlternative", "Cache invalid");
         		//The app list isn't valid, so we need to rebuild it
 	            rebuildApplicationList();
         	} else {
@@ -79,11 +79,8 @@ public class AppListActivity extends Activity {
         		loadApplicationList();
         	}
         } else {
-        	Log.d("PDroidAlternative", "Cache valid and applist not null");
-        	Log.d("PDroidAlternative", "Setting listview adapter");
         	listView.setAdapter(new AppListAdapter(context, R.layout.application_list_row, this.appList));
         }
-        context = this;
         
         listView.setOnItemClickListener(new OnItemClickListener() {
 
@@ -142,6 +139,7 @@ public class AppListActivity extends Activity {
     		appList = returnedAppList;
     		
     		listView.setAdapter(new AppListAdapter(context, R.layout.application_list_row, appList));
+    		prefs.setIsApplicationListCacheValid(true);
     	}
     	
     	@Override
@@ -167,7 +165,11 @@ public class AppListActivity extends Activity {
         this.progDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
 
     	AppListLoaderTask appListLoader = new AppListLoaderTask(this, new AppListLoaderCallback());
-    	appListLoader.execute();
+    	try {
+    		appListLoader.execute(new AppListLoader(this, AppListLoader.SearchType.ALL, null));
+    	} catch (InvalidParameterException e) {
+    		Log.d("PDroidAlternative", e.getStackTrace().toString());
+    	}
     }
     
     public void rebuildApplicationList() {

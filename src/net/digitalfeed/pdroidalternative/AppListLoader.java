@@ -1,5 +1,6 @@
 package net.digitalfeed.pdroidalternative;
 
+import java.security.InvalidParameterException;
 import java.util.LinkedList;
 
 import android.content.Context;
@@ -15,11 +16,14 @@ public class AppListLoader {
 	private String query;
 	private String [] projectionIn;
 
-	enum SearchType { PACKAGE_NAME, PERMISSION }
+	enum SearchType { ALL, PACKAGE_NAME, PERMISSION }
 
-	public AppListLoader(Context context, SearchType searchType, String [] projectionIn) throws Exception {
+	public AppListLoader(Context context, SearchType searchType, String [] projectionIn) throws InvalidParameterException {
 		this.context = context;
 		switch (searchType) {
+		case ALL:
+			this.query = DBInterface.QUERY_GET_ALL_APPS_WITH_STATUS_WITHOUT_PERMISSIONS;
+			break;
 		case PACKAGE_NAME:
 			this.query = DBInterface.QUERY_GET_APPS_BY_NAME_WITH_PERMISSIONS;
 			break;
@@ -27,9 +31,13 @@ public class AppListLoader {
 			this.query = DBInterface.QUERY_GET_APPS_BY_NAME_WITH_PERMISSIONS;
 			break;
 		default:
-			throw new Exception("Unsupported application list search type");
+			throw new InvalidParameterException("Unsupported application list search type");
 		}
-		this.projectionIn = projectionIn.clone(); 
+		if (projectionIn != null) {
+			this.projectionIn = projectionIn.clone();
+		} else {
+			this.projectionIn = null;
+		}
 	}
 	
 	public Application [] getMatchingApplications() {

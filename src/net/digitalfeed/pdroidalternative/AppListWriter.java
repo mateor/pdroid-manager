@@ -73,6 +73,7 @@ public class AppListWriter extends AsyncTask<Application, Void, Void> {
 		}
 		
 		write_db.rawQuery(DBInterface.QUERY_DELETE_APPS_WITHOUT_STATUS, null);
+		write_db.setTransactionSuccessful();
 		write_db.endTransaction();
 		write_db.close();
 		return null;

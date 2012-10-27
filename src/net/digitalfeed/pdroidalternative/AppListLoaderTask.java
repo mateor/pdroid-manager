@@ -21,7 +21,7 @@ public class AppListLoaderTask extends AsyncTask<AppListLoader, Integer, Applica
 	
 	@Override
 	protected Application[] doInBackground(AppListLoader... appListLoader) {
-		if (appListLoader[0] != null) {
+		if (appListLoader != null) {
 			return appListLoader[0].getMatchingApplications();
 		} else {
 			throw new NullPointerException("No AppListLoader was provided to the AppListLoaderTask");

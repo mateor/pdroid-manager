@@ -53,17 +53,17 @@ public class AppListGeneratorTask extends AsyncTask<Void, Integer, Application [
 		List<ApplicationInfo> installedApps = pkgMgr.getInstalledApplications(PackageManager.GET_META_DATA);
 
 		Integer[] progressObject = new Integer[2];
-		int appCount = installedApps.size();
-		int currentAppNum = 0;
+		progressObject[0] = 0;
+		progressObject[1] = installedApps.size();
 		
 		publishProgress(progressObject.clone());
 
 		SQLiteDatabase write_db = DBInterface.getInstance(context).getDBHelper().getWritableDatabase();
-		//Clear the application list before putting in a new list.
-		write_db.delete(DBInterface.ApplicationTable.TABLE_NAME, null, null);
 		//Being inside a transaction speeds things up (see http://www.outofwhatbox.com/blog/2010/12/android-using-databaseutils-inserthelper-for-faster-insertions-into-sqlite-database/)
 		//I haven't personally checked this
 		write_db.beginTransaction();
+		//Clear the application list before putting in a new list.
+		write_db.delete(DBInterface.ApplicationTable.TABLE_NAME, null, null);		
 
 		InsertHelper applicationsInsertHelper = new InsertHelper(write_db, DBInterface.ApplicationTable.TABLE_NAME);
 		int [] applicationTableColumnNumbers = new int[7];
@@ -84,7 +84,6 @@ public class AppListGeneratorTask extends AsyncTask<Void, Integer, Application [
 		
 		
 		for (ApplicationInfo appInfo : installedApps) {
-			
 			try {
 				PackageInfo pkgInfo = pkgMgr.getPackageInfo(appInfo.packageName, PackageManager.GET_PERMISSIONS);
 				/*
@@ -120,8 +119,8 @@ public class AppListGeneratorTask extends AsyncTask<Void, Integer, Application [
 					applicationsInsertHelper.bind(applicationTableColumnNumbers[APPLICATION_TABLE_COLUMN_NUMBER_OFFSET_PERMISSIONS], TextUtils.join(",", pkgInfo.requestedPermissions));
 					for (String permission : permissions) {
 						permissionsInsertHelper.prepareForInsert();
-						permissionsInsertHelper.bind(PERMISSIONS_TABLE_COLUMN_NUMBER_OFFSET_PACKAGENAME, appInfo.packageName);
-						permissionsInsertHelper.bind(PERMISSIONS_TABLE_COLUMN_NUMBER_OFFSET_PERMISSION, permission);
+						permissionsInsertHelper.bind(permissionsTableColumnNumbers[PERMISSIONS_TABLE_COLUMN_NUMBER_OFFSET_PACKAGENAME], appInfo.packageName);
+						permissionsInsertHelper.bind(permissionsTableColumnNumbers[PERMISSIONS_TABLE_COLUMN_NUMBER_OFFSET_PERMISSION], permission);
 						permissionsInsertHelper.execute();
 					}
 				} else {
@@ -133,7 +132,7 @@ public class AppListGeneratorTask extends AsyncTask<Void, Integer, Application [
 				applicationsInsertHelper.bind(applicationTableColumnNumbers[APPLICATION_TABLE_COLUMN_NUMBER_OFFSET_VERSIONCODE], pkgInfo.versionCode);
 				applicationsInsertHelper.bind(applicationTableColumnNumbers[APPLICATION_TABLE_COLUMN_NUMBER_OFFSET_ICON], IconHelper.getIconByteArray(pkgMgr.getApplicationIcon(appInfo.packageName)));
 				applicationsInsertHelper.bind(applicationTableColumnNumbers[APPLICATION_TABLE_COLUMN_NUMBER_OFFSET_APPFLAGS], appFlags);
-				applicationsInsertHelper.execute();
+				Log.d("PDroidAddon","Application write :" + applicationsInsertHelper.execute());
 				
 				Application app = new Application(
 						appInfo.packageName,
@@ -154,11 +153,12 @@ public class AppListGeneratorTask extends AsyncTask<Void, Integer, Application [
 			} catch (NameNotFoundException e) {	
 				Log.d("PDroidAlternative", String.format("Application %s went missing from installed applications list", appInfo.packageName));
 			}
-			currentAppNum += 1;
-			publishProgress(new Integer[] {currentAppNum, appCount});
+			progressObject[0] += 1;
+			publishProgress(progressObject.clone());
 		}
 		
 		write_db.rawQuery(DBInterface.QUERY_DELETE_APPS_WITHOUT_STATUS, null);
+		write_db.setTransactionSuccessful();
 		write_db.endTransaction();
 		write_db.close();
 		return appList.toArray(new Application [appList.size()]);

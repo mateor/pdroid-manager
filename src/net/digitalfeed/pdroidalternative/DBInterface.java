@@ -47,7 +47,7 @@ public class DBInterface {
 				COLUMN_NAME_FLAGS + "  INTEGER NOT NULL" + 
 				");";
 		
-		public static final String DROP_SQL = "DROP TABLE " + TABLE_NAME + ";";
+		public static final String DROP_SQL = "DROP TABLE IF EXISTS " + TABLE_NAME + ";";
 		
 		public static final ContentValues getContentValues(Application application) {
 			ContentValues contentValues = new ContentValues();
@@ -82,7 +82,7 @@ public class DBInterface {
 				"FOREIGN KEY(" + COLUMN_NAME_PACKAGENAME + ") REFERENCES " + ApplicationTable.TABLE_NAME + "(packageName)" + 
 				");";
 		
-		public static final String DROP_SQL = "DROP TABLE " + TABLE_NAME + ";";
+		public static final String DROP_SQL = "DROP TABLE IF EXISTS " + TABLE_NAME + ";";
 		
 	}
 	
@@ -108,7 +108,7 @@ public class DBInterface {
 				COLUMN_NAME_FLAGS + " INTEGER" + 
 				");";
 		
-		public static final String DROP_SQL = "DROP TABLE " + TABLE_NAME + ";";
+		public static final String DROP_SQL = "DROP TABLE IF EXISTS " + TABLE_NAME + ";";
 		
 		public static final ContentValues getContentValues(String packageName, int uid, int versionCode,
 				String operation) {
@@ -135,7 +135,7 @@ public class DBInterface {
 		public static final String COLUMN_NAME_TITLE = "title"; //Used to store the 'friendly' title of the setting, which may be language specific.
 																//If we start adding support for multiple languages, possibly we should be handling this better; maybe having another table with all the language text in it?
 																//The point of this is to avoid using reflection to get the titles from resources all the time
-		public static final String COLUMN_NAME_GROUP = "group"; //Stored as a string, but maybe better in another table and linked?
+		public static final String COLUMN_NAME_GROUP_ID = "groupId"; //Stored as a string, but maybe better in another table and linked?
 		public static final String COLUMN_NAME_GROUP_TITLE = "groupTitle"; //As with the above 'group' column, may be better in a separate column, but then we need to be doing joins.
 		public static final String COLUMN_NAME_OPTIONS = "options"; //Options are stored as a string array
 		
@@ -144,19 +144,19 @@ public class DBInterface {
 				COLUMN_NAME_ID + " TEXT NOT NULL, " + 
 				COLUMN_NAME_NAME + " TEXT NOT NULL, " +
 				COLUMN_NAME_TITLE + " TEXT, " +
-				COLUMN_NAME_GROUP + " TEXT NOT NULL, " +
+				COLUMN_NAME_GROUP_ID + " TEXT NOT NULL, " +
 				COLUMN_NAME_GROUP_TITLE + " TEXT, " +
-				COLUMN_NAME_OPTIONS + " TEXT NOT NULL, " +
+				COLUMN_NAME_OPTIONS + " TEXT NOT NULL" +
 				");";
 		
-		public static final String DROP_SQL = "DROP TABLE " + TABLE_NAME + ";";
+		public static final String DROP_SQL = "DROP TABLE IF EXISTS " + TABLE_NAME + ";";
 		
 		public static final ContentValues getContentValues(Setting setting) {
 			ContentValues contentValues = new ContentValues();
 			contentValues.put(COLUMN_NAME_ID, setting.getId());
 			contentValues.put(COLUMN_NAME_NAME, setting.getName());
 			//contentValues.put(COLUMN_NAME_TITLE, setting.getTitle());
-			contentValues.put(COLUMN_NAME_GROUP, setting.getGroup());
+			contentValues.put(COLUMN_NAME_GROUP_ID, setting.getGroup());
 			//contentValues.put(COLUMN_NAME_GROUP_TITLE, setting.getGroupTitle());
 			contentValues.put(COLUMN_NAME_OPTIONS, TextUtils.join(",",setting.getOptions()));
 			
@@ -177,7 +177,7 @@ public class DBInterface {
 				"FOREIGN KEY(" + COLUMN_NAME_SETTING + ") REFERENCES " + SettingTable.TABLE_NAME + "(ID)" + 
 				");";
 		
-		public static final String DROP_SQL = "DROP TABLE " + TABLE_NAME + ";";
+		public static final String DROP_SQL = "DROP TABLE IF EXISTS " + TABLE_NAME + ";";
 		
 		public static final ContentValues getContentValues(String permission, String settingId) {
 			ContentValues contentValues = new ContentValues();
@@ -206,7 +206,7 @@ public class DBInterface {
 				"FOREIGN KEY(" + COLUMN_NAME_PACKAGENAME + ") REFERENCES " + ApplicationTable.TABLE_NAME + "(" + ApplicationTable.COLUMN_NAME_PACKAGENAME + ")" +
 				");";
 		
-		public static final String DROP_SQL = "DROP TABLE " + TABLE_NAME + ";";
+		public static final String DROP_SQL = "DROP TABLE IF EXISTS " + TABLE_NAME + ";";
 		
 		public static final ContentValues getContentValues(String permission, String packageName) {
 			ContentValues contentValues = new ContentValues();
@@ -309,7 +309,7 @@ public class DBInterface {
 	
 	public class DBHelper extends SQLiteOpenHelper {
 		public static final String DATABASE_NAME = "pdroidmgr.db";
-		public static final int DATABASE_VERSION = 2;
+		public static final int DATABASE_VERSION = 5;
 		
 		//private SQLiteDatabase db;
 		
@@ -319,7 +319,8 @@ public class DBInterface {
 	
 		@Override
 		public void onCreate(SQLiteDatabase db) {
-			createTables(db);
+			Log.d("PDroidAlternative", "Executing DBInterface.DBHelper.onCreate");
+			createTables(db, true);
 			loadDefaultData(db);
 		}
 	
@@ -327,29 +328,31 @@ public class DBInterface {
 		
 		@Override
 		public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+			Log.d("PDroidAlternative", "Executing DBInterface.DBHelper.onUpgrade");
 			// At version 1 - no upgrades yet!
-			deleteTables(db);
-			createTables(db);
+			deleteTables(db, false);
+			createTables(db, false);
 			loadDefaultData(db);
 		}
 
-		public void deleteTables(SQLiteDatabase db) {
-			db.execSQL(ApplicationLogTable.DROP_SQL);
+		public void deleteTables(SQLiteDatabase db, boolean includeLogTable) {
+			if (includeLogTable) {
+				db.execSQL(ApplicationLogTable.DROP_SQL);
+			}
 			db.execSQL(ApplicationStatusTable.DROP_SQL);
+			db.execSQL(PermissionApplicationTable.DROP_SQL);
 			db.execSQL(ApplicationTable.DROP_SQL);
 			db.execSQL(PermissionSettingTable.DROP_SQL);
 			db.execSQL(SettingTable.DROP_SQL);
 		}
 
-		public void createTables(SQLiteDatabase db) {
-			//this.db = db;  
+		public void createTables(SQLiteDatabase db, boolean includeLogTable) {
+			if (includeLogTable) {
+				db.execSQL(ApplicationLogTable.CREATE_SQL);
+			}
 			db.execSQL(ApplicationTable.CREATE_SQL);
-			//db.execSQL("CREATE TABLE permission (_id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, label TEXT NOT NULL, description TEXT);");
-			//db.execSQL("CREATE TABLE setting (_id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL, label TEXT NOT NULL, permission_id INTEGER, options INTEGER, fake_type INTEGER, description TEXT, FOREIGN KEY(permission_id) REFERENCES permission(_id));");
-			//db.execSQL("CREATE TABLE application_permission (application_id INTEGER, permission_id INTEGER, FOREIGN KEY(application_id) REFERENCES application(_id), FOREIGN KEY(permission_id) REFERENCES permission(_id));");
 			db.execSQL(ApplicationStatusTable.CREATE_SQL);
-			db.execSQL(ApplicationLogTable.CREATE_SQL);
-
+			db.execSQL(PermissionApplicationTable.CREATE_SQL);
 			db.execSQL(SettingTable.CREATE_SQL);
 			db.execSQL(PermissionSettingTable.CREATE_SQL);
 		}
@@ -411,7 +414,6 @@ public class DBInterface {
 				}
 				while (eventType == XmlResourceParser.START_TAG && xrp.getName().equals("permission")) {
 					String id = xrp.getIdAttribute();
-					Log.d("PDroidAlternative","ID:" + id);
 
 					eventType = xrp.next();
 					while(eventType == XmlResourceParser.TEXT && xrp.isWhitespace()) {
@@ -451,67 +453,6 @@ public class DBInterface {
 			} catch (NotFoundException e) {
 				Log.d("PDroidAlternative",e.getMessage());
 			}
-			/*
-			 * The idea here is/was to have Settings and Permissions tables which declare the settings associated with each permission
-			 * and then provide the settings (and relevant options) based on the table content. Maybe later.
-			class Setting {
-				public static final int OPTION_REAL = 1;
-				public static final int OPTION_BLOCK = 2;
-				public static final int OPTION_RANDOM = 3;
-				public static final int OPTION_FAKE = 4;
-				public static final int FAKE_TYPE_INTEGER = 0;
-				public static final int FAKE_TYPE_STRING = 1;
-				public static final int FAKE_TYPE_FLOAT = 2;
-				public static final int FAKE_TYPE_COORDINATES = 3;
-				public static 
-				final String name;
-				final String label;
-				final int options;
-				final String description;
-				
-				public Setting (String name, String label, int options, String description) {
-					this.name = name;
-					this.label = label;
-					this.options = options;
-					this.description = description;
-				}
-				
-				public void writeToDatabase(long permission_id) {
-					ContentValues values = new ContentValues();
-					values.put("name", this.name);
-					values.put("label", this.label);
-					values.put("permission_id", permission_id);
-					values.put("options", options);
-					db.insert("permission", null, values);
-				}
-			}
-			
-			class Permission {
-				long _id;
-				final String name;
-				final String label;
-				final String description;
-				Setting[] settings = null;
-				
-				public Permission (String name, String label, String description, Setting[] settings) {
-					this.name = name;
-					this.label = label;
-					this.description = description;
-					this.settings = settings;
-				}
-				
-				public void writeToDatabase() {
-					ContentValues values = new ContentValues();
-					values.put("name", this.name);
-					values.put("label", this.label);
-					values.put("description", this.description);
-					this._id = db.insert("permission", null, values);
-					for (Setting setting : this.settings) {
-						setting.writeToDatabase(this._id);
-					}
-				} 
-			}
-			*/
 		}
 	}
 }
