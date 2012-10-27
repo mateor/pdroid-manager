@@ -8,6 +8,8 @@ import java.util.Set;
 import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.XmlResourceParser;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -143,6 +145,21 @@ class PermissionSettingMapper {
 	
 	public Set<String> getPermissions(Setting setting) {	
 		return settingToPermissionsMap.get(setting);
+	}
+	
+	public static HashSet<String> getPermissionsOfInterest(SQLiteDatabase db) {
+		HashSet <String> permissionsOfInterest = new HashSet<String>();
+		
+		Cursor cursor = db.rawQuery(DBInterface.QUERY_GET_PERMISSIONS_OF_INTEREST, null);
+		if (cursor.getCount() > 0) {
+			int permissionColumnNum = cursor.getColumnIndex(DBInterface.PermissionSettingTable.COLUMN_NAME_PERMISSION);
+			cursor.moveToFirst();
+			{
+				permissionsOfInterest.add(cursor.getString(permissionColumnNum));
+			} while (cursor.moveToNext());
+		}
+		
+		return permissionsOfInterest;
 	}
 }
 /*
