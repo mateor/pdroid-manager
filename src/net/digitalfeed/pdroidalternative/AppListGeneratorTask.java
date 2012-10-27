@@ -1,8 +1,5 @@
 package net.digitalfeed.pdroidalternative;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -84,94 +81,67 @@ public class AppListGeneratorTask extends AsyncTask<Void, Integer, Application [
 		//I was thinking about using enums instead of static finals here, but apparently the performance in android for enums is not so good??
 		permissionsTableColumnNumbers[PERMISSIONS_TABLE_COLUMN_NUMBER_OFFSET_PACKAGENAME] = permissionsInsertHelper.getColumnIndex(DBInterface.PermissionApplicationTable.COLUMN_NAME_PACKAGENAME);
 		permissionsTableColumnNumbers[PERMISSIONS_TABLE_COLUMN_NUMBER_OFFSET_PERMISSION] = permissionsInsertHelper.getColumnIndex(DBInterface.PermissionApplicationTable.COLUMN_NAME_PERMISSION);
-
-		//HashSet<String> permissionsOfInterest = PermissionSettingMapper.getPermissionsOfInterest(write_db);
+		
+		/*
+		 * We don't (and can't) filter out apps based on permissions, because some things we provide settings for
+		 * don't require any permissions (e.g. ANDROID_ID)
+		 */
 		
 		for (ApplicationInfo appInfo : installedApps) {
 			try {
 				PackageInfo pkgInfo = pkgMgr.getPackageInfo(appInfo.packageName, PackageManager.GET_PERMISSIONS);
-				String [] permissions = pkgInfo.requestedPermissions;
+
+				int appFlags = 0;
+				if ((appInfo.flags & ApplicationInfo.FLAG_SYSTEM) == ApplicationInfo.FLAG_SYSTEM) { 
+					appFlags = Application.APP_FLAG_IS_SYSTEM_APP;
+				}
 				
-				/* I realised the reason that the existing PDroid 2.0 manager
-				 * doesn't filter by requested permissions is because
-				 * it is possible to get the ANDROID_ID without any permissions.
-				 * Thus, we don't actually want to filter out any apps.
-				 */
-				
-				/* We only want to include those apps which we actually care about -
-				 * that is, ones which have permissions for which we provide configuration options.
-				 * It may be faster to simply do array iteration here - haven't tested it
-				 */
-				
+				if (pkgMgr.checkPermission("android.permission.INTERNET", appInfo.packageName) == PackageManager.PERMISSION_GRANTED) {
+					appFlags = appFlags | Application.APP_FLAG_HAS_INTERNET;
+				}
+
 				/*
-				boolean isAppOfInterest = false;
-				HashSet<String> permissionsSet = new HashSet<String>();
-				Collections.addAll(permissionsSet, permissions);
-				permissionsSet.retainAll(permissionsOfInterest);
-				if (permissionsSet.size() > 0) {
-					isAppOfInterest = true;
-				}
+				 * An alternative to putting the apps in the database and simultaneously creating a list of them
+				 * to return is to just write to the database, then re-read them afterwards. Since we
+				 * want the app list anyway, this makes more sense to me.
+				 */
 				
-				//The array iteration version
-				for (String permission : permissions) {
-					if (permissionsOfInterest.contains(permission)) {
-						isAppOfInterest = true;
-						break;
+				applicationsInsertHelper.prepareForInsert();
+				String [] permissions = pkgInfo.requestedPermissions;
+				if (permissions != null) {
+					applicationsInsertHelper.bind(applicationTableColumnNumbers[APPLICATION_TABLE_COLUMN_NUMBER_OFFSET_PERMISSIONS], TextUtils.join(",", pkgInfo.requestedPermissions));
+					for (String permission : permissions) {
+						permissionsInsertHelper.prepareForInsert();
+						permissionsInsertHelper.bind(permissionsTableColumnNumbers[PERMISSIONS_TABLE_COLUMN_NUMBER_OFFSET_PACKAGENAME], appInfo.packageName);
+						permissionsInsertHelper.bind(permissionsTableColumnNumbers[PERMISSIONS_TABLE_COLUMN_NUMBER_OFFSET_PERMISSION], permission);
+						permissionsInsertHelper.execute();
 					}
+				} else {
+					applicationsInsertHelper.bindNull(applicationTableColumnNumbers[APPLICATION_TABLE_COLUMN_NUMBER_OFFSET_PERMISSIONS]);
 				}
-				*/
-				//if (isAppOfInterest) {
-					int appFlags = 0;
-					if ((appInfo.flags & ApplicationInfo.FLAG_SYSTEM) == ApplicationInfo.FLAG_SYSTEM) { 
-						appFlags = Application.APP_FLAG_IS_SYSTEM_APP;
-					}
-					
-					if (pkgMgr.checkPermission("android.permission.INTERNET", appInfo.packageName) == PackageManager.PERMISSION_GRANTED) {
-						appFlags = appFlags | Application.APP_FLAG_HAS_INTERNET;
-					}
-	
-					/*
-					 * An alternative to putting the apps in the database and simultaneously creating a list of them
-					 * to return is to just write to the database, then re-read them afterwards. Since we
-					 * want the app list anyway, this makes more sense to me.
-					 */
-					
-					applicationsInsertHelper.prepareForInsert();
-					if (permissions != null) {
-						applicationsInsertHelper.bind(applicationTableColumnNumbers[APPLICATION_TABLE_COLUMN_NUMBER_OFFSET_PERMISSIONS], TextUtils.join(",", pkgInfo.requestedPermissions));
-						for (String permission : permissions) {
-							permissionsInsertHelper.prepareForInsert();
-							permissionsInsertHelper.bind(permissionsTableColumnNumbers[PERMISSIONS_TABLE_COLUMN_NUMBER_OFFSET_PACKAGENAME], appInfo.packageName);
-							permissionsInsertHelper.bind(permissionsTableColumnNumbers[PERMISSIONS_TABLE_COLUMN_NUMBER_OFFSET_PERMISSION], permission);
-							permissionsInsertHelper.execute();
-						}
-					} else {
-						applicationsInsertHelper.bindNull(applicationTableColumnNumbers[APPLICATION_TABLE_COLUMN_NUMBER_OFFSET_PERMISSIONS]);
-					}
-					applicationsInsertHelper.bind(applicationTableColumnNumbers[APPLICATION_TABLE_COLUMN_NUMBER_OFFSET_LABEL], pkgMgr.getApplicationLabel(appInfo).toString());
-					applicationsInsertHelper.bind(applicationTableColumnNumbers[APPLICATION_TABLE_COLUMN_NUMBER_OFFSET_PACKAGENAME], appInfo.packageName);
-					applicationsInsertHelper.bind(applicationTableColumnNumbers[APPLICATION_TABLE_COLUMN_NUMBER_OFFSET_UID], appInfo.uid);
-					applicationsInsertHelper.bind(applicationTableColumnNumbers[APPLICATION_TABLE_COLUMN_NUMBER_OFFSET_VERSIONCODE], pkgInfo.versionCode);
-					applicationsInsertHelper.bind(applicationTableColumnNumbers[APPLICATION_TABLE_COLUMN_NUMBER_OFFSET_ICON], IconHelper.getIconByteArray(pkgMgr.getApplicationIcon(appInfo.packageName)));
-					applicationsInsertHelper.bind(applicationTableColumnNumbers[APPLICATION_TABLE_COLUMN_NUMBER_OFFSET_APPFLAGS], appFlags);
-					Log.d("PDroidAddon","Application write :" + applicationsInsertHelper.execute());
-					
-					Application app = new Application(
-							appInfo.packageName,
-							pkgMgr.getApplicationLabel(appInfo).toString(),
-							pkgInfo.versionCode,
-							appFlags,
-							0,
-							appInfo.uid,
-							pkgMgr.getApplicationIcon(appInfo.packageName),
-							permissions
-							);
-					appList.add(app);
-					
-					//Below is the alterative to using the insert helper. It is 'neater' but is almost certainly slower because
-					//it doesn't use compiled SQL queries
-					//write_db.insert(DBInterface.ApplicationTable.TABLE_NAME, null, DBInterface.ApplicationTable.getContentValues(app));
-				//}					
+				applicationsInsertHelper.bind(applicationTableColumnNumbers[APPLICATION_TABLE_COLUMN_NUMBER_OFFSET_LABEL], pkgMgr.getApplicationLabel(appInfo).toString());
+				applicationsInsertHelper.bind(applicationTableColumnNumbers[APPLICATION_TABLE_COLUMN_NUMBER_OFFSET_PACKAGENAME], appInfo.packageName);
+				applicationsInsertHelper.bind(applicationTableColumnNumbers[APPLICATION_TABLE_COLUMN_NUMBER_OFFSET_UID], appInfo.uid);
+				applicationsInsertHelper.bind(applicationTableColumnNumbers[APPLICATION_TABLE_COLUMN_NUMBER_OFFSET_VERSIONCODE], pkgInfo.versionCode);
+				applicationsInsertHelper.bind(applicationTableColumnNumbers[APPLICATION_TABLE_COLUMN_NUMBER_OFFSET_ICON], IconHelper.getIconByteArray(pkgMgr.getApplicationIcon(appInfo.packageName)));
+				applicationsInsertHelper.bind(applicationTableColumnNumbers[APPLICATION_TABLE_COLUMN_NUMBER_OFFSET_APPFLAGS], appFlags);
+				Log.d("PDroidAddon","Application write :" + applicationsInsertHelper.execute());
+				
+				Application app = new Application(
+						appInfo.packageName,
+						pkgMgr.getApplicationLabel(appInfo).toString(),
+						pkgInfo.versionCode,
+						appFlags,
+						0,
+						appInfo.uid,
+						pkgMgr.getApplicationIcon(appInfo.packageName),
+						permissions
+						);
+				appList.add(app);
+				
+				//Below is the alterative to using the insert helper. It is 'neater' but is almost certainly slower because
+				//it doesn't use compiled SQL queries
+				//write_db.insert(DBInterface.ApplicationTable.TABLE_NAME, null, DBInterface.ApplicationTable.getContentValues(app));					
 			} catch (NameNotFoundException e) {	
 				Log.d("PDroidAlternative", String.format("Application %s went missing from installed applications list", appInfo.packageName));
 			}

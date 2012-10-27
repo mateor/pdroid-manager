@@ -35,10 +35,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
+import android.widget.PopupMenu;
 
 public class AppListActivity extends Activity {
 
@@ -151,19 +153,12 @@ public class AppListActivity extends Activity {
     class AppListLoaderCallback implements IAsyncTaskCallback<Application []>{
     	@Override
     	public void asyncTaskComplete(Application[] returnedAppList) {
-    		if (progDialog != null) {
-    			progDialog.dismiss();
-    		}
     		appList = returnedAppList;
     		listView.setAdapter(new AppListAdapter(context, R.layout.application_list_row, appList));
     	}
     }
     
     public void loadApplicationList() {
-        this.progDialog = new ProgressDialog(this);
-        this.progDialog.setMessage("Loading Application List");
-        this.progDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-
     	AppListLoaderTask appListLoader = new AppListLoaderTask(this, new AppListLoaderCallback());
     	try {
     		appListLoader.execute(new AppListLoader(this, AppListLoader.SearchType.ALL, null));
@@ -180,4 +175,8 @@ public class AppListActivity extends Activity {
     	AppListGeneratorTask appListGenerator = new AppListGeneratorTask(this, new AppListGeneratorCallback());
     	appListGenerator.execute();
     }
+    
+    public void showSystemAppsOnly(View view) {}
+    public void showUserAppsOnly(View view) {}
+    public void showSystemAndUserApps(View view) {}
 }

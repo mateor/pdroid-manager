@@ -38,13 +38,13 @@
           <menu>
 	        <item
 	            android:id="@+id/systemAppsOnly"
-	            android:title="System" />
+	            android:title="@string/applist_menu_system_apps" />
 	        <item
 	            android:id="@+id/userAppsOnly"
-	            android:title="User" />
+	            android:title="@string/applist_menu_user_apps" />
 	        <item
 	            android:id="@+id/systemAndUserApps"
-	            android:title="Both" />
+	            android:title="@string/applist_menu_system_and_user_apps" />
 	    </menu>
 	</item>
 </menu>

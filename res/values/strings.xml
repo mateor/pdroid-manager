@@ -29,7 +29,6 @@
 -->
 <resources>
     <string name="app_name">PDroid Manager</string>
-    <string name="profile_title">Profile:</string>
     <string name="menu_search">Search</string>
     <string name="title_activity_main">PDroid Manager</string>
     <string name="writePrivacySettings_label">Modify privacy settings</string>
@@ -39,5 +38,10 @@
     <string name="title_section1">Section 1</string>
     <string name="menu_settings">Settings</string>
     <string name="title_activity_app_detail">BlahBLah?</string>
-    <string name="title_activity_app_detail_activity2">BlahBlah</string>
+    <string name="app_list_app_icon_text">Application icon</string>
+    <string name="app_list_has_internet_indicator">Indicator of Internet access privilege</string>
+    
+    <string name="applist_menu_system_apps">System</string>
+    <string name="applist_menu_user_apps">User</string>
+    <string name="applist_menu_system_and_user_apps">Both</string>
 </resources>

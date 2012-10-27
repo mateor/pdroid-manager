@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="app_type_labels">
+        <item >System</item>
+        <item >User</item>
+    </string-array>
+    <string-array name="app_status_labels">
+        <item >Untrusted</item>
+        <item >Trusted</item>
+    </string-array>
+</resources>

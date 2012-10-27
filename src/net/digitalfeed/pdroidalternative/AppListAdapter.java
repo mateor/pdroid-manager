@@ -29,6 +29,8 @@ package net.digitalfeed.pdroidalternative;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.res.Resources;
+import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,16 +40,34 @@ import android.widget.TextView;
 
 public class AppListAdapter extends ArrayAdapter<Application>{
 
+	private static final int INTERNET_ACCESS_ICON_ACCESS = 0;
+	private static final int INTERNET_ACCESS_ICON_NOACCESS = 1;
+	
+	private static final int APP_TYPE_LABEL_SYSTEM = 0;
+	private static final int APP_TYPE_LABEL_USER = 1;
+	
+	private static final int APP_STATUS_LABEL_UNTRUSTED = 0;
+	private static final int APP_STATUS_LABEL_TRUSTED = 1;
+	
 	Context context;
 	int standardResourceId;
 	Application[] appList = null;
-	 
+	Drawable [] internetAccessIcons;
+	String [] appTypeLabels;
+	String [] appStatusLabels;
+	
 	public AppListAdapter(Context context, int standardResourceId, Application[] appList) {
 		super(context, standardResourceId, appList);
 		
 		this.context = context;
 		this.standardResourceId = standardResourceId;
 		this.appList = appList;
+		Resources resources = context.getResources(); 
+		internetAccessIcons = new Drawable[2];
+		internetAccessIcons[INTERNET_ACCESS_ICON_ACCESS] = resources.getDrawable(R.drawable.net_access_3d);
+		internetAccessIcons[INTERNET_ACCESS_ICON_NOACCESS] = resources.getDrawable(R.drawable.net_noaccess_3d);
+		appTypeLabels = resources.getStringArray(R.array.app_type_labels);
+		appStatusLabels = resources.getStringArray(R.array.app_status_labels);
 	}
 	
 	@Override
@@ -61,8 +81,10 @@ public class AppListAdapter extends ArrayAdapter<Application>{
 	
 			holder = new AppHolder();	
 			holder.icon = (ImageView)row.findViewById(R.id.icon);			
-			holder.appName = (TextView)row.findViewById(R.id.appName);			
-			holder.versionName = (TextView)row.findViewById(R.id.versionName);	
+			holder.appLabel = (TextView)row.findViewById(R.id.appLabel);			
+			holder.appType = (TextView)row.findViewById(R.id.appType);
+			holder.appStatus = (TextView)row.findViewById(R.id.appStatus);
+			holder.hasNetIcon = (ImageView)row.findViewById(R.id.hasNetIcon);
 			row.setTag(holder);
 		} else {
 			holder = (AppHolder)row.getTag();
@@ -70,8 +92,22 @@ public class AppListAdapter extends ArrayAdapter<Application>{
 		
 		Application app = appList[position];
 		holder.icon.setImageDrawable(app.getIcon());
-		holder.appName.setText(app.getLabel());
-		holder.versionName.setText(app.getPackageName());
+		holder.appLabel.setText(app.getLabel());
+		if (app.getIsSystemApp()) {
+			holder.appType.setText(appTypeLabels[APP_TYPE_LABEL_SYSTEM]);
+		} else {
+			holder.appType.setText(appTypeLabels[APP_TYPE_LABEL_USER]);
+		}
+		if (app.getIsUntrusted()) {
+			holder.appStatus.setText(appStatusLabels[APP_STATUS_LABEL_UNTRUSTED]);
+		} else {
+			holder.appStatus.setText(appStatusLabels[APP_STATUS_LABEL_TRUSTED]);
+		}
+		if (app.getHasInternet()) {
+			holder.hasNetIcon.setImageDrawable(internetAccessIcons[INTERNET_ACCESS_ICON_ACCESS]);
+		} else {
+			holder.hasNetIcon.setImageDrawable(internetAccessIcons[INTERNET_ACCESS_ICON_NOACCESS]);
+		}
 		
 		return row;
 	}
@@ -79,7 +115,9 @@ public class AppListAdapter extends ArrayAdapter<Application>{
 	static class AppHolder
 	{
 		ImageView icon;
-		TextView appName;
-		TextView versionName;
+		TextView appLabel;
+		TextView appType;
+		TextView appStatus;
+		ImageView hasNetIcon;
 	}
 }
