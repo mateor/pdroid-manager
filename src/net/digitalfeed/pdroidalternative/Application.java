@@ -29,6 +29,12 @@ package net.digitalfeed.pdroidalternative;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 
+/**
+ * This represents a single application.
+ * @author smorgan
+ *
+ */
+
 public class Application {
 	public static final int APP_FLAG_IS_SYSTEM_APP = 0x1;
 	public static final int APP_FLAG_HAS_INTERNET = 0x2;
@@ -39,26 +45,17 @@ public class Application {
 	//indicates whether this has a full data complement, or just the minimum data set
 	private boolean isStub;
 	
-	private long id;
 	private String packageName;
 	private String label;
 	private int versionCode;
 	private int appFlags;
 	private int statusFlags;
-	int uid;
+	private int uid;
 	private Drawable icon;
 	
 	//The value in permissions is only valid if the Application entry is not a stub
 	private String[] permissions;
-	
-	public long getId() {
-		return this.id;
-	}
-	
-	public void setId(long id) {
-		this.id = id;
-	}
-	
+
 	public String getLabel() {
 		return this.label;
 	}

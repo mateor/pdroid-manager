@@ -3,6 +3,8 @@ package net.digitalfeed.pdroidalternative;
 import java.util.LinkedList;
 import java.util.List;
 
+import net.digitalfeed.pdroidalternative.DBInterface.ApplicationStatusTable;
+
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
@@ -11,6 +13,8 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.database.DatabaseUtils.InsertHelper;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
+import android.privacy.PrivacySettings;
+import android.privacy.PrivacySettingsManager;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -26,6 +30,9 @@ public class AppListGeneratorTask extends AsyncTask<Void, Integer, Application [
 	protected static final int APPLICATION_TABLE_COLUMN_NUMBER_OFFSET_PERMISSIONS = 4;
 	protected static final int APPLICATION_TABLE_COLUMN_NUMBER_OFFSET_ICON = 5;
 	protected static final int APPLICATION_TABLE_COLUMN_NUMBER_OFFSET_APPFLAGS = 6;
+	
+	protected static final int APPLICATION_STATUS_TABLE_COLUMN_NUMBER_OFFSET_PACKAGENAME = 0;
+	protected static final int APPLICATION_STATUS_TABLE_COLUMN_NUMBER_OFFSET_FLAGS = 1;
 	
 	IAsyncTaskCallbackWithProgress<Application []> listener;
 	
@@ -47,6 +54,8 @@ public class AppListGeneratorTask extends AsyncTask<Void, Integer, Application [
 	 */
 	@Override
 	protected Application [] doInBackground(Void... params) {
+		PrivacySettingsManager privacySettingsManager = (PrivacySettingsManager)context.getSystemService("privacy");
+		
 		LinkedList<Application> appList = new LinkedList<Application>();
 		PackageManager pkgMgr = context.getPackageManager();
 		
@@ -63,7 +72,8 @@ public class AppListGeneratorTask extends AsyncTask<Void, Integer, Application [
 		//I haven't personally checked this
 		write_db.beginTransaction();
 		//Clear the application list before putting in a new list.
-		write_db.delete(DBInterface.ApplicationTable.TABLE_NAME, null, null);		
+		write_db.delete(DBInterface.ApplicationTable.TABLE_NAME, null, null);
+		write_db.delete(DBInterface.ApplicationStatusTable.TABLE_NAME, null, null);
 
 		InsertHelper applicationsInsertHelper = new InsertHelper(write_db, DBInterface.ApplicationTable.TABLE_NAME);
 		int [] applicationTableColumnNumbers = new int[7];
@@ -75,6 +85,12 @@ public class AppListGeneratorTask extends AsyncTask<Void, Integer, Application [
 		applicationTableColumnNumbers[APPLICATION_TABLE_COLUMN_NUMBER_OFFSET_ICON] = applicationsInsertHelper.getColumnIndex(DBInterface.ApplicationTable.COLUMN_NAME_ICON);
 		applicationTableColumnNumbers[APPLICATION_TABLE_COLUMN_NUMBER_OFFSET_APPFLAGS] = applicationsInsertHelper.getColumnIndex(DBInterface.ApplicationTable.COLUMN_NAME_FLAGS);
 
+
+		InsertHelper applicationStatusInsertHelper = new InsertHelper(write_db, DBInterface.ApplicationStatusTable.TABLE_NAME);
+		int [] applicationStatusTableColumnNumbers = new int[2];
+		applicationStatusTableColumnNumbers[APPLICATION_STATUS_TABLE_COLUMN_NUMBER_OFFSET_PACKAGENAME] = applicationStatusInsertHelper.getColumnIndex(DBInterface.ApplicationStatusTable.COLUMN_NAME_PACKAGENAME);
+		applicationStatusTableColumnNumbers[APPLICATION_STATUS_TABLE_COLUMN_NUMBER_OFFSET_FLAGS] = applicationStatusInsertHelper.getColumnIndex(DBInterface.ApplicationStatusTable.COLUMN_NAME_FLAGS);
+		
 		
 		InsertHelper permissionsInsertHelper = new InsertHelper(write_db, DBInterface.PermissionApplicationTable.TABLE_NAME);
 		int [] permissionsTableColumnNumbers = new int[2];
@@ -90,7 +106,7 @@ public class AppListGeneratorTask extends AsyncTask<Void, Integer, Application [
 		for (ApplicationInfo appInfo : installedApps) {
 			try {
 				PackageInfo pkgInfo = pkgMgr.getPackageInfo(appInfo.packageName, PackageManager.GET_PERMISSIONS);
-
+				
 				int appFlags = 0;
 				if ((appInfo.flags & ApplicationInfo.FLAG_SYSTEM) == ApplicationInfo.FLAG_SYSTEM) { 
 					appFlags = Application.APP_FLAG_IS_SYSTEM_APP;
@@ -100,6 +116,19 @@ public class AppListGeneratorTask extends AsyncTask<Void, Integer, Application [
 					appFlags = appFlags | Application.APP_FLAG_HAS_INTERNET;
 				}
 
+				int statusFlags = 0;
+				
+				PrivacySettings privacySettings = privacySettingsManager.getSettings(appInfo.packageName);
+				if (privacySettings != null) {
+					if (PermissionSettingHelper.isPrivacySettingsUntrusted(privacySettings)) {
+						statusFlags = statusFlags | ApplicationStatusTable.FLAG_IS_UNTRUSTED;
+					}
+					
+					if (privacySettings.getNotificationSetting() == PrivacySettings.SETTING_NOTIFY_ON) {
+						statusFlags = statusFlags | ApplicationStatusTable.FLAG_NOTIFY_ON_ACCESS;
+					}
+				}
+				
 				/*
 				 * An alternative to putting the apps in the database and simultaneously creating a list of them
 				 * to return is to just write to the database, then re-read them afterwards. Since we
@@ -125,14 +154,20 @@ public class AppListGeneratorTask extends AsyncTask<Void, Integer, Application [
 				applicationsInsertHelper.bind(applicationTableColumnNumbers[APPLICATION_TABLE_COLUMN_NUMBER_OFFSET_VERSIONCODE], pkgInfo.versionCode);
 				applicationsInsertHelper.bind(applicationTableColumnNumbers[APPLICATION_TABLE_COLUMN_NUMBER_OFFSET_ICON], IconHelper.getIconByteArray(pkgMgr.getApplicationIcon(appInfo.packageName)));
 				applicationsInsertHelper.bind(applicationTableColumnNumbers[APPLICATION_TABLE_COLUMN_NUMBER_OFFSET_APPFLAGS], appFlags);
-				Log.d("PDroidAddon","Application write :" + applicationsInsertHelper.execute());
+				applicationsInsertHelper.execute();
+
+				applicationStatusInsertHelper.prepareForInsert();
+				applicationStatusInsertHelper.bind(applicationStatusTableColumnNumbers[APPLICATION_STATUS_TABLE_COLUMN_NUMBER_OFFSET_PACKAGENAME], appInfo.packageName);
+				applicationStatusInsertHelper.bind(applicationStatusTableColumnNumbers[APPLICATION_STATUS_TABLE_COLUMN_NUMBER_OFFSET_FLAGS], statusFlags);
+				applicationStatusInsertHelper.execute();
+
 				
 				Application app = new Application(
 						appInfo.packageName,
 						pkgMgr.getApplicationLabel(appInfo).toString(),
 						pkgInfo.versionCode,
 						appFlags,
-						0,
+						statusFlags,
 						appInfo.uid,
 						pkgMgr.getApplicationIcon(appInfo.packageName),
 						permissions
@@ -149,7 +184,7 @@ public class AppListGeneratorTask extends AsyncTask<Void, Integer, Application [
 			publishProgress(progressObject.clone());
 		}
 		
-		write_db.rawQuery(DBInterface.QUERY_DELETE_APPS_WITHOUT_STATUS, null);
+		//write_db.rawQuery(DBInterface.QUERY_DELETE_APPS_WITHOUT_STATUS, null);
 		write_db.setTransactionSuccessful();
 		write_db.endTransaction();
 		write_db.close();

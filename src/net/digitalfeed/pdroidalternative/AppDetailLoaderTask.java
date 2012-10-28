@@ -32,7 +32,7 @@ public class AppDetailLoaderTask extends AsyncTask<String, Integer, Application>
 		Log.d("PDroidAlternative","Looking up package name: " + selectPackageName[0]);
 		
 		SQLiteDatabase db = DBInterface.getInstance(context).getDBHelper().getReadableDatabase();
-    	Cursor cursor = db.rawQuery(DBInterface.QUERY_GET_APPS_BY_NAME_WITH_PERMISSIONS, selectPackageName);
+    	Cursor cursor = db.rawQuery(DBInterface.QUERY_GET_APPS_BY_LABEL_WITH_STATUS, selectPackageName);
     	Log.d("PDroidAlternative","Returned item count: " + Integer.toString(cursor.getCount()));
 		
 		cursor.moveToFirst();

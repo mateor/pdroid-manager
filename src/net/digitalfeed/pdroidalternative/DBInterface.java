@@ -220,47 +220,72 @@ public class DBInterface {
 		}
 	}
 	
-	public static final String QUERY_GET_ALL_APPS_WITH_STATUS_WITHOUT_PERMISSIONS = "SELECT " + 
+	protected static final String QUERYPART_COLUMNS_PACKAGENAME = 
+			ApplicationTable.TABLE_NAME + "." + ApplicationTable.COLUMN_NAME_PACKAGENAME;
+	
+	protected static final String QUERYPART_COLUMNS_APP = 
 			ApplicationTable.TABLE_NAME + "." + ApplicationTable.COLUMN_NAME_LABEL + ", " +  
 			ApplicationTable.TABLE_NAME + "." + ApplicationTable.COLUMN_NAME_PACKAGENAME + ", " + 
 			ApplicationTable.TABLE_NAME + "." + ApplicationTable.COLUMN_NAME_UID + ", " +
 			ApplicationTable.TABLE_NAME + "." + ApplicationTable.COLUMN_NAME_VERSIONCODE + ", " +
 			ApplicationTable.TABLE_NAME + "." + ApplicationTable.COLUMN_NAME_ICON + ", " +
 			ApplicationTable.TABLE_NAME + "." + ApplicationTable.COLUMN_NAME_FLAGS + ", " +
-			ApplicationStatusTable.TABLE_NAME + "." + ApplicationStatusTable.COLUMN_NAME_FLAGS +   
-			" FROM " + ApplicationTable.TABLE_NAME + 
+			ApplicationTable.TABLE_NAME + "." + ApplicationTable.COLUMN_NAME_PERMISSIONS; 
+	
+	protected static final String QUERYPART_COLUMNS_APP_WITH_STATUS = 
+			QUERYPART_COLUMNS_APP + ", " + 
+			ApplicationStatusTable.TABLE_NAME + "." + ApplicationStatusTable.COLUMN_NAME_FLAGS;
+	
+	protected static final String QUERYPART_JOIN_APP_WITH_STATUS = 
 			" LEFT OUTER JOIN " + ApplicationStatusTable.TABLE_NAME +
 			" ON " + ApplicationTable.TABLE_NAME + "." + ApplicationTable.COLUMN_NAME_PACKAGENAME + " =  " +
 			ApplicationStatusTable.TABLE_NAME + "." + ApplicationStatusTable.COLUMN_NAME_PACKAGENAME;
+
+	protected static final String QUERYPART_JOIN_APP_WITH_PERMISSION = 
+			" INNER JOIN " + PermissionApplicationTable.TABLE_NAME +
+			" ON " + ApplicationTable.TABLE_NAME + "." + ApplicationTable.COLUMN_NAME_PACKAGENAME + " =  " +
+			PermissionApplicationTable.TABLE_NAME + "." + PermissionApplicationTable.COLUMN_NAME_PACKAGENAME;
 	
-	public static final String QUERY_GET_APPS_BY_NAME_WITH_STATUS_WITHOUT_PERMISSIONS = QUERY_GET_ALL_APPS_WITH_STATUS_WITHOUT_PERMISSIONS + 
+	protected static final String QUERYPART_FILTER_BY_LABEL = 
 			" WHERE " + ApplicationTable.TABLE_NAME + "." + ApplicationTable.COLUMN_NAME_LABEL + " LIKE ?";
 	
-	public static final String QUERY_GET_APPS_BY_NAME_WITH_PERMISSIONS = "SELECT " + 
-			ApplicationTable.TABLE_NAME + "." + ApplicationTable.COLUMN_NAME_LABEL + ", " +  
-			ApplicationTable.TABLE_NAME + "." + ApplicationTable.COLUMN_NAME_PACKAGENAME + ", " + 
-			ApplicationTable.TABLE_NAME + "." + ApplicationTable.COLUMN_NAME_UID + ", " +
-			ApplicationTable.TABLE_NAME + "." + ApplicationTable.COLUMN_NAME_VERSIONCODE + ", " +
-			ApplicationTable.TABLE_NAME + "." + ApplicationTable.COLUMN_NAME_ICON + ", " +
-			ApplicationTable.TABLE_NAME + "." + ApplicationTable.COLUMN_NAME_FLAGS + ", " +
-			ApplicationTable.TABLE_NAME + "." + ApplicationTable.COLUMN_NAME_PERMISSIONS +   
-			" FROM " + ApplicationTable.TABLE_NAME + 
-			" WHERE " + ApplicationTable.TABLE_NAME + "." + ApplicationTable.COLUMN_NAME_PACKAGENAME + " = ?";
-	
-	public static final String QUERY_GET_APPS_BY_PERMISSION_WITH_PERMISSIONS = "SELECT " + 
-			ApplicationTable.TABLE_NAME + "." + ApplicationTable.COLUMN_NAME_LABEL + ", " +  
-			ApplicationTable.TABLE_NAME + "." + ApplicationTable.COLUMN_NAME_PACKAGENAME + ", " + 
-			ApplicationTable.TABLE_NAME + "." + ApplicationTable.COLUMN_NAME_UID + ", " +
-			ApplicationTable.TABLE_NAME + "." + ApplicationTable.COLUMN_NAME_VERSIONCODE + ", " +
-			ApplicationTable.TABLE_NAME + "." + ApplicationTable.COLUMN_NAME_ICON + ", " +
-			ApplicationTable.TABLE_NAME + "." + ApplicationTable.COLUMN_NAME_FLAGS + ", " +
-			ApplicationTable.TABLE_NAME + "." + ApplicationTable.COLUMN_NAME_PERMISSIONS +   
-			" FROM " + ApplicationTable.TABLE_NAME + 
+	protected static final String QUERYPART_FILTER_BY_PERMISSION = 
 			" INNER JOIN " + PermissionApplicationTable.TABLE_NAME +
 			" ON " + ApplicationTable.TABLE_NAME + "." + ApplicationTable.COLUMN_NAME_PACKAGENAME + " =  " +
 			PermissionApplicationTable.TABLE_NAME + "." + PermissionApplicationTable.COLUMN_NAME_PACKAGENAME + 
 			" WHERE " + PermissionApplicationTable.TABLE_NAME + "." + PermissionApplicationTable.COLUMN_NAME_PERMISSION + " = ?";
 	
+	protected static final String QUERYPART_FILTER_BY_TYPE = 
+			" WHERE " + ApplicationTable.TABLE_NAME + "." + ApplicationTable.COLUMN_NAME_FLAGS +
+			" & " + ApplicationTable.FLAG_IS_SYSTEM_APP + " = CAST(? AS INTEGER)";
+	
+	public static final String QUERY_GET_ALL_APPS_WITH_STATUS = "SELECT " +
+			QUERYPART_COLUMNS_APP_WITH_STATUS + 
+			" FROM " + ApplicationTable.TABLE_NAME + 
+			QUERYPART_JOIN_APP_WITH_STATUS;
+
+	public static final String QUERY_GET_ALL_APPS_PACKAGENAME_ONLY = "SELECT " +
+			QUERYPART_COLUMNS_PACKAGENAME +  
+			" FROM " + ApplicationTable.TABLE_NAME;
+
+	public static final String QUERY_GET_APPS_BY_LABEL_WITH_STATUS =
+			QUERY_GET_ALL_APPS_WITH_STATUS + QUERYPART_FILTER_BY_LABEL;
+	
+	public static final String QUERY_GET_APPS_BY_LABEL_PACKAGENAME_ONLY =
+			QUERY_GET_ALL_APPS_PACKAGENAME_ONLY + QUERYPART_FILTER_BY_LABEL;
+
+	public static final String QUERY_GET_APPS_BY_PERMISSION_WITH_STATUS =
+			QUERY_GET_ALL_APPS_WITH_STATUS + QUERYPART_FILTER_BY_PERMISSION;
+	
+	public static final String QUERY_GET_APPS_BY_PERMISSION_PACKAGENAME_ONLY =
+			QUERY_GET_ALL_APPS_PACKAGENAME_ONLY + QUERYPART_FILTER_BY_PERMISSION;
+
+	public static final String QUERY_GET_APPS_BY_TYPE_WITH_STATUS =
+			QUERY_GET_ALL_APPS_WITH_STATUS + QUERYPART_FILTER_BY_TYPE;
+	
+	public static final String QUERY_GET_APPS_BY_TYPE_PACKAGENAME_ONLY =
+			QUERY_GET_ALL_APPS_PACKAGENAME_ONLY + QUERYPART_FILTER_BY_TYPE;
+
 	public static final String QUERY_DELETE_APPS_WITHOUT_STATUS = "DELETE FROM " + 
 			ApplicationStatusTable.TABLE_NAME + 
 			" WHERE " + ApplicationStatusTable.COLUMN_NAME_PACKAGENAME + 

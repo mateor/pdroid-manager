@@ -41,7 +41,7 @@ public class AppDetailActivity extends Activity implements IAsyncTaskCallback<Ap
 	public void asyncTaskComplete(Application app) {
 		this.setTitle(app.getLabel());
 		String [] permissions = app.getPermissions();
-		Set<Setting> settings = PermissionSettingMapper.getMapper(this).getSettings(permissions);
+		Set<Setting> settings = PermissionSettingHelper.getMapper(this).getSettings(permissions);
 		if (settings != null) {
 			this.settingList = settings.toArray(new Setting[settings.size()]); 
 			listView = (ListView)findViewById(R.id.settingList);

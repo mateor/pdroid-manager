@@ -40,7 +40,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
-import android.widget.PopupMenu;
 
 public class AppListActivity extends Activity {
 
@@ -78,7 +77,7 @@ public class AppListActivity extends Activity {
         	} else {
         		Log.d("PDroidAlternative", "appList is null");
         		//the app list is valid: we need to load it from the db
-        		loadApplicationList();
+        		loadApplicationList(new AppListLoader(this, AppListLoader.SearchType.ALL, null));
         	}
         } else {
         	listView.setAdapter(new AppListAdapter(context, R.layout.application_list_row, this.appList));
@@ -102,7 +101,6 @@ public class AppListActivity extends Activity {
 				intent.putExtra(AppDetailActivity.BUNDLE_PACKAGE_NAME, appList[position].getPackageName());
 				startActivity(intent);
 			}
-        	
         });
     }
 
@@ -115,10 +113,31 @@ public class AppListActivity extends Activity {
     
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+    	super.onCreateOptionsMenu(menu);
         getMenuInflater().inflate(R.menu.activity_main, menu);
         return true;
     }
-
+    
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+    	super.onOptionsItemSelected(item);
+    	switch (item.getItemId()) {
+    	case R.id.appListMenuRefresh:
+    		rebuildApplicationList();
+    		break;
+    	case R.id.systemAppsOnly:
+    		loadApplicationList(new AppListLoader(this, AppListLoader.SearchType.TYPE, new String [] {"1"}));
+    		break;
+    	case R.id.userAppsOnly:
+    		loadApplicationList(new AppListLoader(this, AppListLoader.SearchType.TYPE, new String [] {"0"}));
+    		break;
+    	case R.id.systemAndUserApps:
+    		loadApplicationList(new AppListLoader(this, AppListLoader.SearchType.ALL, null));
+    		break;
+    	}
+    	return false;
+    }
+    
     private void updateProgressDialog(int currentValue, int maxValue) {
 		if (progDialog != null) {
 			if (progDialog.isShowing()) {
@@ -153,18 +172,17 @@ public class AppListActivity extends Activity {
     class AppListLoaderCallback implements IAsyncTaskCallback<Application []>{
     	@Override
     	public void asyncTaskComplete(Application[] returnedAppList) {
+    		Log.d("PDroidAlternative","Got result from app list load: length " + returnedAppList.length);
     		appList = returnedAppList;
     		listView.setAdapter(new AppListAdapter(context, R.layout.application_list_row, appList));
     	}
     }
     
-    public void loadApplicationList() {
-    	AppListLoaderTask appListLoader = new AppListLoaderTask(this, new AppListLoaderCallback());
-    	try {
-    		appListLoader.execute(new AppListLoader(this, AppListLoader.SearchType.ALL, null));
-    	} catch (InvalidParameterException e) {
-    		Log.d("PDroidAlternative", e.getStackTrace().toString());
-    	}
+    public void loadApplicationList(AppListLoader appListLoader) {
+    	Log.d("PDroidAlternative","About to start load");
+    	AppListLoaderTask appListLoaderTask = new AppListLoaderTask(this, new AppListLoaderCallback());
+    	Log.d("PDroidAlternative","Created the task");
+    	appListLoaderTask.execute(appListLoader);
     }
     
     public void rebuildApplicationList() {

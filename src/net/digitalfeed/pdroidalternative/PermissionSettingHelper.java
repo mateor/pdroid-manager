@@ -10,19 +10,20 @@ import android.content.res.Resources;
 import android.content.res.XmlResourceParser;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.privacy.PrivacySettings;
 import android.text.TextUtils;
 import android.util.Log;
 
 import com.google.common.collect.HashMultimap;
 
-class PermissionSettingMapper {
+class PermissionSettingHelper {
 	private static HashMap<String, Setting> settingsCollection;
 	private static HashMultimap<String, Setting> permissionToSettingsMap;
 	private static HashMultimap<Setting, String> settingToPermissionsMap;
 	private static HashMultimap<String, Setting> settingGroupsMap;
-	private static PermissionSettingMapper theMapper;
+	private static PermissionSettingHelper theMapper;
 	
-	private PermissionSettingMapper(Context context) {
+	private PermissionSettingHelper(Context context) {
 		settingsCollection = new HashMap<String, Setting>();
 		permissionToSettingsMap = HashMultimap.create();
 		settingToPermissionsMap = HashMultimap.create();
@@ -121,9 +122,9 @@ class PermissionSettingMapper {
 		}
 	}
 	
-	public static PermissionSettingMapper getMapper(Context context) {
+	public static PermissionSettingHelper getMapper(Context context) {
 		if (theMapper == null) {
-			theMapper = new PermissionSettingMapper(context);
+			theMapper = new PermissionSettingHelper(context);
 		}
 		
 		return theMapper;
@@ -160,6 +161,53 @@ class PermissionSettingMapper {
 		}
 		
 		return permissionsOfInterest;
+	}
+	
+	/**
+	 * An annoying function to fish through all the settings in a 'PrivacySettings' object to check if it is 'trusted' or 'untrusted'.
+	 * It would be much more helpful if there were functions in the core of PDroid for this (and I'll probably add
+	 * them at some point).
+	 */
+	public static boolean isPrivacySettingsUntrusted (PrivacySettings privacySettings) {
+		if (privacySettings.getSwitchWifiStateSetting() == PrivacySettings.REAL &&
+				//getForceOnlineState == PrivacySettings.REAL && //I'm leaving this one out because it doesn't really make sense to include
+																 //That, and what does 'real', etc mean in that context...?
+				privacySettings.getSendMmsSetting() == PrivacySettings.REAL &&
+				privacySettings.getSwitchConnectivitySetting() == PrivacySettings.REAL &&
+				privacySettings.getAndroidIdSetting() == PrivacySettings.REAL &&
+				privacySettings.getWifiInfoSetting() == PrivacySettings.REAL &&
+				privacySettings.getIpTableProtectSetting() == PrivacySettings.REAL && //I need to check what the 'real' states, etc mean for this too. Does REAL mean 'allow the app access?'
+				privacySettings.getIccAccessSetting() == PrivacySettings.REAL &&
+				privacySettings.getSmsSendSetting() == PrivacySettings.REAL &&
+				privacySettings.getPhoneCallSetting() == PrivacySettings.REAL &&
+				privacySettings.getRecordAudioSetting() == PrivacySettings.REAL &&
+				privacySettings.getCameraSetting() == PrivacySettings.REAL &&
+				privacySettings.getDeviceIdSetting() == PrivacySettings.REAL &&
+				privacySettings.getLine1NumberSetting() == PrivacySettings.REAL &&
+				privacySettings.getLocationGpsSetting() == PrivacySettings.REAL &&
+				privacySettings.getLocationNetworkSetting() == PrivacySettings.REAL &&
+				privacySettings.getNetworkInfoSetting() == PrivacySettings.REAL &&
+				privacySettings.getSimInfoSetting() == PrivacySettings.REAL &&
+				privacySettings.getSimSerialNumberSetting() == PrivacySettings.REAL &&
+				privacySettings.getSubscriberIdSetting() == PrivacySettings.REAL &&
+				privacySettings.getAccountsSetting() == PrivacySettings.REAL &&
+				privacySettings.getAccountsAuthTokensSetting() == PrivacySettings.REAL &&
+				privacySettings.getOutgoingCallsSetting() == PrivacySettings.REAL &&
+				privacySettings.getIncomingCallsSetting() == PrivacySettings.REAL &&
+				privacySettings.getContactsSetting() == PrivacySettings.REAL &&
+				privacySettings.getCalendarSetting() == PrivacySettings.REAL &&
+				privacySettings.getMmsSetting() == PrivacySettings.REAL &&
+				privacySettings.getSmsSetting() == PrivacySettings.REAL &&
+				privacySettings.getCallLogSetting() == PrivacySettings.REAL &&
+				privacySettings.getBookmarksSetting() == PrivacySettings.REAL &&
+				privacySettings.getSystemLogsSetting() == PrivacySettings.REAL &&
+				privacySettings.getIntentBootCompletedSetting() == PrivacySettings.REAL &&
+				privacySettings.getRecordAudioSetting() == PrivacySettings.REAL
+				) {
+					return false;
+		} else {
+			return true;
+		}
 	}
 }
 /*
