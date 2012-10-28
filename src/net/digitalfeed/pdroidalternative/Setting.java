@@ -29,6 +29,10 @@ class Setting implements Comparable<Setting> {
 		return this.group;
 	}
 	
+	public String getGroupTitle() {
+		return this.groupTitle;
+	}
+
 	public String getTitle() {
 		return this.title;
 	}

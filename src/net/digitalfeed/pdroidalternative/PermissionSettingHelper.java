@@ -1,20 +1,10 @@
 package net.digitalfeed.pdroidalternative;
 
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.Set;
 
-import android.content.Context;
-import android.content.res.Resources;
-import android.content.res.XmlResourceParser;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.privacy.PrivacySettings;
-import android.text.TextUtils;
-import android.util.Log;
-
-import com.google.common.collect.HashMultimap;
 
 class PermissionSettingHelper {
 

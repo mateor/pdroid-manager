@@ -1,8 +1,6 @@
 package net.digitalfeed.pdroidalternative;
 
-import java.util.Collections;
 import java.util.LinkedList;
-import java.util.Set;
 
 import android.os.Bundle;
 import android.app.Activity;
