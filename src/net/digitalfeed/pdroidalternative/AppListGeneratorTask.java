@@ -184,7 +184,10 @@ public class AppListGeneratorTask extends AsyncTask<Void, Integer, Application [
 			publishProgress(progressObject.clone());
 		}
 		
-		//write_db.rawQuery(DBInterface.QUERY_DELETE_APPS_WITHOUT_STATUS, null);
+		applicationsInsertHelper.close();
+		applicationStatusInsertHelper.close();
+		permissionsInsertHelper.close();
+		
 		write_db.setTransactionSuccessful();
 		write_db.endTransaction();
 		write_db.close();

@@ -3,15 +3,17 @@ package net.digitalfeed.pdroidalternative;
 class Setting implements Comparable<Setting> {
 	private String id;
 	private String name;
+	private String title;
 	private String group;
-	private String label;
+	private String groupTitle;
 	private String [] options;
 	
-	public Setting(String id, String name, String group, String label, String [] options) {
+	public Setting(String id, String name, String title, String group, String groupTitle, String [] options) {
 		this.id = id;
 		this.name = name;
+		this.title = title;
 		this.group = group;
-		this.label = label;
+		this.groupTitle = groupTitle;
 		this.options = options;
 	}
 	
@@ -27,8 +29,8 @@ class Setting implements Comparable<Setting> {
 		return this.group;
 	}
 	
-	public String getLabel() {
-		return this.label;
+	public String getTitle() {
+		return this.title;
 	}
 	
 	public String [] getOptions() {

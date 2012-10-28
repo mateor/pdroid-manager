@@ -26,8 +26,6 @@
  */
 package net.digitalfeed.pdroidalternative;
 
-import java.security.InvalidParameterException;
-
 import android.os.Bundle;
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -67,8 +65,16 @@ public class AppListActivity extends Activity {
         listView = (ListView)findViewById(R.id.applicationList);
         
         context = this;
+        /* 
+         * need to force the application cache to be invalid
+         * if incrementing the version number, at present. This is simply because
+         * tables get deleted, etc, and content is not regenerated unless the case
+         * is considered invalid. This will be sorted when the DB upgrades are actually real
+         * not just purging
+         */
+        //prefs.setIsApplicationListCacheValid(false); 
+        
         //Do we have an application list already? is it valid?
-        //prefs.setIsApplicationListCacheValid(false);
         if (appList == null || !prefs.getIsApplicationListCacheValid()) {
             //Either we don't have an app list, or it isn't valid
         	if (!prefs.getIsApplicationListCacheValid()) {

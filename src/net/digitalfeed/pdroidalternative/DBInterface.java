@@ -1,7 +1,9 @@
 package net.digitalfeed.pdroidalternative;
 
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.Set;
 
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -10,6 +12,8 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.Resources.NotFoundException;
 import android.content.res.XmlResourceParser;
+import android.database.Cursor;
+import android.database.DatabaseUtils.InsertHelper;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.text.TextUtils;
@@ -18,6 +22,17 @@ import android.util.Log;
 public class DBInterface {
 	private static DBHelper dbhelper = null;
 	private static DBInterface dbinterface = null;
+	
+	private static final int SETTING_TABLE_COLUMN_NUMBER_OFFSET_ID = 0;
+	private static final int SETTING_TABLE_COLUMN_NUMBER_OFFSET_NAME = 1;
+	private static final int SETTING_TABLE_COLUMN_NUMBER_OFFSET_TITLE = 2;
+	private static final int SETTING_TABLE_COLUMN_NUMBER_OFFSET_GROUP_ID = 3;
+	private static final int SETTING_TABLE_COLUMN_NUMBER_OFFSET_GROUP_TITLE = 4;
+	private static final int SETTING_TABLE_COLUMN_NUMBER_OFFSET_OPTIONS = 5;
+
+	private static final int PERMISSIONSETTING_TABLE_COLUMN_NUMBER_OFFSET_PERMISSION = 0;
+	private static final int PERMISSIONSETTING_TABLE_COLUMN_NUMBER_OFFSET_SETTING = 1;
+
 	
 	public static final class ApplicationTable {
 		public ApplicationTable(){}
@@ -248,6 +263,9 @@ public class DBInterface {
 	
 	protected static final String QUERYPART_FILTER_BY_LABEL = 
 			" WHERE " + ApplicationTable.TABLE_NAME + "." + ApplicationTable.COLUMN_NAME_LABEL + " LIKE ?";
+
+	protected static final String QUERYPART_FILTER_BY_PACKAGENAME = 
+			" WHERE " + ApplicationTable.TABLE_NAME + "." + ApplicationTable.COLUMN_NAME_PACKAGENAME + " LIKE ?";
 	
 	protected static final String QUERYPART_FILTER_BY_PERMISSION = 
 			" INNER JOIN " + PermissionApplicationTable.TABLE_NAME +
@@ -268,12 +286,15 @@ public class DBInterface {
 			QUERYPART_COLUMNS_PACKAGENAME +  
 			" FROM " + ApplicationTable.TABLE_NAME;
 
+	public static final String QUERY_GET_APPS_BY_PACKAGENAME_WITH_STATUS =
+			QUERY_GET_ALL_APPS_WITH_STATUS + QUERYPART_FILTER_BY_PACKAGENAME;
+	
 	public static final String QUERY_GET_APPS_BY_LABEL_WITH_STATUS =
 			QUERY_GET_ALL_APPS_WITH_STATUS + QUERYPART_FILTER_BY_LABEL;
 	
 	public static final String QUERY_GET_APPS_BY_LABEL_PACKAGENAME_ONLY =
 			QUERY_GET_ALL_APPS_PACKAGENAME_ONLY + QUERYPART_FILTER_BY_LABEL;
-
+	
 	public static final String QUERY_GET_APPS_BY_PERMISSION_WITH_STATUS =
 			QUERY_GET_ALL_APPS_WITH_STATUS + QUERYPART_FILTER_BY_PERMISSION;
 	
@@ -297,6 +318,23 @@ public class DBInterface {
 	public static final String QUERY_GET_PERMISSIONS_OF_INTEREST = "SELECT DISTINCT " + 
 			PermissionSettingTable.COLUMN_NAME_PERMISSION + 
 			" FROM " + PermissionSettingTable.TABLE_NAME;
+	
+	public static final String QUERY_GET_SETTINGS_BY_PACKAGENAME = "SELECT DISTINCT " +
+			SettingTable.TABLE_NAME + "." + SettingTable.COLUMN_NAME_ID + ", " +
+			SettingTable.TABLE_NAME + "." + SettingTable.COLUMN_NAME_NAME + ", " +
+			SettingTable.TABLE_NAME + "." + SettingTable.COLUMN_NAME_TITLE + ", " +
+			SettingTable.TABLE_NAME + "." + SettingTable.COLUMN_NAME_GROUP_ID + ", " +
+			SettingTable.TABLE_NAME + "." + SettingTable.COLUMN_NAME_GROUP_TITLE + ", " +
+			SettingTable.TABLE_NAME + "." + SettingTable.COLUMN_NAME_OPTIONS + 
+			" FROM " + PermissionApplicationTable.TABLE_NAME + 
+			" INNER JOIN " + PermissionSettingTable.TABLE_NAME + 
+			" ON (" + PermissionSettingTable.TABLE_NAME + "." + PermissionSettingTable.COLUMN_NAME_PERMISSION + 
+			" = " + PermissionApplicationTable.TABLE_NAME + "." + PermissionApplicationTable.COLUMN_NAME_PERMISSION +
+			" OR " + PermissionSettingTable.TABLE_NAME + "." + PermissionSettingTable.COLUMN_NAME_PERMISSION + " = 'any')" + 
+			" INNER JOIN " + SettingTable.TABLE_NAME + 
+			" ON " + SettingTable.TABLE_NAME + "." + SettingTable.COLUMN_NAME_ID + 
+			" = " + PermissionSettingTable.TABLE_NAME + "." + PermissionSettingTable.COLUMN_NAME_SETTING +
+			" WHERE " + PermissionApplicationTable.TABLE_NAME + "." + PermissionApplicationTable.COLUMN_NAME_PACKAGENAME + " = ?";	
 	
 	public Context context;
 	
@@ -327,14 +365,14 @@ public class DBInterface {
 		write_db.insert(ApplicationLogTable.TABLE_NAME, null, contentValues);
 		write_db.close();
 	}
-	
+		
 	private DBInterface(Context context) {
 		this.context = context;
 	}
 	
 	public class DBHelper extends SQLiteOpenHelper {
 		public static final String DATABASE_NAME = "pdroidmgr.db";
-		public static final int DATABASE_VERSION = 5;
+		public static final int DATABASE_VERSION = 23;
 		
 		//private SQLiteDatabase db;
 		
@@ -389,16 +427,41 @@ public class DBInterface {
 			
 			XmlResourceParser xrp = resources.getXml(R.xml.pdroid_settings);
 			try {
+				db.beginTransaction();
+				Log.d("PDroidAlternative","Begin transaction");
+				InsertHelper settingInsertHelper = new InsertHelper(db, DBInterface.SettingTable.TABLE_NAME);
+				int [] settingTableColumnNumbers = new int[6];
+				settingTableColumnNumbers[SETTING_TABLE_COLUMN_NUMBER_OFFSET_ID] = settingInsertHelper.getColumnIndex(SettingTable.COLUMN_NAME_ID);
+				settingTableColumnNumbers[SETTING_TABLE_COLUMN_NUMBER_OFFSET_NAME] = settingInsertHelper.getColumnIndex(SettingTable.COLUMN_NAME_NAME);
+				settingTableColumnNumbers[SETTING_TABLE_COLUMN_NUMBER_OFFSET_TITLE] = settingInsertHelper.getColumnIndex(SettingTable.COLUMN_NAME_TITLE);
+				settingTableColumnNumbers[SETTING_TABLE_COLUMN_NUMBER_OFFSET_GROUP_ID] = settingInsertHelper.getColumnIndex(SettingTable.COLUMN_NAME_GROUP_ID);
+				settingTableColumnNumbers[SETTING_TABLE_COLUMN_NUMBER_OFFSET_GROUP_TITLE] = settingInsertHelper.getColumnIndex(SettingTable.COLUMN_NAME_GROUP_TITLE);
+				settingTableColumnNumbers[SETTING_TABLE_COLUMN_NUMBER_OFFSET_OPTIONS] = settingInsertHelper.getColumnIndex(SettingTable.COLUMN_NAME_OPTIONS);
+				
 				int eventType = xrp.next();
 				while(!(eventType == XmlResourceParser.START_TAG && xrp.getName().equals("setting")) && eventType != XmlResourceParser.END_DOCUMENT) {
 					eventType = xrp.next();
 				}
+				String id;
 				while (eventType == XmlResourceParser.START_TAG && xrp.getName().equals("setting")) {
-		        	String name = xrp.getAttributeValue(null, "name");
-		        	String id = xrp.getIdAttribute();
-		        	String group = xrp.getAttributeValue(null, "group");
+					settingInsertHelper.prepareForInsert();
+					id = xrp.getIdAttribute();
+					settingInsertHelper.bind(settingTableColumnNumbers[SETTING_TABLE_COLUMN_NUMBER_OFFSET_ID], id);
+					settingInsertHelper.bind(settingTableColumnNumbers[SETTING_TABLE_COLUMN_NUMBER_OFFSET_NAME], 
+							xrp.getAttributeValue(null, "name")
+						);
 		        	//I wish there were a nicer way to get this string. Maybe a pair of arrays - one with identifiers, one with labels?
-		        	String label = resources.getString(resources.getIdentifier("SETTING_LABEL_" + id, "string", packageName));
+					settingInsertHelper.bind(settingTableColumnNumbers[SETTING_TABLE_COLUMN_NUMBER_OFFSET_TITLE],
+							 resources.getString(resources.getIdentifier("SETTING_LABEL_" + id, "string", packageName))
+						);
+
+					id = xrp.getAttributeValue(null, "group"); 
+					settingInsertHelper.bind(settingTableColumnNumbers[SETTING_TABLE_COLUMN_NUMBER_OFFSET_GROUP_ID], id);
+					//Because groups can be duplicated, it may be better to actually cache these in advance rather than repeatedly using reflection
+					settingInsertHelper.bind(settingTableColumnNumbers[SETTING_TABLE_COLUMN_NUMBER_OFFSET_GROUP_TITLE],
+							resources.getString(resources.getIdentifier("SETTING_GROUP_LABEL_" + id, "string", packageName))
+						);
+					
 		        	eventType = xrp.next();
 		 			while(eventType == XmlResourceParser.TEXT && xrp.isWhitespace()) {
 		 				eventType = xrp.next();
@@ -427,27 +490,39 @@ public class DBInterface {
 			        } else {
 			        	break;
 			        }
-					Log.d("PDroidAlternative","New Setting: id=" + id + " name=" + name + " group=" + group + " label=" + label + " options=" + TextUtils.join(",",options.toArray(new String[options.size()])));
-			        Setting newSetting = new Setting(id, name, group, label, options.toArray(new String[options.size()]));
-			        db.insert(SettingTable.TABLE_NAME, null, SettingTable.getContentValues(newSetting));
-		       }
-		       
+					settingInsertHelper.bind(settingTableColumnNumbers[SETTING_TABLE_COLUMN_NUMBER_OFFSET_OPTIONS],
+							TextUtils.join(",",options)
+						);
+			        settingInsertHelper.execute();
+				}
+				settingTableColumnNumbers = null;
+				settingInsertHelper.close();
+				
+				InsertHelper permissionInsertHelper = new InsertHelper(db, DBInterface.PermissionSettingTable.TABLE_NAME);
+				int [] permissionSettingTableColumnNumbers = new int[2];
+				permissionSettingTableColumnNumbers[PERMISSIONSETTING_TABLE_COLUMN_NUMBER_OFFSET_PERMISSION] = permissionInsertHelper.getColumnIndex(PermissionSettingTable.COLUMN_NAME_PERMISSION);
+				permissionSettingTableColumnNumbers[PERMISSIONSETTING_TABLE_COLUMN_NUMBER_OFFSET_SETTING] = permissionInsertHelper.getColumnIndex(PermissionSettingTable.COLUMN_NAME_SETTING);
+
 				xrp = resources.getXml(R.xml.permission_setting_map);
 				eventType = xrp.next();
 				while(!(eventType == XmlResourceParser.START_TAG && xrp.getName().equals("permission")) && eventType != XmlResourceParser.END_DOCUMENT) {
 					eventType = xrp.next();
 				}
 				while (eventType == XmlResourceParser.START_TAG && xrp.getName().equals("permission")) {
-					String id = xrp.getIdAttribute();
-
+					id = xrp.getIdAttribute();
 					eventType = xrp.next();
 					while(eventType == XmlResourceParser.TEXT && xrp.isWhitespace()) {
 						eventType = xrp.next();
 					}
 					while (eventType == XmlResourceParser.START_TAG && xrp.getName().equals("setting")) {
-						String settingId = xrp.getIdAttribute();
-						Log.d("PDroidAlternative","permission ID:" + id + " setting ID: " + settingId);
-						db.insert(PermissionSettingTable.TABLE_NAME, null, PermissionSettingTable.getContentValues(id, settingId));
+						permissionInsertHelper.prepareForInsert();
+						permissionInsertHelper.bind(permissionSettingTableColumnNumbers[PERMISSIONSETTING_TABLE_COLUMN_NUMBER_OFFSET_PERMISSION],
+								id
+							);
+						permissionInsertHelper.bind(permissionSettingTableColumnNumbers[PERMISSIONSETTING_TABLE_COLUMN_NUMBER_OFFSET_SETTING],
+								xrp.getIdAttribute()
+							);
+						permissionInsertHelper.execute();
 						eventType = xrp.next();
 						while(eventType == XmlResourceParser.TEXT && xrp.isWhitespace()) {
 							eventType = xrp.next();
@@ -461,7 +536,7 @@ public class DBInterface {
 				        	break;
 				        }
 					}
-					if (eventType == XmlResourceParser.END_TAG && xrp.getName().equals("setting")) {
+					if (eventType == XmlResourceParser.END_TAG && xrp.getName().equals("permission")) {
 						eventType = xrp.next();
 						while(eventType == XmlResourceParser.TEXT && xrp.isWhitespace()) {
 							eventType = xrp.next();
@@ -470,6 +545,10 @@ public class DBInterface {
 						break;
 					}
 				}
+				permissionInsertHelper.close();
+				
+				Log.d("PDroidAlternative","Set transaction successful");
+				db.setTransactionSuccessful();
 			} catch (XmlPullParserException e) {
 				Log.d("PDroidAlternative",e.getMessage());
 				//TODO: Exception handling, mayhaps?
@@ -477,6 +556,8 @@ public class DBInterface {
 				Log.d("PDroidAlternative",e.getMessage());
 			} catch (NotFoundException e) {
 				Log.d("PDroidAlternative",e.getMessage());
+			} finally {
+				db.endTransaction();
 			}
 		}
 	}

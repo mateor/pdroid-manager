@@ -7,60 +7,60 @@
 	    <setting id="ALLOW_READ_SUBSCRIBER_ID" />
 	    <setting id="ALLOW_READ_INCOMING_CALL_NUMBER" />
 	</permission>
-	<permission name="android.permission.PROCESS_OUTGOING_CALLS"><setting id="ALLOW_READ_OUTGOING_CALL_NUMBER" /></permission>
-	<permission name="android.permission.CALL_PHONE"><setting id="ALLOW_INITIATE_PHONE_CALL" /></permission>
-	<permission name="android.permission.CALL_PRIVILEGED"><setting id="ALLOW_INITIATE_PHONE_CALL" /></permission>
-	<permission name="android.permission.ACCESS_COARSE_LOCATION"><setting id="ALLOW_READ_NETWORK_LOCATION" /></permission>
-	<permission name="android.permission.ACCESS_FINE_LOCATION">
+	<permission id="android.permission.PROCESS_OUTGOING_CALLS"><setting id="ALLOW_READ_OUTGOING_CALL_NUMBER" /></permission>
+	<permission id="android.permission.CALL_PHONE"><setting id="ALLOW_INITIATE_PHONE_CALL" /></permission>
+	<permission id="android.permission.CALL_PRIVILEGED"><setting id="ALLOW_INITIATE_PHONE_CALL" /></permission>
+	<permission id="android.permission.ACCESS_COARSE_LOCATION"><setting id="ALLOW_READ_NETWORK_LOCATION" /></permission>
+	<permission id="android.permission.ACCESS_FINE_LOCATION">
 	    <setting id="ALLOW_READ_NETWORK_LOCATION" />
 	    <setting id="ALLOW_READ_GPS_LOCATION" />
 	</permission>
-	<permission name="android.permission.USE_CREDENTIALS"><setting id="ALLOW_USE_ACCOUNT_CREDENTIALS" /></permission>
-	<permission name="android.permission.ACCOUNT_MANAGER">
+	<permission id="android.permission.USE_CREDENTIALS"><setting id="ALLOW_USE_ACCOUNT_CREDENTIALS" /></permission>
+	<permission id="android.permission.ACCOUNT_MANAGER">
 	    <setting id="ALLOW_USE_ACCOUNT_CREDENTIALS" />
 	    <setting id="ALLOW_READ_ACCOUNTS_LIST" />
 	</permission>
-	<permission name="android.permission.AUTHENTICATE_ACCOUNTS"><setting id="ALLOW_USE_ACCOUNT_CREDENTIALS" /></permission>
-	<permission name="android.permission.MANAGE_ACCOUNTS">
+	<permission id="android.permission.AUTHENTICATE_ACCOUNTS"><setting id="ALLOW_USE_ACCOUNT_CREDENTIALS" /></permission>
+	<permission id="android.permission.MANAGE_ACCOUNTS">
 	    <setting id="ALLOW_USE_ACCOUNT_CREDENTIALS" />
 	    <setting id="ALLOW_READ_ACCOUNTS_LIST" />
 	</permission>
-	<permission name="android.permission.GET_ACCOUNTS"><setting id="ALLOW_READ_ACCOUNTS_LIST" /></permission>
-	<permission name="android.permission.READ_CONTACTS">
+	<permission id="android.permission.GET_ACCOUNTS"><setting id="ALLOW_READ_ACCOUNTS_LIST" /></permission>
+	<permission id="android.permission.READ_CONTACTS">
 	    <setting id="ALLOW_READ_CONTACTS" />
 	    <setting id="ALLOW_READ_CALL_LOG" />
 	</permission>
-	<permission name="android.permission.READ_CALL_LOG"><setting id="ALLOW_READ_CALL_LOG" /></permission>
-	<permission name="android.permission.READ_CALENDAR"><setting id="ALLOW_READ_CALENDAR" /></permission>
-	<permission name="android.permission.READ_SMS">
+	<permission id="android.permission.READ_CALL_LOG"><setting id="ALLOW_READ_CALL_LOG" /></permission>
+	<permission id="android.permission.READ_CALENDAR"><setting id="ALLOW_READ_CALENDAR" /></permission>
+	<permission id="android.permission.READ_SMS">
 	    <setting id="ALLOW_READ_SMS" />
 	    <setting id="ALLOW_READ_MMS" />
 	</permission>
-	<permission name="android.permission.RECEIVE_SMS">
+	<permission id="android.permission.RECEIVE_SMS">
 	    <setting id="ALLOW_READ_SMS" />
 	    <setting id="ALLOW_READ_MMS" />
 	</permission>
-	<permission name="android.permission.RECEIVE_MMS"><setting id="ALLOW_READ_MMS" /></permission>
-	<permission name="android.permission.RECEIVE_WAP_PUSH"><setting id="ALLOW_READ_MMS" /></permission>
-	<permission name="android.permission.SEND_SMS">
+	<permission id="android.permission.RECEIVE_MMS"><setting id="ALLOW_READ_MMS" /></permission>
+	<permission id="android.permission.RECEIVE_WAP_PUSH"><setting id="ALLOW_READ_MMS" /></permission>
+	<permission id="android.permission.SEND_SMS">
 	    <setting id="ALLOW_SEND_SMS" />
 	    <setting id="ALLOW_SEND_MMS" />
 	</permission>
-	<permission name="android.permission.RECORD_AUDIO"><setting id="ALLOW_RECORD_AUDIO" /></permission>
-	<permission name="android.permission.CAMERA"><setting id="ALLOW_CAMERA" /></permission>
-	<permission name="com.android.browser.permission.READ_HISTORY_BOOKMARKS"><setting id="ALLOW_READ_BOOKMARKS_AND_HISTORY" /></permission>
-	<permission name="android.permission.READ_LOGS"><setting id="ALLOW_READ_SYSTEM_LOGS" /></permission>
-	<permission name="android.permission.RECEIVE_BOOT_COMPLETED"><setting id="ALLOW_RECEIVE_BOOT_COMPLETED_INTENT" /></permission>
-	<permission name="android.permission.ACCESS_WIFI_STATE"><setting id="ALLOW_READ_WIFI_INFO" /></permission>
-	<permission name="android.permission.CHANGE_WIFI_STATE"><setting id="ALLOW_CHANGE_WIFI_STATE" /></permission>
-	<permission name="android.permission.CHANGE_WIFI_MULTICAST_STATE"><setting id="ALLOW_CHANGE_WIFI_STATE" /></permission>
-	<permission name="android.permission.CHANGE_NETWORK_STATE"><setting id="ALLOW_CHANGE_MOBILE_DATA_STATE" /></permission>
-	<permission name="">
+	<permission id="android.permission.RECORD_AUDIO"><setting id="ALLOW_RECORD_AUDIO" /></permission>
+	<permission id="android.permission.CAMERA"><setting id="ALLOW_CAMERA" /></permission>
+	<permission id="com.android.browser.permission.READ_HISTORY_BOOKMARKS"><setting id="ALLOW_READ_BOOKMARKS_AND_HISTORY" /></permission>
+	<permission id="android.permission.READ_LOGS"><setting id="ALLOW_READ_SYSTEM_LOGS" /></permission>
+	<permission id="android.permission.RECEIVE_BOOT_COMPLETED"><setting id="ALLOW_RECEIVE_BOOT_COMPLETED_INTENT" /></permission>
+	<permission id="android.permission.ACCESS_WIFI_STATE"><setting id="ALLOW_READ_WIFI_INFO" /></permission>
+	<permission id="android.permission.CHANGE_WIFI_STATE"><setting id="ALLOW_CHANGE_WIFI_STATE" /></permission>
+	<permission id="android.permission.CHANGE_WIFI_MULTICAST_STATE"><setting id="ALLOW_CHANGE_WIFI_STATE" /></permission>
+	<permission id="android.permission.CHANGE_NETWORK_STATE"><setting id="ALLOW_CHANGE_MOBILE_DATA_STATE" /></permission>
+	<permission id="any">
 	    <setting id="ALLOW_READ_NETWORK_INFO" />
 	    <setting id="ALLOW_READ_ANDROID_ID" />
 	    <setting id="ALLOW_READ_SIM_INFO" />
 	    <setting id="ALLOW_ACCESS_IP_TABLES" />
 	    <setting id="ALLOW_READ_ICC_ID" />
 	</permission>
-	<permission name="android.permission.ACCESS_NETWORK_STATE"><setting id="FAKE_ALWAYS_ONLINE" /></permission>
+	<permission id="android.permission.ACCESS_NETWORK_STATE"><setting id="FAKE_ALWAYS_ONLINE" /></permission>
 </resource>
