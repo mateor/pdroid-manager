@@ -60,7 +60,7 @@ public class AppDetailActivity extends Activity {
 			if (inSettingList != null) {
 				settingList = inSettingList.toArray(new Setting[inSettingList.size()]); 
 				listView = (ListView)findViewById(R.id.settingList);
-				listView.setAdapter(new AppDetailAdapter(context, R.layout.setting_list_row_allow_deny, settingList));
+				listView.setAdapter(new AppDetailAdapter(context, R.layout.setting_list_row_standard, settingList));
 			}
 		}
     }

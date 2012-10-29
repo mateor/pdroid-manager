@@ -45,4 +45,9 @@
     <string name="applist_menu_system_apps">System</string>
     <string name="applist_menu_user_apps">User</string>
     <string name="applist_menu_system_and_user_apps">Both</string>
+    
+    <string name="setting_option_allow">Allow</string>
+    <string name="setting_option_random">Random</string>
+    <string name="setting_option_custom">Custom</string>
+    <string name="setting_option_deny">Deny</string>
 </resources>

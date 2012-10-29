@@ -27,8 +27,21 @@
  * @author Simeon J. Morgan <smorgan@digitalfeed.net>
  */
 -->
-<resources>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
 
     <style name="AppTheme" parent="android:Theme.Light" />
+	<style name="SettingOptionAllow" parent="@android:style/Widget.CompoundButton.RadioButton">
+        <item name="android:button">@drawable/button_allow</item>
+    </style>
+    <style name="SettingOptionRandom" parent="@android:style/Widget.CompoundButton.RadioButton">
+        <item name="android:button">@drawable/button_random</item>
+    </style>
+    <style name="SettingOptionCustom" parent="@android:style/Widget.CompoundButton.RadioButton">
+        <item name="android:button">@drawable/button_custom</item>
+    </style>
+        <style name="SettingOptionDeny" parent="@android:style/Widget.CompoundButton.RadioButton">
+        <item name="android:button">@drawable/button_deny</item>
+    </style>
+    
 
 </resources>
