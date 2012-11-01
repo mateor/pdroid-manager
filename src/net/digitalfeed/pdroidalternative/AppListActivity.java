@@ -73,6 +73,10 @@ public class AppListActivity extends Activity {
          * not just purging
          */
         //prefs.setIsApplicationListCacheValid(false); 
+        //this.dbInterface = DBInterface.getInstance(this);
+        //DBHelper dbHelper = this.dbInterface.getDBHelper();
+        //SQLiteDatabase db = dbHelper.getWritableDatabase();
+        //dbHelper.loadDefaultData(db);
         
         //Do we have an application list already? is it valid?
         if (appList == null || !prefs.getIsApplicationListCacheValid()) {

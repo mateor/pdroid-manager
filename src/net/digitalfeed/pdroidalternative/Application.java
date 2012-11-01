@@ -36,10 +36,10 @@ import android.graphics.drawable.Drawable;
  */
 
 public class Application {
-	public static final int APP_FLAG_IS_SYSTEM_APP = 0x1;
-	public static final int APP_FLAG_HAS_INTERNET = 0x2;
-	public static final int STATUS_FLAG_IS_UNTRUSTED = 0x1;
-	public static final int STATUS_FLAG_NOTIFY_ON_ACCESS = 0x2;
+	public static final int APP_FLAG_IS_SYSTEM_APP = 1;
+	public static final int APP_FLAG_HAS_INTERNET = 2;
+	public static final int STATUS_FLAG_IS_UNTRUSTED = 1;
+	public static final int STATUS_FLAG_NOTIFY_ON_ACCESS = 2;
 	
 
 	//indicates whether this has a full data complement, or just the minimum data set

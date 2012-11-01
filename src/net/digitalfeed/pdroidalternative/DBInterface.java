@@ -1,3 +1,29 @@
+/**
+ * Copyright (C) 2012 Simeon J. Morgan (smorgan@digitalfeed.net)
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 3 of the License, or (at your option) any later version.
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License along with
+ * this program; if not, see <http://www.gnu.org/licenses>.
+ * The software has the following requirements (GNU GPL version 3 section 7):
+ * You must retain in pdroid-manager, any modifications or derivatives of
+ * pdroid-manager, or any code or components taken from pdroid-manager the author
+ * attribution included in the files.
+ * In pdroid-manager, any modifications or derivatives of pdroid-manager, or any
+ * application utilizing code or components taken from pdroid-manager must include
+ * in any display or listing of its creators, authors, contributors or developers
+ * the names or pseudonyms included in the author attributions of pdroid-manager
+ * or pdroid-manager derived code.
+ * Modified or derivative versions of the pdroid-manager application must use an
+ * alternative name, rather than the name pdroid-manager.
+ */
+
+/**
+ * @author Simeon J. Morgan <smorgan@digitalfeed.net>
+ */
 package net.digitalfeed.pdroidalternative;
 
 import java.io.IOException;
@@ -22,10 +48,12 @@ public class DBInterface {
 	
 	private static final int SETTING_TABLE_COLUMN_NUMBER_OFFSET_ID = 0;
 	private static final int SETTING_TABLE_COLUMN_NUMBER_OFFSET_NAME = 1;
-	private static final int SETTING_TABLE_COLUMN_NUMBER_OFFSET_TITLE = 2;
-	private static final int SETTING_TABLE_COLUMN_NUMBER_OFFSET_GROUP_ID = 3;
-	private static final int SETTING_TABLE_COLUMN_NUMBER_OFFSET_GROUP_TITLE = 4;
-	private static final int SETTING_TABLE_COLUMN_NUMBER_OFFSET_OPTIONS = 5;
+	private static final int SETTING_TABLE_COLUMN_NUMBER_OFFSET_SETTINGFUNCTIONNAME = 2;
+	private static final int SETTING_TABLE_COLUMN_NUMBER_OFFSET_TITLE = 3;
+	private static final int SETTING_TABLE_COLUMN_NUMBER_OFFSET_GROUP_ID = 4;
+	private static final int SETTING_TABLE_COLUMN_NUMBER_OFFSET_GROUP_TITLE = 5;
+	private static final int SETTING_TABLE_COLUMN_NUMBER_OFFSET_OPTIONS = 6;
+	private static final int SETTING_TABLE_COLUMN_COUNT = 7;
 
 	private static final int PERMISSIONSETTING_TABLE_COLUMN_NUMBER_OFFSET_PERMISSION = 0;
 	private static final int PERMISSIONSETTING_TABLE_COLUMN_NUMBER_OFFSET_SETTING = 1;
@@ -45,8 +73,8 @@ public class DBInterface {
 		public static final String COLUMN_NAME_ICON = "icon";
 		public static final String COLUMN_NAME_FLAGS = "appFlags";
 		
-		public static final int FLAG_IS_SYSTEM_APP = 0x1;
-		public static final int FLAG_HAS_INTERNET_ACCESS = 0x2;
+		public static final int FLAG_IS_SYSTEM_APP = 1;
+		public static final int FLAG_HAS_INTERNET_ACCESS = 2;
 		
 		public static final String CREATE_SQL = "CREATE TABLE " + TABLE_NAME + "(" + 
 				"_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
@@ -84,8 +112,8 @@ public class DBInterface {
 		public static final String COLUMN_NAME_PACKAGENAME = "packageName";
 		public static final String COLUMN_NAME_FLAGS = "statusFlags";
 
-		public static final int FLAG_IS_UNTRUSTED = 0x1;
-		public static final int FLAG_NOTIFY_ON_ACCESS = 0x2;
+		public static final int FLAG_IS_UNTRUSTED = 1;
+		public static final int FLAG_NOTIFY_ON_ACCESS = 2;
 		
 		public static final String CREATE_SQL = "CREATE TABLE " + TABLE_NAME + "(" + 
 				"_id INTEGER PRIMARY KEY AUTOINCREMENT, " + 
@@ -108,7 +136,7 @@ public class DBInterface {
 		public static final String COLUMN_NAME_OPERATION = "operation";
 		public static final String COLUMN_NAME_FLAGS = "logFlags";
 		
-		public static final int FLAGS_ALLOWED = 0x1;
+		public static final int FLAGS_ALLOWED = 1;
 		
 		public static final String CREATE_SQL = "CREATE TABLE " + TABLE_NAME + "(" + 
 				"_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
@@ -144,6 +172,7 @@ public class DBInterface {
 		public static final String TABLE_NAME = "setting";
 		public static final String COLUMN_NAME_ID = "id";
 		public static final String COLUMN_NAME_NAME = "name";
+		public static final String COLUMN_NAME_SETTINGFUNCTIONNAME = "SETTINGFUNCTIONNAME"; //this is the name of function call to the 'privacy' service used to access the current 'selected option' for the setting
 		public static final String COLUMN_NAME_TITLE = "title"; //Used to store the 'friendly' title of the setting, which may be language specific.
 																//If we start adding support for multiple languages, possibly we should be handling this better; maybe having another table with all the language text in it?
 																//The point of this is to avoid using reflection to get the titles from resources all the time
@@ -155,6 +184,7 @@ public class DBInterface {
 				"_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
 				COLUMN_NAME_ID + " TEXT NOT NULL, " + 
 				COLUMN_NAME_NAME + " TEXT NOT NULL, " +
+				COLUMN_NAME_SETTINGFUNCTIONNAME + " TEXT NOT NULL, " +
 				COLUMN_NAME_TITLE + " TEXT, " +
 				COLUMN_NAME_GROUP_ID + " TEXT NOT NULL, " +
 				COLUMN_NAME_GROUP_TITLE + " TEXT, " +
@@ -167,6 +197,7 @@ public class DBInterface {
 			ContentValues contentValues = new ContentValues();
 			contentValues.put(COLUMN_NAME_ID, setting.getId());
 			contentValues.put(COLUMN_NAME_NAME, setting.getName());
+			contentValues.put(COLUMN_NAME_SETTINGFUNCTIONNAME, setting.getSettingFunctionName());
 			//contentValues.put(COLUMN_NAME_TITLE, setting.getTitle());
 			contentValues.put(COLUMN_NAME_GROUP_ID, setting.getGroup());
 			//contentValues.put(COLUMN_NAME_GROUP_TITLE, setting.getGroupTitle());
@@ -319,6 +350,7 @@ public class DBInterface {
 	public static final String QUERY_GET_SETTINGS_BY_PACKAGENAME = "SELECT DISTINCT " +
 			SettingTable.TABLE_NAME + "." + SettingTable.COLUMN_NAME_ID + ", " +
 			SettingTable.TABLE_NAME + "." + SettingTable.COLUMN_NAME_NAME + ", " +
+			SettingTable.TABLE_NAME + "." + SettingTable.COLUMN_NAME_SETTINGFUNCTIONNAME + ", " +
 			SettingTable.TABLE_NAME + "." + SettingTable.COLUMN_NAME_TITLE + ", " +
 			SettingTable.TABLE_NAME + "." + SettingTable.COLUMN_NAME_GROUP_ID + ", " +
 			SettingTable.TABLE_NAME + "." + SettingTable.COLUMN_NAME_GROUP_TITLE + ", " +
@@ -369,7 +401,7 @@ public class DBInterface {
 	
 	public class DBHelper extends SQLiteOpenHelper {
 		public static final String DATABASE_NAME = "pdroidmgr.db";
-		public static final int DATABASE_VERSION = 23;
+		public static final int DATABASE_VERSION = 27;
 		
 		//private SQLiteDatabase db;
 		
@@ -418,18 +450,22 @@ public class DBInterface {
 		}
 
 		
-		private void loadDefaultData(SQLiteDatabase db) {
+		public void loadDefaultData(SQLiteDatabase db) {
 			Resources resources = context.getResources();
 			String packageName = context.getPackageName();
+			
+			db.delete(SettingTable.TABLE_NAME, null, null);
+			db.delete(PermissionSettingTable.TABLE_NAME, null, null);
 			
 			XmlResourceParser xrp = resources.getXml(R.xml.pdroid_settings);
 			try {
 				db.beginTransaction();
 				Log.d("PDroidAlternative","Begin transaction");
-				InsertHelper settingInsertHelper = new InsertHelper(db, DBInterface.SettingTable.TABLE_NAME);
-				int [] settingTableColumnNumbers = new int[6];
+				InsertHelper settingInsertHelper = new InsertHelper(db, SettingTable.TABLE_NAME);
+				int [] settingTableColumnNumbers = new int[SETTING_TABLE_COLUMN_COUNT];
 				settingTableColumnNumbers[SETTING_TABLE_COLUMN_NUMBER_OFFSET_ID] = settingInsertHelper.getColumnIndex(SettingTable.COLUMN_NAME_ID);
 				settingTableColumnNumbers[SETTING_TABLE_COLUMN_NUMBER_OFFSET_NAME] = settingInsertHelper.getColumnIndex(SettingTable.COLUMN_NAME_NAME);
+				settingTableColumnNumbers[SETTING_TABLE_COLUMN_NUMBER_OFFSET_SETTINGFUNCTIONNAME] = settingInsertHelper.getColumnIndex(SettingTable.COLUMN_NAME_SETTINGFUNCTIONNAME);
 				settingTableColumnNumbers[SETTING_TABLE_COLUMN_NUMBER_OFFSET_TITLE] = settingInsertHelper.getColumnIndex(SettingTable.COLUMN_NAME_TITLE);
 				settingTableColumnNumbers[SETTING_TABLE_COLUMN_NUMBER_OFFSET_GROUP_ID] = settingInsertHelper.getColumnIndex(SettingTable.COLUMN_NAME_GROUP_ID);
 				settingTableColumnNumbers[SETTING_TABLE_COLUMN_NUMBER_OFFSET_GROUP_TITLE] = settingInsertHelper.getColumnIndex(SettingTable.COLUMN_NAME_GROUP_TITLE);
@@ -446,6 +482,9 @@ public class DBInterface {
 					settingInsertHelper.bind(settingTableColumnNumbers[SETTING_TABLE_COLUMN_NUMBER_OFFSET_ID], id);
 					settingInsertHelper.bind(settingTableColumnNumbers[SETTING_TABLE_COLUMN_NUMBER_OFFSET_NAME], 
 							xrp.getAttributeValue(null, "name")
+						);
+					settingInsertHelper.bind(settingTableColumnNumbers[SETTING_TABLE_COLUMN_NUMBER_OFFSET_SETTINGFUNCTIONNAME], 
+							xrp.getAttributeValue(null, "settingfunctionname")
 						);
 		        	//I wish there were a nicer way to get this string. Maybe a pair of arrays - one with identifiers, one with labels?
 					settingInsertHelper.bind(settingTableColumnNumbers[SETTING_TABLE_COLUMN_NUMBER_OFFSET_TITLE],
@@ -465,7 +504,7 @@ public class DBInterface {
 		 	 		}
 			        LinkedList<String> options = new LinkedList<String>();
 		        	while (eventType == XmlResourceParser.START_TAG && xrp.getName().equals("option")) {
-		        		options.add(xrp.getText());
+		        		options.add(xrp.getAttributeValue(null, "name"));
 			        	eventType = xrp.next();
 						while(eventType == XmlResourceParser.TEXT && xrp.isWhitespace()) {
 							eventType = xrp.next();
@@ -495,7 +534,7 @@ public class DBInterface {
 				settingTableColumnNumbers = null;
 				settingInsertHelper.close();
 				
-				InsertHelper permissionInsertHelper = new InsertHelper(db, DBInterface.PermissionSettingTable.TABLE_NAME);
+				InsertHelper permissionInsertHelper = new InsertHelper(db, PermissionSettingTable.TABLE_NAME);
 				int [] permissionSettingTableColumnNumbers = new int[2];
 				permissionSettingTableColumnNumbers[PERMISSIONSETTING_TABLE_COLUMN_NUMBER_OFFSET_PERMISSION] = permissionInsertHelper.getColumnIndex(PermissionSettingTable.COLUMN_NAME_PERMISSION);
 				permissionSettingTableColumnNumbers[PERMISSIONSETTING_TABLE_COLUMN_NUMBER_OFFSET_SETTING] = permissionInsertHelper.getColumnIndex(PermissionSettingTable.COLUMN_NAME_SETTING);

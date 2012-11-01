@@ -42,6 +42,10 @@
         <style name="SettingOptionDeny" parent="@android:style/Widget.CompoundButton.RadioButton">
         <item name="android:button">@drawable/button_deny</item>
     </style>
+            <style name="SettingOptionNo" parent="@android:style/Widget.CompoundButton.RadioButton">
+        <item name="android:button">@drawable/button_no</item>
+    </style>
+        
     
 
 </resources>

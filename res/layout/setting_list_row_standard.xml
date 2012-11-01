@@ -32,7 +32,7 @@
     android:layout_height="match_parent" >
     
 		<RadioGroup 
-		    android:id="@+id/privilege_choice"
+		    android:id="@+id/setting_choice"
 		    android:layout_width="wrap_content"
 		    android:layout_height="fill_parent"
 		    android:layout_alignParentRight="true"
@@ -49,6 +49,12 @@
 			android:text="@string/setting_option_allow" 
 			and then hide the text but I haven't worked out how yet -->
 		    
+			<RadioButton
+			    android:id="@+id/option_yes"
+			    android:layout_width="wrap_content"
+			    android:layout_height="wrap_content"
+			    style="@style/SettingOptionAllow"
+			    />
 		    
 		    <RadioButton
 			    android:id="@+id/option_random"
@@ -59,7 +65,7 @@
 			<!--  I'd really like to be able to include
 			android:text="@string/setting_option_random" 
 			and then hide the text but I haven't worked out how yet -->
-
+			
 			<RadioButton
 			    android:id="@+id/option_custom"
 			    android:layout_width="wrap_content"
@@ -70,6 +76,13 @@
 			android:text="@string/setting_option_custom" 
 			and then hide the text but I haven't worked out how yet -->
 		    
+			<RadioButton
+			    android:id="@+id/option_customlocation"
+			    android:layout_width="wrap_content"
+			    android:layout_height="wrap_content"
+			    style="@style/SettingOptionCustom"
+			    />
+		    
 		    <RadioButton
 			    android:id="@+id/option_deny"
 			    android:layout_width="wrap_content"
@@ -79,6 +92,13 @@
 			<!--  I'd really like to be able to include
 			android:text="@string/setting_option_deny" 
 			and then hide the text but I haven't worked out how yet -->
+
+			<RadioButton
+			    android:id="@+id/option_no"
+			    android:layout_width="wrap_content"
+			    android:layout_height="wrap_content"
+			    style="@style/SettingOptionNo"
+			    />
 
 		</RadioGroup>
 		

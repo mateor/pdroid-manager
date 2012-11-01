@@ -1,148 +1,177 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- 
+/**
+ * Copyright (C) 2012 Simeon J. Morgan (smorgan@digitalfeed.net)
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 3 of the License, or (at your option) any later version.
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License along with
+ * this program; if not, see <http://www.gnu.org/licenses>.
+ * The software has the following requirements (GNU GPL version 3 section 7):
+ * You must retain in pdroid-manager, any modifications or derivatives of
+ * pdroid-manager, or any code or components taken from pdroid-manager the author
+ * attribution included in the files.
+ * In pdroid-manager, any modifications or derivatives of pdroid-manager, or any
+ * application utilizing code or components taken from pdroid-manager must include
+ * in any display or listing of its creators, authors, contributors or developers
+ * the names or pseudonyms included in the author attributions of pdroid-manager
+ * or pdroid-manager derived code.
+ * Modified or derivative versions of the pdroid-manager application must use an
+ * alternative name, rather than the name pdroid-manager.
+ */
+ 
+ /**
+ * @author Simeon J. Morgan <smorgan@digitalfeed.net>
+ */
+-->
+<!-- setting function is only there in intention, not in function at the moment... -->
 <resource>
-	<setting id="ALLOW_READ_DEVICE_ID" name="deviceIdSetting" group="GENERAL">
+	<setting id="ALLOW_READ_DEVICE_ID" name="deviceIdSetting" settingfunctionname="getDeviceIdSetting" group="GENERAL">
 		<option name="allow" />
         <option name="random" />
         <option name="custom" />
         <option name="deny" />
 	</setting>
-	<setting id="ALLOW_READ_PHONE_NUMBER" name="line1NumberSetting" group="GENERAL">
+	<setting id="ALLOW_READ_PHONE_NUMBER" name="line1NumberSetting" settingfunctionname="getLine1NumberSetting" group="GENERAL">
 	    <option name="allow" />
         <option name="random" />
         <option name="custom" />
         <option name="deny" />
 	</setting>
-	<setting id="ALLOW_READ_SIM_SERIAL" name="simSerialNumberSetting" group="GENERAL">
+	<setting id="ALLOW_READ_SIM_SERIAL" name="simSerialNumberSetting" settingfunctionname="getSimSerialNumberSetting" group="GENERAL">
 		<option name="allow" />
         <option name="random" />
         <option name="custom" />
         <option name="deny" />
 	</setting>
-	<setting id="ALLOW_READ_SUBSCRIBER_ID" name="subscriberIdSetting" group="GENERAL">
+	<setting id="ALLOW_READ_SUBSCRIBER_ID" name="subscriberIdSetting" settingfunctionname="getSubscriberIdSetting" group="GENERAL">
 		<option name="allow" />
         <option name="random" />
         <option name="custom" />
         <option name="deny" />
 	</setting>
-	<setting id="ALLOW_READ_INCOMING_CALL_NUMBER" name="incomingCallsSetting" group="PHONE">
+	<setting id="ALLOW_READ_INCOMING_CALL_NUMBER" name="incomingCallsSetting" settingfunctionname="getIncomingCallsSetting" group="PHONE">
 		<option name="allow" />
         <option name="random" />
         <option name="custom" />
         <option name="deny" />
 	</setting>
-	<setting id="ALLOW_READ_OUTGOING_CALL_NUMBER" name="outgoingCallsSetting" group="PHONE">
+	<setting id="ALLOW_READ_OUTGOING_CALL_NUMBER" name="outgoingCallsSetting" settingfunctionname="getOutgoingCallsSetting" group="PHONE">
 		<option name="allow" />
         <option name="random" />
         <option name="custom" />
         <option name="deny" />
 	</setting>
-	<setting id="ALLOW_INITIATE_PHONE_CALL" name="phoneCallSetting" group="PHONE">
+	<setting id="ALLOW_INITIATE_PHONE_CALL" name="phoneCallSetting" settingfunctionname="getPhoneCallSetting" group="PHONE">
 		<option name="allow" />
         <option name="random" />
         <option name="custom" />
         <option name="deny" />
 	</setting>
-	<setting id="ALLOW_READ_NETWORK_LOCATION" name="locationNetworkSetting" group="LOCATION">
+	<setting id="ALLOW_READ_NETWORK_LOCATION" name="locationNetworkSetting" settingfunctionname="getLocationNetworkSetting" group="LOCATION">
 		<option name="allow" />
-        <option name="custom" />
+        <option name="customlocation" />
         <option name="deny" />
 	</setting>
-	<setting id="ALLOW_READ_GPS_LOCATION" name="locationGpsSetting" group="LOCATION">
+	<setting id="ALLOW_READ_GPS_LOCATION" name="locationGpsSetting" settingfunctionname="getLocationGpsSetting" group="LOCATION">
 		<option name="allow" />
-        <option name="custom" />
+        <option name="customlocation" />
         <option name="deny" />
 	</setting>
-	<setting id="ALLOW_USE_ACCOUNT_CREDENTIALS" name="accountsAuthTokensSetting" group="PERSONAL_DATA">
-		<option name="allow" />
-        <option name="deny" />
-	</setting>
-	<setting id="ALLOW_READ_ACCOUNTS_LIST" name="accountsSetting" group="PERSONAL_DATA">
+	<setting id="ALLOW_USE_ACCOUNT_CREDENTIALS" name="accountsAuthTokensSetting" settingfunctionname="getAccountsAuthTokensSetting" group="PERSONAL_DATA">
 		<option name="allow" />
         <option name="deny" />
 	</setting>
-	<setting id="ALLOW_READ_CONTACTS" name="contactsSetting" group="PERSONAL_DATA">
+	<setting id="ALLOW_READ_ACCOUNTS_LIST" name="accountsSetting" settingfunctionname="getAccountsSetting" group="PERSONAL_DATA">
 		<option name="allow" />
         <option name="deny" />
 	</setting>
-	<setting id="ALLOW_READ_CALL_LOG" name="callLogSetting" group="PERSONAL_DATA">
+	<setting id="ALLOW_READ_CONTACTS" name="contactsSetting" settingfunctionname="getContactsSetting" group="PERSONAL_DATA">
 		<option name="allow" />
         <option name="deny" />
 	</setting>
-	<setting id="ALLOW_READ_CALENDAR" name="calendarSetting" group="PERSONAL_DATA">
+	<setting id="ALLOW_READ_CALL_LOG" name="callLogSetting" settingfunctionname="getCallLogSetting" group="PERSONAL_DATA">
 		<option name="allow" />
         <option name="deny" />
 	</setting>
-	<setting id="ALLOW_READ_SMS" name="smsSetting" group="MESSAGES">
+	<setting id="ALLOW_READ_CALENDAR" name="calendarSetting" settingfunctionname="getCalendarSetting" group="PERSONAL_DATA">
 		<option name="allow" />
         <option name="deny" />
 	</setting>
-	<setting id="ALLOW_SEND_SMS" name="smsSendSetting" group="MESSAGES">
+	<setting id="ALLOW_READ_SMS" name="smsSetting" settingfunctionname="getSmsSetting" group="MESSAGES">
 		<option name="allow" />
         <option name="deny" />
 	</setting>
-	<setting id="ALLOW_READ_MMS" name="mmsSetting" group="MESSAGES">
+	<setting id="ALLOW_SEND_SMS" name="smsSendSetting" settingfunctionname="getSmsSendSetting" group="MESSAGES">
 		<option name="allow" />
         <option name="deny" />
 	</setting>
-	<setting id="ALLOW_SEND_MMS" name="sendMmsSetting" group="MESSAGES">
+	<setting id="ALLOW_READ_MMS" name="mmsSetting" settingfunctionname="getMmsSetting" group="MESSAGES">
 		<option name="allow" />
         <option name="deny" />
 	</setting>
-	<setting id="ALLOW_RECORD_AUDIO" name="recordAudioSetting" group="MEDIA">
+	<setting id="ALLOW_SEND_MMS" name="sendMmsSetting" settingfunctionname="getSendMmsSetting" group="MESSAGES">
 		<option name="allow" />
         <option name="deny" />
 	</setting>
-	<setting id="ALLOW_CAMERA" name="cameraSetting" group="MEDIA">
+	<setting id="ALLOW_RECORD_AUDIO" name="recordAudioSetting" settingfunctionname="getRecordAudioSetting" group="MEDIA">
 		<option name="allow" />
         <option name="deny" />
 	</setting>
-	<setting id="ALLOW_READ_BOOKMARKS_AND_HISTORY" name="bookmarksSetting" group="GENERAL">
+	<setting id="ALLOW_CAMERA" name="cameraSetting" settingfunctionname="getCameraSetting" group="MEDIA">
 		<option name="allow" />
         <option name="deny" />
 	</setting>
-	<setting id="ALLOW_READ_SYSTEM_LOGS" name="systemLogsSetting" group="GENERAL">
+	<setting id="ALLOW_READ_BOOKMARKS_AND_HISTORY" name="bookmarksSetting" settingfunctionname="getBookmarksSetting" group="GENERAL">
 		<option name="allow" />
         <option name="deny" />
 	</setting>
-	<setting id="ALLOW_RECEIVE_BOOT_COMPLETED_INTENT" name="intentBootCompletedSetting" group="GENERAL">
+	<setting id="ALLOW_READ_SYSTEM_LOGS" name="systemLogsSetting" settingfunctionname="getSystemLogsSetting" group="GENERAL">
 		<option name="allow" />
         <option name="deny" />
 	</setting>
-	<setting id="ALLOW_READ_WIFI_INFO" name="wifiInfoSetting" group="NETWORK">
+	<setting id="ALLOW_RECEIVE_BOOT_COMPLETED_INTENT" name="intentBootCompletedSetting" settingfunctionname="getIntentBootCompletedSetting" group="GENERAL">
 		<option name="allow" />
         <option name="deny" />
 	</setting>
-	<setting id="ALLOW_CHANGE_WIFI_STATE" name="switchWifiStateSetting" group="NETWORK">
+	<setting id="ALLOW_READ_WIFI_INFO" name="wifiInfoSetting" settingfunctionname="getWifiInfoSetting" group="NETWORK">
 		<option name="allow" />
         <option name="deny" />
 	</setting>
-	<setting id="ALLOW_CHANGE_MOBILE_DATA_STATE" name="switchConnectivitySetting" group="NETWORK">
+	<setting id="ALLOW_CHANGE_WIFI_STATE" name="switchWifiStateSetting" settingfunctionname="getSwitchWifiStateSetting" group="NETWORK">
 		<option name="allow" />
         <option name="deny" />
 	</setting>
-	<setting id="ALLOW_READ_NETWORK_INFO" name="networkInfoSetting" group="NETWORK">
+	<setting id="ALLOW_CHANGE_MOBILE_DATA_STATE" name="switchConnectivitySetting" settingfunctionname="getSwitchConnectivitySetting" group="NETWORK">
 		<option name="allow" />
         <option name="deny" />
 	</setting>
-	<setting id="ALLOW_READ_ANDROID_ID" name="androidIdSetting" group="GENERAL">
+	<setting id="ALLOW_READ_NETWORK_INFO" name="networkInfoSetting" settingfunctionname="getNetworkInfoSetting" group="NETWORK">
+		<option name="allow" />
+        <option name="deny" />
+	</setting>
+	<setting id="ALLOW_READ_ANDROID_ID" name="androidIdSetting" settingfunctionname="getAndroidIdSetting" group="GENERAL">
 		<option name="allow" />
         <option name="random" />
         <option name="custom" />
         <option name="deny" />
 	</setting>
-	<setting id="ALLOW_READ_SIM_INFO" name="simInfoSetting" group="GENERAL">
+	<setting id="ALLOW_READ_SIM_INFO" name="simInfoSetting" settingfunctionname="getSimInfoSetting" group="GENERAL">
 		<option name="allow" />
         <option name="deny" />
 	</setting>
-	<setting id="ALLOW_ACCESS_IP_TABLES" name="ipTableProtectSetting" group="NETWORK">
+	<setting id="ALLOW_ACCESS_IP_TABLES" name="ipTableProtectSetting" settingfunctionname="getIpTableProtectSetting" group="NETWORK">
 		<option name="allow" />
         <option name="deny" />
 	</setting>
-	<setting id="ALLOW_READ_ICC_ID" name="iccAccessSetting" group="NETWORK">
+	<setting id="ALLOW_READ_ICC_ID" name="iccAccessSetting" settingfunctionname="getIccAccessSetting" group="NETWORK">
 		<option name="allow" />
         <option name="deny" />
 	</setting>
-	<setting id="FAKE_ALWAYS_ONLINE" name="forceOnlineState" group="NETWORK">
+	<setting id="FAKE_ALWAYS_ONLINE" name="forceOnlineState" settingfunctionname="getForceOnlineState" group="NETWORK">
 		<option name="yes" />
         <option name="no" />
 	</setting>
