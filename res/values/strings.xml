@@ -34,10 +34,6 @@
     <string name="title_activity_main">PDroid Manager</string>
     <string name="writePrivacySettings_label">Modify privacy settings</string>
     <string name="writePrivacySettings_description">Allows modification of privacy settings associated with applications.</string>
-    <string name="title_section3">Section 3</string>
-    <string name="title_section2">Section 2</string>
-    <string name="title_section1">Section 1</string>
-    <string name="menu_settings">Settings</string>
     <string name="title_activity_app_detail">BlahBLah?</string>
     <string name="app_list_app_icon_text">Application icon</string>
     <string name="app_list_has_internet_indicator">Indicator of Internet access privilege</string>
@@ -45,6 +41,12 @@
     <string name="applist_menu_system_apps">System</string>
     <string name="applist_menu_user_apps">User</string>
     <string name="applist_menu_system_and_user_apps">Both</string>
+    
+    <string name="detail_saving_dialog_title">Please wait</string>
+    <string name="detail_saving_dialog_message">Saving...</string>
+    <string name="detail_actionbar_savebutton_title">Save</string>
+    
+    <string name="detail_notifyonaccess_text">Notify on access</string>
     
     <string name="setting_option_allow">Allow</string>
     <string name="setting_option_random">Random</string>

@@ -30,6 +30,7 @@ import java.io.InvalidObjectException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.security.InvalidParameterException;
+import java.util.AbstractMap.SimpleImmutableEntry;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -102,7 +103,7 @@ public class AppDetailSettingsLoaderTask extends AsyncTask<String, Integer, Link
 			
 			int selectedOption = Setting.OPTION_FLAG_ALLOW;
 			String customValue = null;
-			HashMap<String, String> customValues = null;
+			LinkedList<SimpleImmutableEntry<String, String>> customValues = null;
 
 			if (privacySettings != null) {
 				/*
@@ -139,11 +140,11 @@ public class AppDetailSettingsLoaderTask extends AsyncTask<String, Integer, Link
 							customValue = (String)method.invoke(privacySettings);
 							selectedOption = Setting.OPTION_FLAG_CUSTOM;
 						} else if (tmpList.contains(Setting.OPTION_TEXT_CUSTOMLOCATION)) {
-							customValues = new HashMap<String, String>();
+							customValues = new LinkedList<SimpleImmutableEntry<String, String>>();
 							method = privacySettings.getClass().getMethod("get" + valueFunctionNameStub + "Lat");
-							customValues.put("Lat", (String)method.invoke(privacySettings));
+							customValues.add(new SimpleImmutableEntry<String, String>("Lat", (String)method.invoke(privacySettings)));
 							method = privacySettings.getClass().getMethod("get" + valueFunctionNameStub + "Lon");
-							customValues.put("Lon", (String)method.invoke(privacySettings));
+							customValues.add(new SimpleImmutableEntry<String, String>("Lon", (String)method.invoke(privacySettings)));
 							selectedOption = Setting.OPTION_FLAG_CUSTOMLOCATION;
 						} else {
 							//I don't think this is the best exception to be using here, but I

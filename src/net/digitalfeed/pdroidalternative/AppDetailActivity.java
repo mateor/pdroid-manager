@@ -30,8 +30,10 @@ import java.util.LinkedList;
 
 import android.os.Bundle;
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ListView;
@@ -46,16 +48,22 @@ public class AppDetailActivity extends Activity {
 	private String packageName;
 	private ListView listView;
 	private Context context;
+	private boolean inApp; 
+	
+	private ProgressDialog progDialog ;
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.d("PDroidAlternative", "onCreate of AppDetailActivity starting");
         setContentView(R.layout.activity_app_detail);
+        Log.d("PDroidAlternative", "onCreate of AppDetailActivity finished");
     }
 
     @Override
     public void onStart() {
     	super.onStart();
+    	Log.d("PDroidAlternative", "onStart of AppDetailActivity starting");
     	context = this;
         Bundle bundle = getIntent().getExtras();
         packageName = bundle.getString(BUNDLE_PACKAGE_NAME);
@@ -64,8 +72,8 @@ public class AppDetailActivity extends Activity {
          * If this action has been called from an app listing, then the action bar should
          * have the 'up' functionality which returns to the app listing.
          */
-        //hav
-        if (bundle.getBoolean(BUNDLE_IN_APP, false)) {
+        inApp = bundle.getBoolean(BUNDLE_IN_APP, false);
+        if (inApp) {
         	getActionBar().setDisplayHomeAsUpEnabled(true);
         } else {
         	getActionBar().setDisplayHomeAsUpEnabled(false);
@@ -73,6 +81,7 @@ public class AppDetailActivity extends Activity {
         //this.setTitle(packageName);
         AppDetailAppLoaderTask appDetailAppLoader = new AppDetailAppLoaderTask(this, new AppDetailAppLoaderTaskCompleteHandler());
         appDetailAppLoader.execute(packageName);
+        Log.d("PDroidAlternative", "onStart of AppDetailActivity finished");
     }
     
     @Override
@@ -88,6 +97,15 @@ public class AppDetailActivity extends Activity {
                 startActivity(parentActivityIntent);
                 finish();
                 return true;
+            case R.id.detailSaveButton:
+            	progDialog = new ProgressDialog(context);
+            	progDialog.setTitle(getString(R.string.detail_saving_dialog_title));
+            	progDialog.setMessage(getString(R.string.detail_saving_dialog_message));
+            	AppSetting [] toAsyncTask = this.settingList;
+            	this.settingList = null;
+            	AppDetailSettingsWriterTask settingsWriterTask = new AppDetailSettingsWriterTask(context, packageName, new AppDetailSettingWriterTaskCompleteHandler());
+            	settingsWriterTask.execute(toAsyncTask);            	
+            	break;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -102,11 +120,17 @@ public class AppDetailActivity extends Activity {
     {
 		@Override
 		public void asyncTaskComplete(Application inApplication) {
-			setTitle(inApplication.getLabel());
-			application = inApplication;
-			AppDetailSettingsLoaderTask appDetailSettingsLoader = new AppDetailSettingsLoaderTask(context, new AppDetailSettingsLoaderTaskCompleteHandler());
-			appDetailSettingsLoader.execute(application.getPackageName());
+			Log.d("PDroidAlternative", "AppDetailAppLoaderTask completed.");
 			
+			if (inApplication == null) {
+				Log.d("PDroidAlternative", "inApplication is null: the app could have disappeared between the intent being created and the task running?");
+			} else {
+				Log.d("PDroidAlternative", "inApplication " + inApplication.getPackageName() + " retrieved");
+				setTitle(inApplication.getLabel());
+				application = inApplication;
+				AppDetailSettingsLoaderTask appDetailSettingsLoader = new AppDetailSettingsLoaderTask(context, new AppDetailSettingsLoaderTaskCompleteHandler());
+				appDetailSettingsLoader.execute(application.getPackageName());
+			}
 		}
     }
     
@@ -114,11 +138,45 @@ public class AppDetailActivity extends Activity {
     {
 		@Override
 		public void asyncTaskComplete(LinkedList<AppSetting> inSettingList) {
-			if (inSettingList != null) {
-				settingList = inSettingList.toArray(new AppSetting[inSettingList.size()]); 
+			Log.d("PDroidAlternative", "AppDetailSettingsLoaderTask completed.");
+			if (inSettingList == null) {
+				Log.d("PDroidAlternative","AppDetailSettingsLoaderTask returned null");
+			} else if (inSettingList.size() == 0) {
+				Log.d("PDroidAlternative","AppDetailSettingsLoaderTask returned no AppSettings (size = 0)");
+			} else {
+				Log.d("PDroidAlternative","AppDetailSettingsLoaderTask returned " + Integer.toString(inSettingList.size()) + " settings. Initialising ListView.");
+				settingList = inSettingList.toArray(new AppSetting[inSettingList.size()]);
 				listView = (ListView)findViewById(R.id.settingList);
 				listView.setAdapter(new AppDetailAdapter(context, R.layout.setting_list_row_standard, settingList));
 			}
+		}
+    }
+    
+    class AppDetailSettingWriterTaskCompleteHandler implements IAsyncTaskCallback<Void>
+    {	
+		@Override
+		public void asyncTaskComplete(Void param) {
+			Log.d("PDroidAlternative", "AppDetailSettingWriterTask completed.");
+			if (progDialog != null && progDialog.isShowing()) {
+				progDialog.dismiss();
+			}
+			
+			/*
+			 * TODO: add some means for the AppListActivity to update the database (or
+			 * better yet, do it here)
+			 */
+			
+			if (inApp) {
+				//We should return to the parent activity when finishing
+	            Intent parentActivityIntent = new Intent(context, AppListActivity.class);
+	            parentActivityIntent.addFlags(
+	                    Intent.FLAG_ACTIVITY_CLEAR_TOP |
+	                    Intent.FLAG_ACTIVITY_NEW_TASK); //Not sure if we need the ACTIVITY_NEW_TASK
+	            startActivity(parentActivityIntent);
+			}
+			
+			//All done - finish
+            finish();
 		}
     }
 }

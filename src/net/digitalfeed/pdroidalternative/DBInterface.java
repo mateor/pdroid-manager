@@ -42,9 +42,21 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.text.TextUtils;
 import android.util.Log;
 
+/**
+ * Holds all the individual table-related classes for the database (which then hold
+ * all the column names, create statements, etc). Poorly implements a singleton pattern,
+ * but in order to have initialise-on-demand, the static vars for the singletons are not
+ * final. The Initialization-on-demand (https://secure.wikimedia.org/wikipedia/en/wiki/Initialization_on_demand_holder_idiom) 
+ * may be better, but the context does need to be stored at some point to allow the database
+ * connection to be made.
+ * I'm a bit concerned about threading here,
+ *  
+ * @author smorgan
+ */
 public class DBInterface {
 	private static DBHelper dbhelper = null;
 	private static DBInterface dbinterface = null;
+	private static final Object lockObject = new Object();
 	
 	private static final int SETTING_TABLE_COLUMN_NUMBER_OFFSET_ID = 0;
 	private static final int SETTING_TABLE_COLUMN_NUMBER_OFFSET_NAME = 1;
@@ -379,15 +391,20 @@ public class DBInterface {
 	public Context context;
 	
 	public static DBInterface getInstance(Context context) {
-		if (dbinterface == null) {
-			dbinterface = new DBInterface(context.getApplicationContext());
+		synchronized (lockObject) {
+			if (dbinterface == null) {
+				dbinterface = new DBInterface(context.getApplicationContext());
+			}
 		}
+		
 		return dbinterface;
 	}
 	
 	public DBHelper getDBHelper() {
-		if (dbhelper == null) {
-			dbhelper = new DBHelper(this.context);
+		synchronized(this) {
+			if (dbhelper == null) {
+				dbhelper = new DBHelper(this.context);
+			}
 		}
 		
 		return dbhelper;

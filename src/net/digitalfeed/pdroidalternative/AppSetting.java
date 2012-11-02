@@ -27,7 +27,9 @@
 package net.digitalfeed.pdroidalternative;
 
 import java.security.InvalidParameterException;
-import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.AbstractMap.SimpleImmutableEntry;
 
 
 /**
@@ -40,9 +42,9 @@ public class AppSetting extends Setting {
 	protected int selectedOptionBit;
 	//if there is only one value, then we use 'customValue' to hold it (this applies to almost all
 	//of the currently available settings).
-	//For multiple-value settings (e.g. lat, long) set the hashmap to be name->value such that
+	//For multiple-value settings (e.g. lat, long) set the list to have entries name->value such that
 	//when we use reflection to write values, we can use setting postfixed with the key.
-	protected HashMap<String, String> customValues;
+	protected List<SimpleImmutableEntry<String, String>> customValues;
 	protected String customValue;
 	
 	public AppSetting(String id, String name, String settingFunctionName, String valueFunctionNameStub, String title, String group,
@@ -58,7 +60,7 @@ public class AppSetting extends Setting {
 	}
 	
 	public AppSetting(String id, String name, String settingFunctionName, String valueFunctionNameStub, String title, String group,
-			String groupTitle, String[] options, int selectedOptionBit, HashMap<String, String> customValues) {
+			String groupTitle, String[] options, int selectedOptionBit, List<SimpleImmutableEntry<String, String>> customValues) {
 		super(id, name, settingFunctionName, valueFunctionNameStub, title, group, groupTitle, options);
 		this.setSelectedOptionBit(selectedOptionBit);
 		this.customValues = customValues;
@@ -110,8 +112,21 @@ public class AppSetting extends Setting {
 	
 	public void setCustomValue(String customValue) {
 		this.customValue = customValue;
-		if (this.customValues != null) {
-			this.customValues.clear();
+		this.customValues = null;
+	}
+
+	public void setCustomValues(List<SimpleImmutableEntry<String, String>> customValues) {
+		this.customValue = null;
+		this.customValues = customValues;
+	}
+	
+	public List<SimpleImmutableEntry<String, String>> getCustomValues() {
+		if (this.customValue != null) {
+			LinkedList<SimpleImmutableEntry<String, String>> returnMap = new LinkedList<SimpleImmutableEntry<String, String>>();
+			returnMap.add(new SimpleImmutableEntry<String, String>("", this.customValue));
+			return returnMap;
+		} else {
+			return this.customValues;
 		}
 	}
 }

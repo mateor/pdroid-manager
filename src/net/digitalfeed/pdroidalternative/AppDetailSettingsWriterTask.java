@@ -26,21 +26,14 @@
  */
 package net.digitalfeed.pdroidalternative;
 
-import java.io.InvalidObjectException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.security.InvalidParameterException;
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.AbstractMap.SimpleImmutableEntry;
 
 import android.content.Context;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.privacy.PrivacySettings;
 import android.privacy.PrivacySettingsManager;
-import android.text.TextUtils;
 import android.util.Log;
 
 
@@ -65,27 +58,28 @@ public class AppDetailSettingsWriterTask extends AsyncTask<AppSetting, Integer, 
 	@Override
 	protected Void doInBackground(AppSetting... appSettings) {
 		//TODO: Exception handling: null appSettings
-		
+
 		PrivacySettingsManager privacySettingsManager = (PrivacySettingsManager)context.getSystemService("privacy");
 		PrivacySettings privacySettings = privacySettingsManager.getSettings(packageName);
-		
+
 		Method setMethod;
-		Method setValueMethod;
-		String settingFunctionName;
-		for (int appSettingNum = 0; appSettingNum < appSettings.length; appSettingNum++) {
-			settingFunctionName = appSettings[appSettingNum].getSettingFunctionName();
+		Class<?> privacySettingsClass = privacySettings.getClass();
+		
+		for (AppSetting appSetting : appSettings) {
 			try {
-				setMethod = privacySettings.getClass().getMethod("set" + settingFunctionName, byte.class);
-				switch (appSettings[appSettingNum].getSelectedOptionBit()) {
+				setMethod = privacySettingsClass.getMethod("set" + appSetting.getSettingFunctionName(), byte.class);
+				switch (appSetting.getSelectedOptionBit()) {
 				case Setting.OPTION_FLAG_ALLOW:
 				case Setting.OPTION_FLAG_YES:
 					setMethod.invoke(setMethod, PrivacySettings.REAL);
 					break;
 				case Setting.OPTION_FLAG_CUSTOM:
-					setMethod.invoke(setMethod, PrivacySettings.RANDOM);
-					break;
 				case Setting.OPTION_FLAG_CUSTOMLOCATION:
-					setMethod.invoke(setMethod, PrivacySettings.RANDOM);
+					setMethod.invoke(setMethod, PrivacySettings.CUSTOM);
+					for (SimpleImmutableEntry<String, String> settingValue : appSetting.getCustomValues()) {
+						setMethod = privacySettingsClass.getMethod("set" + appSetting.getValueFunctionNameStub() + settingValue.getKey(), String.class);
+						setMethod.invoke(setMethod, settingValue.getValue());
+					}
 					break;				
 				case Setting.OPTION_FLAG_DENY:
 				case Setting.OPTION_FLAG_NO:
@@ -96,16 +90,16 @@ public class AppDetailSettingsWriterTask extends AsyncTask<AppSetting, Integer, 
 					break;
 				}
 			} catch (NoSuchMethodException e) {
-			   Log.d("PDroidAlternative","PrivacySettings object of privacy service is missing the expected method " + settingFunctionName);
+			   Log.d("PDroidAlternative","PrivacySettings object of privacy service is missing the expected method " + appSetting.getSettingFunctionName());
 			   e.printStackTrace();
 			} catch (IllegalArgumentException e) {
-				Log.d("PDroidAlternative","Illegal arguments when calling " + settingFunctionName);
+				Log.d("PDroidAlternative","Illegal arguments when calling " + appSetting.getSettingFunctionName());
 				e.printStackTrace();
 			} catch (IllegalAccessException e) {
-				Log.d("PDroidAlternative","Illegal access when calling " + settingFunctionName);
+				Log.d("PDroidAlternative","Illegal access when calling " + appSetting.getSettingFunctionName());
 				e.printStackTrace();
 			} catch (InvocationTargetException e) {
-				Log.d("PDroidAlternative","InvocationTargetException when calling " + settingFunctionName);
+				Log.d("PDroidAlternative","InvocationTargetException when calling " + appSetting.getSettingFunctionName());
 				e.printStackTrace();
 			}
 		}

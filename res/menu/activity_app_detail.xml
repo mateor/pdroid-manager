@@ -31,5 +31,5 @@
     <item android:id="@+id/detailSaveButton"
         android:icon="@android:drawable/ic_menu_save"
 		android:showAsAction="always"
-        android:title="Save" />
+        android:title="@string/detail_actionbar_savebutton_title" />
 </menu>
