@@ -65,14 +65,14 @@ public class AppListActivity extends Activity {
         listView = (ListView)findViewById(R.id.applicationList);
         
         context = this;
-        /* 
-         * need to force the application cache to be invalid
-         * if incrementing the version number, at present. This is simply because
-         * tables get deleted, etc, and content is not regenerated unless the case
-         * is considered invalid. This will be sorted when the DB upgrades are actually real
-         * not just purging
+        /*
+         * If the database version has changed, we will need to rebuild the application cache 
          */
-        //prefs.setIsApplicationListCacheValid(false); 
+        if (prefs.getLastRunDatabaseVersion() != DBInterface.DBHelper.DATABASE_VERSION) {
+        	Log.d("PDroidAlternative", "Defined database version has changed since last run; we need to rebuild the cache");
+        	prefs.setIsApplicationListCacheValid(false);
+        	prefs.setLastRunDatabaseVersion(DBInterface.DBHelper.DATABASE_VERSION);
+        } 
         //this.dbInterface = DBInterface.getInstance(this);
         //DBHelper dbHelper = this.dbInterface.getDBHelper();
         //SQLiteDatabase db = dbHelper.getWritableDatabase();
@@ -109,6 +109,7 @@ public class AppListActivity extends Activity {
 	    		//}
 				Intent intent = new Intent(context, AppDetailActivity.class);
 				intent.putExtra(AppDetailActivity.BUNDLE_PACKAGE_NAME, appList[position].getPackageName());
+				intent.putExtra(AppDetailActivity.BUNDLE_IN_APP, true);
 				startActivity(intent);
 			}
         });

@@ -26,10 +26,12 @@
  */
 package net.digitalfeed.pdroidalternative;
 
+import java.io.InvalidObjectException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.security.InvalidParameterException;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -69,13 +71,14 @@ public class AppDetailSettingsLoaderTask extends AsyncTask<String, Integer, Link
 		SQLiteDatabase db = DBInterface.getInstance(context).getDBHelper().getReadableDatabase();
 		
 		Cursor cursor = db.rawQuery(DBInterface.QUERY_GET_SETTINGS_BY_PACKAGENAME, selectPackageName);
-    	int idColumn = cursor.getColumnIndex(DBInterface.SettingTable.TABLE_NAME + "." + DBInterface.SettingTable.COLUMN_NAME_ID);
-    	int nameColumn = cursor.getColumnIndex(DBInterface.SettingTable.TABLE_NAME + "." + DBInterface.SettingTable.COLUMN_NAME_NAME);
-    	int settingFunctionNameColumn = cursor.getColumnIndex(DBInterface.SettingTable.TABLE_NAME + "." + DBInterface.SettingTable.COLUMN_NAME_SETTINGFUNCTIONNAME);
-    	int titleColumn = cursor.getColumnIndex(DBInterface.SettingTable.TABLE_NAME + "." + DBInterface.SettingTable.COLUMN_NAME_TITLE);
-    	int groupColumn = cursor.getColumnIndex(DBInterface.SettingTable.TABLE_NAME + "." + DBInterface.SettingTable.COLUMN_NAME_GROUP_ID);
-    	int groupTitleColumn = cursor.getColumnIndex(DBInterface.SettingTable.TABLE_NAME + "." + DBInterface.SettingTable.COLUMN_NAME_GROUP_TITLE);
-    	int optionsColumn = cursor.getColumnIndex(DBInterface.SettingTable.TABLE_NAME + "." + DBInterface.SettingTable.COLUMN_NAME_OPTIONS);
+    	int idColumn = cursor.getColumnIndex(DBInterface.SettingTable.COLUMN_NAME_ID);
+    	int nameColumn = cursor.getColumnIndex(DBInterface.SettingTable.COLUMN_NAME_NAME);
+    	int settingFunctionNameColumn = cursor.getColumnIndex(DBInterface.SettingTable.COLUMN_NAME_SETTINGFUNCTIONNAME);
+    	int valueFunctionNameStubColumn = cursor.getColumnIndex(DBInterface.SettingTable.COLUMN_NAME_VALUEFUNCTIONNAMESTUB);
+    	int titleColumn = cursor.getColumnIndex(DBInterface.SettingTable.COLUMN_NAME_TITLE);
+    	int groupColumn = cursor.getColumnIndex(DBInterface.SettingTable.COLUMN_NAME_GROUP_ID);
+    	int groupTitleColumn = cursor.getColumnIndex(DBInterface.SettingTable.COLUMN_NAME_GROUP_TITLE);
+    	int optionsColumn = cursor.getColumnIndex(DBInterface.SettingTable.COLUMN_NAME_OPTIONS);
     	
 		cursor.moveToFirst();
 		LinkedList<AppSetting> settingSet = new LinkedList<AppSetting>();
@@ -86,6 +89,7 @@ public class AppDetailSettingsLoaderTask extends AsyncTask<String, Integer, Link
 			String id = cursor.getString(idColumn);
 			String name = cursor.getString(nameColumn);
 			String settingFunctionName = cursor.getString(settingFunctionNameColumn);
+			String valueFunctionNameStub = cursor.getString(valueFunctionNameStubColumn);
 			String title = cursor.getString(titleColumn);
 			String group = cursor.getString(groupColumn);
 			String groupTitle = cursor.getString(groupTitleColumn);
@@ -97,14 +101,25 @@ public class AppDetailSettingsLoaderTask extends AsyncTask<String, Integer, Link
 			}
 			
 			int selectedOption = Setting.OPTION_FLAG_ALLOW;
-			
+			String customValue = null;
+			HashMap<String, String> customValues = null;
+
 			if (privacySettings != null) {
-				//Reflection may not be the best way of doing this, but otherwise this is going to be a great
-				//big select statement, which ties us more closely to the specific set of options (which are
-				//right now fairly loosely coupled - although to entirely loosely coupled)
+				/*
+				 * Reflection may not be the best way of doing this, but otherwise this is going to be a great
+				 * big select statement, which ties us more closely to the specific set of options (which are
+				 * right now fairly loosely coupled - although to entirely loosely coupled)
+				 * 
+				 * It would work even better if the function names were actually consistent
+				 * i.e. not 'setAndroidIdSetting' for the setting and 'setAndroidID' for the value.
+				 * This makes it necessary to include separate content in the database for the
+				 * 'get..setting' and 'set..setting' vs value setting functions, or have a special
+				 * 'catch' case when reading or writing.
+				 */
+
 				List<String> tmpList = Arrays.asList(optionsArray);
 				try {
-					method = privacySettings.getClass().getMethod(settingFunctionName);
+					method = privacySettings.getClass().getMethod("get" + settingFunctionName);
 					byte pdroidCoreSetting = (Byte)method.invoke(privacySettings);
 					switch (pdroidCoreSetting) {
 					case PrivacySettings.REAL:
@@ -112,13 +127,28 @@ public class AppDetailSettingsLoaderTask extends AsyncTask<String, Integer, Link
 							selectedOption = Setting.OPTION_FLAG_ALLOW;
 						} else if (tmpList.contains(Setting.OPTION_TEXT_YES)) {
 							selectedOption = Setting.OPTION_FLAG_YES;
+						} else {
+							//I don't think this is the best exception to be using here, but I
+							//am not sure which is a better one
+							throw new RuntimeException("Invalid 'real' setting for " + settingFunctionName);
 						}
 						break;
 					case PrivacySettings.CUSTOM:
 						if (tmpList.contains(Setting.OPTION_TEXT_CUSTOM)) {
+							method = privacySettings.getClass().getMethod("get" + valueFunctionNameStub);
+							customValue = (String)method.invoke(privacySettings);
 							selectedOption = Setting.OPTION_FLAG_CUSTOM;
 						} else if (tmpList.contains(Setting.OPTION_TEXT_CUSTOMLOCATION)) {
+							customValues = new HashMap<String, String>();
+							method = privacySettings.getClass().getMethod("get" + valueFunctionNameStub + "Lat");
+							customValues.put("Lat", (String)method.invoke(privacySettings));
+							method = privacySettings.getClass().getMethod("get" + valueFunctionNameStub + "Lon");
+							customValues.put("Lon", (String)method.invoke(privacySettings));
 							selectedOption = Setting.OPTION_FLAG_CUSTOMLOCATION;
+						} else {
+							//I don't think this is the best exception to be using here, but I
+							//am not sure which is a better one
+							throw new RuntimeException("Invalid 'custom' setting for " + settingFunctionName);
 						}
 						break;
 					case PrivacySettings.EMPTY:
@@ -126,6 +156,10 @@ public class AppDetailSettingsLoaderTask extends AsyncTask<String, Integer, Link
 							selectedOption = Setting.OPTION_FLAG_DENY;
 						} else if (tmpList.contains(Setting.OPTION_TEXT_NO)) {
 							selectedOption = Setting.OPTION_FLAG_NO;
+						} else {
+							//I don't think this is the best exception to be using here, but I
+							//am not sure which is a better one
+							throw new RuntimeException("Invalid 'empty' setting for " + settingFunctionName);
 						}
 						break;
 					case PrivacySettings.RANDOM:
@@ -149,7 +183,11 @@ public class AppDetailSettingsLoaderTask extends AsyncTask<String, Integer, Link
 				}
 			}
 			
-			settingSet.add(new AppSetting(id, settingFunctionName, name, title, group, groupTitle, optionsArray, selectedOption));
+			if (customValues != null) {
+				settingSet.add(new AppSetting(id, settingFunctionName, valueFunctionNameStub, name, title, group, groupTitle, optionsArray, selectedOption, customValues));
+			} else {
+				settingSet.add(new AppSetting(id, settingFunctionName, valueFunctionNameStub, name, title, group, groupTitle, optionsArray, selectedOption, customValue));
+			}
 		} while (cursor.moveToNext());
 		cursor.close();
 		db.close();

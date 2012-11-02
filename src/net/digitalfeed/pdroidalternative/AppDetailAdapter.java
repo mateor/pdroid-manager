@@ -36,6 +36,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.TextView;
 
 public class AppDetailAdapter extends ArrayAdapter<AppSetting>{
@@ -44,9 +45,10 @@ public class AppDetailAdapter extends ArrayAdapter<AppSetting>{
 	protected static final int VIEW_TYPE_YESNO = 2;
 	
 	
-	Context context;
-	int standardResourceId;
-	AppSetting[] settingList = null;
+	private final Context context;
+	private final int standardResourceId;
+	private final AppSetting[] settingList;
+	private OnCheckedChangeListener listener;
 	
 	public AppDetailAdapter(Context context, int standardResourceId, AppSetting[] settingList) {
 		super(context, standardResourceId, settingList);
@@ -69,15 +71,16 @@ public class AppDetailAdapter extends ArrayAdapter<AppSetting>{
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		View row = convertView;
-		SettingHolder holder = null;
+		SettingHolder holder;
 		
 		if (row == null) {
 			LayoutInflater inflater = ((Activity)this.context).getLayoutInflater();
 			row = inflater.inflate(this.standardResourceId, parent, false);
 
-			holder = new SettingHolder();			
+			holder = new SettingHolder();	
 			holder.settingName = (TextView)row.findViewById(R.id.option_title);
 			holder.radioGroup = (RadioGroup)row.findViewById(R.id.setting_choice);
+			
 			holder.allowOption = row.findViewById(R.id.option_allow);
 			holder.yesOption = row.findViewById(R.id.option_yes);
 			holder.customOption = row.findViewById(R.id.option_custom);
@@ -85,11 +88,46 @@ public class AppDetailAdapter extends ArrayAdapter<AppSetting>{
 			holder.randomOption = row.findViewById(R.id.option_random);
 			holder.denyOption = row.findViewById(R.id.option_deny);
 			holder.noOption = row.findViewById(R.id.option_no);
+			this.listener = new OnCheckedChangeListener() {
+				@Override
+				public void onCheckedChanged(RadioGroup group, int checkedId) {
+					int position = (Integer)group.getTag();
+					int currentSelectedId = settingList[position].getSelectedOptionBit();
+					switch (checkedId){
+					case R.id.option_allow:
+						if (currentSelectedId != Setting.OPTION_FLAG_ALLOW) settingList[position].setSelectedOptionBit(Setting.OPTION_FLAG_ALLOW);
+						break;
+					case R.id.option_yes:
+						if (currentSelectedId != Setting.OPTION_FLAG_YES) settingList[position].setSelectedOptionBit(Setting.OPTION_FLAG_YES);
+						break;
+					case R.id.option_custom:
+						if (currentSelectedId != Setting.OPTION_FLAG_CUSTOM) settingList[position].setSelectedOptionBit(Setting.OPTION_FLAG_CUSTOM);
+						break;
+					case R.id.option_customlocation:
+						if (currentSelectedId != Setting.OPTION_FLAG_CUSTOMLOCATION) settingList[position].setSelectedOptionBit(Setting.OPTION_FLAG_CUSTOMLOCATION);
+						break;
+					case R.id.option_random:
+						if (currentSelectedId != Setting.OPTION_FLAG_RANDOM) settingList[position].setSelectedOptionBit(Setting.OPTION_FLAG_RANDOM);
+						break;
+					case R.id.option_deny:
+						if (currentSelectedId != Setting.OPTION_FLAG_DENY) settingList[position].setSelectedOptionBit(Setting.OPTION_FLAG_DENY);
+						break;
+					case R.id.option_no:
+						if (currentSelectedId != Setting.OPTION_FLAG_NO) settingList[position].setSelectedOptionBit(Setting.OPTION_FLAG_NO);
+						break;
+					}
+				}
+			};
 			row.setTag(holder);
 		} else {
 			holder = (SettingHolder)row.getTag();
 		}
 
+		//This approach to identified the clicked 'position' is based on http://stackoverflow.com/questions/9392511/how-to-handle-oncheckedchangelistener-for-a-radiogroup-in-a-custom-listview-adap
+		//I am not entirely comfortable with always resetting this tag, but I'm not sure creating a class
+		//to hold stuff in there and updating it would be better
+		holder.radioGroup.setTag(Integer.valueOf(position));
+		holder.radioGroup.setOnCheckedChangeListener(null);
 		AppSetting setting = settingList[position];
 		holder.settingName.setText(setting.getTitle());
 		switch (setting.getSelectedOptionBit()){
@@ -120,7 +158,6 @@ public class AppDetailAdapter extends ArrayAdapter<AppSetting>{
 		}
 		
 		int optionsBits = setting.getOptionsBits();
-		Log.d("PDroidAlternative","Option bits for " + setting.getTitle() + " = " + optionsBits);
 		if (0 == (optionsBits & Setting.OPTION_FLAG_ALLOW)) {
 			holder.allowOption.setVisibility(View.GONE);
 		} else {
@@ -156,7 +193,8 @@ public class AppDetailAdapter extends ArrayAdapter<AppSetting>{
 		} else {
 			holder.noOption.setVisibility(View.VISIBLE);
 		}
-		
+		 
+		holder.radioGroup.setOnCheckedChangeListener(this.listener);
 		return row;
 	}
 
@@ -172,5 +210,4 @@ public class AppDetailAdapter extends ArrayAdapter<AppSetting>{
 		View denyOption;
 		View noOption;
 	}
-
 }

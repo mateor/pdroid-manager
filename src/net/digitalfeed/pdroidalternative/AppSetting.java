@@ -27,6 +27,7 @@
 package net.digitalfeed.pdroidalternative;
 
 import java.security.InvalidParameterException;
+import java.util.HashMap;
 
 
 /**
@@ -37,24 +38,37 @@ import java.security.InvalidParameterException;
  */
 public class AppSetting extends Setting {
 	protected int selectedOptionBit;
+	//if there is only one value, then we use 'customValue' to hold it (this applies to almost all
+	//of the currently available settings).
+	//For multiple-value settings (e.g. lat, long) set the hashmap to be name->value such that
+	//when we use reflection to write values, we can use setting postfixed with the key.
+	protected HashMap<String, String> customValues;
+	protected String customValue;
 	
-	public AppSetting(String id, String name, String settingFunctionName, String title, String group,
+	public AppSetting(String id, String name, String settingFunctionName, String valueFunctionNameStub, String title, String group,
 			String groupTitle, String[] options) {
-		super(id, name, settingFunctionName, title, group, groupTitle, options);
+		super(id, name, settingFunctionName, valueFunctionNameStub, title, group, groupTitle, options);
 		this.selectedOptionBit = OPTION_FLAG_ALLOW; //if something isn't set, it is assumed to be 'allowed'
 	}
 	
-	public AppSetting(String id, String name, String settingFunctionName, String title, String group,
+	public AppSetting(String id, String name, String settingFunctionName, String valueFunctionNameStub, String title, String group,
 			String groupTitle, String[] options, int selectedOptionBit) {
-		super(id, name, settingFunctionName, title, group, groupTitle, options);
-		
-		//Validation check the selected option bit - only one option can be chosen,
-		//so if we detect more than 1 selected we'll raise an exception
-		if (Integer.bitCount(selectedOptionBit) > 1) {
-                throw new InvalidParameterException("Selected option bits can only nominate one option");
-        }
-        
-		this.selectedOptionBit = selectedOptionBit;
+		super(id, name, settingFunctionName, valueFunctionNameStub, title, group, groupTitle, options);
+		this.setSelectedOptionBit(selectedOptionBit);
+	}
+	
+	public AppSetting(String id, String name, String settingFunctionName, String valueFunctionNameStub, String title, String group,
+			String groupTitle, String[] options, int selectedOptionBit, HashMap<String, String> customValues) {
+		super(id, name, settingFunctionName, valueFunctionNameStub, title, group, groupTitle, options);
+		this.setSelectedOptionBit(selectedOptionBit);
+		this.customValues = customValues;
+	}
+	
+	public AppSetting(String id, String name, String settingFunctionName, String valueFunctionNameStub, String title, String group,
+			String groupTitle, String[] options, int selectedOptionBit, String customValue) {
+		super(id, name, settingFunctionName, valueFunctionNameStub, title, group, groupTitle, options);
+		this.setSelectedOptionBit(selectedOptionBit);
+		this.customValue = customValue;
 	}
 	
 	public String getSelectedOption() {
@@ -82,5 +96,22 @@ public class AppSetting extends Setting {
 	
 	public int getSelectedOptionBit() {
 		return this.selectedOptionBit;
+	}
+	
+	public void setSelectedOptionBit(int selectedOptionBit) {
+		//Validation check the selected option bit - only one option can be chosen,
+		//so if we detect more than 1 selected we'll raise an exception
+		if (Integer.bitCount(selectedOptionBit) > 1) {
+                throw new InvalidParameterException("Selected option bits can only nominate one option");
+        }
+        
+		this.selectedOptionBit = selectedOptionBit; 
+	}
+	
+	public void setCustomValue(String customValue) {
+		this.customValue = customValue;
+		if (this.customValues != null) {
+			this.customValues.clear();
+		}
 	}
 }

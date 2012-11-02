@@ -129,6 +129,8 @@ public class AppListGeneratorTask extends AsyncTask<Void, Integer, Application [
 		 * don't require any permissions (e.g. ANDROID_ID)
 		 */
 		
+		PermissionSettingHelper psh = new PermissionSettingHelper();
+		
 		for (ApplicationInfo appInfo : installedApps) {
 			try {
 				PackageInfo pkgInfo = pkgMgr.getPackageInfo(appInfo.packageName, PackageManager.GET_PERMISSIONS);
@@ -146,7 +148,9 @@ public class AppListGeneratorTask extends AsyncTask<Void, Integer, Application [
 				
 				PrivacySettings privacySettings = privacySettingsManager.getSettings(appInfo.packageName);
 				if (privacySettings != null) {
-					if (PermissionSettingHelper.isPrivacySettingsUntrusted(privacySettings)) {
+					//I would prefer to be getting a new readable database handle for this, but
+					//if I do that, then call close on it, it closes my writable handle too.
+					if (psh.isPrivacySettingsUntrusted(write_db, privacySettings)) {
 						statusFlags = statusFlags | ApplicationStatusTable.FLAG_IS_UNTRUSTED;
 					}
 					
@@ -186,7 +190,6 @@ public class AppListGeneratorTask extends AsyncTask<Void, Integer, Application [
 				applicationStatusInsertHelper.bind(applicationStatusTableColumnNumbers[APPLICATION_STATUS_TABLE_COLUMN_NUMBER_OFFSET_PACKAGENAME], appInfo.packageName);
 				applicationStatusInsertHelper.bind(applicationStatusTableColumnNumbers[APPLICATION_STATUS_TABLE_COLUMN_NUMBER_OFFSET_FLAGS], statusFlags);
 				applicationStatusInsertHelper.execute();
-
 				
 				Application app = new Application(
 						appInfo.packageName,

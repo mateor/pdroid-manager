@@ -63,13 +63,13 @@ public class AppDetailAppLoaderTask extends AsyncTask<String, Integer, Applicati
 		
 		cursor.moveToFirst();
 		/*
-    	int labelColumn = cursor.getColumnIndex(DBInterface.ApplicationTable.TABLE_NAME + "." + DBInterface.ApplicationTable.COLUMN_NAME_LABEL);
-    	int packageNameColumn = cursor.getColumnIndex(DBInterface.ApplicationTable.TABLE_NAME + "." + DBInterface.ApplicationTable.COLUMN_NAME_PACKAGENAME); 
-    	int uidColumn = cursor.getColumnIndex(DBInterface.ApplicationTable.TABLE_NAME + "." + DBInterface.ApplicationTable.COLUMN_NAME_UID);
-    	int versionCodeColumn = cursor.getColumnIndex(DBInterface.ApplicationTable.TABLE_NAME + "." + DBInterface.ApplicationTable.COLUMN_NAME_VERSIONCODE);
-    	int appFlagsColumn = cursor.getColumnIndex(DBInterface.ApplicationTable.TABLE_NAME + "." + DBInterface.ApplicationTable.COLUMN_NAME_FLAGS);
-    	int iconColumn = cursor.getColumnIndex(DBInterface.ApplicationTable.TABLE_NAME + "." + DBInterface.ApplicationTable.COLUMN_NAME_ICON);
-    	int permissionsColumn = cursor.getColumnIndex(DBInterface.ApplicationTable.TABLE_NAME + "." + DBInterface.ApplicationTable.COLUMN_NAME_PERMISSIONS);
+    	int labelColumn = cursor.getColumnIndex(DBInterface.ApplicationTable.COLUMN_NAME_LABEL);
+    	int packageNameColumn = cursor.getColumnIndex(DBInterface.ApplicationTable.COLUMN_NAME_PACKAGENAME); 
+    	int uidColumn = cursor.getColumnIndex(DBInterface.ApplicationTable.COLUMN_NAME_UID);
+    	int versionCodeColumn = cursor.getColumnIndex(DBInterface.ApplicationTable.COLUMN_NAME_VERSIONCODE);
+    	int appFlagsColumn = cursor.getColumnIndex(DBInterface.ApplicationTable.COLUMN_NAME_FLAGS);
+    	int iconColumn = cursor.getColumnIndex(DBInterface.ApplicationTable.COLUMN_NAME_ICON);
+    	int permissionsColumn = cursor.getColumnIndex(DBInterface.ApplicationTable.COLUMN_NAME_PERMISSIONS);
 
 		String label = cursor.getString(labelColumn);
 		String packageName = cursor.getString(packageNameColumn);
@@ -81,39 +81,25 @@ public class AppDetailAppLoaderTask extends AsyncTask<String, Integer, Applicati
 		*/
 
 		String label = cursor.getString(
-				cursor.getColumnIndex(
-						DBInterface.ApplicationTable.TABLE_NAME + "." + DBInterface.ApplicationTable.COLUMN_NAME_LABEL
-						)
+				cursor.getColumnIndex(DBInterface.ApplicationTable.COLUMN_NAME_LABEL)
 				);
 		String packageName = cursor.getString(
-				cursor.getColumnIndex(
-						DBInterface.ApplicationTable.TABLE_NAME + "." + DBInterface.ApplicationTable.COLUMN_NAME_PACKAGENAME
-						)
+				cursor.getColumnIndex(DBInterface.ApplicationTable.COLUMN_NAME_PACKAGENAME)
 				);
 		int uid = cursor.getInt(
-				cursor.getColumnIndex(
-						DBInterface.ApplicationTable.TABLE_NAME + "." + DBInterface.ApplicationTable.COLUMN_NAME_UID
-						)
+				cursor.getColumnIndex(DBInterface.ApplicationTable.COLUMN_NAME_UID)
 				);
 		int versionCode = cursor.getInt(
-				cursor.getColumnIndex(
-						DBInterface.ApplicationTable.TABLE_NAME + "." + DBInterface.ApplicationTable.COLUMN_NAME_VERSIONCODE
-						)
+				cursor.getColumnIndex(DBInterface.ApplicationTable.COLUMN_NAME_VERSIONCODE)
 				);
 		int appFlags = cursor.getInt(
-				cursor.getColumnIndex(
-						DBInterface.ApplicationTable.TABLE_NAME + "." + DBInterface.ApplicationTable.COLUMN_NAME_FLAGS
-						)
+				cursor.getColumnIndex(DBInterface.ApplicationTable.COLUMN_NAME_FLAGS)
 				);
 		byte[] iconBlob = cursor.getBlob(
-				cursor.getColumnIndex(
-						DBInterface.ApplicationTable.TABLE_NAME + "." + DBInterface.ApplicationTable.COLUMN_NAME_ICON
-						)
+				cursor.getColumnIndex(DBInterface.ApplicationTable.COLUMN_NAME_ICON)
 				);
 		String permissions = cursor.getString(
-				cursor.getColumnIndex(
-						DBInterface.ApplicationTable.TABLE_NAME + "." + DBInterface.ApplicationTable.COLUMN_NAME_PERMISSIONS
-						)
+				cursor.getColumnIndex(DBInterface.ApplicationTable.COLUMN_NAME_PERMISSIONS)
 				);
 
 		Drawable icon = new BitmapDrawable(context.getResources(),BitmapFactory.decodeByteArray(iconBlob, 0, iconBlob.length));

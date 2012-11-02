@@ -32,6 +32,7 @@ class Setting implements Comparable<Setting> {
 	protected String id;
 	protected String name;
 	protected String settingFunctionName;
+	protected String valueFunctionNameStub;
 	protected String title;
 	protected String group;
 	protected String groupTitle;
@@ -53,10 +54,11 @@ class Setting implements Comparable<Setting> {
 	public static final String OPTION_TEXT_NO = "no";
 	protected static final int OPTION_FLAG_NUMBITS = 7;
 	
-	public Setting(String id, String name, String settingFunctionName, String title, String group, String groupTitle, String [] options) {
+	public Setting(String id, String name, String settingFunctionName, String valueFunctionNameStub, String title, String group, String groupTitle, String [] options) {
 		this.id = id;
 		this.name = name;
 		this.settingFunctionName = settingFunctionName;
+		this.valueFunctionNameStub = valueFunctionNameStub;
 		this.title = title;
 		this.group = group;
 		this.groupTitle = groupTitle;
@@ -133,6 +135,10 @@ class Setting implements Comparable<Setting> {
 	
 	public String getSettingFunctionName() {
 		return this.settingFunctionName;
+	}
+	
+	public String getValueFunctionNameStub() {
+		return this.valueFunctionNameStub;
 	}
 	
 	public String getGroup() {

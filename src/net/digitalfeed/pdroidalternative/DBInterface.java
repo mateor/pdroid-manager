@@ -49,11 +49,12 @@ public class DBInterface {
 	private static final int SETTING_TABLE_COLUMN_NUMBER_OFFSET_ID = 0;
 	private static final int SETTING_TABLE_COLUMN_NUMBER_OFFSET_NAME = 1;
 	private static final int SETTING_TABLE_COLUMN_NUMBER_OFFSET_SETTINGFUNCTIONNAME = 2;
-	private static final int SETTING_TABLE_COLUMN_NUMBER_OFFSET_TITLE = 3;
-	private static final int SETTING_TABLE_COLUMN_NUMBER_OFFSET_GROUP_ID = 4;
-	private static final int SETTING_TABLE_COLUMN_NUMBER_OFFSET_GROUP_TITLE = 5;
-	private static final int SETTING_TABLE_COLUMN_NUMBER_OFFSET_OPTIONS = 6;
-	private static final int SETTING_TABLE_COLUMN_COUNT = 7;
+	private static final int SETTING_TABLE_COLUMN_NUMBER_OFFSET_VALUEFUNCTIONNAMESTUB = 3;
+	private static final int SETTING_TABLE_COLUMN_NUMBER_OFFSET_TITLE = 4;
+	private static final int SETTING_TABLE_COLUMN_NUMBER_OFFSET_GROUP_ID = 5;
+	private static final int SETTING_TABLE_COLUMN_NUMBER_OFFSET_GROUP_TITLE = 6;
+	private static final int SETTING_TABLE_COLUMN_NUMBER_OFFSET_OPTIONS = 7;
+	private static final int SETTING_TABLE_COLUMN_COUNT = 8;
 
 	private static final int PERMISSIONSETTING_TABLE_COLUMN_NUMBER_OFFSET_PERMISSION = 0;
 	private static final int PERMISSIONSETTING_TABLE_COLUMN_NUMBER_OFFSET_SETTING = 1;
@@ -172,7 +173,8 @@ public class DBInterface {
 		public static final String TABLE_NAME = "setting";
 		public static final String COLUMN_NAME_ID = "id";
 		public static final String COLUMN_NAME_NAME = "name";
-		public static final String COLUMN_NAME_SETTINGFUNCTIONNAME = "SETTINGFUNCTIONNAME"; //this is the name of function call to the 'privacy' service used to access the current 'selected option' for the setting
+		public static final String COLUMN_NAME_SETTINGFUNCTIONNAME = "settingfunctionname"; //this is the name of function call to the 'privacy' service used to access the current 'selected option' for the setting
+		public static final String COLUMN_NAME_VALUEFUNCTIONNAMESTUB = "valuefunctionnamestub"; //Used to write a custom value to the PDroid core when possible
 		public static final String COLUMN_NAME_TITLE = "title"; //Used to store the 'friendly' title of the setting, which may be language specific.
 																//If we start adding support for multiple languages, possibly we should be handling this better; maybe having another table with all the language text in it?
 																//The point of this is to avoid using reflection to get the titles from resources all the time
@@ -185,6 +187,7 @@ public class DBInterface {
 				COLUMN_NAME_ID + " TEXT NOT NULL, " + 
 				COLUMN_NAME_NAME + " TEXT NOT NULL, " +
 				COLUMN_NAME_SETTINGFUNCTIONNAME + " TEXT NOT NULL, " +
+				COLUMN_NAME_VALUEFUNCTIONNAMESTUB + " TEXT, " +
 				COLUMN_NAME_TITLE + " TEXT, " +
 				COLUMN_NAME_GROUP_ID + " TEXT NOT NULL, " +
 				COLUMN_NAME_GROUP_TITLE + " TEXT, " +
@@ -198,6 +201,7 @@ public class DBInterface {
 			contentValues.put(COLUMN_NAME_ID, setting.getId());
 			contentValues.put(COLUMN_NAME_NAME, setting.getName());
 			contentValues.put(COLUMN_NAME_SETTINGFUNCTIONNAME, setting.getSettingFunctionName());
+			contentValues.put(COLUMN_NAME_VALUEFUNCTIONNAMESTUB, setting.getValueFunctionNameStub());
 			//contentValues.put(COLUMN_NAME_TITLE, setting.getTitle());
 			contentValues.put(COLUMN_NAME_GROUP_ID, setting.getGroup());
 			//contentValues.put(COLUMN_NAME_GROUP_TITLE, setting.getGroupTitle());
@@ -351,6 +355,7 @@ public class DBInterface {
 			SettingTable.TABLE_NAME + "." + SettingTable.COLUMN_NAME_ID + ", " +
 			SettingTable.TABLE_NAME + "." + SettingTable.COLUMN_NAME_NAME + ", " +
 			SettingTable.TABLE_NAME + "." + SettingTable.COLUMN_NAME_SETTINGFUNCTIONNAME + ", " +
+			SettingTable.TABLE_NAME + "." + SettingTable.COLUMN_NAME_VALUEFUNCTIONNAMESTUB + ", " +
 			SettingTable.TABLE_NAME + "." + SettingTable.COLUMN_NAME_TITLE + ", " +
 			SettingTable.TABLE_NAME + "." + SettingTable.COLUMN_NAME_GROUP_ID + ", " +
 			SettingTable.TABLE_NAME + "." + SettingTable.COLUMN_NAME_GROUP_TITLE + ", " +
@@ -364,6 +369,12 @@ public class DBInterface {
 			" ON " + SettingTable.TABLE_NAME + "." + SettingTable.COLUMN_NAME_ID + 
 			" = " + PermissionSettingTable.TABLE_NAME + "." + PermissionSettingTable.COLUMN_NAME_SETTING +
 			" WHERE " + PermissionApplicationTable.TABLE_NAME + "." + PermissionApplicationTable.COLUMN_NAME_PACKAGENAME + " = ?";	
+	
+	public static final String QUERY_GET_SETTINGSFUNCTIONNAMES = "SELECT " +
+			SettingTable.TABLE_NAME + "." + SettingTable.COLUMN_NAME_SETTINGFUNCTIONNAME + 
+			" FROM " + SettingTable.TABLE_NAME;
+
+	
 	
 	public Context context;
 	
@@ -401,7 +412,7 @@ public class DBInterface {
 	
 	public class DBHelper extends SQLiteOpenHelper {
 		public static final String DATABASE_NAME = "pdroidmgr.db";
-		public static final int DATABASE_VERSION = 27;
+		public static final int DATABASE_VERSION = 31;
 		
 		//private SQLiteDatabase db;
 		
@@ -466,6 +477,7 @@ public class DBInterface {
 				settingTableColumnNumbers[SETTING_TABLE_COLUMN_NUMBER_OFFSET_ID] = settingInsertHelper.getColumnIndex(SettingTable.COLUMN_NAME_ID);
 				settingTableColumnNumbers[SETTING_TABLE_COLUMN_NUMBER_OFFSET_NAME] = settingInsertHelper.getColumnIndex(SettingTable.COLUMN_NAME_NAME);
 				settingTableColumnNumbers[SETTING_TABLE_COLUMN_NUMBER_OFFSET_SETTINGFUNCTIONNAME] = settingInsertHelper.getColumnIndex(SettingTable.COLUMN_NAME_SETTINGFUNCTIONNAME);
+				settingTableColumnNumbers[SETTING_TABLE_COLUMN_NUMBER_OFFSET_VALUEFUNCTIONNAMESTUB] = settingInsertHelper.getColumnIndex(SettingTable.COLUMN_NAME_VALUEFUNCTIONNAMESTUB);
 				settingTableColumnNumbers[SETTING_TABLE_COLUMN_NUMBER_OFFSET_TITLE] = settingInsertHelper.getColumnIndex(SettingTable.COLUMN_NAME_TITLE);
 				settingTableColumnNumbers[SETTING_TABLE_COLUMN_NUMBER_OFFSET_GROUP_ID] = settingInsertHelper.getColumnIndex(SettingTable.COLUMN_NAME_GROUP_ID);
 				settingTableColumnNumbers[SETTING_TABLE_COLUMN_NUMBER_OFFSET_GROUP_TITLE] = settingInsertHelper.getColumnIndex(SettingTable.COLUMN_NAME_GROUP_TITLE);
@@ -485,6 +497,9 @@ public class DBInterface {
 						);
 					settingInsertHelper.bind(settingTableColumnNumbers[SETTING_TABLE_COLUMN_NUMBER_OFFSET_SETTINGFUNCTIONNAME], 
 							xrp.getAttributeValue(null, "settingfunctionname")
+						);
+					settingInsertHelper.bind(settingTableColumnNumbers[SETTING_TABLE_COLUMN_NUMBER_OFFSET_VALUEFUNCTIONNAMESTUB], 
+							xrp.getAttributeValue(null, "valuefunctionnamestub")
 						);
 		        	//I wish there were a nicer way to get this string. Maybe a pair of arrays - one with identifiers, one with labels?
 					settingInsertHelper.bind(settingTableColumnNumbers[SETTING_TABLE_COLUMN_NUMBER_OFFSET_TITLE],

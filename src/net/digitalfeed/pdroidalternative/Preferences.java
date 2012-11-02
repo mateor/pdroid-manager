@@ -34,6 +34,7 @@ public class Preferences {
 	
 	private static final String SHARED_PREFERENCES_NAME = "net.digitalfeed.pdroidalternative";
 	private static final String IS_CACHE_VALID = "isCacheValid";
+	private static final String LAST_RUN_DATABASE_VERSION = "lastDatabaseVersion"; 
 	private SharedPreferences prefs;
 	
 	public Preferences(Context context) {
@@ -43,10 +44,20 @@ public class Preferences {
 	public Boolean getIsApplicationListCacheValid() {
 		return this.prefs.getBoolean(IS_CACHE_VALID, false);
 	}
-	
+
 	public void setIsApplicationListCacheValid(Boolean isValid) {
 		Editor editor = this.prefs.edit();
 		editor.putBoolean(IS_CACHE_VALID, isValid);
+		editor.commit();
+	}
+	
+	public int getLastRunDatabaseVersion() {
+		return this.prefs.getInt(LAST_RUN_DATABASE_VERSION, 0);
+	}
+	
+	public void setLastRunDatabaseVersion(int newDatabaseVersion) {
+		Editor editor = this.prefs.edit();
+		editor.putInt(LAST_RUN_DATABASE_VERSION, newDatabaseVersion);
 		editor.commit();
 	}
 	

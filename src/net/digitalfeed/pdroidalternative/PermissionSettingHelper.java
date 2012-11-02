@@ -26,14 +26,28 @@
  */
 package net.digitalfeed.pdroidalternative;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.security.InvalidParameterException;
+import java.util.Arrays;
 import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
 
+import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.privacy.PrivacySettings;
+import android.privacy.PrivacySettingsManager;
+import android.text.TextUtils;
+import android.util.Log;
 
 class PermissionSettingHelper {
 
+	public LinkedList<Method> permissionReadMethods = null;
+	
+	public PermissionSettingHelper() {};
+	
 	public static HashSet<String> getPermissionsOfInterest(SQLiteDatabase db) {
 		HashSet <String> permissionsOfInterest = new HashSet<String>();
 		
@@ -49,12 +63,58 @@ class PermissionSettingHelper {
 		return permissionsOfInterest;
 	}
 	
+
+	
 	/**
 	 * An annoying function to fish through all the settings in a 'PrivacySettings' object to check if it is 'trusted' or 'untrusted'.
 	 * It would be much more helpful if there were functions in the core of PDroid for this (and I'll probably add
 	 * them at some point).
 	 */
-	public static boolean isPrivacySettingsUntrusted (PrivacySettings privacySettings) {
+	public boolean isPrivacySettingsUntrusted (SQLiteDatabase db, PrivacySettings privacySettings) {
+		//If we do not already have handles to the relevant methods, then we need to get them
+		if (this.permissionReadMethods == null) {
+			this.permissionReadMethods = new LinkedList<Method>();
+			Cursor cursor = db.rawQuery(DBInterface.QUERY_GET_SETTINGSFUNCTIONNAMES, null);
+	    	int settingFunctionNameColumn = cursor.getColumnIndex(DBInterface.SettingTable.COLUMN_NAME_SETTINGFUNCTIONNAME);
+			cursor.moveToFirst();
+			do {
+				String settingFunctionName = cursor.getString(settingFunctionNameColumn);
+				try {
+					permissionReadMethods.add(privacySettings.getClass().getMethod("get" + settingFunctionName));
+				} catch (NoSuchMethodException e) {
+				   Log.d("PDroidAlternative","PrivacySettings object of privacy service is missing the expected method " + settingFunctionName);
+				   e.printStackTrace();
+				} catch (IllegalArgumentException e) {
+					Log.d("PDroidAlternative","Illegal arguments when calling " + settingFunctionName);
+					e.printStackTrace();
+				}
+			} while (cursor.moveToNext());
+			cursor.close();
+		}
+		
+		for (Method method : this.permissionReadMethods) {
+			//Reflection may not be the best way of doing this, but otherwise this is going to be a great
+			//big select statement, which ties us more closely to the specific set of options (which are
+			//right now fairly loosely coupled - although to entirely loosely coupled)
+			try {
+				byte pdroidCoreSetting = (Byte)method.invoke(privacySettings);
+				if (pdroidCoreSetting != PrivacySettings.REAL) return false;
+			} catch (IllegalArgumentException e) {
+				Log.d("PDroidAlternative","Illegal arguments when calling " + method.getName());
+				e.printStackTrace();
+			} catch (IllegalAccessException e) {
+				Log.d("PDroidAlternative","Illegal access when calling " + method.getName());
+				e.printStackTrace();
+			} catch (InvocationTargetException e) {
+				Log.d("PDroidAlternative","InvocationTargetException when calling " + method.getName());
+				e.printStackTrace();
+			}
+		}
+		
+		return true;
+		
+		/*
+		
 		if (privacySettings.getSwitchWifiStateSetting() == PrivacySettings.REAL &&
 				//privacySettings.getForceOnlineState == PrivacySettings.REAL && //I'm leaving this one out because it doesn't really make sense to include
 																 //That, and what does 'real', etc mean in that context...?
@@ -92,7 +152,7 @@ class PermissionSettingHelper {
 					return false;
 		} else {
 			return true;
-		}
+		}*/
 	}
 }
 /*
