@@ -32,8 +32,8 @@
     <string name="app_list_menu_search">Search</string>
     <string name="app_list_menu_refresh">Regenerate Application List</string>
     <string name="title_activity_main">PDroid Manager</string>
-    <string name="writePrivacySettings_label">Modify privacy settings</string>
-    <string name="writePrivacySettings_description">Allows modification of privacy settings associated with applications.</string>
+    <string name="permission_label_writeprivacysettings">Modify privacy settings</string>
+    <string name="permission_description_writeprivacysettings">Allows modification of privacy settings associated with applications.</string>
     <string name="title_activity_app_detail">BlahBLah?</string>
     <string name="app_list_app_icon_text">Application icon</string>
     <string name="app_list_has_internet_indicator">Indicator of Internet access privilege</string>

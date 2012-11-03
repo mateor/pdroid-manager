@@ -26,6 +26,8 @@
  */
 package net.digitalfeed.pdroidalternative;
 
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -220,6 +222,7 @@ public class AppListGeneratorTask extends AsyncTask<Void, Integer, Application [
 		write_db.setTransactionSuccessful();
 		write_db.endTransaction();
 		write_db.close();
+		Collections.sort(appList, new Application.LabelComparator());
 		return appList.toArray(new Application [appList.size()]);
 	}
 	

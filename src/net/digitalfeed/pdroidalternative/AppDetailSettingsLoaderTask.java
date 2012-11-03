@@ -185,9 +185,9 @@ public class AppDetailSettingsLoaderTask extends AsyncTask<String, Integer, Link
 			}
 			
 			if (customValues != null) {
-				settingSet.add(new AppSetting(id, settingFunctionName, valueFunctionNameStub, name, title, group, groupTitle, optionsArray, selectedOption, customValues));
+				settingSet.add(new AppSetting(id, name, settingFunctionName, valueFunctionNameStub, title, group, groupTitle, optionsArray, selectedOption, customValues));
 			} else {
-				settingSet.add(new AppSetting(id, settingFunctionName, valueFunctionNameStub, name, title, group, groupTitle, optionsArray, selectedOption, customValue));
+				settingSet.add(new AppSetting(id, name, settingFunctionName, valueFunctionNameStub, title, group, groupTitle, optionsArray, selectedOption, customValue));
 			}
 		} while (cursor.moveToNext());
 		cursor.close();

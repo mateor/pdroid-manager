@@ -6,8 +6,8 @@
     <uses-sdk
         android:minSdkVersion="16"
         android:targetSdkVersion="16" />
-    <!-- <permission android:label="@string/writePrivacySettings_label" android:name="android.privacy.WRITE_PRIVACY_SETTINGS" android:protectionLevel="signature" android:permissionGroup="android.permission-group.PERSONAL_INFO" android:description="@string/writePrivacySettings_description" /> -->
-    <uses-permission android:name="android.privacy.WRITE_PRIVACY_SETTINGS" />
+		<permission android:label="@string/permission_label_writeprivacysettings" android:name="android.privacy.WRITE_PRIVACY_SETTINGS" android:protectionLevel="signature" android:permissionGroup="android.permission-group.PERSONAL_INFO" android:description="@string/permission_description_writeprivacysettings" />
+    	<uses-permission android:name="android.privacy.WRITE_PRIVACY_SETTINGS" />
 
     <application
         android:icon="@drawable/ic_launcher"

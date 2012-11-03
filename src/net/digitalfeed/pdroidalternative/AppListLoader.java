@@ -117,7 +117,7 @@ public class AppListLoader {
 		String query = "";
 		switch (searchType) {
 		case ALL:
-			query = DBInterface.QUERY_GET_ALL_APPS_PACKAGENAME_ONLY;
+			query = DBInterface.QUERYPART_GET_ALL_APPS_PACKAGENAME_ONLY;
 			break;
 		case PACKAGE_NAME:
 			query = DBInterface.QUERY_GET_APPS_BY_LABEL_PACKAGENAME_ONLY;

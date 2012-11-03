@@ -59,6 +59,7 @@ public class AppDetailSettingsWriterTask extends AsyncTask<AppSetting, Integer, 
 	protected Void doInBackground(AppSetting... appSettings) {
 		//TODO: Exception handling: null appSettings
 
+		Log.d("PDroidAlternative","Running update of settings for " + packageName);
 		PrivacySettingsManager privacySettingsManager = (PrivacySettingsManager)context.getSystemService("privacy");
 		PrivacySettings privacySettings = privacySettingsManager.getSettings(packageName);
 
@@ -66,27 +67,34 @@ public class AppDetailSettingsWriterTask extends AsyncTask<AppSetting, Integer, 
 		Class<?> privacySettingsClass = privacySettings.getClass();
 		
 		for (AppSetting appSetting : appSettings) {
+			Log.d("PDroidAlternative","Processing setting " + appSetting.getId());
 			try {
 				setMethod = privacySettingsClass.getMethod("set" + appSetting.getSettingFunctionName(), byte.class);
+				Log.d("PDroidAlternative","Get method: " + appSetting.getSettingFunctionName());
 				switch (appSetting.getSelectedOptionBit()) {
 				case Setting.OPTION_FLAG_ALLOW:
 				case Setting.OPTION_FLAG_YES:
-					setMethod.invoke(setMethod, PrivacySettings.REAL);
+					setMethod.invoke(privacySettings, PrivacySettings.REAL);
+					Log.d("PDroidAlternative","Invoked set" + appSetting.getSettingFunctionName() + " for REAL");
 					break;
 				case Setting.OPTION_FLAG_CUSTOM:
 				case Setting.OPTION_FLAG_CUSTOMLOCATION:
-					setMethod.invoke(setMethod, PrivacySettings.CUSTOM);
+					setMethod.invoke(privacySettings, PrivacySettings.CUSTOM);
+					Log.d("PDroidAlternative","Invoked set" + appSetting.getSettingFunctionName() + " for CUSTOM");
 					for (SimpleImmutableEntry<String, String> settingValue : appSetting.getCustomValues()) {
 						setMethod = privacySettingsClass.getMethod("set" + appSetting.getValueFunctionNameStub() + settingValue.getKey(), String.class);
-						setMethod.invoke(setMethod, settingValue.getValue());
+						setMethod.invoke(privacySettings, settingValue.getValue());
+						Log.d("PDroidAlternative","Invoked set" + appSetting.getValueFunctionNameStub() + settingValue.getKey());
 					}
 					break;				
 				case Setting.OPTION_FLAG_DENY:
 				case Setting.OPTION_FLAG_NO:
-					setMethod.invoke(setMethod, PrivacySettings.EMPTY);
+					setMethod.invoke(privacySettings, PrivacySettings.EMPTY);
+					Log.d("PDroidAlternative","Invoked set" + appSetting.getSettingFunctionName() + " for DENY");
 					break;
 				case Setting.OPTION_FLAG_RANDOM:
-					setMethod.invoke(setMethod, PrivacySettings.RANDOM);
+					Log.d("PDroidAlternative","Invoked set" + appSetting.getSettingFunctionName() + " for RANDOM");
+					setMethod.invoke(privacySettings, PrivacySettings.RANDOM);
 					break;
 				}
 			} catch (NoSuchMethodException e) {
@@ -103,6 +111,7 @@ public class AppDetailSettingsWriterTask extends AsyncTask<AppSetting, Integer, 
 				e.printStackTrace();
 			}
 		}
+		privacySettingsManager.saveSettings(privacySettings);
 		return null;
 	}
 	
