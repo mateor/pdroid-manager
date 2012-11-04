@@ -52,7 +52,7 @@ public class Application {
 	}
 
 	//indicates whether this has a full data complement, or just the minimum data set
-	private boolean isStub;
+	//private boolean isStub;
 	
 	private String packageName;
 	private String label;
@@ -162,7 +162,7 @@ public class Application {
 	}
 	
 	Application(String packageName, String label, int versionCode, int appFlags, int statusFlags, int uid, Drawable icon) {
-		this.isStub = true;
+		//this.isStub = true;
 		this.packageName = packageName;
 		this.label = label;
 		this.versionCode = versionCode;
@@ -173,7 +173,7 @@ public class Application {
 	}	
 	
 	Application(String packageName, String label, int versionCode, int appFlags, int statusFlags, int uid, Drawable icon, String[] permissions) {
-		this.isStub = false;
+		//this.isStub = false;
 		this.packageName = packageName;
 		this.label = label;
 		this.versionCode = versionCode;

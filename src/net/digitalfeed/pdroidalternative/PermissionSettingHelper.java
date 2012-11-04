@@ -28,18 +28,12 @@ package net.digitalfeed.pdroidalternative;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.security.InvalidParameterException;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedList;
-import java.util.List;
 
-import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.privacy.PrivacySettings;
-import android.privacy.PrivacySettingsManager;
-import android.text.TextUtils;
 import android.util.Log;
 
 class PermissionSettingHelper {

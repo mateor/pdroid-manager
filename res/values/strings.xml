@@ -32,9 +32,15 @@
     <string name="app_list_menu_search">Search</string>
     <string name="app_list_menu_refresh">Regenerate Application List</string>
     <string name="title_activity_main">PDroid Manager</string>
-    <string name="permission_label_writeprivacysettings">Modify privacy settings</string>
-    <string name="permission_description_writeprivacysettings">Allows modification of privacy settings associated with applications.</string>
-    <string name="title_activity_app_detail">BlahBLah?</string>
+    
+    <string name="permission_label_writeprivacysettings">Modify PDroid settings</string>
+    <string name="permission_description_writeprivacysettings">Allows modification of PDroid settings associated with applications.</string>
+    <string name="permission_label_readprivacysettings">Read PDroid settings</string>
+    <string name="permission_description_readprivacysettings">Allows reading of PDroid settings associated with applications.</string>
+    <string name="permission_label_manageprivacycontrollers">Configure PDroid Management Applications</string>
+    <string name="permission_description_manageprivacycontrollers">Allows configuration of which apps are able to change PDroid settings</string>
+    
+    <string name="title_activity_app_detail">Application</string>
     <string name="app_list_app_icon_text">Application icon</string>
     <string name="app_list_has_internet_indicator">Indicator of Internet access privilege</string>
     
@@ -45,6 +51,9 @@
     <string name="detail_saving_dialog_title">Please wait</string>
     <string name="detail_saving_dialog_message">Saving...</string>
     <string name="detail_actionbar_savebutton_title">Save</string>
+    
+    <string name="detail_custom_input_OKtext">OK</string>
+    <string name="detail_custom_input_CANCELtext">CANCEL</string>
     
     <string name="detail_notifyonaccess_text">Notify on access</string>
     
