@@ -39,12 +39,20 @@
 	        android:layout_height="wrap_content"
 	        android:layout_gravity="left"
 	        android:text="@string/detail_notifyonaccess_text"
-	        tools:context=".AppDetailActivity2" />
+	        />
+		<CheckBox
+	        android:id="@+id/detailLogOnAccess"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:layout_gravity="left"
+	        android:text="@string/detail_logonaccess_text"
+	        android:layout_below="@+id/detailNotifyOnAccess"
+	        />
 		<ListView
                 android:id="@+id/settingList"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/detailNotifyOnAccess"
+                android:layout_below="@+id/detailLogOnAccess"
                 />
     
 </RelativeLayout>

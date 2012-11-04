@@ -46,10 +46,12 @@ public class AppDetailSettingsWriterTask extends AsyncTask<AppSetting, Integer, 
 	final IAsyncTaskCallback<Void> listener;
 	final Context context;
 	final String packageName;
+	final boolean notifySetting;
 	
-	public AppDetailSettingsWriterTask(Context context, String packageName, IAsyncTaskCallback<Void> listener) {
+	public AppDetailSettingsWriterTask(Context context, String packageName, boolean notifySetting, IAsyncTaskCallback<Void> listener) {
 		this.context = context;
 		this.listener = listener;
+		this.notifySetting = notifySetting;
 		
 		//TODO: Exception handling: null packageName
 		this.packageName = packageName;
@@ -65,6 +67,12 @@ public class AppDetailSettingsWriterTask extends AsyncTask<AppSetting, Integer, 
 
 		Method setMethod;
 		Class<?> privacySettingsClass = privacySettings.getClass();
+		
+		if (notifySetting) {
+			privacySettings.setNotificationSetting(PrivacySettings.SETTING_NOTIFY_ON);
+		} else {
+			privacySettings.setNotificationSetting(PrivacySettings.SETTING_NOTIFY_OFF);
+		}
 		
 		for (AppSetting appSetting : appSettings) {
 			Log.d("PDroidAlternative","Processing setting " + appSetting.getId());

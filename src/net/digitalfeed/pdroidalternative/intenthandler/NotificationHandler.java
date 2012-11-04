@@ -28,6 +28,7 @@ package net.digitalfeed.pdroidalternative.intenthandler;
 
 import android.widget.Toast;
 import net.digitalfeed.pdroidalternative.DBInterface;
+import net.digitalfeed.pdroidalternative.Preferences;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -55,14 +56,19 @@ public class NotificationHandler extends BroadcastReceiver {
 		String dataType = bundle.getString("dataType");
         String output = bundle.getString("output");
         
-        DBInterface.getInstance(context).addLogEntry(packageName, uid, accessMode, dataType);
+        Preferences prefs = new Preferences(context);
         
-        Toast msgToast = new Toast(context);
-        msgToast.setDuration(Toast.LENGTH_SHORT);
-        msgToast.setText((CharSequence)packageName);
-        //SQLiteDatabase write_db = DBInterface.getInstance(context).getDBHelper().getWritableDatabase();
-        //ContentValues logEntry = DBInterface.ApplicationLogTable.getContentValues()
-        //write_db.insert(DBInterface.ApplicationLogTable.TABLE_NAME, null, )
+        if (prefs.getDoLogForPackage(packageName)) {
+	        DBInterface dbInterface = DBInterface.getInstance(context);
+	        dbInterface.addLogEntry(packageName, uid, accessMode, dataType);
+	        dbInterface = null;
+        }
+        
+        if (prefs.getDoNotifyForPackage(packageName)) {
+	        Toast msgToast = new Toast(context);
+	        msgToast.setDuration(prefs.getNotificationDuration());
+	        msgToast.setText((CharSequence)packageName);
+        }
+        prefs = null;
 	}
-
 }

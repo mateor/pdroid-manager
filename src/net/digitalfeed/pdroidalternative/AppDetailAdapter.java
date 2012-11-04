@@ -276,7 +276,6 @@ public class AppDetailAdapter extends ArrayAdapter<AppSetting>{
 				dialog.dismiss();
 			}
 		});
-    	valueInput.setNegativeButton(R.string.detail_custom_input_CANCELtext, null);
     	valueInput.show();
     }
 	

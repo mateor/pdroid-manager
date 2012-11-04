@@ -26,15 +26,20 @@
  */
 package net.digitalfeed.pdroidalternative;
 
+import java.security.InvalidParameterException;
+
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.widget.Toast;
 
 public class Preferences {
-	
 	private static final String SHARED_PREFERENCES_NAME = "net.digitalfeed.pdroidalternative";
 	private static final String IS_CACHE_VALID = "isCacheValid";
-	private static final String LAST_RUN_DATABASE_VERSION = "lastDatabaseVersion"; 
+	private static final String LAST_RUN_DATABASE_VERSION = "lastDatabaseVersion";
+	private static final String NOTIFICATION_DURATION = "notificationDuration";
+	private static final String APP_NOTIFICATION_SETTING_PREFIX = "notifyOnAccessFor";
+	private static final String APP_LOG_SETTING_PREFIX = "logOnAccessFor";
 	private SharedPreferences prefs;
 	
 	public Preferences(Context context) {
@@ -58,6 +63,39 @@ public class Preferences {
 	public void setLastRunDatabaseVersion(int newDatabaseVersion) {
 		Editor editor = this.prefs.edit();
 		editor.putInt(LAST_RUN_DATABASE_VERSION, newDatabaseVersion);
+		editor.commit();
+	}
+	
+	public boolean getDoNotifyForPackage(String packageName) {
+		return this.prefs.getBoolean(APP_NOTIFICATION_SETTING_PREFIX + packageName, false);
+	}
+	
+	public void setDoNotifyForPackage(String packageName, boolean doNotify) {
+		Editor editor = this.prefs.edit();
+		editor.putBoolean(APP_NOTIFICATION_SETTING_PREFIX + packageName, doNotify);
+		editor.commit();
+	}
+	
+	public boolean getDoLogForPackage(String packageName) {
+		return this.prefs.getBoolean(APP_LOG_SETTING_PREFIX + packageName, false);
+	}
+	
+	public void setDoLogForPackage(String packageName, boolean doLog) {
+		Editor editor = this.prefs.edit();
+		editor.putBoolean(APP_LOG_SETTING_PREFIX + packageName, doLog);
+		editor.commit();
+	}
+	
+	public int getNotificationDuration() {
+		return this.prefs.getInt(NOTIFICATION_DURATION, Toast.LENGTH_SHORT);
+	}
+	
+	public void setNotificationDuration(int notificationDuration) {
+		if (notificationDuration != Toast.LENGTH_SHORT && notificationDuration != Toast.LENGTH_LONG) {
+			throw new InvalidParameterException("Notification duration must be Toast.LENGTH_SHORT or Toast.LENGTH_LONG");
+		}
+		Editor editor = this.prefs.edit();
+		editor.putInt(NOTIFICATION_DURATION, notificationDuration);
 		editor.commit();
 	}
 	

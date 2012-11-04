@@ -33,14 +33,13 @@
                 <action android:name="android.intent.action.PACKAGE_REMOVED" />
                 <data android:scheme="package" />
             </intent-filter>
-        </receiver>
-        <receiver android:name=".IntentHandler.PrivacyNotification">
+        </receiver> -->
+        <receiver android:name=".intenthandler.NotificationHandler">
 			<intent-filter>
                 <action android:name="com.privacy.pdroid.PRIVACY_NOTIFICATION" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </receiver>
-        -->
         <activity
             android:name=".AppDetailActivity"
             android:exported="false"

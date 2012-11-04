@@ -36,6 +36,7 @@ import android.content.Intent;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.CheckBox;
 import android.widget.ListView;
 
 public class AppDetailActivity extends Activity {
@@ -48,23 +49,19 @@ public class AppDetailActivity extends Activity {
 	private String packageName;
 	private ListView listView;
 	private Context context;
-	private boolean inApp; 
+	private boolean inApp;
 	
 	private ProgressDialog progDialog ;
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        context = this;
+        
         Log.d("PDroidAlternative", "onCreate of AppDetailActivity starting");
         setContentView(R.layout.activity_app_detail);
-        Log.d("PDroidAlternative", "onCreate of AppDetailActivity finished");
-    }
-
-    @Override
-    public void onStart() {
-    	super.onStart();
-    	Log.d("PDroidAlternative", "onStart of AppDetailActivity starting");
-    	context = this;
+        
+        
         Bundle bundle = getIntent().getExtras();
         packageName = bundle.getString(BUNDLE_PACKAGE_NAME);
         
@@ -81,6 +78,23 @@ public class AppDetailActivity extends Activity {
         //this.setTitle(packageName);
         AppDetailAppLoaderTask appDetailAppLoader = new AppDetailAppLoaderTask(this, new AppDetailAppLoaderTaskCompleteHandler());
         appDetailAppLoader.execute(packageName);
+        
+    	Preferences prefs = new Preferences(context);
+    	CheckBox checkbox = (CheckBox)findViewById(R.id.detailNotifyOnAccess);
+    	checkbox.setChecked(prefs.getDoNotifyForPackage(packageName));
+    	checkbox = (CheckBox)findViewById(R.id.detailLogOnAccess);
+    	checkbox.setChecked(prefs.getDoLogForPackage(packageName));
+    	checkbox = null;
+    	prefs = null;
+    	
+        Log.d("PDroidAlternative", "onCreate of AppDetailActivity finished");
+    }
+
+    @Override
+    public void onStart() {
+    	super.onStart();
+    	Log.d("PDroidAlternative", "onStart of AppDetailActivity starting");
+
         Log.d("PDroidAlternative", "onStart of AppDetailActivity finished");
     }
     
@@ -101,9 +115,19 @@ public class AppDetailActivity extends Activity {
             	progDialog = new ProgressDialog(context);
             	progDialog.setTitle(getString(R.string.detail_saving_dialog_title));
             	progDialog.setMessage(getString(R.string.detail_saving_dialog_message));
+            	
+            	Preferences prefs = new Preferences(context);
+            	CheckBox checkbox = (CheckBox)findViewById(R.id.detailNotifyOnAccess);
+            	prefs.setDoNotifyForPackage(packageName, checkbox.isChecked());
+            	boolean setNotifyTo = checkbox.isChecked();
+            	checkbox = (CheckBox)findViewById(R.id.detailLogOnAccess);
+            	setNotifyTo |= checkbox.isChecked();
+            	prefs.setDoLogForPackage(packageName, checkbox.isChecked());
+            	checkbox = null;
+            	
             	AppSetting [] toAsyncTask = this.settingList;
             	this.settingList = null;
-            	AppDetailSettingsWriterTask settingsWriterTask = new AppDetailSettingsWriterTask(context, packageName, new AppDetailSettingWriterTaskCompleteHandler());
+            	AppDetailSettingsWriterTask settingsWriterTask = new AppDetailSettingsWriterTask(context, packageName, setNotifyTo, new AppDetailSettingWriterTaskCompleteHandler());
             	settingsWriterTask.execute(toAsyncTask);            	
             	break;
         }

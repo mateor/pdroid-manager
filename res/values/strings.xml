@@ -49,13 +49,13 @@
     <string name="applist_menu_system_and_user_apps">Both</string>
     
     <string name="detail_saving_dialog_title">Please wait</string>
-    <string name="detail_saving_dialog_message">Saving...</string>
+    <string name="detail_saving_dialog_message">Saving&#8230;</string>
     <string name="detail_actionbar_savebutton_title">Save</string>
     
     <string name="detail_custom_input_OKtext">OK</string>
-    <string name="detail_custom_input_CANCELtext">CANCEL</string>
     
     <string name="detail_notifyonaccess_text">Notify on access</string>
+    <string name="detail_logonaccess_text">Log access</string>
     
     <string name="setting_option_allow">Allow</string>
     <string name="setting_option_random">Random</string>

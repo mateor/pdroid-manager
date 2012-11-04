@@ -36,5 +36,6 @@
                 android:id="@+id/applicationList"
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
+                android:fastScrollEnabled="true"
                 />
 </LinearLayout>
