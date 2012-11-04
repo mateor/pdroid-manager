@@ -43,6 +43,9 @@ public class AppListLoader {
 	private SearchType searchType;
 	private String [] projectionIn;
 
+	public static final String APP_TYPE_USER = "0";
+	public static final String APP_TYPE_SYSTEM = "1";
+	
 	enum SearchType { ALL, PACKAGE_NAME, PERMISSION, TYPE }
 	enum ResultsType { ALL, PACKAGE_NAME }
 

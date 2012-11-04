@@ -34,12 +34,17 @@ import android.content.SharedPreferences.Editor;
 import android.widget.Toast;
 
 public class Preferences {
+	public static final String APPLIST_LAST_APP_TYPE_SYSTEM = "system";
+	public static final String APPLIST_LAST_APP_TYPE_USER = "user";
+	public static final String APPLIST_LAST_APP_TYPE_ALL = "all";
+	
 	private static final String SHARED_PREFERENCES_NAME = "net.digitalfeed.pdroidalternative";
 	private static final String IS_CACHE_VALID = "isCacheValid";
 	private static final String LAST_RUN_DATABASE_VERSION = "lastDatabaseVersion";
 	private static final String NOTIFICATION_DURATION = "notificationDuration";
 	private static final String APP_NOTIFICATION_SETTING_PREFIX = "notifyOnAccessFor";
 	private static final String APP_LOG_SETTING_PREFIX = "logOnAccessFor";
+	private static final String APPLIST_LAST_APP_TYPE = "appListLastAppType"; //can be the 'system', 'user', or 'both'
 	private SharedPreferences prefs;
 	
 	public Preferences(Context context) {
@@ -99,4 +104,18 @@ public class Preferences {
 		editor.commit();
 	}
 	
+	public String getLastAppListType() {
+		return this.prefs.getString(APPLIST_LAST_APP_TYPE, APPLIST_LAST_APP_TYPE_ALL);
+	}
+	
+	public void setLastAppListType(String appListType) {
+		if (appListType != APPLIST_LAST_APP_TYPE_ALL &&
+				appListType != APPLIST_LAST_APP_TYPE_USER &&
+				appListType != APPLIST_LAST_APP_TYPE_SYSTEM) {
+			throw new InvalidParameterException("AppListType can only be ALL, USER, or SYSTEM (check your Prefs insertion!)");
+		}
+		Editor editor = this.prefs.edit();
+		editor.putString(APPLIST_LAST_APP_TYPE, appListType);
+		editor.commit();
+	}
 }

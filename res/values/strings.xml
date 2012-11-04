@@ -44,9 +44,8 @@
     <string name="app_list_app_icon_text">Application icon</string>
     <string name="app_list_has_internet_indicator">Indicator of Internet access privilege</string>
     
-    <string name="applist_menu_system_apps">System</string>
-    <string name="applist_menu_user_apps">User</string>
-    <string name="applist_menu_system_and_user_apps">Both</string>
+    <string name="applist_popupmenu_deny_all">Deny all</string>
+    <string name="applist_popupmenu_allow_all">Allow all</string>
     
     <string name="detail_saving_dialog_title">Please wait</string>
     <string name="detail_saving_dialog_message">Saving&#8230;</string>

@@ -28,20 +28,6 @@
  */
 -->
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-	<item android:icon="@android:drawable/ic_menu_view"
-          android:showAsAction="ifRoom">
-          <menu>
-	        <item
-	            android:id="@+id/systemAppsOnly"
-	            android:title="@string/applist_menu_system_apps" />
-	        <item
-	            android:id="@+id/userAppsOnly"
-	            android:title="@string/applist_menu_user_apps" />
-	        <item
-	            android:id="@+id/systemAndUserApps"
-	            android:title="@string/applist_menu_system_and_user_apps" />
-	    </menu>
-	</item>
 	<item android:id="@+id/appListMenuSearch"
           android:title="@string/app_list_menu_search"
           android:icon="@android:drawable/ic_menu_search"

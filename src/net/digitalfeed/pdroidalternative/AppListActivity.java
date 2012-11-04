@@ -26,7 +26,12 @@
  */
 package net.digitalfeed.pdroidalternative;
 
+
+import java.security.acl.LastOwnerException;
+
 import android.os.Bundle;
+import android.app.ActionBar;
+import android.app.ActionBar.OnNavigationListener;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -35,12 +40,26 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnLongClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView.OnItemLongClickListener;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.PopupMenu;
+import android.widget.SpinnerAdapter;
+import android.widget.Toast;
 
 public class AppListActivity extends Activity {
 
+	/*
+	 * If you change thees numbers, you also need to change Arrays.xml to update
+	 * the sequence of text as well
+	 */
+	public static final int APP_TYPE_USER_OPTION_POSITION = 0;
+	public static final int APP_TYPE_SYSTEM_OPTION_POSITION = 1;
+	public static final int APP_TYPE_ALL_OPTION_POSITION = 2;
+	
 	String[] appTitleList;
 	ListView listView;
 	Context context;
@@ -48,23 +67,21 @@ public class AppListActivity extends Activity {
 	ProgressDialog progDialog;
 	DBInterface dbInterface;
 	Preferences prefs;
+	ActionBar actionBar;
+	boolean readyForInput = false;
+	String currentAppType;
 	
 	int pkgCounter = 0;
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        context = this;
+        
         Log.d("PDroidAlternative", "Getting preferences");
         prefs = new Preferences(this);
-        setContentView(R.layout.activity_main);
-    }
-    
-    @Override
-    public void onStart() {
-    	super.onStart();
-        listView = (ListView)findViewById(R.id.applicationList);
         
-        context = this;
+        currentAppType = prefs.getLastAppListType();
         /*
          * If the database version has changed, we will need to rebuild the application cache 
          */
@@ -72,11 +89,19 @@ public class AppListActivity extends Activity {
         	Log.d("PDroidAlternative", "Defined database version has changed since last run; we need to rebuild the cache");
         	prefs.setIsApplicationListCacheValid(false);
         	prefs.setLastRunDatabaseVersion(DBInterface.DBHelper.DATABASE_VERSION);
-        } 
-        //this.dbInterface = DBInterface.getInstance(this);
-        //DBHelper dbHelper = this.dbInterface.getDBHelper();
-        //SQLiteDatabase db = dbHelper.getWritableDatabase();
-        //dbHelper.loadDefaultData(db);
+        }
+        
+        setContentView(R.layout.activity_main);
+        
+    	actionBar = getActionBar();
+    	actionBar.setDisplayShowTitleEnabled(false);
+    	actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
+    }
+    
+    @Override
+    public void onStart() {
+    	super.onStart();
+        listView = (ListView)findViewById(R.id.applicationList);
         
         //Do we have an application list already? is it valid?
         if (appList == null || !prefs.getIsApplicationListCacheValid()) {
@@ -85,9 +110,16 @@ public class AppListActivity extends Activity {
         		//The app list isn't valid, so we need to rebuild it
 	            rebuildApplicationList();
         	} else {
-        		Log.d("PDroidAlternative", "appList is null");
         		//the app list is valid: we need to load it from the db
-        		loadApplicationList(new AppListLoader(this, AppListLoader.SearchType.ALL, null));
+        		if (currentAppType.equals(Preferences.APPLIST_LAST_APP_TYPE_ALL)) {
+        			loadApplicationList(new AppListLoader(context, AppListLoader.SearchType.TYPE, null));
+        		} else if (currentAppType.equals(Preferences.APPLIST_LAST_APP_TYPE_SYSTEM)) {
+    				loadApplicationList(new AppListLoader(context, AppListLoader.SearchType.TYPE, new String [] {AppListLoader.APP_TYPE_SYSTEM}));
+        		} else if (currentAppType.equals(Preferences.APPLIST_LAST_APP_TYPE_USER)) {
+        			loadApplicationList(new AppListLoader(context, AppListLoader.SearchType.TYPE, new String [] {AppListLoader.APP_TYPE_USER}));
+        		} else {
+        			Log.d("PDroidAlternative","You shouldn't be here!");
+        		}
         	}
         } else {
         	listView.setAdapter(new AppListAdapter(context, R.layout.application_list_row, this.appList));
@@ -98,19 +130,17 @@ public class AppListActivity extends Activity {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position,
 					long id) {
-	    		//PrivacySettingsManager psm = (PrivacySettingsManager)context.getSystemService("privacy");
-	    		//PrivacySettings pset = psm.getSettings(appList[position].getPackageName());
-	    		//if (pset != null) {
-		    	//	Log.d("PDroidAlternative", appList[position].getPackageName() + " " + Byte.toString(pset.getOutgoingCallsSetting()));
-		    	//	Toast.makeText(context, appList[position].getPackageName() + ": " + Byte.toString(pset.getOutgoingCallsSetting()), Toast.LENGTH_SHORT).show();
-	    		//} else {
-	    		//	Log.d("PDroidAlternative", appList[position].getPackageName() + " null");
-	    		//	Toast.makeText(context, appList[position].getPackageName() + ": null =(", Toast.LENGTH_SHORT).show();
-	    		//}
-				Intent intent = new Intent(context, AppDetailActivity.class);
-				intent.putExtra(AppDetailActivity.BUNDLE_PACKAGE_NAME, appList[position].getPackageName());
-				intent.putExtra(AppDetailActivity.BUNDLE_IN_APP, true);
-				startActivity(intent);
+				openDetailInterface(appList[position]);
+			}
+        });
+        
+        listView.setOnItemLongClickListener(new OnItemLongClickListener() {
+        	
+			@Override
+			public boolean onItemLongClick(AdapterView<?> parent, View view, int position,
+					long id) {
+				showPopupMenu(view);
+				return true;
 			}
         });
     }
@@ -121,33 +151,58 @@ public class AppListActivity extends Activity {
     	Log.d("PDroidAlternative", "Destroying");
     }
     
-    
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
     	super.onCreateOptionsMenu(menu);
         getMenuInflater().inflate(R.menu.activity_main, menu);
+        final SpinnerAdapter spinnerAdapter = (SpinnerAdapter) ArrayAdapter.createFromResource(this,
+				R.array.app_type_selection_options,
+				android.R.layout.simple_spinner_dropdown_item);
+        /*
+         * Need to work out how to start the navigation list at the option which was most
+         * recently selected previously, so remember across sessions
+         */
+        /*if (currentAppType.equals(Preferences.APPLIST_LAST_APP_TYPE_USER)) {
+        } else if (currentAppType.equals(Preferences.APPLIST_LAST_APP_TYPE_SYSTEM)) {
+        	
+        } else if (currentAppType.equals(Preferences.APPLIST_LAST_APP_TYPE_ALL)) {
+        	
+        }*/
+        actionBar.setListNavigationCallbacks(spinnerAdapter, new AppTypeSpinnerListener());
+		
         return true;
     }
     
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
     	super.onOptionsItemSelected(item);
-    	switch (item.getItemId()) {
-    	case R.id.appListMenuRefresh:
-    		rebuildApplicationList();
-    		break;
-    	case R.id.systemAppsOnly:
-    		loadApplicationList(new AppListLoader(this, AppListLoader.SearchType.TYPE, new String [] {"1"}));
-    		break;
-    	case R.id.userAppsOnly:
-    		loadApplicationList(new AppListLoader(this, AppListLoader.SearchType.TYPE, new String [] {"0"}));
-    		break;
-    	case R.id.systemAndUserApps:
-    		loadApplicationList(new AppListLoader(this, AppListLoader.SearchType.ALL, null));
-    		break;
+    	if (readyForInput) {
+	    	switch (item.getItemId()) {
+	    	case R.id.appListMenuRefresh:
+	    		rebuildApplicationList();
+	    		break;
+	    	}
     	}
-    	return false;
+    	
+	    return false;
     }
+    
+    private void showPopupMenu(View view){
+    	PopupMenu popupMenu = new PopupMenu(context, view);
+    	      popupMenu.getMenuInflater().inflate(R.menu.activity_applist_longpress_menu, popupMenu.getMenu());
+    	      
+    	      popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+    	    	  @Override
+    	    	  public boolean onMenuItemClick(MenuItem item) {
+    	    		  Toast.makeText(context,
+    	    				  item.toString(),
+    	    				  Toast.LENGTH_LONG).show();
+    	    		  return true;
+    	   }
+    	  });
+    	    
+    	  popupMenu.show();
+	}
     
     private void updateProgressDialog(int currentValue, int maxValue) {
 		if (progDialog != null) {
@@ -161,6 +216,29 @@ public class AppListActivity extends Activity {
 		}
     }
     
+    private void loadApplicationList(AppListLoader appListLoader) {
+    	Log.d("PDroidAlternative","About to start load");
+    	AppListLoaderTask appListLoaderTask = new AppListLoaderTask(this, new AppListLoaderCallback());
+    	Log.d("PDroidAlternative","Created the task");
+    	appListLoaderTask.execute(appListLoader);
+    }
+    
+    private void rebuildApplicationList() {
+        this.progDialog = new ProgressDialog(this);
+        this.progDialog.setMessage("Generating Application List");
+        this.progDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+
+    	AppListGeneratorTask appListGenerator = new AppListGeneratorTask(this, new AppListGeneratorCallback());
+    	appListGenerator.execute();
+    }
+    
+    private void openDetailInterface(Application application) {
+    	Intent intent = new Intent(context, AppDetailActivity.class);
+		intent.putExtra(AppDetailActivity.BUNDLE_PACKAGE_NAME, application.getPackageName());
+		intent.putExtra(AppDetailActivity.BUNDLE_IN_APP, true);
+		startActivity(intent);
+    }
+    
     class AppListGeneratorCallback implements IAsyncTaskCallbackWithProgress<Application []>{
     	@Override
     	public void asyncTaskComplete(Application[] returnedAppList) {
@@ -168,10 +246,18 @@ public class AppListActivity extends Activity {
     			progDialog.dismiss();
     		}
     		
-    		appList = returnedAppList;
-    		
-    		listView.setAdapter(new AppListAdapter(context, R.layout.application_list_row, appList));
     		prefs.setIsApplicationListCacheValid(true);
+    		if (currentAppType.equals(Preferences.APPLIST_LAST_APP_TYPE_ALL)) {
+	    		appList = returnedAppList;    		
+	    		listView.setAdapter(new AppListAdapter(context, R.layout.application_list_row, appList));
+	    		readyForInput = true;
+    		} else if (currentAppType.equals(Preferences.APPLIST_LAST_APP_TYPE_SYSTEM)) {
+				loadApplicationList(new AppListLoader(context, AppListLoader.SearchType.TYPE, new String [] {AppListLoader.APP_TYPE_SYSTEM}));
+    		} else if (currentAppType.equals(Preferences.APPLIST_LAST_APP_TYPE_USER)) {
+    			loadApplicationList(new AppListLoader(context, AppListLoader.SearchType.TYPE, new String [] {AppListLoader.APP_TYPE_USER}));
+    		} else {
+    			Log.d("PDroidAlternative","You shouldn't be here!");
+    		}
     	}
     	
     	@Override
@@ -186,26 +272,42 @@ public class AppListActivity extends Activity {
     		Log.d("PDroidAlternative","Got result from app list load: length " + returnedAppList.length);
     		appList = returnedAppList;
     		listView.setAdapter(new AppListAdapter(context, R.layout.application_list_row, appList));
+    		readyForInput = true;
     	}
     }
     
-    public void loadApplicationList(AppListLoader appListLoader) {
-    	Log.d("PDroidAlternative","About to start load");
-    	AppListLoaderTask appListLoaderTask = new AppListLoaderTask(this, new AppListLoaderCallback());
-    	Log.d("PDroidAlternative","Created the task");
-    	appListLoaderTask.execute(appListLoader);
-    }
-    
-    public void rebuildApplicationList() {
-        this.progDialog = new ProgressDialog(this);
-        this.progDialog.setMessage("Generating Application List");
-        this.progDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-
-    	AppListGeneratorTask appListGenerator = new AppListGeneratorTask(this, new AppListGeneratorCallback());
-    	appListGenerator.execute();
-    }
-    
-    public void showSystemAppsOnly(View view) {}
-    public void showUserAppsOnly(View view) {}
-    public void showSystemAndUserApps(View view) {}
+    class AppTypeSpinnerListener implements OnNavigationListener {
+		@Override
+		public boolean onNavigationItemSelected(
+				int itemPosition, long itemId) {
+			//need to be able to disable this, just in case there is a time when
+			//it is possible to change the entry, but there is already an operation underway
+			if (readyForInput) {
+	 			switch (itemPosition) {
+				case APP_TYPE_USER_OPTION_POSITION:
+					if (!currentAppType.equals(Preferences.APPLIST_LAST_APP_TYPE_USER)) {
+						loadApplicationList(new AppListLoader(context, AppListLoader.SearchType.TYPE, new String [] {AppListLoader.APP_TYPE_USER}));
+						prefs.setLastAppListType(Preferences.APPLIST_LAST_APP_TYPE_USER);
+						currentAppType = Preferences.APPLIST_LAST_APP_TYPE_USER;
+					}
+					break;
+				case APP_TYPE_SYSTEM_OPTION_POSITION:
+					if (!currentAppType.equals(Preferences.APPLIST_LAST_APP_TYPE_SYSTEM)) {
+						loadApplicationList(new AppListLoader(context, AppListLoader.SearchType.TYPE, new String [] {AppListLoader.APP_TYPE_SYSTEM}));
+						prefs.setLastAppListType(Preferences.APPLIST_LAST_APP_TYPE_SYSTEM);
+						currentAppType = Preferences.APPLIST_LAST_APP_TYPE_SYSTEM;
+					}
+					break;
+				case APP_TYPE_ALL_OPTION_POSITION:
+					if (!currentAppType.equals(Preferences.APPLIST_LAST_APP_TYPE_ALL)) {
+						loadApplicationList(new AppListLoader(context, AppListLoader.SearchType.ALL, null));
+						prefs.setLastAppListType(Preferences.APPLIST_LAST_APP_TYPE_ALL);
+						currentAppType = Preferences.APPLIST_LAST_APP_TYPE_ALL;
+					}
+					break;
+				}
+			}
+			return true;
+		}
+    };
 }

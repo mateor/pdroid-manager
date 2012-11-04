@@ -29,6 +29,6 @@
 -->
 <resources>
 
-    <style name="AppTheme" parent="android:Theme.Holo.Light" />
+    <style name="AppTheme" parent="android:Theme.DeviceDefault" />
 
 </resources>
