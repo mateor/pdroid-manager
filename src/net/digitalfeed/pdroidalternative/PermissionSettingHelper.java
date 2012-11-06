@@ -28,6 +28,7 @@ package net.digitalfeed.pdroidalternative;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.security.InvalidParameterException;
 import java.util.HashSet;
 import java.util.LinkedList;
 
@@ -39,6 +40,7 @@ import android.util.Log;
 class PermissionSettingHelper {
 
 	public LinkedList<Method> permissionReadMethods = null;
+	public LinkedList<Method> permissionWriteMethods = null;
 	
 	public PermissionSettingHelper() {};
 	
@@ -66,6 +68,7 @@ class PermissionSettingHelper {
 	 */
 	public boolean isPrivacySettingsUntrusted (SQLiteDatabase db, PrivacySettings privacySettings) {
 		//If we do not already have handles to the relevant methods, then we need to get them
+		//They are cached on the first run
 		if (this.permissionReadMethods == null) {
 			this.permissionReadMethods = new LinkedList<Method>();
 			Cursor cursor = db.rawQuery(DBInterface.QUERY_GET_SETTINGSFUNCTIONNAMES, null);
@@ -147,6 +150,79 @@ class PermissionSettingHelper {
 		} else {
 			return true;
 		}*/
+	}
+	
+/**
+ * Updates all privacy settings on a PrivacySettings object to a new state/value. Note that this does
+ * not actually save the changes back to the service - this needs to be done outside this function.
+ * The functions on the PrivacySettings (accessed using reflection) are cached for multiple calls
+ * to the function (i.e. if running operations on multiple apps)
+ * 
+ * @param db Readable database handle used to get the name of settings functions
+ * @param privacySettings PrivacySettings object for the relevant application retrieved from the privacy service
+ * @param newOption The new Setting.OPTION_FLAG_xxx to set (which is mapped to the PDroid core constant)
+ */
+	public void setPrivacySettings (SQLiteDatabase db, PrivacySettings privacySettings, int newOption) {
+		//If we do not already have handles to the relevant methods, then we need to get them
+		//They are cached on the first run
+		if (this.permissionWriteMethods == null) {
+			this.permissionWriteMethods = new LinkedList<Method>();
+			Cursor cursor = db.rawQuery(DBInterface.QUERY_GET_SETTINGSFUNCTIONNAMES, null);
+	    	int settingFunctionNameColumn = cursor.getColumnIndex(DBInterface.SettingTable.COLUMN_NAME_SETTINGFUNCTIONNAME);
+			cursor.moveToFirst();
+			do {
+				String settingFunctionName = cursor.getString(settingFunctionNameColumn);
+				try {
+					permissionReadMethods.add(privacySettings.getClass().getMethod("set" + settingFunctionName, byte.class));
+				} catch (NoSuchMethodException e) {
+				   Log.d("PDroidAlternative","PrivacySettings object of privacy service is missing the expected method " + settingFunctionName);
+				   e.printStackTrace();
+				} catch (IllegalArgumentException e) {
+					Log.d("PDroidAlternative","Illegal arguments when calling " + settingFunctionName);
+					e.printStackTrace();
+				}
+			} while (cursor.moveToNext());
+			cursor.close();
+		}
+				
+		byte newValueByte;
+		switch (newOption) {
+		case Setting.OPTION_FLAG_ALLOW:
+		case Setting.OPTION_FLAG_YES:
+			newValueByte = PrivacySettings.REAL;
+			break;
+		case Setting.OPTION_FLAG_CUSTOM:
+		case Setting.OPTION_FLAG_CUSTOMLOCATION:
+			newValueByte = PrivacySettings.CUSTOM;
+			break;				
+		case Setting.OPTION_FLAG_DENY:
+		case Setting.OPTION_FLAG_NO:
+			newValueByte = PrivacySettings.EMPTY;
+			break;
+		case Setting.OPTION_FLAG_RANDOM:
+			newValueByte = PrivacySettings.RANDOM;
+			break;
+		default:
+			throw new InvalidParameterException("The supplied parameter two update settings was invalid");
+		}
+		
+		for (Method method : this.permissionWriteMethods) {
+			//Reflection may not be the best way of doing this, but otherwise this is going to be a great
+			//big select statement, which ties us more closely to the specific set of options (which are
+			//right now fairly loosely coupled - although to entirely loosely coupled)
+			try {
+				method.invoke(privacySettings, newValueByte);
+			} catch (IllegalArgumentException e) {
+				Log.d("PDroidAlternative","Illegal arguments when calling " + method.getName());
+				e.printStackTrace();
+			} catch (IllegalAccessException e) {
+				Log.d("PDroidAlternative","Illegal access when calling " + method.getName());
+				e.printStackTrace();
+			} catch (InvocationTargetException e) {
+				Log.d("PDroidAlternative","InvocationTargetException when calling " + method.getName());
+				e.printStackTrace();
+			}
+		}
 	}
 }
 /*

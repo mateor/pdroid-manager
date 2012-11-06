@@ -36,6 +36,7 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.Resources.NotFoundException;
 import android.content.res.XmlResourceParser;
+import android.database.Cursor;
 import android.database.DatabaseUtils.InsertHelper;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
@@ -168,15 +169,21 @@ public class DBInterface {
 			return getContentValues(packageName, uid, versionCode, operation, 0);	
 		}
 		
-		public static final ContentValues getContentValues(String packageName, int uid, int versionCode,
+		public static final ContentValues getContentValues(long eventTimestamp, String packageName, int uid, int versionCode,
 				String operation, int flags) {
 			ContentValues contentValues = new ContentValues();
+			contentValues.put(COLUMN_NAME_DATETIME, eventTimestamp);
 			contentValues.put(COLUMN_NAME_PACKAGENAME, packageName);
 			contentValues.put(COLUMN_NAME_UID, uid);
 			contentValues.put(COLUMN_NAME_VERSIONCODE, versionCode);
 			contentValues.put(COLUMN_NAME_OPERATION, operation);
 			contentValues.put(COLUMN_NAME_FLAGS, flags);
 			return contentValues;
+		}
+		
+		public static final ContentValues getContentValues(String packageName, int uid, int versionCode,
+				String operation, int flags) {
+			return getContentValues(System.currentTimeMillis(), packageName, uid, versionCode, operation, flags);
 		}
 	}
 	
@@ -281,6 +288,9 @@ public class DBInterface {
 	
 	protected static final String QUERYPART_COLUMNS_PACKAGENAME = 
 			ApplicationTable.TABLE_NAME + "." + ApplicationTable.COLUMN_NAME_PACKAGENAME;
+
+	protected static final String QUERYPART_COLUMNS_LABEL = 
+			ApplicationTable.TABLE_NAME + "." + ApplicationTable.COLUMN_NAME_LABEL;
 	
 	protected static final String QUERYPART_COLUMNS_APP = 
 			ApplicationTable.TABLE_NAME + "." + ApplicationTable.COLUMN_NAME_LABEL + ", " +  
@@ -336,7 +346,7 @@ public class DBInterface {
 	public static final String QUERY_GET_ALL_APPS_WITH_STATUS =
 			QUERYPART_GET_ALL_APPS_WITH_STATUS + QUERYPART_SORT_BY_LABEL;
 	
-	public static final String QUERY_GET_ALL_APPS_PACKAGENAME_ONLY=
+	public static final String QUERY_GET_ALL_APPS_PACKAGENAME_ONLY =
 			QUERYPART_GET_ALL_APPS_PACKAGENAME_ONLY + QUERYPART_SORT_BY_LABEL;
 	
 	public static final String QUERY_GET_APPS_BY_PACKAGENAME_WITH_STATUS =
@@ -348,6 +358,11 @@ public class DBInterface {
 	public static final String QUERY_GET_APPS_BY_LABEL_PACKAGENAME_ONLY =
 			QUERYPART_GET_ALL_APPS_PACKAGENAME_ONLY + QUERYPART_FILTER_BY_LABEL + QUERYPART_SORT_BY_LABEL;
 	
+	public static final String QUERY_GET_APPS_BY_PACKAGENAME_LABEL_ONLY = "SELECT " +
+					QUERYPART_COLUMNS_LABEL +  
+					" FROM " + ApplicationTable.TABLE_NAME + 
+					QUERYPART_FILTER_BY_PACKAGENAME;
+
 	public static final String QUERY_GET_APPS_BY_PERMISSION_WITH_STATUS =
 			QUERYPART_GET_ALL_APPS_WITH_STATUS + QUERYPART_FILTER_BY_PERMISSION + QUERYPART_SORT_BY_LABEL;
 	
@@ -431,7 +446,30 @@ public class DBInterface {
 		write_db.insert(ApplicationLogTable.TABLE_NAME, null, contentValues);
 		write_db.close();
 	}
+
+	/**
+	 * Helper to just get the label of an application - used for notifications, when 
+	 * the label is all we care about, so we can display it to the user
+	 * @param packageName
+	 */
+	public String getApplicationLabel(String packageName) {
+		if (dbhelper == null) {
+			getDBHelper();
+		}
 		
+		SQLiteDatabase db = dbhelper.getReadableDatabase();
+		Cursor cursor = db.rawQuery(DBInterface.QUERY_GET_APPS_BY_PACKAGENAME_LABEL_ONLY, new String[]{packageName});
+		String label = "";
+		
+		if (cursor.getCount() > 0) {
+			cursor.moveToFirst();
+			label = cursor.getString(cursor.getColumnIndex(DBInterface.ApplicationTable.COLUMN_NAME_LABEL));
+		}
+		cursor.close();
+		db.close();
+		return label;
+	}
+	
 	private DBInterface(Context context) {
 		this.context = context;
 	}

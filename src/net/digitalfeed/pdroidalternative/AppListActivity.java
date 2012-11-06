@@ -27,7 +27,7 @@
 package net.digitalfeed.pdroidalternative;
 
 
-import java.security.acl.LastOwnerException;
+import java.security.InvalidParameterException;
 
 import android.os.Bundle;
 import android.app.ActionBar;
@@ -40,7 +40,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnLongClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
@@ -48,7 +47,6 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.PopupMenu;
 import android.widget.SpinnerAdapter;
-import android.widget.Toast;
 
 public class AppListActivity extends Activity {
 
@@ -139,7 +137,7 @@ public class AppListActivity extends Activity {
 			@Override
 			public boolean onItemLongClick(AdapterView<?> parent, View view, int position,
 					long id) {
-				showPopupMenu(view);
+				showPopupMenu(view, position);
 				return true;
 			}
         });
@@ -187,16 +185,34 @@ public class AppListActivity extends Activity {
 	    return false;
     }
     
-    private void showPopupMenu(View view){
+    private void showPopupMenu(View view, int position){
     	PopupMenu popupMenu = new PopupMenu(context, view);
     	      popupMenu.getMenuInflater().inflate(R.menu.activity_applist_longpress_menu, popupMenu.getMenu());
     	      
+    	      final Application targetApp = appList[position];
+    	      
     	      popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
     	    	  @Override
-    	    	  public boolean onMenuItemClick(MenuItem item) {
-    	    		  Toast.makeText(context,
-    	    				  item.toString(),
-    	    				  Toast.LENGTH_LONG).show();
+    	    	  public boolean onMenuItemClick(MenuItem item) {    	    	      
+    	    		  int newValue;
+    	    		  
+    	    		  switch (item.getItemId()) {
+    	    		  case R.id.applist_popupmenu_allow_all:
+    	    			  newValue = Setting.OPTION_FLAG_ALLOW;
+    	    			  break;
+    	    		  case R.id.applist_popupmenu_deny_all:
+    	    			  newValue = Setting.OPTION_FLAG_DENY;
+    	    			  break;
+    	    	      default:
+        	    		  throw new InvalidParameterException();
+    	    		  }
+
+    	    		  progDialog = new ProgressDialog(context);
+    	    	      progDialog.setMessage("Updating settings");
+    	    	      progDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+    	    	      AppListUpdateAllSettingsTask updateAllSettingsTask = new AppListUpdateAllSettingsTask(context, newValue, new AppListUpdateAllSettingsCallback());
+    	    	      updateAllSettingsTask.execute(targetApp);
+    	    	      
     	    		  return true;
     	   }
     	  });
@@ -273,6 +289,16 @@ public class AppListActivity extends Activity {
     		appList = returnedAppList;
     		listView.setAdapter(new AppListAdapter(context, R.layout.application_list_row, appList));
     		readyForInput = true;
+    	}
+    }
+
+    class AppListUpdateAllSettingsCallback implements IAsyncTaskCallback<Void>{
+    	@Override
+    	public void asyncTaskComplete(Void result) {
+    		if (progDialog != null) {
+    			progDialog.dismiss();
+    		}
+    		Log.d("PDroidAlternative","Updated all settings.");
     	}
     }
     

@@ -45,6 +45,10 @@ public class Preferences {
 	private static final String APP_NOTIFICATION_SETTING_PREFIX = "notifyOnAccessFor";
 	private static final String APP_LOG_SETTING_PREFIX = "logOnAccessFor";
 	private static final String APPLIST_LAST_APP_TYPE = "appListLastAppType"; //can be the 'system', 'user', or 'both'
+	private static final String APP_LAST_NOTIFICATION_TIME_PREFIX = "appLastNotificationTime";
+	private static final String CURRENT_TOAST_COUNT = "currentToastCount";
+	private static final String LAST_TOAST_TIME = "lastToastTime";
+	private static final Object lock = new Object();
 	private SharedPreferences prefs;
 	
 	public Preferences(Context context) {
@@ -117,5 +121,77 @@ public class Preferences {
 		Editor editor = this.prefs.edit();
 		editor.putString(APPLIST_LAST_APP_TYPE, appListType);
 		editor.commit();
+	}
+	
+	public long getLastNotificationTime(String packageName, String dataType) {
+		//using '-' because they are not valid in a package name
+		return this.prefs.getLong(APP_LAST_NOTIFICATION_TIME_PREFIX + "-" + packageName + "-" + dataType, -1);
+	}
+	
+	public void setLastNotificationTime(String packageName, String dataType, long newTime) {
+		//using '-' because they are not valid in a package name
+		Editor editor = this.prefs.edit();
+		editor.putLong(APP_LAST_NOTIFICATION_TIME_PREFIX + "-" + packageName + "-" + dataType, newTime);
+		editor.commit();
+	}
+	
+	public void clearLastNotificationTime(String packageName, String dataType) {
+		Editor editor = this.prefs.edit();
+		editor.remove(APP_LAST_NOTIFICATION_TIME_PREFIX + "-" + packageName + "-" + dataType);
+		editor.commit();
+	}
+	
+	/**
+	 * This function is used for calculating the offset of the Toast, by checking 
+	 * how many are on-screen. It locks (along with closeToast) to ensure that there are
+	 * not concurrency problems with the preference which may lead to 
+	 * 'residual' toasts - i.e. toasts no longer shown but that the system thinks
+	 * are shown.
+	 * There is also time checking 'just in case' I screwed up the concurrency, so that
+	 * it will clear after the longest period that a toast can be on screen.
+	 * @return
+	 */
+	public int openToast() {
+		int toastCount;
+		
+		synchronized(lock) {
+			Editor editor = this.prefs.edit();
+			toastCount = this.prefs.getInt(CURRENT_TOAST_COUNT, 0);
+			long currentTime = System.currentTimeMillis();
+			
+			if (toastCount > 0) {
+				long lastToastTime = this.prefs.getLong(LAST_TOAST_TIME, 0);
+				
+				//Toast LONG_DELAY = 3.5s, SHORT_DELAY = 2 seconds
+				switch (getNotificationDuration()) {
+				case Toast.LENGTH_SHORT:
+					lastToastTime += 2000;
+					break;
+				case Toast.LENGTH_LONG:
+					lastToastTime += 3500;
+					break;
+				}
+				
+				if (lastToastTime < currentTime) {
+					toastCount = 0;
+				}
+			}
+			
+			editor.putInt(CURRENT_TOAST_COUNT, toastCount++);
+			editor.putLong(LAST_TOAST_TIME, currentTime);
+			editor.commit();
+		}
+		return toastCount;
+	}
+	
+	public void closeToast() {
+		synchronized(lock) {
+			Editor editor = this.prefs.edit();
+			int toastCount = this.prefs.getInt(CURRENT_TOAST_COUNT, 0);
+			if (toastCount > 0) {
+				editor.putInt(CURRENT_TOAST_COUNT, --toastCount);
+				editor.commit();
+			}
+		}
 	}
 }
