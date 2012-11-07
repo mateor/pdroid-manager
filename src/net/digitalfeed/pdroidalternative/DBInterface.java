@@ -411,17 +411,18 @@ public class DBInterface {
 			SettingTable.TABLE_NAME + "." + SettingTable.COLUMN_NAME_TITLE + ", " +
 			SettingTable.TABLE_NAME + "." + SettingTable.COLUMN_NAME_GROUP_ID + ", " +
 			SettingTable.TABLE_NAME + "." + SettingTable.COLUMN_NAME_GROUP_TITLE + ", " +
-			SettingTable.TABLE_NAME + "." + SettingTable.COLUMN_NAME_OPTIONS + 
-			" FROM " + PermissionApplicationTable.TABLE_NAME + 
-			" INNER JOIN " + PermissionSettingTable.TABLE_NAME + 
-			" ON (" + PermissionSettingTable.TABLE_NAME + "." + PermissionSettingTable.COLUMN_NAME_PERMISSION + 
-			" = " + PermissionApplicationTable.TABLE_NAME + "." + PermissionApplicationTable.COLUMN_NAME_PERMISSION +
-			" OR " + PermissionSettingTable.TABLE_NAME + "." + PermissionSettingTable.COLUMN_NAME_PERMISSION + " = 'any')" + 
-			" INNER JOIN " + SettingTable.TABLE_NAME + 
-			" ON " + SettingTable.TABLE_NAME + "." + SettingTable.COLUMN_NAME_ID + 
-			" = " + PermissionSettingTable.TABLE_NAME + "." + PermissionSettingTable.COLUMN_NAME_SETTING +
-			" WHERE " + PermissionApplicationTable.TABLE_NAME + "." + PermissionApplicationTable.COLUMN_NAME_PACKAGENAME + " = ?";	
-	
+			SettingTable.TABLE_NAME + "." + SettingTable.COLUMN_NAME_OPTIONS +
+			" FROM " + SettingTable.TABLE_NAME + 
+			" INNER JOIN " + PermissionSettingTable.TABLE_NAME +
+			" ON (" + PermissionSettingTable.TABLE_NAME + "." + PermissionSettingTable.COLUMN_NAME_SETTING +
+			" = " + SettingTable.TABLE_NAME + "." + SettingTable.COLUMN_NAME_ID + ")" +
+			" WHERE " + PermissionSettingTable.TABLE_NAME + "." + PermissionSettingTable.COLUMN_NAME_PERMISSION + 
+			" = 'any' OR " + PermissionSettingTable.TABLE_NAME + "." + PermissionSettingTable.COLUMN_NAME_PERMISSION + "" +
+					" IN (SELECT " + PermissionApplicationTable.TABLE_NAME + "." + PermissionApplicationTable.COLUMN_NAME_PERMISSION +
+					" FROM " + PermissionApplicationTable.TABLE_NAME +
+					" WHERE " + PermissionApplicationTable.TABLE_NAME + "." + PermissionApplicationTable.COLUMN_NAME_PACKAGENAME + " = ?" + 
+					");";
+
 	public static final String QUERY_GET_SETTINGSFUNCTIONNAMES = "SELECT " +
 			SettingTable.TABLE_NAME + "." + SettingTable.COLUMN_NAME_SETTINGFUNCTIONNAME + 
 			" FROM " + SettingTable.TABLE_NAME;
