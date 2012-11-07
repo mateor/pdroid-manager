@@ -286,6 +286,22 @@ public class DBInterface {
 		}
 	}
 	
+
+	public static final class NotificationMessageTable {
+		public NotificationMessageTable(){}
+		public static final String TABLE_NAME = "notification_messages";
+		public static final String COLUMN_NAME_NAME = "name";
+		public static final String COLUMN_NAME_TEXT = "text";
+		
+		public static final String CREATE_SQL = "CREATE TABLE " + TABLE_NAME + "(" + 
+				"_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+				COLUMN_NAME_NAME + " TEXT NOT NULL, " + 
+				COLUMN_NAME_TEXT + " TEXT NOT NULL" +
+				");";
+		
+		public static final String DROP_SQL = "DROP TABLE IF EXISTS " + TABLE_NAME + ";";
+	}
+	
 	protected static final String QUERYPART_COLUMNS_PACKAGENAME = 
 			ApplicationTable.TABLE_NAME + "." + ApplicationTable.COLUMN_NAME_PACKAGENAME;
 

@@ -1,7 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TextView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/notification_toast_text"
-    android:layout_width="wrap_content"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:textColor="@android:color/background_light"
-    android:background="@drawable/toast_border" />
+    android:background="@drawable/toast_border" >
+    	<ImageView
+    	    android:id="@+id/notification_toast_image"
+    	    android:layout_width="36dp"
+    	    android:layout_height="36dp"
+    	    android:contentDescription="@string/notification_toast_image_content_description" />
+		<TextView
+		    android:id="@+id/notification_toast_text"
+		    android:layout_width="wrap_content"
+		    android:layout_height="match_parent"
+		    android:paddingLeft="10dp"
+		    android:gravity="center_vertical"
+		     />
+</LinearLayout>

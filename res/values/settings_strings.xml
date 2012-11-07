@@ -56,7 +56,7 @@
 	<string name="SETTING_LABEL_ALLOW_CHANGE_MOBILE_DATA_STATE">Switch Network State</string>
 	<string name="SETTING_LABEL_ALLOW_READ_NETWORK_INFO">Network Info</string>
 	<string name="SETTING_LABEL_ALLOW_READ_ANDROID_ID">Android ID</string>
-	<string name="SETTING_LABEL_ALLOW_READ_SIM_INFO">Sim INfo</string>
+	<string name="SETTING_LABEL_ALLOW_READ_SIM_INFO">Sim Info</string>
 	<string name="SETTING_LABEL_ALLOW_ACCESS_IP_TABLES">IP Tables</string>
 	<string name="SETTING_LABEL_ALLOW_READ_ICC_ID">ICC Access</string>
 	<string name="SETTING_LABEL_FAKE_ALWAYS_ONLINE">Force Online State</string>   
