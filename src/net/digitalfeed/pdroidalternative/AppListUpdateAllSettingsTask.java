@@ -75,8 +75,11 @@ public class AppListUpdateAllSettingsTask extends AsyncTask<Application, Void, V
 		PrivacySettings privacySettings;
 		
 		PermissionSettingHelper helper = new PermissionSettingHelper();
+		String packageName;
 		
 		for (Application app : inApps) {
+			packageName = app.getPackageName();
+			
 			privacySettings = privacySettingsManager.getSettings(app.getPackageName());
 			helper.setPrivacySettings(db, privacySettings, newOption);
 			privacySettingsManager.saveSettings(privacySettings);

@@ -45,6 +45,7 @@ import android.content.res.Resources;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.privacy.PrivacySettings;
+import android.privacy.PrivacySettingsManager;
 
 public class NotificationHandler extends BroadcastReceiver {
 
@@ -55,7 +56,7 @@ public class NotificationHandler extends BroadcastReceiver {
 	@Override
 	public void onReceive(Context context, Intent intent) {
 		// Check we're receiving a valid notification to handle: if not, exit
-		if (!intent.getAction().equals("com.privacy.pdroid.PRIVACY_NOTIFICATION")) {
+		if (!intent.getAction().equals(PrivacySettingsManager.ACTION_PRIVACY_NOTIFICATION)) {
 			return;
 		}
 		
@@ -65,7 +66,7 @@ public class NotificationHandler extends BroadcastReceiver {
 		int uid = bundle.getInt("uid");
 		byte accessMode = bundle.getByte("accessMode");
 		final String dataType = bundle.getString("dataType");
-        String output = bundle.getString("output");
+        //String output = bundle.getString("output");
         
         final Preferences prefs = new Preferences(context);
         
@@ -117,19 +118,19 @@ public class NotificationHandler extends BroadcastReceiver {
 		        	builder.setSpan(new ForegroundColorSpan(res.getColor(R.color.toast_text_highlight)), startOffset, startOffset + dataType.length(), 0);
 		        	switch (accessMode) {
 		        	case PrivacySettings.REAL:
-		        		builder.append("allowed");
+		        		builder.append(res.getString(R.string.notification_toast_allowed_text));
 		        		imageView.setImageDrawable(res.getDrawable(R.drawable.allow_icon));
 		        		break;
 		        	case PrivacySettings.RANDOM:
-		        		builder.append("random");
+		        		builder.append(res.getString(R.string.notification_toast_random_text));
 		        		imageView.setImageDrawable(res.getDrawable(R.drawable.random_icon));
 		        		break;
 		        	case PrivacySettings.CUSTOM:
-		        		builder.append("custom");
+		        		builder.append(res.getString(R.string.notification_toast_custom_text));
 		        		imageView.setImageDrawable(res.getDrawable(R.drawable.custom_icon));
 		        		break;
 		        	case PrivacySettings.EMPTY:
-		        		builder.append("denied");
+		        		builder.append(res.getString(R.string.notification_toast_denied_text));
 		        		imageView.setImageDrawable(res.getDrawable(R.drawable.deny_icon));
 		        		break;
 		        	}

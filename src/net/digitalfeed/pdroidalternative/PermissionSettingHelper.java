@@ -95,7 +95,7 @@ class PermissionSettingHelper {
 			//right now fairly loosely coupled - although to entirely loosely coupled)
 			try {
 				byte pdroidCoreSetting = (Byte)method.invoke(privacySettings);
-				if (pdroidCoreSetting != PrivacySettings.REAL) return false;
+				if (pdroidCoreSetting != PrivacySettings.REAL) return true;
 			} catch (IllegalArgumentException e) {
 				Log.d("PDroidAlternative","Illegal arguments when calling " + method.getName());
 				e.printStackTrace();
@@ -108,7 +108,7 @@ class PermissionSettingHelper {
 			}
 		}
 		
-		return true;
+		return false;
 		
 		/*
 		
@@ -173,7 +173,7 @@ class PermissionSettingHelper {
 			do {
 				String settingFunctionName = cursor.getString(settingFunctionNameColumn);
 				try {
-					permissionReadMethods.add(privacySettings.getClass().getMethod("set" + settingFunctionName, byte.class));
+					permissionWriteMethods.add(privacySettings.getClass().getMethod("set" + settingFunctionName, byte.class));
 				} catch (NoSuchMethodException e) {
 				   Log.d("PDroidAlternative","PrivacySettings object of privacy service is missing the expected method " + settingFunctionName);
 				   e.printStackTrace();

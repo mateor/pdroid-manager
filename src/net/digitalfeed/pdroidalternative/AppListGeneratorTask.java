@@ -46,10 +46,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 public class AppListGeneratorTask extends AsyncTask<Void, Integer, Application []> {
-	
-	protected static final int PERMISSIONS_TABLE_COLUMN_NUMBER_OFFSET_PACKAGENAME = 0;
-	protected static final int PERMISSIONS_TABLE_COLUMN_NUMBER_OFFSET_PERMISSION = 1;
-	
+		
 	protected static final int APPLICATION_TABLE_COLUMN_NUMBER_OFFSET_LABEL = 0;
 	protected static final int APPLICATION_TABLE_COLUMN_NUMBER_OFFSET_PACKAGENAME = 1;
 	protected static final int APPLICATION_TABLE_COLUMN_NUMBER_OFFSET_UID = 2;
@@ -122,8 +119,8 @@ public class AppListGeneratorTask extends AsyncTask<Void, Integer, Application [
 		InsertHelper permissionsInsertHelper = new InsertHelper(write_db, DBInterface.PermissionApplicationTable.TABLE_NAME);
 		int [] permissionsTableColumnNumbers = new int[2];
 		//I was thinking about using enums instead of static finals here, but apparently the performance in android for enums is not so good??
-		permissionsTableColumnNumbers[PERMISSIONS_TABLE_COLUMN_NUMBER_OFFSET_PACKAGENAME] = permissionsInsertHelper.getColumnIndex(DBInterface.PermissionApplicationTable.COLUMN_NAME_PACKAGENAME);
-		permissionsTableColumnNumbers[PERMISSIONS_TABLE_COLUMN_NUMBER_OFFSET_PERMISSION] = permissionsInsertHelper.getColumnIndex(DBInterface.PermissionApplicationTable.COLUMN_NAME_PERMISSION);
+		permissionsTableColumnNumbers[DBInterface.PermissionApplicationTable.OFFSET_PACKAGENAME] = permissionsInsertHelper.getColumnIndex(DBInterface.PermissionApplicationTable.COLUMN_NAME_PACKAGENAME);
+		permissionsTableColumnNumbers[DBInterface.PermissionApplicationTable.OFFSET_PERMISSION] = permissionsInsertHelper.getColumnIndex(DBInterface.PermissionApplicationTable.COLUMN_NAME_PERMISSION);
 		
 		/*
 		 * We don't (and can't) filter out apps based on permissions, because some things we provide settings for
@@ -172,8 +169,8 @@ public class AppListGeneratorTask extends AsyncTask<Void, Integer, Application [
 					applicationsInsertHelper.bind(applicationTableColumnNumbers[APPLICATION_TABLE_COLUMN_NUMBER_OFFSET_PERMISSIONS], TextUtils.join(",", pkgInfo.requestedPermissions));
 					for (String permission : permissions) {
 						permissionsInsertHelper.prepareForInsert();
-						permissionsInsertHelper.bind(permissionsTableColumnNumbers[PERMISSIONS_TABLE_COLUMN_NUMBER_OFFSET_PACKAGENAME], appInfo.packageName);
-						permissionsInsertHelper.bind(permissionsTableColumnNumbers[PERMISSIONS_TABLE_COLUMN_NUMBER_OFFSET_PERMISSION], permission);
+						permissionsInsertHelper.bind(permissionsTableColumnNumbers[DBInterface.PermissionApplicationTable.OFFSET_PACKAGENAME], appInfo.packageName);
+						permissionsInsertHelper.bind(permissionsTableColumnNumbers[DBInterface.PermissionApplicationTable.OFFSET_PERMISSION], permission);
 						permissionsInsertHelper.execute();
 					}
 				} else {

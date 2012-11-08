@@ -103,6 +103,8 @@ public class DBInterface {
 		
 		public static final String DROP_SQL = "DROP TABLE IF EXISTS " + TABLE_NAME + ";";
 		
+		public static final String WHERE_CLAUSE_PACKAGENAME = TABLE_NAME + "." + COLUMN_NAME_PACKAGENAME + " = ?";
+		
 		public static final ContentValues getContentValues(Application application) {
 			ContentValues contentValues = new ContentValues();
 			contentValues.put(COLUMN_NAME_LABEL, application.getLabel());
@@ -137,7 +139,15 @@ public class DBInterface {
 				");";
 		
 		public static final String DROP_SQL = "DROP TABLE IF EXISTS " + TABLE_NAME + ";";
+	
+		public static final String WHERE_CLAUSE_PACKAGENAME = TABLE_NAME + "." + COLUMN_NAME_PACKAGENAME + " = ?";
 		
+		public static final ContentValues getContentValues(Application application) {
+			ContentValues contentValues = new ContentValues();
+						contentValues.put(COLUMN_NAME_PACKAGENAME, application.getPackageName());
+			contentValues.put(COLUMN_NAME_FLAGS, application.getStatusFlags());
+			return contentValues;
+		}
 	}
 	
 	public static final class ApplicationLogTable {
@@ -260,6 +270,11 @@ public class DBInterface {
 	
 	public static final class PermissionApplicationTable {
 		public PermissionApplicationTable(){}
+		
+		public static final int OFFSET_PACKAGENAME = 0;
+		public static final int OFFSET_PERMISSION = 1;
+		public static final int COLUMN_COUNT = 2;
+		
 		public static final String TABLE_NAME = "permission_application";
 		public static final String COLUMN_NAME_PERMISSION = "permission";
 		public static final String COLUMN_NAME_PACKAGENAME = "packageName";
@@ -273,6 +288,8 @@ public class DBInterface {
 				");";
 		
 		public static final String DROP_SQL = "DROP TABLE IF EXISTS " + TABLE_NAME + ";";
+		
+		public static final String WHERE_CLAUSE_PACKAGENAME = TABLE_NAME + "." + COLUMN_NAME_PACKAGENAME + " = ?";
 		
 		public static final ContentValues getContentValues(String permission, String packageName) {
 			ContentValues contentValues = new ContentValues();
@@ -428,7 +445,6 @@ public class DBInterface {
 			" FROM " + SettingTable.TABLE_NAME;
 
 	
-	
 	public Context context;
 	
 	public static DBInterface getInstance(Context context) {
@@ -486,6 +502,96 @@ public class DBInterface {
 		db.close();
 		return label;
 	}
+	
+	/**
+	 * Helper to delete the details for a single package (used when we receive a notification of
+	 * a package being removed).
+	 * @param packageName
+	 */
+	public void deleteApplicationRecord(String packageName) {
+		if (dbhelper == null) {
+			getDBHelper();
+		}
+
+		SQLiteDatabase db = dbhelper.getReadableDatabase();
+		db.delete(ApplicationTable.TABLE_NAME, ApplicationTable.WHERE_CLAUSE_PACKAGENAME, new String[]{packageName});
+		db.delete(ApplicationStatusTable.TABLE_NAME, ApplicationStatusTable.WHERE_CLAUSE_PACKAGENAME, new String[]{packageName});
+		db.delete(PermissionApplicationTable.TABLE_NAME, PermissionApplicationTable.WHERE_CLAUSE_PACKAGENAME, new String[]{packageName});
+		db.close();
+	}
+
+	
+	public void addApplicationRecord(Application app) {
+		if (dbhelper == null) {
+			getDBHelper();
+		}
+
+		SQLiteDatabase write_db = dbhelper.getWritableDatabase();
+		write_db.beginTransaction();
+
+		try {
+			write_db.insert(ApplicationTable.TABLE_NAME, null, ApplicationTable.getContentValues(app));
+			write_db.insert(ApplicationStatusTable.TABLE_NAME, null, ApplicationStatusTable.getContentValues(app));
+			
+			InsertHelper permissionsInsertHelper = new InsertHelper(write_db, DBInterface.PermissionApplicationTable.TABLE_NAME);
+			int [] permissionsTableColumnNumbers = new int[2];
+			//I was thinking about using enums instead of static finals here, but apparently the performance in android for enums is not so good??
+			permissionsTableColumnNumbers[PermissionApplicationTable.OFFSET_PACKAGENAME] = permissionsInsertHelper.getColumnIndex(DBInterface.PermissionApplicationTable.COLUMN_NAME_PACKAGENAME);
+			permissionsTableColumnNumbers[PermissionApplicationTable.OFFSET_PERMISSION] = permissionsInsertHelper.getColumnIndex(DBInterface.PermissionApplicationTable.COLUMN_NAME_PERMISSION);
+			
+			for (String permission : app.getPermissions()) {
+				permissionsInsertHelper.prepareForInsert();
+				permissionsInsertHelper.bind(permissionsTableColumnNumbers[PermissionApplicationTable.OFFSET_PACKAGENAME], app.getPackageName());
+				permissionsInsertHelper.bind(permissionsTableColumnNumbers[PermissionApplicationTable.OFFSET_PERMISSION], permission);
+				permissionsInsertHelper.execute();
+			}
+			permissionsInsertHelper.close();
+			
+			write_db.setTransactionSuccessful();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		write_db.endTransaction();
+		write_db.close();
+		
+	}
+	
+	public void updateApplicationRecord(Application app) {
+		if (dbhelper == null) {
+			getDBHelper();
+		}
+
+		SQLiteDatabase write_db = dbhelper.getWritableDatabase();
+		write_db.beginTransaction();
+
+		try {
+			write_db.update(ApplicationTable.TABLE_NAME, ApplicationTable.getContentValues(app), ApplicationTable.TABLE_NAME + "." + ApplicationTable.COLUMN_NAME_PACKAGENAME + " = ?", new String [] {app.getPackageName()});
+			write_db.update(ApplicationStatusTable.TABLE_NAME, ApplicationStatusTable.getContentValues(app), ApplicationStatusTable.TABLE_NAME + "." + ApplicationStatusTable.COLUMN_NAME_PACKAGENAME + " = ?", new String [] {app.getPackageName()});
+			
+			write_db.delete(PermissionApplicationTable.TABLE_NAME, PermissionApplicationTable.TABLE_NAME + "." + PermissionApplicationTable.COLUMN_NAME_PACKAGENAME + " = ?", new String [] {app.getPackageName()});
+			InsertHelper permissionsInsertHelper = new InsertHelper(write_db, DBInterface.PermissionApplicationTable.TABLE_NAME);
+			int [] permissionsTableColumnNumbers = new int[2];
+			//I was thinking about using enums instead of static finals here, but apparently the performance in android for enums is not so good??
+			permissionsTableColumnNumbers[PermissionApplicationTable.OFFSET_PACKAGENAME] = permissionsInsertHelper.getColumnIndex(DBInterface.PermissionApplicationTable.COLUMN_NAME_PACKAGENAME);
+			permissionsTableColumnNumbers[PermissionApplicationTable.OFFSET_PERMISSION] = permissionsInsertHelper.getColumnIndex(DBInterface.PermissionApplicationTable.COLUMN_NAME_PERMISSION);
+			
+			for (String permission : app.getPermissions()) {
+				permissionsInsertHelper.prepareForInsert();
+				permissionsInsertHelper.bind(permissionsTableColumnNumbers[PermissionApplicationTable.OFFSET_PACKAGENAME], app.getPackageName());
+				permissionsInsertHelper.bind(permissionsTableColumnNumbers[PermissionApplicationTable.OFFSET_PERMISSION], permission);
+				permissionsInsertHelper.execute();
+			}
+			permissionsInsertHelper.close();
+			
+			write_db.setTransactionSuccessful();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		write_db.endTransaction();
+		write_db.close();
+		
+	}
+
 	
 	private DBInterface(Context context) {
 		this.context = context;

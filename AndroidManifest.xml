@@ -26,18 +26,19 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <!--
-     		<receiver android:name=".IntentHandler.PackageChange">
+		<receiver android:name=".intenthandler.PackageChangeHandler">
             <intent-filter>
                 <action android:name="android.intent.action.PACKAGE_ADDED" />
                 <action android:name="android.intent.action.PACKAGE_REMOVED" />
                 <data android:scheme="package" />
             </intent-filter>
-        </receiver> -->
+        </receiver>
+        <!-- This sucks: there is no way to check the source of the notification (without
+        modifying the core of PDroid to use a newly defined permission which can't be used
+        by other apps -->
         <receiver android:name=".intenthandler.NotificationHandler">
 			<intent-filter>
                 <action android:name="com.privacy.pdroid.PRIVACY_NOTIFICATION" />
-                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </receiver>
         <activity

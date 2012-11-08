@@ -28,8 +28,21 @@ package net.digitalfeed.pdroidalternative;
 
 import java.util.Comparator;
 
+import net.digitalfeed.pdroidalternative.DBInterface.DBHelper;
+
+import android.content.Context;
+import android.content.pm.ApplicationInfo;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.text.TextUtils;
+import android.util.Log;
 
 /**
  * This represents a single application.
@@ -42,6 +55,9 @@ public class Application {
 	public static final int APP_FLAG_HAS_INTERNET = 2;
 	public static final int STATUS_FLAG_IS_UNTRUSTED = 1;
 	public static final int STATUS_FLAG_NOTIFY_ON_ACCESS = 2;
+	public static final int STATUS_FLAG_LOG_ON_ACCESS = 4;
+	public static final int STATUS_FLAG_NEW = 8;
+	public static final int STATUS_FLAG_UPDATED = 16;
 	
 	
 	public static class LabelComparator implements Comparator<Application> {
@@ -90,35 +106,95 @@ public class Application {
 	}
 
 	public boolean getIsSystemApp() {
-		return (this.appFlags & APP_FLAG_IS_SYSTEM_APP) == APP_FLAG_IS_SYSTEM_APP;
+		return (0 != (this.appFlags & APP_FLAG_IS_SYSTEM_APP));
 	}
 	
-	public void setIsSystemApp(boolean isSystemApp) {
-		this.appFlags = this.appFlags & ~APP_FLAG_IS_SYSTEM_APP;
+	public void setIsSystemApp(boolean newValue) {
+		if (newValue) {
+			this.appFlags |= APP_FLAG_IS_SYSTEM_APP;
+		} else { 
+			this.appFlags &= ~APP_FLAG_IS_SYSTEM_APP;
+		}
 	}
 
 	public boolean getHasInternet() {
-		return (this.appFlags & APP_FLAG_HAS_INTERNET) == APP_FLAG_HAS_INTERNET;
+		return (0 != (this.appFlags & APP_FLAG_HAS_INTERNET));
 	}
 
 	public void setHasInternet(boolean hasInternet) {
-		this.appFlags = this.appFlags & ~APP_FLAG_HAS_INTERNET;
+		if (hasInternet) {
+			this.appFlags |= APP_FLAG_HAS_INTERNET;
+		} else { 
+			this.appFlags &= ~APP_FLAG_HAS_INTERNET;
+		}
 	} 
 	
-	public boolean getIsUntrusted() {
-		return (this.statusFlags & STATUS_FLAG_IS_UNTRUSTED) == STATUS_FLAG_IS_UNTRUSTED;
+	public void setStatusFlags(int statusFlags) {
+		this.statusFlags = statusFlags; 
+	}
+
+	public int getStatusFlags() {
+		return this.statusFlags; 
 	}
 	
-	public void setIsUntrusted(boolean isUntrusted) {
-		this.statusFlags = this.statusFlags & ~STATUS_FLAG_IS_UNTRUSTED;
+	public boolean getIsUntrusted() {
+		return (0 != (this.statusFlags & STATUS_FLAG_IS_UNTRUSTED));
+	}
+	
+	public void setIsUntrusted(boolean newValue) {
+		if (newValue) {
+			this.statusFlags |= STATUS_FLAG_IS_UNTRUSTED;
+		} else { 
+			this.statusFlags &= ~STATUS_FLAG_IS_UNTRUSTED;
+		}
 	} 
 
 	public boolean getNotifyOnAccess() {
-		return (this.statusFlags & STATUS_FLAG_NOTIFY_ON_ACCESS) == STATUS_FLAG_NOTIFY_ON_ACCESS;
+		return (0 != (this.statusFlags & STATUS_FLAG_NOTIFY_ON_ACCESS));
 	}
 	
-	public void setNotifyOnAccess(boolean isUntrusted) {
-		this.statusFlags = this.statusFlags & ~STATUS_FLAG_NOTIFY_ON_ACCESS;
+	public void setNotifyOnAccess(boolean newValue) {
+		if (newValue) {
+			this.statusFlags |= STATUS_FLAG_NOTIFY_ON_ACCESS;
+		} else { 
+			this.statusFlags &= ~STATUS_FLAG_NOTIFY_ON_ACCESS;
+		}
+	}
+
+	public boolean getLogOnAccess() {
+		return (0 != (this.statusFlags & STATUS_FLAG_LOG_ON_ACCESS));
+	}
+	
+	public void setLogOnAccess(boolean newValue) {
+		if (newValue) {
+			this.statusFlags |= STATUS_FLAG_LOG_ON_ACCESS;
+		} else { 
+			this.statusFlags &= ~STATUS_FLAG_LOG_ON_ACCESS;
+		}
+	}
+
+	public boolean getIsNew() {
+		return (0 != (this.statusFlags & STATUS_FLAG_NEW));
+	}
+	
+	public void setIsNew(boolean newValue) {
+		if (newValue) {
+			this.statusFlags |= STATUS_FLAG_NEW;
+		} else { 
+			this.statusFlags &= ~STATUS_FLAG_NEW;
+		}
+	}
+
+	public boolean getIsUpdated() {
+		return (0 != (this.statusFlags & STATUS_FLAG_UPDATED));
+	}
+	
+	public void setIsUpdated(boolean newValue) {
+		if (newValue) {
+			this.statusFlags |= STATUS_FLAG_UPDATED;
+		} else { 
+			this.statusFlags &= ~STATUS_FLAG_UPDATED;
+		}
 	}
 	
 	public int getUid() {
@@ -161,7 +237,7 @@ public class Application {
 		this.packageName = packageName;
 	}
 	
-	Application(String packageName, String label, int versionCode, int appFlags, int statusFlags, int uid, Drawable icon) {
+	public Application(String packageName, String label, int versionCode, int appFlags, int statusFlags, int uid, Drawable icon) {
 		//this.isStub = true;
 		this.packageName = packageName;
 		this.label = label;
@@ -172,7 +248,7 @@ public class Application {
 		this.icon = icon;
 	}	
 	
-	Application(String packageName, String label, int versionCode, int appFlags, int statusFlags, int uid, Drawable icon, String[] permissions) {
+	public Application(String packageName, String label, int versionCode, int appFlags, int statusFlags, int uid, Drawable icon, String[] permissions) {
 		//this.isStub = false;
 		this.packageName = packageName;
 		this.label = label;
@@ -186,5 +262,110 @@ public class Application {
 		} else {
 			this.permissions = null;
 		}
-	}	
+	}
+	
+	/***
+	 * Creates a new Application object for the application with the package name passed.
+	 * Currently assumes the app is new, and so doesn't try to check if it is trusted or not -
+	 * instead assumes it is trusted, and no notifications are required
+	 * 
+	 * @param context
+	 * @param packageName
+	 * @return
+	 */
+	public static Application fromPackageName(Context context, String packageName) {
+		Application app = null;
+		Log.d("PDroidAlternative", "Attempting to create an application from package name");
+		try {
+			PackageManager pkgMgr = context.getPackageManager();
+			PackageInfo pkgInfo = pkgMgr.getPackageInfo(packageName, PackageManager.GET_PERMISSIONS);
+			ApplicationInfo appInfo = pkgInfo.applicationInfo;
+			
+			int appFlags = 0;
+			if (0 != (appInfo.flags & ApplicationInfo.FLAG_SYSTEM)) { 
+				appFlags = Application.APP_FLAG_IS_SYSTEM_APP;
+			}
+			
+			if (pkgMgr.checkPermission("android.permission.INTERNET", appInfo.packageName) == PackageManager.PERMISSION_GRANTED) {
+				appFlags = appFlags | Application.APP_FLAG_HAS_INTERNET;
+			}
+			
+			int statusFlags = 0;
+			
+			app = new Application(
+					packageName,
+					pkgMgr.getApplicationLabel(appInfo).toString(),
+					pkgInfo.versionCode,
+					appFlags,
+					statusFlags,
+					appInfo.uid,
+					pkgMgr.getApplicationIcon(appInfo.packageName),
+					pkgInfo.requestedPermissions
+					); 
+
+		} catch (NameNotFoundException e) {
+			// TODO Auto-generated catch block
+			Log.d("PDroidAlternative", "NameNotFoundException when trying to generate an app from package name");
+			e.printStackTrace();
+		}
+		
+		return app; 
+	}
+	
+	/***
+	 * Loads an Application object for the application with the package name passed from the database
+	 * 
+	 * @param context
+	 * @param packageName
+	 * @return
+	 */
+	public static Application fromDatabase(Context context, String packageName) {
+		Application app = null;
+		SQLiteDatabase db = null;
+		Cursor cursor = null;
+		Log.d("PDroidAlternative", "Attempting to create an application from package name");
+		try {
+			DBHelper dbHelper = DBInterface.getInstance(context).getDBHelper();
+			db = dbHelper.getReadableDatabase();
+			cursor = db.rawQuery(DBInterface.QUERY_GET_APPS_BY_PACKAGENAME_WITH_STATUS, new String[] {packageName});
+
+			if (cursor.getCount() > 0) {
+				cursor.moveToFirst();
+
+		    	String permissions = cursor.getString(cursor.getColumnIndex(DBInterface.ApplicationTable.COLUMN_NAME_PERMISSIONS));
+		    	String [] permissionsArray = null; 
+				if (permissions != null) {
+					Log.d("PDroidAlternative", "Application.fromDatabase: permissions was not null");
+					permissionsArray = TextUtils.split(permissions, ",");
+				} else {
+					Log.d("PDroidAlternative", "Application.fromDatabase: permissions was null");
+				}
+		    	
+		    	byte[] iconBlob = cursor.getBlob(cursor.getColumnIndex(DBInterface.ApplicationTable.COLUMN_NAME_ICON));
+		    	Drawable icon = new BitmapDrawable(context.getResources(),BitmapFactory.decodeByteArray(iconBlob, 0, iconBlob.length));
+		    	
+		    	app = new Application(
+		    			cursor.getString(cursor.getColumnIndex(DBInterface.ApplicationTable.COLUMN_NAME_PACKAGENAME)),
+		    			cursor.getString(cursor.getColumnIndex(DBInterface.ApplicationTable.COLUMN_NAME_LABEL)),
+		    			cursor.getInt(cursor.getColumnIndex(DBInterface.ApplicationTable.COLUMN_NAME_VERSIONCODE)),
+		    			cursor.getInt(cursor.getColumnIndex(DBInterface.ApplicationTable.COLUMN_NAME_FLAGS)),
+		    			cursor.getInt(cursor.getColumnIndex(DBInterface.ApplicationStatusTable.COLUMN_NAME_FLAGS)),
+		    			cursor.getInt(cursor.getColumnIndex(DBInterface.ApplicationTable.COLUMN_NAME_UID)),
+		    			icon,
+		    			permissionsArray
+		    		);
+			}
+		} finally {
+			if (cursor != null && !cursor.isClosed()) {
+				cursor.close();
+			}
+			if (db != null && db.isOpen()) {
+				db.close();
+			}
+		}
+		
+		return app;
+	}
+	
+	
 }

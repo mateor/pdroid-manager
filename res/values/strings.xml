@@ -59,7 +59,16 @@
     <string name="notification_toast_text1">access to</string>
     <string name="notification_toast_text2">was</string>
     <string name="notification_toast_image_content_description">Icon indicator of event type</string>
-    <string name="notification_toast_closeicon_content_description">Close</string>
+    <string name="notification_toast_allowed_text">allowed</string>
+    <string name="notification_toast_denied_text">denied</string>
+    <string name="notification_toast_random_text">random</string>
+    <string name="notification_toast_custom_text">custom</string>
+
+	<string name="notification_newinstall_text">has been installed</string>
+    <string name="notification_newinstall_title">Click to configure PDroid settings</string>
+
+    <string name="notification_update_text">has changed permissions</string>
+    <string name="notification_update_title">Click to configure PDroid settings</string>
     
     <string name="setting_option_allow">Allow</string>
     <string name="setting_option_random">Random</string>
