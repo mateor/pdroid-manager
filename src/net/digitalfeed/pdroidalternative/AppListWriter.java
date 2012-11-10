@@ -36,13 +36,7 @@ public class AppListWriter extends AsyncTask<Application, Void, Void> {
 	protected static final int PERMISSIONS_TABLE_COLUMN_NUMBER_OFFSET_PACKAGENAME = 0;
 	protected static final int PERMISSIONS_TABLE_COLUMN_NUMBER_OFFSET_PERMISSION = 1;
 	
-	protected static final int APPLICATION_TABLE_COLUMN_NUMBER_OFFSET_LABEL = 0;
-	protected static final int APPLICATION_TABLE_COLUMN_NUMBER_OFFSET_PACKAGENAME = 1;
-	protected static final int APPLICATION_TABLE_COLUMN_NUMBER_OFFSET_UID = 2;
-	protected static final int APPLICATION_TABLE_COLUMN_NUMBER_OFFSET_VERSIONCODE = 3;
-	protected static final int APPLICATION_TABLE_COLUMN_NUMBER_OFFSET_PERMISSIONS = 4;
-	protected static final int APPLICATION_TABLE_COLUMN_NUMBER_OFFSET_ICON = 5;
-	protected static final int APPLICATION_TABLE_COLUMN_NUMBER_OFFSET_APPFLAGS = 6;
+
 	
 	private Context context;
 	
@@ -61,13 +55,13 @@ public class AppListWriter extends AsyncTask<Application, Void, Void> {
 
 		InsertHelper applicationsInsertHelper = new InsertHelper(write_db, DBInterface.ApplicationTable.TABLE_NAME);
 		int [] applicationTableColumnNumbers = new int[7];
-		applicationTableColumnNumbers[APPLICATION_TABLE_COLUMN_NUMBER_OFFSET_LABEL] = applicationsInsertHelper.getColumnIndex(DBInterface.ApplicationTable.COLUMN_NAME_LABEL);
-		applicationTableColumnNumbers[APPLICATION_TABLE_COLUMN_NUMBER_OFFSET_PACKAGENAME] = applicationsInsertHelper.getColumnIndex(DBInterface.ApplicationTable.COLUMN_NAME_PACKAGENAME);
-		applicationTableColumnNumbers[APPLICATION_TABLE_COLUMN_NUMBER_OFFSET_UID] = applicationsInsertHelper.getColumnIndex(DBInterface.ApplicationTable.COLUMN_NAME_UID);
-		applicationTableColumnNumbers[APPLICATION_TABLE_COLUMN_NUMBER_OFFSET_VERSIONCODE] = applicationsInsertHelper.getColumnIndex(DBInterface.ApplicationTable.COLUMN_NAME_VERSIONCODE);
-		applicationTableColumnNumbers[APPLICATION_TABLE_COLUMN_NUMBER_OFFSET_PERMISSIONS] = applicationsInsertHelper.getColumnIndex(DBInterface.ApplicationTable.COLUMN_NAME_PERMISSIONS);
-		applicationTableColumnNumbers[APPLICATION_TABLE_COLUMN_NUMBER_OFFSET_ICON] = applicationsInsertHelper.getColumnIndex(DBInterface.ApplicationTable.COLUMN_NAME_ICON);
-		applicationTableColumnNumbers[APPLICATION_TABLE_COLUMN_NUMBER_OFFSET_APPFLAGS] = applicationsInsertHelper.getColumnIndex(DBInterface.ApplicationTable.COLUMN_NAME_FLAGS);
+		applicationTableColumnNumbers[DBInterface.ApplicationTable.COLUMN_NUMBER_OFFSET_LABEL] = applicationsInsertHelper.getColumnIndex(DBInterface.ApplicationTable.COLUMN_NAME_LABEL);
+		applicationTableColumnNumbers[DBInterface.ApplicationTable.COLUMN_NUMBER_OFFSET_PACKAGENAME] = applicationsInsertHelper.getColumnIndex(DBInterface.ApplicationTable.COLUMN_NAME_PACKAGENAME);
+		applicationTableColumnNumbers[DBInterface.ApplicationTable.COLUMN_NUMBER_OFFSET_UID] = applicationsInsertHelper.getColumnIndex(DBInterface.ApplicationTable.COLUMN_NAME_UID);
+		applicationTableColumnNumbers[DBInterface.ApplicationTable.COLUMN_NUMBER_OFFSET_VERSIONCODE] = applicationsInsertHelper.getColumnIndex(DBInterface.ApplicationTable.COLUMN_NAME_VERSIONCODE);
+		applicationTableColumnNumbers[DBInterface.ApplicationTable.COLUMN_NUMBER_OFFSET_PERMISSIONS] = applicationsInsertHelper.getColumnIndex(DBInterface.ApplicationTable.COLUMN_NAME_PERMISSIONS);
+		applicationTableColumnNumbers[DBInterface.ApplicationTable.COLUMN_NUMBER_OFFSET_ICON] = applicationsInsertHelper.getColumnIndex(DBInterface.ApplicationTable.COLUMN_NAME_ICON);
+		applicationTableColumnNumbers[DBInterface.ApplicationTable.COLUMN_NUMBER_OFFSET_APPFLAGS] = applicationsInsertHelper.getColumnIndex(DBInterface.ApplicationTable.COLUMN_NAME_FLAGS);
 
 		InsertHelper permissionsInsertHelper = new InsertHelper(write_db, DBInterface.PermissionApplicationTable.TABLE_NAME);
 		int [] permissionsTableColumnNumbers = new int[2];
@@ -79,7 +73,7 @@ public class AppListWriter extends AsyncTask<Application, Void, Void> {
 			applicationsInsertHelper.prepareForInsert();
 			String [] permissions = app.getPermissions();
 			if (permissions != null) {
-				applicationsInsertHelper.bind(applicationTableColumnNumbers[APPLICATION_TABLE_COLUMN_NUMBER_OFFSET_PERMISSIONS], TextUtils.join(",", permissions));
+				applicationsInsertHelper.bind(applicationTableColumnNumbers[DBInterface.ApplicationTable.COLUMN_NUMBER_OFFSET_PERMISSIONS], TextUtils.join(",", permissions));
 				for (String permission : permissions) {
 					permissionsInsertHelper.prepareForInsert();
 					permissionsInsertHelper.bind(PERMISSIONS_TABLE_COLUMN_NUMBER_OFFSET_PACKAGENAME, app.getPackageName());
@@ -87,14 +81,14 @@ public class AppListWriter extends AsyncTask<Application, Void, Void> {
 					permissionsInsertHelper.execute();
 				}
 			} else {
-				applicationsInsertHelper.bindNull(applicationTableColumnNumbers[APPLICATION_TABLE_COLUMN_NUMBER_OFFSET_PERMISSIONS]);
+				applicationsInsertHelper.bindNull(applicationTableColumnNumbers[DBInterface.ApplicationTable.COLUMN_NUMBER_OFFSET_PERMISSIONS]);
 			}
-			applicationsInsertHelper.bind(applicationTableColumnNumbers[APPLICATION_TABLE_COLUMN_NUMBER_OFFSET_LABEL], app.getLabel());
-			applicationsInsertHelper.bind(applicationTableColumnNumbers[APPLICATION_TABLE_COLUMN_NUMBER_OFFSET_PACKAGENAME], app.getPackageName());
-			applicationsInsertHelper.bind(applicationTableColumnNumbers[APPLICATION_TABLE_COLUMN_NUMBER_OFFSET_UID], app.getUid());
-			applicationsInsertHelper.bind(applicationTableColumnNumbers[APPLICATION_TABLE_COLUMN_NUMBER_OFFSET_VERSIONCODE], app.getVersionCode());
-			applicationsInsertHelper.bind(applicationTableColumnNumbers[APPLICATION_TABLE_COLUMN_NUMBER_OFFSET_ICON], app.getIconByteArray());
-			applicationsInsertHelper.bind(applicationTableColumnNumbers[APPLICATION_TABLE_COLUMN_NUMBER_OFFSET_APPFLAGS], app.getAppFlags());
+			applicationsInsertHelper.bind(applicationTableColumnNumbers[DBInterface.ApplicationTable.COLUMN_NUMBER_OFFSET_LABEL], app.getLabel());
+			applicationsInsertHelper.bind(applicationTableColumnNumbers[DBInterface.ApplicationTable.COLUMN_NUMBER_OFFSET_PACKAGENAME], app.getPackageName());
+			applicationsInsertHelper.bind(applicationTableColumnNumbers[DBInterface.ApplicationTable.COLUMN_NUMBER_OFFSET_UID], app.getUid());
+			applicationsInsertHelper.bind(applicationTableColumnNumbers[DBInterface.ApplicationTable.COLUMN_NUMBER_OFFSET_VERSIONCODE], app.getVersionCode());
+			applicationsInsertHelper.bind(applicationTableColumnNumbers[DBInterface.ApplicationTable.COLUMN_NUMBER_OFFSET_ICON], app.getIconByteArray());
+			applicationsInsertHelper.bind(applicationTableColumnNumbers[DBInterface.ApplicationTable.COLUMN_NUMBER_OFFSET_APPFLAGS], app.getAppFlags());
 			applicationsInsertHelper.execute();
 		}
 		

@@ -26,6 +26,7 @@
  */
 package net.digitalfeed.pdroidalternative;
 
+import net.digitalfeed.pdroidalternative.PermissionSettingHelper.TrustState;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
@@ -43,7 +44,7 @@ public class AppListUpdateAllSettingsTask extends AsyncTask<Application, Void, V
 	
 	final IAsyncTaskCallback<Void> listener;
 	final Context context;
-	final int newOption; 
+	final TrustState newTrustState; 
 	
 	/**
 	 * Constructor
@@ -51,10 +52,11 @@ public class AppListUpdateAllSettingsTask extends AsyncTask<Application, Void, V
 	 * @param newOption The new Setting.OPTION_FLAG_xxx to set (which is mapped to the PDroid core constant)
 	 * @param listener Listener implementing IAsyncTaskCallback to which the asyncTaskComplete call will be made
 	 */
-	public AppListUpdateAllSettingsTask(Context context, int newOption, IAsyncTaskCallback<Void> listener) {
+	
+	public AppListUpdateAllSettingsTask(Context context, TrustState newTrustState, IAsyncTaskCallback<Void> listener) {
 		this.context = context;
 		this.listener = listener;
-		this.newOption = newOption;
+		this.newTrustState = newTrustState;
 	}
 	
 	@Override
@@ -75,13 +77,15 @@ public class AppListUpdateAllSettingsTask extends AsyncTask<Application, Void, V
 		PrivacySettings privacySettings;
 		
 		PermissionSettingHelper helper = new PermissionSettingHelper();
-		String packageName;
-		
 		for (Application app : inApps) {
-			packageName = app.getPackageName();
-			
 			privacySettings = privacySettingsManager.getSettings(app.getPackageName());
-			helper.setPrivacySettings(db, privacySettings, newOption);
+			
+			//There are no existing privacy settings for this app - we need to create them
+			if (privacySettings == null) {
+				privacySettings = new PrivacySettings(null, app.getPackageName(), app.getUid());
+			}
+			
+			helper.setPrivacySettingsToTrustState(db, privacySettings, newTrustState);
 			privacySettingsManager.saveSettings(privacySettings);
 		}
 		db.close();

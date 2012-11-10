@@ -125,7 +125,7 @@ public class PackageChangeHandler extends BroadcastReceiver {
 		//TODO: Fix the icon in the notification bar				
 		Notification.Builder builder = new Notification.Builder(context)
 				.setPriority(Notification.PRIORITY_MAX)
-				.setSmallIcon(R.drawable.allow_icon);
+				.setSmallIcon(R.drawable.notification_icon);
 				//.setLargeIcon(res.getDrawable(R.drawable.allow_icon))
 		
 		String appLabel = DBInterface.getInstance(context).getApplicationLabel(packageName);

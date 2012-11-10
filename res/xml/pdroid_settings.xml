@@ -30,143 +30,143 @@
 <!-- setting function is only there in intention, not in function at the moment... -->
 <resource>
 	<setting id="ALLOW_READ_DEVICE_ID" name="deviceIdSetting" settingfunctionname="DeviceIdSetting" valuefunctionnamestub="DeviceId"  group="GENERAL">
-		<option name="allow" />
+		<option name="allow" trustedoption="true" />
         <option name="random" />
         <option name="custom" />
         <option name="deny" />
 	</setting>
 	<setting id="ALLOW_READ_PHONE_NUMBER" name="line1NumberSetting" settingfunctionname="Line1NumberSetting" valuefunctionnamestub="Line1Number"  group="GENERAL">
-	    <option name="allow" />
+	    <option name="allow" trustedoption="true" />
         <option name="random" />
         <option name="custom" />
         <option name="deny" />
 	</setting>
 	<setting id="ALLOW_READ_SIM_SERIAL" name="simSerialNumberSetting" settingfunctionname="SimSerialNumberSetting" valuefunctionnamestub="SimSerialNumber"  group="GENERAL">
-		<option name="allow" />
+		<option name="allow" trustedoption="true" />
         <option name="random" />
         <option name="custom" />
         <option name="deny" />
 	</setting>
 	<setting id="ALLOW_READ_SUBSCRIBER_ID" name="subscriberIdSetting" settingfunctionname="SubscriberIdSetting" valuefunctionnamestub="SubscriberId"  group="GENERAL">
-		<option name="allow" />
+		<option name="allow" trustedoption="true" />
         <option name="random" />
         <option name="custom" />
         <option name="deny" />
 	</setting>
 	<setting id="ALLOW_READ_INCOMING_CALL_NUMBER" name="incomingCallsSetting" settingfunctionname="IncomingCallsSetting" group="PHONE">
-		<option name="allow" />
+		<option name="allow" trustedoption="true" />
         <option name="deny" />
 	</setting>
 	<setting id="ALLOW_READ_OUTGOING_CALL_NUMBER" name="outgoingCallsSetting" settingfunctionname="OutgoingCallsSetting" group="PHONE">
-		<option name="allow" />
+		<option name="allow" trustedoption="true" />
         <option name="deny" />
 	</setting>
 	<setting id="ALLOW_INITIATE_PHONE_CALL" name="phoneCallSetting" settingfunctionname="PhoneCallSetting" group="PHONE">
-		<option name="allow" />
+		<option name="allow" trustedoption="true" />
         <option name="deny" />
 	</setting>
 	<setting id="ALLOW_READ_NETWORK_LOCATION" name="locationNetworkSetting" settingfunctionname="LocationNetworkSetting" valuefunctionnamestub="LocationNetwork"  group="LOCATION">
-		<option name="allow" />
+		<option name="allow" trustedoption="true" />
         <option name="customlocation" />
         <option name="deny" />
 	</setting>
 	<setting id="ALLOW_READ_GPS_LOCATION" name="locationGpsSetting" settingfunctionname="LocationGpsSetting" valuefunctionnamestub="LocationGps"  group="LOCATION">
-		<option name="allow" />
+		<option name="allow" trustedoption="true" />
         <option name="customlocation" />
         <option name="deny" />
 	</setting>
 	<setting id="ALLOW_USE_ACCOUNT_CREDENTIALS" name="accountsAuthTokensSetting" settingfunctionname="AccountsAuthTokensSetting" group="PERSONAL_DATA">
-		<option name="allow" />
+		<option name="allow" trustedoption="true" />
         <option name="deny" />
 	</setting>
 	<setting id="ALLOW_READ_ACCOUNTS_LIST" name="accountsSetting" settingfunctionname="AccountsSetting" group="PERSONAL_DATA">
-		<option name="allow" />
+		<option name="allow" trustedoption="true" />
         <option name="deny" />
 	</setting>
 	<setting id="ALLOW_READ_CONTACTS" name="contactsSetting" settingfunctionname="ContactsSetting" group="PERSONAL_DATA">
-		<option name="allow" />
+		<option name="allow" trustedoption="true" />
         <option name="deny" />
 	</setting>
 	<setting id="ALLOW_READ_CALL_LOG" name="callLogSetting" settingfunctionname="CallLogSetting" group="PERSONAL_DATA">
-		<option name="allow" />
+		<option name="allow" trustedoption="true" />
         <option name="deny" />
 	</setting>
 	<setting id="ALLOW_READ_CALENDAR" name="calendarSetting" settingfunctionname="CalendarSetting" group="PERSONAL_DATA">
-		<option name="allow" />
+		<option name="allow" trustedoption="true" />
         <option name="deny" />
 	</setting>
 	<setting id="ALLOW_READ_SMS" name="smsSetting" settingfunctionname="SmsSetting" group="MESSAGES">
-		<option name="allow" />
+		<option name="allow" trustedoption="true" />
         <option name="deny" />
 	</setting>
 	<setting id="ALLOW_SEND_SMS" name="smsSendSetting" settingfunctionname="SmsSendSetting" group="MESSAGES">
-		<option name="allow" />
+		<option name="allow" trustedoption="true" />
         <option name="deny" />
 	</setting>
 	<setting id="ALLOW_READ_MMS" name="mmsSetting" settingfunctionname="MmsSetting" group="MESSAGES">
-		<option name="allow" />
+		<option name="allow" trustedoption="true" />
         <option name="deny" />
 	</setting>
 	<setting id="ALLOW_SEND_MMS" name="sendMmsSetting" settingfunctionname="SendMmsSetting" group="MESSAGES">
-		<option name="allow" />
+		<option name="allow" trustedoption="true" />
         <option name="deny" />
 	</setting>
 	<setting id="ALLOW_RECORD_AUDIO" name="recordAudioSetting" settingfunctionname="RecordAudioSetting" group="MEDIA">
-		<option name="allow" />
+		<option name="allow" trustedoption="true" />
         <option name="deny" />
 	</setting>
 	<setting id="ALLOW_CAMERA" name="cameraSetting" settingfunctionname="CameraSetting" group="MEDIA">
-		<option name="allow" />
+		<option name="allow" trustedoption="true" />
         <option name="deny" />
 	</setting>
 	<setting id="ALLOW_READ_BOOKMARKS_AND_HISTORY" name="bookmarksSetting" settingfunctionname="BookmarksSetting" group="GENERAL">
-		<option name="allow" />
+		<option name="allow" trustedoption="true" />
         <option name="deny" />
 	</setting>
 	<setting id="ALLOW_READ_SYSTEM_LOGS" name="systemLogsSetting" settingfunctionname="SystemLogsSetting" group="GENERAL">
-		<option name="allow" />
+		<option name="allow" trustedoption="true" />
         <option name="deny" />
 	</setting>
 	<setting id="ALLOW_RECEIVE_BOOT_COMPLETED_INTENT" name="intentBootCompletedSetting" settingfunctionname="IntentBootCompletedSetting" group="GENERAL">
-		<option name="allow" />
+		<option name="allow" trustedoption="true" />
         <option name="deny" />
 	</setting>
 	<setting id="ALLOW_READ_WIFI_INFO" name="wifiInfoSetting" settingfunctionname="WifiInfoSetting" group="NETWORK">
-		<option name="allow" />
+		<option name="allow" trustedoption="true" />
         <option name="deny" />
 	</setting>
 	<setting id="ALLOW_CHANGE_WIFI_STATE" name="switchWifiStateSetting" settingfunctionname="SwitchWifiStateSetting" group="NETWORK">
-		<option name="allow" />
+		<option name="allow" trustedoption="true" />
         <option name="deny" />
 	</setting>
 	<setting id="ALLOW_CHANGE_MOBILE_DATA_STATE" name="switchConnectivitySetting" settingfunctionname="SwitchConnectivitySetting" group="NETWORK">
-		<option name="allow" />
+		<option name="allow" trustedoption="true" />
         <option name="deny" />
 	</setting>
 	<setting id="ALLOW_READ_NETWORK_INFO" name="networkInfoSetting" settingfunctionname="NetworkInfoSetting" group="NETWORK">
-		<option name="allow" />
+		<option name="allow" trustedoption="true" />
         <option name="deny" />
 	</setting>
 	<setting id="ALLOW_READ_ANDROID_ID" name="androidIdSetting" settingfunctionname="AndroidIdSetting" valuefunctionnamestub="AndroidID"  group="GENERAL">
-		<option name="allow" />
+		<option name="allow" trustedoption="true" />
         <option name="random" />
         <option name="custom" />
         <option name="deny" />
 	</setting>
 	<setting id="ALLOW_READ_SIM_INFO" name="simInfoSetting" settingfunctionname="SimInfoSetting" group="GENERAL">
-		<option name="allow" />
+		<option name="allow" trustedoption="true" />
         <option name="deny" />
 	</setting>
 	<setting id="ALLOW_ACCESS_IP_TABLES" name="ipTableProtectSetting" settingfunctionname="IpTableProtectSetting" group="NETWORK">
-		<option name="allow" />
+		<option name="allow" trustedoption="true" />
         <option name="deny" />
 	</setting>
 	<setting id="ALLOW_READ_ICC_ID" name="iccAccessSetting" settingfunctionname="IccAccessSetting" group="NETWORK">
-		<option name="allow" />
+		<option name="allow" trustedoption="true" />
         <option name="deny" />
 	</setting>
 	<setting id="FAKE_ALWAYS_ONLINE" name="forceOnlineState" settingfunctionname="ForceOnlineState" group="NETWORK">
 		<option name="yes" />
-        <option name="no" />
+        <option name="no" trustedoption="true" />
 	</setting>
 </resource>

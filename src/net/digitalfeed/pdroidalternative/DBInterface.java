@@ -59,20 +59,6 @@ public class DBInterface {
 	private static DBInterface dbinterface = null;
 	private static final Object lockObject = new Object();
 	
-	private static final int SETTING_TABLE_COLUMN_NUMBER_OFFSET_ID = 0;
-	private static final int SETTING_TABLE_COLUMN_NUMBER_OFFSET_NAME = 1;
-	private static final int SETTING_TABLE_COLUMN_NUMBER_OFFSET_SETTINGFUNCTIONNAME = 2;
-	private static final int SETTING_TABLE_COLUMN_NUMBER_OFFSET_VALUEFUNCTIONNAMESTUB = 3;
-	private static final int SETTING_TABLE_COLUMN_NUMBER_OFFSET_TITLE = 4;
-	private static final int SETTING_TABLE_COLUMN_NUMBER_OFFSET_GROUP_ID = 5;
-	private static final int SETTING_TABLE_COLUMN_NUMBER_OFFSET_GROUP_TITLE = 6;
-	private static final int SETTING_TABLE_COLUMN_NUMBER_OFFSET_OPTIONS = 7;
-	private static final int SETTING_TABLE_COLUMN_COUNT = 8;
-
-	private static final int PERMISSIONSETTING_TABLE_COLUMN_NUMBER_OFFSET_PERMISSION = 0;
-	private static final int PERMISSIONSETTING_TABLE_COLUMN_NUMBER_OFFSET_SETTING = 1;
-
-	
 	public static final class ApplicationTable {
 		public ApplicationTable(){}
 		
@@ -104,6 +90,19 @@ public class DBInterface {
 		public static final String DROP_SQL = "DROP TABLE IF EXISTS " + TABLE_NAME + ";";
 		
 		public static final String WHERE_CLAUSE_PACKAGENAME = TABLE_NAME + "." + COLUMN_NAME_PACKAGENAME + " = ?";
+		
+		/*
+		 * I realised after starting to move things like this that this may not actually
+		 * be the right place for them, because they are query-bound rather than
+		 * table-bound. Food for thought.
+		 */
+		protected static final int COLUMN_NUMBER_OFFSET_LABEL = 0;
+		protected static final int COLUMN_NUMBER_OFFSET_PACKAGENAME = 1;
+		protected static final int COLUMN_NUMBER_OFFSET_UID = 2;
+		protected static final int COLUMN_NUMBER_OFFSET_VERSIONCODE = 3;
+		protected static final int COLUMN_NUMBER_OFFSET_PERMISSIONS = 4;
+		protected static final int COLUMN_NUMBER_OFFSET_ICON = 5;
+		protected static final int COLUMN_NUMBER_OFFSET_APPFLAGS = 6;
 		
 		public static final ContentValues getContentValues(Application application) {
 			ContentValues contentValues = new ContentValues();
@@ -210,6 +209,7 @@ public class DBInterface {
 		public static final String COLUMN_NAME_GROUP_ID = "groupId"; //Stored as a string, but maybe better in another table and linked?
 		public static final String COLUMN_NAME_GROUP_TITLE = "groupTitle"; //As with the above 'group' column, may be better in a separate column, but then we need to be doing joins.
 		public static final String COLUMN_NAME_OPTIONS = "options"; //Options are stored as a string array
+		public static final String COLUMN_NAME_TRUSTED_OPTION = "trustedOption"; //Options which qualify as 'trusted' are stored as string array
 		
 		public static final String CREATE_SQL = "CREATE TABLE " + TABLE_NAME + "(" + 
 				"_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
@@ -220,10 +220,22 @@ public class DBInterface {
 				COLUMN_NAME_TITLE + " TEXT, " +
 				COLUMN_NAME_GROUP_ID + " TEXT NOT NULL, " +
 				COLUMN_NAME_GROUP_TITLE + " TEXT, " +
-				COLUMN_NAME_OPTIONS + " TEXT NOT NULL" +
+				COLUMN_NAME_OPTIONS + " TEXT NOT NULL, " +
+				COLUMN_NAME_TRUSTED_OPTION + " TEXT NOT NULL" +
 				");";
 		
 		public static final String DROP_SQL = "DROP TABLE IF EXISTS " + TABLE_NAME + ";";
+		
+		private static final int COLUMN_NUMBER_OFFSET_ID = 0;
+		private static final int COLUMN_NUMBER_OFFSET_NAME = 1;
+		private static final int COLUMN_NUMBER_OFFSET_SETTINGFUNCTIONNAME = 2;
+		private static final int COLUMN_NUMBER_OFFSET_VALUEFUNCTIONNAMESTUB = 3;
+		private static final int COLUMN_NUMBER_OFFSET_TITLE = 4;
+		private static final int COLUMN_NUMBER_OFFSET_GROUP_ID = 5;
+		private static final int COLUMN_NUMBER_OFFSET_GROUP_TITLE = 6;
+		private static final int COLUMN_NUMBER_OFFSET_OPTIONS = 7;
+		private static final int COLUMN_NUMBER_OFFSET_TRUSTED_OPTION = 8;
+		private static final int COLUMN_COUNT = 9;
 		
 		public static final ContentValues getContentValues(Setting setting) {
 			ContentValues contentValues = new ContentValues();
@@ -235,6 +247,7 @@ public class DBInterface {
 			contentValues.put(COLUMN_NAME_GROUP_ID, setting.getGroup());
 			//contentValues.put(COLUMN_NAME_GROUP_TITLE, setting.getGroupTitle());
 			contentValues.put(COLUMN_NAME_OPTIONS, TextUtils.join(",",setting.getOptions()));
+			contentValues.put(COLUMN_NAME_TRUSTED_OPTION, setting.getTrustedOption());
 			
 			return contentValues;
 		}
@@ -254,6 +267,9 @@ public class DBInterface {
 				");";
 		
 		public static final String DROP_SQL = "DROP TABLE IF EXISTS " + TABLE_NAME + ";";
+		
+		private static final int COLUMN_NUMBER_OFFSET_PERMISSION = 0;
+		private static final int COLUMN_NUMBER_OFFSET_SETTING = 1;
 		
 		public static final ContentValues getContentValues(String permission, String settingId) {
 			ContentValues contentValues = new ContentValues();
@@ -428,7 +444,8 @@ public class DBInterface {
 			SettingTable.TABLE_NAME + "." + SettingTable.COLUMN_NAME_TITLE + ", " +
 			SettingTable.TABLE_NAME + "." + SettingTable.COLUMN_NAME_GROUP_ID + ", " +
 			SettingTable.TABLE_NAME + "." + SettingTable.COLUMN_NAME_GROUP_TITLE + ", " +
-			SettingTable.TABLE_NAME + "." + SettingTable.COLUMN_NAME_OPTIONS +
+			SettingTable.TABLE_NAME + "." + SettingTable.COLUMN_NAME_OPTIONS + ", " +
+			SettingTable.TABLE_NAME + "." + SettingTable.COLUMN_NAME_TRUSTED_OPTION +
 			" FROM " + SettingTable.TABLE_NAME + 
 			" INNER JOIN " + PermissionSettingTable.TABLE_NAME +
 			" ON (" + PermissionSettingTable.TABLE_NAME + "." + PermissionSettingTable.COLUMN_NAME_SETTING +
@@ -441,7 +458,8 @@ public class DBInterface {
 					");";
 
 	public static final String QUERY_GET_SETTINGSFUNCTIONNAMES = "SELECT " +
-			SettingTable.TABLE_NAME + "." + SettingTable.COLUMN_NAME_SETTINGFUNCTIONNAME + 
+			SettingTable.TABLE_NAME + "." + SettingTable.COLUMN_NAME_SETTINGFUNCTIONNAME + "," + 
+			SettingTable.TABLE_NAME + "." + SettingTable.COLUMN_NAME_TRUSTED_OPTION +
 			" FROM " + SettingTable.TABLE_NAME;
 
 	
@@ -660,15 +678,16 @@ public class DBInterface {
 				db.beginTransaction();
 				Log.d("PDroidAlternative","Begin transaction");
 				InsertHelper settingInsertHelper = new InsertHelper(db, SettingTable.TABLE_NAME);
-				int [] settingTableColumnNumbers = new int[SETTING_TABLE_COLUMN_COUNT];
-				settingTableColumnNumbers[SETTING_TABLE_COLUMN_NUMBER_OFFSET_ID] = settingInsertHelper.getColumnIndex(SettingTable.COLUMN_NAME_ID);
-				settingTableColumnNumbers[SETTING_TABLE_COLUMN_NUMBER_OFFSET_NAME] = settingInsertHelper.getColumnIndex(SettingTable.COLUMN_NAME_NAME);
-				settingTableColumnNumbers[SETTING_TABLE_COLUMN_NUMBER_OFFSET_SETTINGFUNCTIONNAME] = settingInsertHelper.getColumnIndex(SettingTable.COLUMN_NAME_SETTINGFUNCTIONNAME);
-				settingTableColumnNumbers[SETTING_TABLE_COLUMN_NUMBER_OFFSET_VALUEFUNCTIONNAMESTUB] = settingInsertHelper.getColumnIndex(SettingTable.COLUMN_NAME_VALUEFUNCTIONNAMESTUB);
-				settingTableColumnNumbers[SETTING_TABLE_COLUMN_NUMBER_OFFSET_TITLE] = settingInsertHelper.getColumnIndex(SettingTable.COLUMN_NAME_TITLE);
-				settingTableColumnNumbers[SETTING_TABLE_COLUMN_NUMBER_OFFSET_GROUP_ID] = settingInsertHelper.getColumnIndex(SettingTable.COLUMN_NAME_GROUP_ID);
-				settingTableColumnNumbers[SETTING_TABLE_COLUMN_NUMBER_OFFSET_GROUP_TITLE] = settingInsertHelper.getColumnIndex(SettingTable.COLUMN_NAME_GROUP_TITLE);
-				settingTableColumnNumbers[SETTING_TABLE_COLUMN_NUMBER_OFFSET_OPTIONS] = settingInsertHelper.getColumnIndex(SettingTable.COLUMN_NAME_OPTIONS);
+				int [] settingTableColumnNumbers = new int[SettingTable.COLUMN_COUNT];
+				settingTableColumnNumbers[SettingTable.COLUMN_NUMBER_OFFSET_ID] = settingInsertHelper.getColumnIndex(SettingTable.COLUMN_NAME_ID);
+				settingTableColumnNumbers[SettingTable.COLUMN_NUMBER_OFFSET_NAME] = settingInsertHelper.getColumnIndex(SettingTable.COLUMN_NAME_NAME);
+				settingTableColumnNumbers[SettingTable.COLUMN_NUMBER_OFFSET_SETTINGFUNCTIONNAME] = settingInsertHelper.getColumnIndex(SettingTable.COLUMN_NAME_SETTINGFUNCTIONNAME);
+				settingTableColumnNumbers[SettingTable.COLUMN_NUMBER_OFFSET_VALUEFUNCTIONNAMESTUB] = settingInsertHelper.getColumnIndex(SettingTable.COLUMN_NAME_VALUEFUNCTIONNAMESTUB);
+				settingTableColumnNumbers[SettingTable.COLUMN_NUMBER_OFFSET_TITLE] = settingInsertHelper.getColumnIndex(SettingTable.COLUMN_NAME_TITLE);
+				settingTableColumnNumbers[SettingTable.COLUMN_NUMBER_OFFSET_GROUP_ID] = settingInsertHelper.getColumnIndex(SettingTable.COLUMN_NAME_GROUP_ID);
+				settingTableColumnNumbers[SettingTable.COLUMN_NUMBER_OFFSET_GROUP_TITLE] = settingInsertHelper.getColumnIndex(SettingTable.COLUMN_NAME_GROUP_TITLE);
+				settingTableColumnNumbers[SettingTable.COLUMN_NUMBER_OFFSET_OPTIONS] = settingInsertHelper.getColumnIndex(SettingTable.COLUMN_NAME_OPTIONS);
+				settingTableColumnNumbers[SettingTable.COLUMN_NUMBER_OFFSET_TRUSTED_OPTION] = settingInsertHelper.getColumnIndex(SettingTable.COLUMN_NAME_TRUSTED_OPTION);
 				
 				int eventType = xrp.next();
 				while(!(eventType == XmlResourceParser.START_TAG && xrp.getName().equals("setting")) && eventType != XmlResourceParser.END_DOCUMENT) {
@@ -678,25 +697,25 @@ public class DBInterface {
 				while (eventType == XmlResourceParser.START_TAG && xrp.getName().equals("setting")) {
 					settingInsertHelper.prepareForInsert();
 					id = xrp.getIdAttribute();
-					settingInsertHelper.bind(settingTableColumnNumbers[SETTING_TABLE_COLUMN_NUMBER_OFFSET_ID], id);
-					settingInsertHelper.bind(settingTableColumnNumbers[SETTING_TABLE_COLUMN_NUMBER_OFFSET_NAME], 
+					settingInsertHelper.bind(settingTableColumnNumbers[SettingTable.COLUMN_NUMBER_OFFSET_ID], id);
+					settingInsertHelper.bind(settingTableColumnNumbers[SettingTable.COLUMN_NUMBER_OFFSET_NAME], 
 							xrp.getAttributeValue(null, "name")
 						);
-					settingInsertHelper.bind(settingTableColumnNumbers[SETTING_TABLE_COLUMN_NUMBER_OFFSET_SETTINGFUNCTIONNAME], 
+					settingInsertHelper.bind(settingTableColumnNumbers[SettingTable.COLUMN_NUMBER_OFFSET_SETTINGFUNCTIONNAME], 
 							xrp.getAttributeValue(null, "settingfunctionname")
 						);
-					settingInsertHelper.bind(settingTableColumnNumbers[SETTING_TABLE_COLUMN_NUMBER_OFFSET_VALUEFUNCTIONNAMESTUB], 
+					settingInsertHelper.bind(settingTableColumnNumbers[SettingTable.COLUMN_NUMBER_OFFSET_VALUEFUNCTIONNAMESTUB], 
 							xrp.getAttributeValue(null, "valuefunctionnamestub")
 						);
 		        	//I wish there were a nicer way to get this string. Maybe a pair of arrays - one with identifiers, one with labels?
-					settingInsertHelper.bind(settingTableColumnNumbers[SETTING_TABLE_COLUMN_NUMBER_OFFSET_TITLE],
+					settingInsertHelper.bind(settingTableColumnNumbers[SettingTable.COLUMN_NUMBER_OFFSET_TITLE],
 							 resources.getString(resources.getIdentifier("SETTING_LABEL_" + id, "string", packageName))
 						);
 
 					id = xrp.getAttributeValue(null, "group"); 
-					settingInsertHelper.bind(settingTableColumnNumbers[SETTING_TABLE_COLUMN_NUMBER_OFFSET_GROUP_ID], id);
+					settingInsertHelper.bind(settingTableColumnNumbers[SettingTable.COLUMN_NUMBER_OFFSET_GROUP_ID], id);
 					//Because groups can be duplicated, it may be better to actually cache these in advance rather than repeatedly using reflection
-					settingInsertHelper.bind(settingTableColumnNumbers[SETTING_TABLE_COLUMN_NUMBER_OFFSET_GROUP_TITLE],
+					settingInsertHelper.bind(settingTableColumnNumbers[SettingTable.COLUMN_NUMBER_OFFSET_GROUP_TITLE],
 							resources.getString(resources.getIdentifier("SETTING_GROUP_LABEL_" + id, "string", packageName))
 						);
 					
@@ -705,8 +724,14 @@ public class DBInterface {
 		 				eventType = xrp.next();
 		 	 		}
 			        LinkedList<String> options = new LinkedList<String>();
+			        String trustedOption = null;
 		        	while (eventType == XmlResourceParser.START_TAG && xrp.getName().equals("option")) {
 		        		options.add(xrp.getAttributeValue(null, "name"));
+		        		//Keep in mind that a 'boolean' value (I think) means 'true' if the attribute
+		        		//is present, and false otherwise - but I'm not sure; worth checking
+		        		if (xrp.getAttributeBooleanValue(null, "trustedoption", false)) {
+		        			trustedOption = xrp.getAttributeValue(null, "name");
+		        		}
 			        	eventType = xrp.next();
 						while(eventType == XmlResourceParser.TEXT && xrp.isWhitespace()) {
 							eventType = xrp.next();
@@ -728,8 +753,11 @@ public class DBInterface {
 			        } else {
 			        	break;
 			        }
-					settingInsertHelper.bind(settingTableColumnNumbers[SETTING_TABLE_COLUMN_NUMBER_OFFSET_OPTIONS],
+					settingInsertHelper.bind(settingTableColumnNumbers[SettingTable.COLUMN_NUMBER_OFFSET_OPTIONS],
 							TextUtils.join(",",options)
+						);
+					settingInsertHelper.bind(settingTableColumnNumbers[SettingTable.COLUMN_NUMBER_OFFSET_TRUSTED_OPTION],
+							trustedOption
 						);
 			        settingInsertHelper.execute();
 				}
@@ -738,8 +766,8 @@ public class DBInterface {
 				
 				InsertHelper permissionInsertHelper = new InsertHelper(db, PermissionSettingTable.TABLE_NAME);
 				int [] permissionSettingTableColumnNumbers = new int[2];
-				permissionSettingTableColumnNumbers[PERMISSIONSETTING_TABLE_COLUMN_NUMBER_OFFSET_PERMISSION] = permissionInsertHelper.getColumnIndex(PermissionSettingTable.COLUMN_NAME_PERMISSION);
-				permissionSettingTableColumnNumbers[PERMISSIONSETTING_TABLE_COLUMN_NUMBER_OFFSET_SETTING] = permissionInsertHelper.getColumnIndex(PermissionSettingTable.COLUMN_NAME_SETTING);
+				permissionSettingTableColumnNumbers[PermissionSettingTable.COLUMN_NUMBER_OFFSET_PERMISSION] = permissionInsertHelper.getColumnIndex(PermissionSettingTable.COLUMN_NAME_PERMISSION);
+				permissionSettingTableColumnNumbers[PermissionSettingTable.COLUMN_NUMBER_OFFSET_SETTING] = permissionInsertHelper.getColumnIndex(PermissionSettingTable.COLUMN_NAME_SETTING);
 
 				xrp = resources.getXml(R.xml.permission_setting_map);
 				eventType = xrp.next();
@@ -754,10 +782,10 @@ public class DBInterface {
 					}
 					while (eventType == XmlResourceParser.START_TAG && xrp.getName().equals("setting")) {
 						permissionInsertHelper.prepareForInsert();
-						permissionInsertHelper.bind(permissionSettingTableColumnNumbers[PERMISSIONSETTING_TABLE_COLUMN_NUMBER_OFFSET_PERMISSION],
+						permissionInsertHelper.bind(permissionSettingTableColumnNumbers[PermissionSettingTable.COLUMN_NUMBER_OFFSET_PERMISSION],
 								id
 							);
-						permissionInsertHelper.bind(permissionSettingTableColumnNumbers[PERMISSIONSETTING_TABLE_COLUMN_NUMBER_OFFSET_SETTING],
+						permissionInsertHelper.bind(permissionSettingTableColumnNumbers[PermissionSettingTable.COLUMN_NUMBER_OFFSET_SETTING],
 								xrp.getIdAttribute()
 							);
 						permissionInsertHelper.execute();

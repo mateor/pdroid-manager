@@ -26,6 +26,7 @@
  */
 package net.digitalfeed.pdroidalternative;
 
+import java.security.InvalidParameterException;
 import java.util.LinkedList;
 
 class Setting implements Comparable<Setting> {
@@ -37,6 +38,7 @@ class Setting implements Comparable<Setting> {
 	protected String group;
 	protected String groupTitle;
 	protected int optionsBits;
+	protected int trustedOptionBit;
 	
 	public static final int OPTION_FLAG_ALLOW = 1;
 	public static final String OPTION_TEXT_ALLOW = "allow";
@@ -54,7 +56,7 @@ class Setting implements Comparable<Setting> {
 	public static final String OPTION_TEXT_NO = "no";
 	protected static final int OPTION_FLAG_NUMBITS = 7;
 	
-	public Setting(String id, String name, String settingFunctionName, String valueFunctionNameStub, String title, String group, String groupTitle, String [] options) {
+	public Setting(String id, String name, String settingFunctionName, String valueFunctionNameStub, String title, String group, String groupTitle, String [] options, String trustedOption) {
 		this.id = id;
 		this.name = name;
 		this.settingFunctionName = settingFunctionName;
@@ -64,6 +66,7 @@ class Setting implements Comparable<Setting> {
 		this.groupTitle = groupTitle;
 		
 		this.optionsBits = optionsToBits(options);
+		this.trustedOptionBit = optionToBit(trustedOption);
 	}
 	
 	public static int optionsToBits(String [] options) {
@@ -125,6 +128,55 @@ class Setting implements Comparable<Setting> {
 		return optionsList.toArray(new String[optionsList.size()]);
 	}
 	
+	public static int optionToBit(String option) {
+		if (option == null) return 0;
+		if (option.equals(OPTION_TEXT_ALLOW)) {
+			return OPTION_FLAG_ALLOW; 
+		}
+		if (option.equals(OPTION_TEXT_CUSTOM)) {
+				return OPTION_FLAG_CUSTOM; 
+		}
+		if (option.equals(OPTION_TEXT_CUSTOMLOCATION)) {
+			return OPTION_FLAG_CUSTOMLOCATION; 
+		}
+		if (option.equals(OPTION_TEXT_DENY)) {
+			return OPTION_FLAG_DENY; 
+		}
+		if (option.equals(OPTION_TEXT_NO)) {
+			return OPTION_FLAG_NO; 
+		}
+		if (option.equals(OPTION_TEXT_RANDOM)) {
+			return OPTION_FLAG_RANDOM; 
+		}
+		if (option.equals(OPTION_TEXT_YES)) {
+			return OPTION_FLAG_YES; 
+		}
+		throw new InvalidParameterException("The option passed to optionToBit must be one of the OPTION_TEXT_* group");
+	}
+		
+	public static String bitToOption(final int bit) {
+		if (0 == bit) return null;
+		
+		switch (bit) {
+		case OPTION_FLAG_ALLOW:
+			return OPTION_TEXT_ALLOW;
+		case OPTION_FLAG_CUSTOM:
+			return OPTION_TEXT_CUSTOM;
+		case OPTION_FLAG_CUSTOMLOCATION:
+			return OPTION_TEXT_CUSTOMLOCATION;
+		case OPTION_FLAG_DENY:
+			return OPTION_TEXT_DENY;
+		case OPTION_FLAG_NO:
+			return OPTION_TEXT_NO;
+		case OPTION_FLAG_RANDOM:
+			return OPTION_TEXT_RANDOM;
+		case OPTION_FLAG_YES:
+			return OPTION_TEXT_YES;
+		default:
+			throw new InvalidParameterException("A bit must be provided to bitToOption");
+		}
+	}
+	
 	public String getId() {
 		return this.id;
 	}
@@ -159,6 +211,14 @@ class Setting implements Comparable<Setting> {
 	
 	public int getOptionsBits() {
 		return this.optionsBits;
+	}
+	
+	public String getTrustedOption() {
+		return bitToOption(this.trustedOptionBit);
+	}
+	
+	public int getTrustedOptionBit() {
+		return this.trustedOptionBit;
 	}
 	
 	@Override

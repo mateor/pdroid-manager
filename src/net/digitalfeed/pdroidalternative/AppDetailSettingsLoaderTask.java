@@ -65,6 +65,7 @@ public class AppDetailSettingsLoaderTask extends AsyncTask<String, Integer, Link
 			throw new InvalidParameterException("One and only one package name must be provided to the AppDetailSettingsLoader");
 		}
 		PrivacySettingsManager privacySettingsManager = (PrivacySettingsManager)context.getSystemService("privacy");
+		//Keep in mind that getSettings will return null when the package has no settings yet. 
 		PrivacySettings privacySettings = privacySettingsManager.getSettings(selectPackageName[0]);
 		
 		SQLiteDatabase db = DBInterface.getInstance(context).getDBHelper().getReadableDatabase();
@@ -78,6 +79,7 @@ public class AppDetailSettingsLoaderTask extends AsyncTask<String, Integer, Link
     	int groupColumn = cursor.getColumnIndex(DBInterface.SettingTable.COLUMN_NAME_GROUP_ID);
     	int groupTitleColumn = cursor.getColumnIndex(DBInterface.SettingTable.COLUMN_NAME_GROUP_TITLE);
     	int optionsColumn = cursor.getColumnIndex(DBInterface.SettingTable.COLUMN_NAME_OPTIONS);
+    	int trustedOptionColumn = cursor.getColumnIndex(DBInterface.SettingTable.COLUMN_NAME_TRUSTED_OPTION);
     	
 		cursor.moveToFirst();
 		LinkedList<AppSetting> settingSet = new LinkedList<AppSetting>();
@@ -93,12 +95,13 @@ public class AppDetailSettingsLoaderTask extends AsyncTask<String, Integer, Link
 			String group = cursor.getString(groupColumn);
 			String groupTitle = cursor.getString(groupTitleColumn);
 			String options = cursor.getString(optionsColumn);
+			String trustedOption = cursor.getString(trustedOptionColumn);
 
 			String [] optionsArray = null;
 			if (options != null) {
 				optionsArray = TextUtils.split(options, ",");
 			}
-			
+						
 			int selectedOption = Setting.OPTION_FLAG_ALLOW;
 			String customValue = null;
 			LinkedList<SimpleImmutableEntry<String, String>> customValues = null;
@@ -183,9 +186,9 @@ public class AppDetailSettingsLoaderTask extends AsyncTask<String, Integer, Link
 			}
 			
 			if (customValues != null) {
-				settingSet.add(new AppSetting(id, name, settingFunctionName, valueFunctionNameStub, title, group, groupTitle, optionsArray, selectedOption, customValues));
+				settingSet.add(new AppSetting(id, name, settingFunctionName, valueFunctionNameStub, title, group, groupTitle, optionsArray, trustedOption, selectedOption, customValues));
 			} else {
-				settingSet.add(new AppSetting(id, name, settingFunctionName, valueFunctionNameStub, title, group, groupTitle, optionsArray, selectedOption, customValue));
+				settingSet.add(new AppSetting(id, name, settingFunctionName, valueFunctionNameStub, title, group, groupTitle, optionsArray, trustedOption, selectedOption, customValue));
 			}
 		} while (cursor.moveToNext());
 		cursor.close();

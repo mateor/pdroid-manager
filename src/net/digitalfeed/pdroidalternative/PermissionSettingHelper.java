@@ -31,16 +31,19 @@ import java.lang.reflect.Method;
 import java.security.InvalidParameterException;
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.List;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.privacy.PrivacySettings;
 import android.util.Log;
-
+import java.util.AbstractMap.SimpleImmutableEntry;
 class PermissionSettingHelper {
 
-	public LinkedList<Method> permissionReadMethods = null;
-	public LinkedList<Method> permissionWriteMethods = null;
+	public enum TrustState {TRUSTED, UNTRUSTED};
+	
+	private List<SimpleImmutableEntry<Method,String>> permissionReadMethods = null;
+	private List<SimpleImmutableEntry<Method,String>> permissionWriteMethods = null;
 	
 	public PermissionSettingHelper() {};
 	
@@ -65,19 +68,39 @@ class PermissionSettingHelper {
 	 * An annoying function to fish through all the settings in a 'PrivacySettings' object to check if it is 'trusted' or 'untrusted'.
 	 * It would be much more helpful if there were functions in the core of PDroid for this (and I'll probably add
 	 * them at some point).
+	 * @param db SQLite database to use - this will *not* be closed at the end
+	 * @param privacySettings - a privacySettings object for the app to check
+	 * @return
 	 */
 	public boolean isPrivacySettingsUntrusted (SQLiteDatabase db, PrivacySettings privacySettings) {
+		if (db == null) {
+			throw new InvalidParameterException("database passed to isPrivacySettingsUntrusted must not be null");
+		}
+		if (privacySettings == null) {
+			throw new InvalidParameterException("Privacy settings passed to isPrivacySettingsUntrusted must not be null");
+		}
+
 		//If we do not already have handles to the relevant methods, then we need to get them
 		//They are cached on the first run
 		if (this.permissionReadMethods == null) {
-			this.permissionReadMethods = new LinkedList<Method>();
+			this.permissionReadMethods = new LinkedList<SimpleImmutableEntry<Method,String>>();
 			Cursor cursor = db.rawQuery(DBInterface.QUERY_GET_SETTINGSFUNCTIONNAMES, null);
 	    	int settingFunctionNameColumn = cursor.getColumnIndex(DBInterface.SettingTable.COLUMN_NAME_SETTINGFUNCTIONNAME);
+	    	int settingTrustedOptionColumn = cursor.getColumnIndex(DBInterface.SettingTable.COLUMN_NAME_TRUSTED_OPTION);
+	    	
+	    	if (cursor.getCount() < 1) {
+	    		//This will happen if the database is not initialised for some reason
+	    		throw new DatabaseUninitialisedException("No settings are present in the database: it must not be initialised correctly");
+	    	}
+	    	
 			cursor.moveToFirst();
 			do {
 				String settingFunctionName = cursor.getString(settingFunctionNameColumn);
+				String settingTrustedOption = cursor.getString(settingTrustedOptionColumn);
 				try {
-					permissionReadMethods.add(privacySettings.getClass().getMethod("get" + settingFunctionName));
+					permissionReadMethods.add(
+							new SimpleImmutableEntry<Method, String>(privacySettings.getClass().getMethod("get" + settingFunctionName), settingTrustedOption)
+							);
 				} catch (NoSuchMethodException e) {
 				   Log.d("PDroidAlternative","PrivacySettings object of privacy service is missing the expected method " + settingFunctionName);
 				   e.printStackTrace();
@@ -89,67 +112,36 @@ class PermissionSettingHelper {
 			cursor.close();
 		}
 		
-		for (Method method : this.permissionReadMethods) {
+		for (SimpleImmutableEntry<Method, String> row : this.permissionReadMethods) {
 			//Reflection may not be the best way of doing this, but otherwise this is going to be a great
 			//big select statement, which ties us more closely to the specific set of options (which are
 			//right now fairly loosely coupled - although to entirely loosely coupled)
 			try {
-				byte pdroidCoreSetting = (Byte)method.invoke(privacySettings);
+				byte pdroidCoreSetting = (Byte)row.getKey().invoke(privacySettings);
 				if (pdroidCoreSetting != PrivacySettings.REAL) return true;
+				switch (pdroidCoreSetting) {
+				case PrivacySettings.REAL:
+					break;
+				case PrivacySettings.CUSTOM:
+					break;
+				case PrivacySettings.RANDOM:
+					break;
+				case PrivacySettings.EMPTY:
+					break;
+				}
 			} catch (IllegalArgumentException e) {
-				Log.d("PDroidAlternative","Illegal arguments when calling " + method.getName());
+				Log.d("PDroidAlternative","Illegal arguments when calling " + row.getKey().getName());
 				e.printStackTrace();
 			} catch (IllegalAccessException e) {
-				Log.d("PDroidAlternative","Illegal access when calling " + method.getName());
+				Log.d("PDroidAlternative","Illegal access when calling " + row.getKey().getName());
 				e.printStackTrace();
 			} catch (InvocationTargetException e) {
-				Log.d("PDroidAlternative","InvocationTargetException when calling " + method.getName());
+				Log.d("PDroidAlternative","InvocationTargetException when calling " + row.getKey().getName());
 				e.printStackTrace();
 			}
 		}
 		
 		return false;
-		
-		/*
-		
-		if (privacySettings.getSwitchWifiStateSetting() == PrivacySettings.REAL &&
-				//privacySettings.getForceOnlineState == PrivacySettings.REAL && //I'm leaving this one out because it doesn't really make sense to include
-																 //That, and what does 'real', etc mean in that context...?
-				privacySettings.getSendMmsSetting() == PrivacySettings.REAL &&
-				privacySettings.getSwitchConnectivitySetting() == PrivacySettings.REAL &&
-				privacySettings.getAndroidIdSetting() == PrivacySettings.REAL &&
-				privacySettings.getWifiInfoSetting() == PrivacySettings.REAL &&
-				privacySettings.getIpTableProtectSetting() == PrivacySettings.REAL && //I need to check what the 'real' states, etc mean for this too. Does REAL mean 'allow the app access?'
-				privacySettings.getIccAccessSetting() == PrivacySettings.REAL &&
-				privacySettings.getSmsSendSetting() == PrivacySettings.REAL &&
-				privacySettings.getPhoneCallSetting() == PrivacySettings.REAL &&
-				privacySettings.getRecordAudioSetting() == PrivacySettings.REAL &&
-				privacySettings.getCameraSetting() == PrivacySettings.REAL &&
-				privacySettings.getDeviceIdSetting() == PrivacySettings.REAL &&
-				privacySettings.getLine1NumberSetting() == PrivacySettings.REAL &&
-				privacySettings.getLocationGpsSetting() == PrivacySettings.REAL &&
-				privacySettings.getLocationNetworkSetting() == PrivacySettings.REAL &&
-				privacySettings.getNetworkInfoSetting() == PrivacySettings.REAL &&
-				privacySettings.getSimInfoSetting() == PrivacySettings.REAL &&
-				privacySettings.getSimSerialNumberSetting() == PrivacySettings.REAL &&
-				privacySettings.getSubscriberIdSetting() == PrivacySettings.REAL &&
-				privacySettings.getAccountsSetting() == PrivacySettings.REAL &&
-				privacySettings.getAccountsAuthTokensSetting() == PrivacySettings.REAL &&
-				privacySettings.getOutgoingCallsSetting() == PrivacySettings.REAL &&
-				privacySettings.getIncomingCallsSetting() == PrivacySettings.REAL &&
-				privacySettings.getContactsSetting() == PrivacySettings.REAL &&
-				privacySettings.getCalendarSetting() == PrivacySettings.REAL &&
-				privacySettings.getMmsSetting() == PrivacySettings.REAL &&
-				privacySettings.getSmsSetting() == PrivacySettings.REAL &&
-				privacySettings.getCallLogSetting() == PrivacySettings.REAL &&
-				privacySettings.getBookmarksSetting() == PrivacySettings.REAL &&
-				privacySettings.getSystemLogsSetting() == PrivacySettings.REAL &&
-				privacySettings.getIntentBootCompletedSetting() == PrivacySettings.REAL
-				) {
-					return false;
-		} else {
-			return true;
-		}*/
 	}
 	
 /**
@@ -157,6 +149,8 @@ class PermissionSettingHelper {
  * not actually save the changes back to the service - this needs to be done outside this function.
  * The functions on the PrivacySettings (accessed using reflection) are cached for multiple calls
  * to the function (i.e. if running operations on multiple apps)
+ * This was originally added to handle 'deny all' and 'allow all', but this has been replaced in function
+ * by 'setPrivacySettingsToTrustState' which handles reversal of 'trusted' options.
  * 
  * @param db Readable database handle used to get the name of settings functions
  * @param privacySettings PrivacySettings object for the relevant application retrieved from the privacy service
@@ -166,14 +160,25 @@ class PermissionSettingHelper {
 		//If we do not already have handles to the relevant methods, then we need to get them
 		//They are cached on the first run
 		if (this.permissionWriteMethods == null) {
-			this.permissionWriteMethods = new LinkedList<Method>();
+			this.permissionWriteMethods = new LinkedList<SimpleImmutableEntry<Method,String>>();
+
 			Cursor cursor = db.rawQuery(DBInterface.QUERY_GET_SETTINGSFUNCTIONNAMES, null);
 	    	int settingFunctionNameColumn = cursor.getColumnIndex(DBInterface.SettingTable.COLUMN_NAME_SETTINGFUNCTIONNAME);
+	    	int settingTrustedOptionColumn = cursor.getColumnIndex(DBInterface.SettingTable.COLUMN_NAME_TRUSTED_OPTION);
+	    	
+	    	if (cursor.getCount() < 1) {
+	    		//This will happen if the database is not initialised for some reason
+	    		throw new DatabaseUninitialisedException("No settings are present in the database: it must not be initialised correctly");
+	    	}
+	    	
 			cursor.moveToFirst();
 			do {
 				String settingFunctionName = cursor.getString(settingFunctionNameColumn);
+				String settingTrustedOption = cursor.getString(settingTrustedOptionColumn);
 				try {
-					permissionWriteMethods.add(privacySettings.getClass().getMethod("set" + settingFunctionName, byte.class));
+					permissionWriteMethods.add(
+							new SimpleImmutableEntry<Method,String>(privacySettings.getClass().getMethod("set" + settingFunctionName, byte.class),settingTrustedOption)
+							);
 				} catch (NoSuchMethodException e) {
 				   Log.d("PDroidAlternative","PrivacySettings object of privacy service is missing the expected method " + settingFunctionName);
 				   e.printStackTrace();
@@ -206,24 +211,125 @@ class PermissionSettingHelper {
 			throw new InvalidParameterException("The supplied parameter two update settings was invalid");
 		}
 		
-		for (Method method : this.permissionWriteMethods) {
+		for (SimpleImmutableEntry<Method, String> row : this.permissionWriteMethods) {
 			//Reflection may not be the best way of doing this, but otherwise this is going to be a great
 			//big select statement, which ties us more closely to the specific set of options (which are
 			//right now fairly loosely coupled - although to entirely loosely coupled)
 			try {
-				method.invoke(privacySettings, newValueByte);
+				row.getKey().invoke(privacySettings, newValueByte);
 			} catch (IllegalArgumentException e) {
-				Log.d("PDroidAlternative","Illegal arguments when calling " + method.getName());
+				Log.d("PDroidAlternative","Illegal arguments when calling " + row.getKey().getName());
 				e.printStackTrace();
 			} catch (IllegalAccessException e) {
-				Log.d("PDroidAlternative","Illegal access when calling " + method.getName());
+				Log.d("PDroidAlternative","Illegal access when calling " + row.getKey().getName());
 				e.printStackTrace();
 			} catch (InvocationTargetException e) {
-				Log.d("PDroidAlternative","InvocationTargetException when calling " + method.getName());
+				Log.d("PDroidAlternative","InvocationTargetException when calling " + row.getKey().getName());
 				e.printStackTrace();
 			}
 		}
 	}
+	
+	/**
+	 * Updates all privacy settings on a PrivacySettings object to either 'trusted' or 'untrusted'.
+	 * Because there can be multiple 'untrusted' options, the 'untrusted' option is assumed to be
+	 * the inverse of the 'trusted' option: i.e. yes -> no; allow -> deny; the inverse of custom and random is
+	 * also allow (but it would then reverse from allow to deny).
+	 * This is used by 'allow all' and 'deny all' - even though strictly speaking it doesn't allow
+	 * or deny all.
+	 * 
+	 * @param db Readable database handle used to get the name of settings functions
+	 * @param privacySettings PrivacySettings object for the relevant application retrieved from the privacy service
+	 * @param toTrusted True to set all values to their 'trusted' state, false to set to their 'untrusted' state.
+	 */
+		public void setPrivacySettingsToTrustState (SQLiteDatabase db, PrivacySettings privacySettings, TrustState newTrustState) {
+			//If we do not already have handles to the relevant methods, then we need to get them
+			//They are cached on the first run
+			if (this.permissionWriteMethods == null) {
+				this.permissionWriteMethods = new LinkedList<SimpleImmutableEntry<Method,String>>();
+
+				Cursor cursor = db.rawQuery(DBInterface.QUERY_GET_SETTINGSFUNCTIONNAMES, null);
+		    	int settingFunctionNameColumn = cursor.getColumnIndex(DBInterface.SettingTable.COLUMN_NAME_SETTINGFUNCTIONNAME);
+		    	int settingTrustedOptionColumn = cursor.getColumnIndex(DBInterface.SettingTable.COLUMN_NAME_TRUSTED_OPTION);
+		    	
+		    	if (cursor.getCount() < 1) {
+		    		//This will happen if the database is not initialised for some reason
+		    		throw new DatabaseUninitialisedException("No settings are present in the database: it must not be initialised correctly");
+		    	}
+		    	
+				cursor.moveToFirst();
+				do {
+					String settingFunctionName = cursor.getString(settingFunctionNameColumn);
+					String settingTrustedOption = cursor.getString(settingTrustedOptionColumn);
+					try {
+						permissionWriteMethods.add(
+								new SimpleImmutableEntry<Method,String>(privacySettings.getClass().getMethod("set" + settingFunctionName, byte.class), settingTrustedOption)
+								);
+					} catch (NoSuchMethodException e) {
+					   Log.d("PDroidAlternative","PrivacySettings object of privacy service is missing the expected method " + settingFunctionName);
+					   e.printStackTrace();
+					} catch (IllegalArgumentException e) {
+						Log.d("PDroidAlternative","Illegal arguments when calling " + settingFunctionName);
+						e.printStackTrace();
+					}
+				} while (cursor.moveToNext());
+				cursor.close();
+			}
+
+			byte newValueByte;
+			for (SimpleImmutableEntry<Method, String> row : this.permissionWriteMethods) {
+				//Reflection may not be the best way of doing this, but otherwise this is going to be a great
+				//big select statement, which ties us more closely to the specific set of options (which are
+				//right now fairly loosely coupled - although to entirely loosely coupled)
+
+				if (TrustState.TRUSTED == newTrustState) {
+					if (row.getValue().equals(Setting.OPTION_TEXT_ALLOW) ||
+							row.getValue().equals(Setting.OPTION_TEXT_YES)) {
+						newValueByte = PrivacySettings.REAL;
+					} else if (row.getValue().equals(Setting.OPTION_TEXT_DENY) ||
+							row.getValue().equals(Setting.OPTION_TEXT_NO)) {
+						newValueByte = PrivacySettings.EMPTY;
+					} else if (row.getValue().equals(Setting.OPTION_TEXT_CUSTOM) ||
+							row.getValue().equals(Setting.OPTION_TEXT_CUSTOMLOCATION)) {
+						newValueByte = PrivacySettings.CUSTOM;
+					} else if (row.getValue().equals(Setting.OPTION_TEXT_RANDOM)) {
+						newValueByte = PrivacySettings.RANDOM;
+					} else {
+						throw new RuntimeException("The Setting trusted option must be a recognised option type");
+					}
+				} else if (TrustState.UNTRUSTED == newTrustState) {
+					if (row.getValue().equals(Setting.OPTION_TEXT_ALLOW) ||
+							row.getValue().equals(Setting.OPTION_TEXT_YES)) {
+						newValueByte = PrivacySettings.EMPTY;
+					} else if (row.getValue().equals(Setting.OPTION_TEXT_DENY) ||
+							row.getValue().equals(Setting.OPTION_TEXT_NO)) {
+						newValueByte = PrivacySettings.REAL;
+					} else if (row.getValue().equals(Setting.OPTION_TEXT_CUSTOM) ||
+							row.getValue().equals(Setting.OPTION_TEXT_CUSTOMLOCATION)) {
+						newValueByte = PrivacySettings.EMPTY;
+					} else if (row.getValue().equals(Setting.OPTION_TEXT_RANDOM)) {
+						newValueByte = PrivacySettings.EMPTY;
+					} else {
+						throw new RuntimeException("The Setting trusted option must be a recognised option type");
+					}
+				} else {
+					throw new RuntimeException("In invalid trust state was somehow used.");
+				}
+				
+				try {
+					row.getKey().invoke(privacySettings, newValueByte);
+				} catch (IllegalArgumentException e) {
+					Log.d("PDroidAlternative","Illegal arguments when calling " + row.getKey().getName());
+					e.printStackTrace();
+				} catch (IllegalAccessException e) {
+					Log.d("PDroidAlternative","Illegal access when calling " + row.getKey().getName());
+					e.printStackTrace();
+				} catch (InvocationTargetException e) {
+					Log.d("PDroidAlternative","InvocationTargetException when calling " + row.getKey().getName());
+					e.printStackTrace();
+				}
+			}
+		}
 }
 /*
 Configurable items:

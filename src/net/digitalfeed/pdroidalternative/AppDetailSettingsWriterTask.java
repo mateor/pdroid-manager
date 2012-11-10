@@ -47,14 +47,16 @@ public class AppDetailSettingsWriterTask extends AsyncTask<AppSetting, Integer, 
 	final Context context;
 	final String packageName;
 	final boolean notifySetting;
+	final Integer uid;
 	
-	public AppDetailSettingsWriterTask(Context context, String packageName, boolean notifySetting, IAsyncTaskCallback<Void> listener) {
+	public AppDetailSettingsWriterTask(Context context, String packageName, Integer uid, boolean notifySetting, IAsyncTaskCallback<Void> listener) {
 		this.context = context;
 		this.listener = listener;
 		this.notifySetting = notifySetting;
 		
 		//TODO: Exception handling: null packageName
 		this.packageName = packageName;
+		this.uid = uid;
 	}
 		
 	@Override
@@ -64,6 +66,15 @@ public class AppDetailSettingsWriterTask extends AsyncTask<AppSetting, Integer, 
 		Log.d("PDroidAlternative","Running update of settings for " + packageName);
 		PrivacySettingsManager privacySettingsManager = (PrivacySettingsManager)context.getSystemService("privacy");
 		PrivacySettings privacySettings = privacySettingsManager.getSettings(packageName);
+		
+		
+		//There are no existing privacy settings for this app - we need to create them
+		if (privacySettings == null) {
+			if (uid == null) {
+				throw new RuntimeException("A UID must be provided when a new PrivacySettings is being created");
+			}
+			privacySettings = new PrivacySettings(null, packageName, uid);
+		}
 
 		Method setMethod;
 		Class<?> privacySettingsClass = privacySettings.getClass();

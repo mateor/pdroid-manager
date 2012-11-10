@@ -86,6 +86,10 @@ public class AppListLoader {
     	
     	Cursor cursor = db.rawQuery(query, this.projectionIn);
     	
+    	if (cursor.getCount() < 1) {
+    		throw new DatabaseUninitialisedException("No applications are listed in the database matching the query");
+    	}
+    	
 		cursor.moveToFirst();
 		int packageNameColumn = cursor.getColumnIndex(DBInterface.ApplicationTable.COLUMN_NAME_PACKAGENAME);
     	int labelColumn = cursor.getColumnIndex(DBInterface.ApplicationTable.COLUMN_NAME_LABEL);

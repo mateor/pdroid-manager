@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
   <group android:id="@+id/group_popupmenu">
-      <item android:id="@+id/applist_popupmenu_deny_all"
-          android:title="@string/applist_popupmenu_deny_all"/>
-      <item android:id="@+id/applist_popupmenu_allow_all"
-          android:title="@string/applist_popupmenu_allow_all"/>
+      <item android:id="@+id/applist_popupmenu_set_untrusted_values"
+          android:title="@string/applist_popupmenu_set_untrusted_values"/>
+      <item android:id="@+id/applist_popupmenu_set_trusted_values"
+          android:title="@string/applist_popupmenu_set_trusted_values"/>
   </group>
 </menu>

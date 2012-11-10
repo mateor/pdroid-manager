@@ -127,7 +127,7 @@ public class AppDetailActivity extends Activity {
             	
             	AppSetting [] toAsyncTask = this.settingList;
             	this.settingList = null;
-            	AppDetailSettingsWriterTask settingsWriterTask = new AppDetailSettingsWriterTask(context, packageName, setNotifyTo, new AppDetailSettingWriterTaskCompleteHandler());
+            	AppDetailSettingsWriterTask settingsWriterTask = new AppDetailSettingsWriterTask(context, packageName, application.getUid(), setNotifyTo, new AppDetailSettingWriterTaskCompleteHandler());
             	settingsWriterTask.execute(toAsyncTask);            	
             	break;
         }

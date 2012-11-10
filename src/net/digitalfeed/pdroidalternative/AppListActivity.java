@@ -29,6 +29,8 @@ package net.digitalfeed.pdroidalternative;
 
 import java.security.InvalidParameterException;
 
+import net.digitalfeed.pdroidalternative.PermissionSettingHelper.TrustState;
+
 import android.os.Bundle;
 import android.app.ActionBar;
 import android.app.ActionBar.OnNavigationListener;
@@ -110,7 +112,7 @@ public class AppListActivity extends Activity {
         	} else {
         		//the app list is valid: we need to load it from the db
         		if (currentAppType.equals(Preferences.APPLIST_LAST_APP_TYPE_ALL)) {
-        			loadApplicationList(new AppListLoader(context, AppListLoader.SearchType.TYPE, null));
+        			loadApplicationList(new AppListLoader(context, AppListLoader.SearchType.ALL, null));
         		} else if (currentAppType.equals(Preferences.APPLIST_LAST_APP_TYPE_SYSTEM)) {
     				loadApplicationList(new AppListLoader(context, AppListLoader.SearchType.TYPE, new String [] {AppListLoader.APP_TYPE_SYSTEM}));
         		} else if (currentAppType.equals(Preferences.APPLIST_LAST_APP_TYPE_USER)) {
@@ -190,18 +192,20 @@ public class AppListActivity extends Activity {
     	      popupMenu.getMenuInflater().inflate(R.menu.activity_applist_longpress_menu, popupMenu.getMenu());
     	      
     	      final Application targetApp = appList[position];
-    	      
+
     	      popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
     	    	  @Override
     	    	  public boolean onMenuItemClick(MenuItem item) {    	    	      
-    	    		  int newValue;
+    	    		  TrustState newTrustState;
     	    		  
     	    		  switch (item.getItemId()) {
-    	    		  case R.id.applist_popupmenu_allow_all:
-    	    			  newValue = Setting.OPTION_FLAG_ALLOW;
+    	    		  case R.id.applist_popupmenu_set_trusted_values:
+    	    			  newTrustState = TrustState.TRUSTED;
+    	    			  targetApp.setIsUntrusted(false);
     	    			  break;
-    	    		  case R.id.applist_popupmenu_deny_all:
-    	    			  newValue = Setting.OPTION_FLAG_DENY;
+    	    		  case R.id.applist_popupmenu_set_untrusted_values:
+    	    			  newTrustState = TrustState.UNTRUSTED;
+    	    			  targetApp.setIsUntrusted(false);
     	    			  break;
     	    	      default:
         	    		  throw new InvalidParameterException();
@@ -210,9 +214,8 @@ public class AppListActivity extends Activity {
     	    		  progDialog = new ProgressDialog(context);
     	    	      progDialog.setMessage("Updating settings");
     	    	      progDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-    	    	      AppListUpdateAllSettingsTask updateAllSettingsTask = new AppListUpdateAllSettingsTask(context, newValue, new AppListUpdateAllSettingsCallback());
+    	    	      AppListUpdateAllSettingsTask updateAllSettingsTask = new AppListUpdateAllSettingsTask(context, newTrustState, new AppListUpdateAllSettingsCallback());
     	    	      updateAllSettingsTask.execute(targetApp);
-    	    	      
     	    		  return true;
     	   }
     	  });
@@ -298,6 +301,7 @@ public class AppListActivity extends Activity {
     		if (progDialog != null) {
     			progDialog.dismiss();
     		}
+    		listView.invalidate();
     		Log.d("PDroidAlternative","Updated all settings.");
     	}
     }
