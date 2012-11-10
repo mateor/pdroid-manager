@@ -33,7 +33,6 @@ import net.digitalfeed.pdroidalternative.PermissionSettingHelper.TrustState;
 
 import android.os.Bundle;
 import android.app.ActionBar;
-import android.app.ActionBar.OnNavigationListener;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
@@ -45,9 +44,11 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
+import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.PopupMenu;
+import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 
 public class AppListActivity extends Activity {
@@ -95,7 +96,6 @@ public class AppListActivity extends Activity {
         
     	actionBar = getActionBar();
     	actionBar.setDisplayShowTitleEnabled(false);
-    	actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_LIST);
     }
     
     @Override
@@ -155,20 +155,24 @@ public class AppListActivity extends Activity {
     public boolean onCreateOptionsMenu(Menu menu) {
     	super.onCreateOptionsMenu(menu);
         getMenuInflater().inflate(R.menu.activity_main, menu);
+        MenuItem mSpinner = menu.findItem(R.id.appListMenu_appTypeSpinner);
+        final Spinner appTypeSpinner = (Spinner)mSpinner.getActionView();
         final SpinnerAdapter spinnerAdapter = (SpinnerAdapter) ArrayAdapter.createFromResource(this,
 				R.array.app_type_selection_options,
 				android.R.layout.simple_spinner_dropdown_item);
+        appTypeSpinner.setAdapter(spinnerAdapter);
         /*
          * Need to work out how to start the navigation list at the option which was most
          * recently selected previously, so remember across sessions
          */
-        /*if (currentAppType.equals(Preferences.APPLIST_LAST_APP_TYPE_USER)) {
+        if (currentAppType.equals(Preferences.APPLIST_LAST_APP_TYPE_USER)) {
+        	appTypeSpinner.setSelection(APP_TYPE_USER_OPTION_POSITION);
         } else if (currentAppType.equals(Preferences.APPLIST_LAST_APP_TYPE_SYSTEM)) {
-        	
+        	appTypeSpinner.setSelection(APP_TYPE_SYSTEM_OPTION_POSITION);
         } else if (currentAppType.equals(Preferences.APPLIST_LAST_APP_TYPE_ALL)) {
-        	
-        }*/
-        actionBar.setListNavigationCallbacks(spinnerAdapter, new AppTypeSpinnerListener());
+        	appTypeSpinner.setSelection(APP_TYPE_ALL_OPTION_POSITION);
+        }
+        appTypeSpinner.setOnItemSelectedListener(new AppTypeSpinnerListener());
 		
         return true;
     }
@@ -298,6 +302,7 @@ public class AppListActivity extends Activity {
     class AppListUpdateAllSettingsCallback implements IAsyncTaskCallback<Void>{
     	@Override
     	public void asyncTaskComplete(Void result) {
+    		//TODO: might be worth adding a toast here to notify the settings have been updated?
     		if (progDialog != null) {
     			progDialog.dismiss();
     		}
@@ -306,10 +311,11 @@ public class AppListActivity extends Activity {
     	}
     }
     
-    class AppTypeSpinnerListener implements OnNavigationListener {
+    class AppTypeSpinnerListener implements OnItemSelectedListener {
+
 		@Override
-		public boolean onNavigationItemSelected(
-				int itemPosition, long itemId) {
+		public void onItemSelected(AdapterView<?> parent, View view, int itemPosition,
+				long id) {
 			//need to be able to disable this, just in case there is a time when
 			//it is possible to change the entry, but there is already an operation underway
 			if (readyForInput) {
@@ -337,7 +343,12 @@ public class AppListActivity extends Activity {
 					break;
 				}
 			}
-			return true;
+		}
+
+		@Override
+		public void onNothingSelected(AdapterView<?> view) {
+			// TODO Auto-generated method stub
+			
 		}
     };
 }

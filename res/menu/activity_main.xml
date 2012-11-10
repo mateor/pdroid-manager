@@ -28,6 +28,10 @@
  */
 -->
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
+	<item
+          android:id="@+id/appListMenu_appTypeSpinner"
+          android:actionViewClass="android.widget.Spinner"
+          android:showAsAction="always"/>
 	<item android:id="@+id/appListMenuSearch"
           android:title="@string/app_list_menu_search"
           android:icon="@android:drawable/ic_menu_search"
