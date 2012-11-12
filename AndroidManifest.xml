@@ -7,7 +7,7 @@
         android:minSdkVersion="16"
         android:targetSdkVersion="16" />
     	<!-- <permission android:label="@string/permission_label_manageprivacycontrollers" android:name="android.privacy.MANAGE_PRIVACY_CONTROLLERS" android:protectionLevel="normal" android:permissionGroup="android.permission-group.PERSONAL_INFO" android:description="@string/permission_description_manageprivacycontrollers" />-->
-		<permission android:label="@string/permission_label_writeprivacysettings" android:name="android.privacy.WRITE_PRIVACY_SETTINGS" android:protectionLevel="normal" android:permissionGroup="android.permission-group.PERSONAL_INFO" android:description="@string/permission_description_writeprivacysettings" />
+		<permission android:label="@string/permission_label_writeprivacysettings" android:name="android.privacy.WRITE_PRIVACY_SETTINGS" android:protectionLevel="signature" android:permissionGroup="android.permission-group.PERSONAL_INFO" android:description="@string/permission_description_writeprivacysettings" />
 		<!-- <permission android:label="@string/permission_label_readprivacysettings" android:name="android.privacy.READ_PRIVACY_SETTINGS" android:protectionLevel="normal" android:permissionGroup="android.permission-group.PERSONAL_INFO" android:description="@string/permission_description_readprivacysettings" />-->
     	<uses-permission android:name="android.privacy.WRITE_PRIVACY_SETTINGS" />
     	<!-- <uses-permission android:name="android.privacy.MANAGE_PRIVACY_CONTROLLERS" />

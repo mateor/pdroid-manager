@@ -40,51 +40,26 @@ import android.util.Log;
 public class AppListLoader {
 
 	private Context context;
-	private SearchType searchType;
-	private String [] projectionIn;
+	AppQueryBuilder queryBuilder;
 
 	public static final String APP_TYPE_USER = "0";
 	public static final String APP_TYPE_SYSTEM = "1";
 	
-	enum SearchType { ALL, PACKAGE_NAME, PERMISSION, TYPE }
+	enum SearchType { ALL, PACKAGE_NAME, PERMISSION, SETTING_GROUP }
+	enum AppType { ALL, USER, SYSTEM }
 	enum ResultsType { ALL, PACKAGE_NAME }
 
-	public AppListLoader(Context context, SearchType searchType, String [] projectionIn) throws InvalidParameterException {
+	public AppListLoader(Context context, AppQueryBuilder queryBuilder) throws InvalidParameterException {
 		this.context = context;
-		this.searchType = searchType;
-		if (projectionIn != null) {
-			this.projectionIn = projectionIn.clone();
-		} else {
-			this.projectionIn = null;
-		}
+		this.queryBuilder = queryBuilder;
 	}
 	
 	public Application [] getMatchingApplications() {
-		String query;
-		switch (searchType) {
-		case ALL:
-			query = DBInterface.QUERY_GET_ALL_APPS_WITH_STATUS;
-			break;
-		case PACKAGE_NAME:
-			query = DBInterface.QUERY_GET_APPS_BY_LABEL_WITH_STATUS;
-			break;
-		case PERMISSION:
-			query = DBInterface.QUERY_GET_APPS_BY_PERMISSION_WITH_STATUS;
-			break;
-		case TYPE:
-			query = DBInterface.QUERY_GET_APPS_BY_TYPE_WITH_STATUS;
-			break;
-		default:
-			throw new InvalidParameterException("Unsupported application list search type");
-		}
 
-		
 		LinkedList<Application> appList = new LinkedList<Application>();
 		SQLiteDatabase db = DBInterface.getInstance(context).getDBHelper().getReadableDatabase();
-		
-    	Log.d("PDroidAlternative","Executing Query " + query);
     	
-    	Cursor cursor = db.rawQuery(query, this.projectionIn);
+    	Cursor cursor = this.queryBuilder.doQuery(db);
     	
     	if (cursor.getCount() < 1) {
     		throw new DatabaseUninitialisedException("No applications are listed in the database matching the query");
@@ -118,43 +93,5 @@ public class AppListLoader {
     	Log.d("PDroidAlternative","Got matching applications: " + appList.size());
     	
     	return appList.toArray(new Application[appList.size()]);
-	}
-	
-	public LinkedList<String> getMatchingPackageNames() {
-		String query = "";
-		switch (searchType) {
-		case ALL:
-			query = DBInterface.QUERYPART_GET_ALL_APPS_PACKAGENAME_ONLY;
-			break;
-		case PACKAGE_NAME:
-			query = DBInterface.QUERY_GET_APPS_BY_LABEL_PACKAGENAME_ONLY;
-			break;
-		case PERMISSION:
-			query = DBInterface.QUERY_GET_APPS_BY_PERMISSION_PACKAGENAME_ONLY;
-			break;
-		case TYPE:
-			query = DBInterface.QUERY_GET_APPS_BY_TYPE_PACKAGENAME_ONLY;
-			break;
-		default:
-			throw new InvalidParameterException("Unsupported application list search type");
-		}
-
-		LinkedList<String> packageList = new LinkedList<String>();
-		SQLiteDatabase db = DBInterface.getInstance(context).getDBHelper().getReadableDatabase();
-		    	
-    	Cursor cursor = db.rawQuery(query, this.projectionIn);
-    	
-		cursor.moveToFirst();
-    	int packageNameColumn = cursor.getColumnIndex(DBInterface.ApplicationTable.COLUMN_NAME_PACKAGENAME); 
-
-    	do {
-    		String packageName = cursor.getString(packageNameColumn);
-    		packageList.add(packageName);
-    	} while (cursor.moveToNext());
-
-    	cursor.close();
-    	db.close();
-    	    	
-    	return packageList;
 	}
 }

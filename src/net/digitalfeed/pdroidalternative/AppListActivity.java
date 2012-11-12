@@ -28,6 +28,8 @@ package net.digitalfeed.pdroidalternative;
 
 
 import java.security.InvalidParameterException;
+import java.util.ArrayList;
+import java.util.List;
 
 import net.digitalfeed.pdroidalternative.PermissionSettingHelper.TrustState;
 
@@ -37,6 +39,7 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -54,7 +57,7 @@ import android.widget.SpinnerAdapter;
 public class AppListActivity extends Activity {
 
 	/*
-	 * If you change thees numbers, you also need to change Arrays.xml to update
+	 * If you change these numbers, you also need to change Arrays.xml to update
 	 * the sequence of text as well
 	 */
 	public static final int APP_TYPE_USER_OPTION_POSITION = 0;
@@ -71,6 +74,8 @@ public class AppListActivity extends Activity {
 	ActionBar actionBar;
 	boolean readyForInput = false;
 	String currentAppType;
+	String currentSettingGroup;
+	List<String> settingGroups;
 	
 	int pkgCounter = 0;
 	
@@ -110,16 +115,7 @@ public class AppListActivity extends Activity {
         		//The app list isn't valid, so we need to rebuild it
 	            rebuildApplicationList();
         	} else {
-        		//the app list is valid: we need to load it from the db
-        		if (currentAppType.equals(Preferences.APPLIST_LAST_APP_TYPE_ALL)) {
-        			loadApplicationList(new AppListLoader(context, AppListLoader.SearchType.ALL, null));
-        		} else if (currentAppType.equals(Preferences.APPLIST_LAST_APP_TYPE_SYSTEM)) {
-    				loadApplicationList(new AppListLoader(context, AppListLoader.SearchType.TYPE, new String [] {AppListLoader.APP_TYPE_SYSTEM}));
-        		} else if (currentAppType.equals(Preferences.APPLIST_LAST_APP_TYPE_USER)) {
-        			loadApplicationList(new AppListLoader(context, AppListLoader.SearchType.TYPE, new String [] {AppListLoader.APP_TYPE_USER}));
-        		} else {
-        			Log.d("PDroidAlternative","You shouldn't be here!");
-        		}
+        		loadApplicationList();
         	}
         } else {
         	listView.setAdapter(new AppListAdapter(context, R.layout.application_list_row, this.appList));
@@ -155,6 +151,7 @@ public class AppListActivity extends Activity {
     public boolean onCreateOptionsMenu(Menu menu) {
     	super.onCreateOptionsMenu(menu);
         getMenuInflater().inflate(R.menu.activity_main, menu);
+        
         MenuItem mSpinner = menu.findItem(R.id.appListMenu_appTypeSpinner);
         final Spinner appTypeSpinner = (Spinner)mSpinner.getActionView();
         final SpinnerAdapter spinnerAdapter = (SpinnerAdapter) ArrayAdapter.createFromResource(this,
@@ -162,8 +159,7 @@ public class AppListActivity extends Activity {
 				android.R.layout.simple_spinner_dropdown_item);
         appTypeSpinner.setAdapter(spinnerAdapter);
         /*
-         * Need to work out how to start the navigation list at the option which was most
-         * recently selected previously, so remember across sessions
+         * Set the app spinner to be the correct selected option
          */
         if (currentAppType.equals(Preferences.APPLIST_LAST_APP_TYPE_USER)) {
         	appTypeSpinner.setSelection(APP_TYPE_USER_OPTION_POSITION);
@@ -174,6 +170,48 @@ public class AppListActivity extends Activity {
         }
         appTypeSpinner.setOnItemSelectedListener(new AppTypeSpinnerListener());
 		
+        
+        //TODO: move the query parts of this off into the DBInterface, where they really belong
+        mSpinner = menu.findItem(R.id.appListMenu_filterByGroupSpinner);
+        final Spinner groupSpinner = (Spinner)mSpinner.getActionView();
+        
+        Cursor groupNamesCursor = DBInterface.getInstance(context).getDBHelper().getReadableDatabase().rawQuery("SELECT DISTINCT " + DBInterface.SettingTable.COLUMN_NAME_GROUP_TITLE + " FROM " + DBInterface.SettingTable.TABLE_NAME + " ORDER BY " + DBInterface.SettingTable.COLUMN_NAME_GROUP_TITLE, null);
+        //List<SimpleImmutableEntry<String, String>> settingGroups = new ArrayList<SimpleImmutableEntry<String, String>>();  
+        if (groupNamesCursor == null || groupNamesCursor.getCount() < 1) {
+        	throw new DatabaseUninitialisedException("The database has no setting groups. I'm not comfortable with this situation.");
+        }
+        
+        /*if (groupNamesCursor.moveToFirst()) {
+        	int groupTitleColumnNum = groupNamesCursor.getColumnIndex(DBInterface.SettingTable.COLUMN_NAME_GROUP_TITLE);
+        	int groupIdColumnNum = groupNamesCursor.getColumnIndex(DBInterface.SettingTable.COLUMN_NAME_GROUP_ID);
+        	do {
+        		settingGroups.add(new SimpleImmutableEntry<String,String>(
+        				groupNamesCursor.getString(groupTitleColumnNum),
+        				groupNamesCursor.getString(groupIdColumnNum)
+        				));
+        	} while (groupNamesCursor.moveToNext());
+        }*/
+        
+        if (this.settingGroups == null) {
+        	this.settingGroups = new ArrayList<String>();
+        } else {
+        	this.settingGroups.clear();
+        }
+        
+        if (groupNamesCursor.moveToFirst()) {
+	    	int groupTitleColumnNum = groupNamesCursor.getColumnIndex(DBInterface.SettingTable.COLUMN_NAME_GROUP_TITLE);
+	    	do {
+	    		settingGroups.add(groupNamesCursor.getString(groupTitleColumnNum));
+	    	} while (groupNamesCursor.moveToNext());
+    	}
+        
+        groupNamesCursor.close();
+        //groupSpinner.setAdapter((SpinnerAdapter)new SimpleAdapter(context, groupSpinner.getId(), groupNamesCursor, new String[] {DBInterface.SettingTable.COLUMN_NAME_GROUP_TITLE}, new int [] {android.R.id.text1}, 0));
+        final SpinnerAdapter groupSpinnerAdapter = (SpinnerAdapter) new ArrayAdapter<String>(context, android.R.layout.simple_spinner_dropdown_item, settingGroups);
+        groupSpinner.setAdapter(groupSpinnerAdapter);
+        
+        groupSpinner.setOnItemSelectedListener(new GroupSpinnerListener());
+        
         return true;
     }
     
@@ -239,11 +277,32 @@ public class AppListActivity extends Activity {
 		}
     }
     
-    private void loadApplicationList(AppListLoader appListLoader) {
+    private void loadApplicationList() {
     	Log.d("PDroidAlternative","About to start load");
-    	AppListLoaderTask appListLoaderTask = new AppListLoaderTask(this, new AppListLoaderCallback());
+    	
+    	AppQueryBuilder queryBuilder = new AppQueryBuilder();
+		queryBuilder.addColumns(AppQueryBuilder.COLUMN_TYPE_APP);
+		queryBuilder.addColumns(AppQueryBuilder.COLUMN_TYPE_STATUSFLAGS);
+		
+		if (this.currentSettingGroup != null) {
+			//TODO: Right now, the 'general' option is serving as an 'all' option, because all apps include
+			//items from the General group. This is not a good solution.
+			queryBuilder.addFilter(AppQueryBuilder.FILTER_BY_SETTING_GROUP_TITLE, currentSettingGroup);
+		}
+					
+		if (currentAppType.equals(Preferences.APPLIST_LAST_APP_TYPE_SYSTEM)) {
+			queryBuilder.addFilter(AppQueryBuilder.FILTER_BY_TYPE, AppListLoader.APP_TYPE_SYSTEM);
+		} else if (currentAppType.equals(Preferences.APPLIST_LAST_APP_TYPE_USER)) {
+			queryBuilder.addFilter(AppQueryBuilder.FILTER_BY_TYPE, AppListLoader.APP_TYPE_USER);
+		} else if (currentAppType.equals(Preferences.APPLIST_LAST_APP_TYPE_ALL)) {
+			//This is just here for the moment for exclusion purposes
+		} else {
+			Log.d("PDroidAlternative","You shouldn't be here!");
+		}
+
+		AppListLoaderTask appListLoaderTask = new AppListLoaderTask(this, new AppListLoaderCallback());
     	Log.d("PDroidAlternative","Created the task");
-    	appListLoaderTask.execute(appListLoader);
+    	appListLoaderTask.execute(new AppListLoader(context, queryBuilder));
     }
     
     private void rebuildApplicationList() {
@@ -270,17 +329,7 @@ public class AppListActivity extends Activity {
     		}
     		
     		prefs.setIsApplicationListCacheValid(true);
-    		if (currentAppType.equals(Preferences.APPLIST_LAST_APP_TYPE_ALL)) {
-	    		appList = returnedAppList;    		
-	    		listView.setAdapter(new AppListAdapter(context, R.layout.application_list_row, appList));
-	    		readyForInput = true;
-    		} else if (currentAppType.equals(Preferences.APPLIST_LAST_APP_TYPE_SYSTEM)) {
-				loadApplicationList(new AppListLoader(context, AppListLoader.SearchType.TYPE, new String [] {AppListLoader.APP_TYPE_SYSTEM}));
-    		} else if (currentAppType.equals(Preferences.APPLIST_LAST_APP_TYPE_USER)) {
-    			loadApplicationList(new AppListLoader(context, AppListLoader.SearchType.TYPE, new String [] {AppListLoader.APP_TYPE_USER}));
-    		} else {
-    			Log.d("PDroidAlternative","You shouldn't be here!");
-    		}
+    		loadApplicationList();
     	}
     	
     	@Override
@@ -319,26 +368,27 @@ public class AppListActivity extends Activity {
 			//need to be able to disable this, just in case there is a time when
 			//it is possible to change the entry, but there is already an operation underway
 			if (readyForInput) {
+				
 	 			switch (itemPosition) {
 				case APP_TYPE_USER_OPTION_POSITION:
 					if (!currentAppType.equals(Preferences.APPLIST_LAST_APP_TYPE_USER)) {
-						loadApplicationList(new AppListLoader(context, AppListLoader.SearchType.TYPE, new String [] {AppListLoader.APP_TYPE_USER}));
-						prefs.setLastAppListType(Preferences.APPLIST_LAST_APP_TYPE_USER);
+	        			prefs.setLastAppListType(Preferences.APPLIST_LAST_APP_TYPE_USER);
 						currentAppType = Preferences.APPLIST_LAST_APP_TYPE_USER;
+						loadApplicationList();
 					}
 					break;
 				case APP_TYPE_SYSTEM_OPTION_POSITION:
 					if (!currentAppType.equals(Preferences.APPLIST_LAST_APP_TYPE_SYSTEM)) {
-						loadApplicationList(new AppListLoader(context, AppListLoader.SearchType.TYPE, new String [] {AppListLoader.APP_TYPE_SYSTEM}));
 						prefs.setLastAppListType(Preferences.APPLIST_LAST_APP_TYPE_SYSTEM);
 						currentAppType = Preferences.APPLIST_LAST_APP_TYPE_SYSTEM;
+						loadApplicationList();
 					}
 					break;
 				case APP_TYPE_ALL_OPTION_POSITION:
 					if (!currentAppType.equals(Preferences.APPLIST_LAST_APP_TYPE_ALL)) {
-						loadApplicationList(new AppListLoader(context, AppListLoader.SearchType.ALL, null));
 						prefs.setLastAppListType(Preferences.APPLIST_LAST_APP_TYPE_ALL);
 						currentAppType = Preferences.APPLIST_LAST_APP_TYPE_ALL;
+						loadApplicationList();
 					}
 					break;
 				}
@@ -349,6 +399,25 @@ public class AppListActivity extends Activity {
 		public void onNothingSelected(AdapterView<?> view) {
 			// TODO Auto-generated method stub
 			
+		}
+    };
+    
+    class GroupSpinnerListener implements OnItemSelectedListener {
+
+		@Override
+		public void onItemSelected(AdapterView<?> parent, View view, int itemPosition,
+				long id) {
+			Log.d("PDroidAlternative","Group selected: " + settingGroups.get(itemPosition));
+			
+			if (readyForInput) {        		
+				currentSettingGroup = settingGroups.get(itemPosition);
+				loadApplicationList();
+			}
+		}
+
+		@Override
+		public void onNothingSelected(AdapterView<?> view) {
+			// TODO Auto-generated method stub
 		}
     };
 }

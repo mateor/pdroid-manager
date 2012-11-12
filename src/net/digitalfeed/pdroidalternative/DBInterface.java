@@ -335,13 +335,13 @@ public class DBInterface {
 		public static final String DROP_SQL = "DROP TABLE IF EXISTS " + TABLE_NAME + ";";
 	}
 	
-	protected static final String QUERYPART_COLUMNS_PACKAGENAME = 
+	protected static final String QUERYPART_SELECTPART_COLUMNS_PACKAGENAME = 
 			ApplicationTable.TABLE_NAME + "." + ApplicationTable.COLUMN_NAME_PACKAGENAME;
 
-	protected static final String QUERYPART_COLUMNS_LABEL = 
+	protected static final String QUERYPART_SELECTPART_COLUMNS_LABEL = 
 			ApplicationTable.TABLE_NAME + "." + ApplicationTable.COLUMN_NAME_LABEL;
 	
-	protected static final String QUERYPART_COLUMNS_APP = 
+	protected static final String QUERYPART_SELECTPART_COLUMNS_APP = 
 			ApplicationTable.TABLE_NAME + "." + ApplicationTable.COLUMN_NAME_LABEL + ", " +  
 			ApplicationTable.TABLE_NAME + "." + ApplicationTable.COLUMN_NAME_PACKAGENAME + ", " + 
 			ApplicationTable.TABLE_NAME + "." + ApplicationTable.COLUMN_NAME_UID + ", " +
@@ -350,9 +350,12 @@ public class DBInterface {
 			ApplicationTable.TABLE_NAME + "." + ApplicationTable.COLUMN_NAME_FLAGS + ", " +
 			ApplicationTable.TABLE_NAME + "." + ApplicationTable.COLUMN_NAME_PERMISSIONS; 
 	
-	protected static final String QUERYPART_COLUMNS_APP_WITH_STATUS = 
-			QUERYPART_COLUMNS_APP + ", " + 
+	protected static final String QUERYPART_SELECTPART_COLUMNS_STATUSFLAGS = 
+			QUERYPART_SELECTPART_COLUMNS_APP + ", " + 
 			ApplicationStatusTable.TABLE_NAME + "." + ApplicationStatusTable.COLUMN_NAME_FLAGS;
+	
+	
+	
 	
 	protected static final String QUERYPART_JOIN_APP_WITH_STATUS = 
 			" LEFT OUTER JOIN " + ApplicationStatusTable.TABLE_NAME +
@@ -363,6 +366,8 @@ public class DBInterface {
 			" INNER JOIN " + PermissionApplicationTable.TABLE_NAME +
 			" ON " + ApplicationTable.TABLE_NAME + "." + ApplicationTable.COLUMN_NAME_PACKAGENAME + " =  " +
 			PermissionApplicationTable.TABLE_NAME + "." + PermissionApplicationTable.COLUMN_NAME_PACKAGENAME;
+	
+	
 	
 	protected static final String QUERYPART_FILTER_BY_LABEL = 
 			" WHERE " + ApplicationTable.TABLE_NAME + "." + ApplicationTable.COLUMN_NAME_LABEL + " LIKE ?";
@@ -375,6 +380,18 @@ public class DBInterface {
 			" ON " + ApplicationTable.TABLE_NAME + "." + ApplicationTable.COLUMN_NAME_PACKAGENAME + " =  " +
 			PermissionApplicationTable.TABLE_NAME + "." + PermissionApplicationTable.COLUMN_NAME_PACKAGENAME + 
 			" WHERE " + PermissionApplicationTable.TABLE_NAME + "." + PermissionApplicationTable.COLUMN_NAME_PERMISSION + " = ?";
+
+	protected static final String QUERYPART_FILTER_BY_SETTING_GROUP = 
+			" INNER JOIN " + PermissionApplicationTable.TABLE_NAME +
+			" ON " + ApplicationTable.TABLE_NAME + "." + ApplicationTable.COLUMN_NAME_PACKAGENAME + " = " +
+			PermissionApplicationTable.TABLE_NAME + "." + PermissionApplicationTable.COLUMN_NAME_PACKAGENAME +
+			" INNER JOIN " + PermissionSettingTable.TABLE_NAME + 
+			" ON " + PermissionSettingTable.TABLE_NAME + "." + PermissionSettingTable.COLUMN_NAME_PERMISSION + " = " +
+			PermissionApplicationTable.TABLE_NAME + "." + PermissionApplicationTable.COLUMN_NAME_PERMISSION +
+			" INNER JOIN " + SettingTable.TABLE_NAME + 
+			" ON " + SettingTable.TABLE_NAME + "." + SettingTable.COLUMN_NAME_ID + " = " +
+			PermissionSettingTable.TABLE_NAME + "." + PermissionSettingTable.COLUMN_NAME_SETTING +
+			" WHERE " + SettingTable.TABLE_NAME + "." + SettingTable.COLUMN_NAME_GROUP_TITLE + " = ?";
 	
 	protected static final String QUERYPART_FILTER_BY_TYPE = 
 			" WHERE " + ApplicationTable.TABLE_NAME + "." + ApplicationTable.COLUMN_NAME_FLAGS +
@@ -383,13 +400,13 @@ public class DBInterface {
 	protected static final String QUERYPART_SORT_BY_LABEL = 
 			" ORDER BY " + ApplicationTable.TABLE_NAME + "." + ApplicationTable.COLUMN_NAME_LABEL;
 
-	public static final String QUERYPART_GET_ALL_APPS_WITH_STATUS = "SELECT " +
-			QUERYPART_COLUMNS_APP_WITH_STATUS + 
+	public static final String QUERYPART_GET_ALL_APPS_WITH_STATUS = "SELECT DISTINCT " +
+			QUERYPART_SELECTPART_COLUMNS_STATUSFLAGS + 
 			" FROM " + ApplicationTable.TABLE_NAME + 
 			QUERYPART_JOIN_APP_WITH_STATUS;
 
 	public static final String QUERYPART_GET_ALL_APPS_PACKAGENAME_ONLY = "SELECT " +
-			QUERYPART_COLUMNS_PACKAGENAME +  
+			QUERYPART_SELECTPART_COLUMNS_PACKAGENAME +  
 			" FROM " + ApplicationTable.TABLE_NAME;
 
 	public static final String QUERY_GET_ALL_APPS_WITH_STATUS =
@@ -408,7 +425,7 @@ public class DBInterface {
 			QUERYPART_GET_ALL_APPS_PACKAGENAME_ONLY + QUERYPART_FILTER_BY_LABEL + QUERYPART_SORT_BY_LABEL;
 	
 	public static final String QUERY_GET_APPS_BY_PACKAGENAME_LABEL_ONLY = "SELECT " +
-					QUERYPART_COLUMNS_LABEL +  
+					QUERYPART_SELECTPART_COLUMNS_LABEL +  
 					" FROM " + ApplicationTable.TABLE_NAME + 
 					QUERYPART_FILTER_BY_PACKAGENAME;
 
@@ -424,6 +441,7 @@ public class DBInterface {
 	public static final String QUERY_GET_APPS_BY_TYPE_PACKAGENAME_ONLY =
 			QUERYPART_GET_ALL_APPS_PACKAGENAME_ONLY + QUERYPART_FILTER_BY_TYPE + QUERYPART_SORT_BY_LABEL;
 
+	
 	public static final String QUERY_DELETE_APPS_WITHOUT_STATUS = "DELETE FROM " + 
 			ApplicationStatusTable.TABLE_NAME + 
 			" WHERE " + ApplicationStatusTable.COLUMN_NAME_PACKAGENAME + 
