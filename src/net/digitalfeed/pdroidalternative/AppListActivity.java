@@ -41,6 +41,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -75,7 +76,7 @@ public class AppListActivity extends Activity {
 	DBInterface dbInterface;
 	Preferences prefs;
 	
-	Application[] appList; // array of applications to be displayed by the view (basically, an
+	List<Application> appList; // array of applications to be displayed by the view (basically, an
 						   // array of handles to application objects stored in the applicationObjects hashmap
 	HashMap<String, Application> applicationObjects; // stores application objects for all the applications, including
 													// those not being displayed. This is loaded in advance so no more objects
@@ -141,7 +142,7 @@ public class AppListActivity extends Activity {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position,
 					long id) {
-				openDetailInterface(appList[position]);
+				openDetailInterface(appList.get(position));
 			}
         });
         
@@ -190,7 +191,8 @@ public class AppListActivity extends Activity {
         mSpinner = menu.findItem(R.id.appListMenu_filterByGroupSpinner);
         final Spinner groupSpinner = (Spinner)mSpinner.getActionView();
         
-        Cursor groupNamesCursor = DBInterface.getInstance(context).getDBHelper().getReadableDatabase().rawQuery("SELECT DISTINCT " + DBInterface.SettingTable.COLUMN_NAME_GROUP_TITLE + " FROM " + DBInterface.SettingTable.TABLE_NAME + " ORDER BY " + DBInterface.SettingTable.COLUMN_NAME_GROUP_TITLE, null);
+        SQLiteDatabase db = DBInterface.getInstance(context).getDBHelper().getReadableDatabase();
+        Cursor groupNamesCursor = db.rawQuery("SELECT DISTINCT " + DBInterface.SettingTable.COLUMN_NAME_GROUP_TITLE + " FROM " + DBInterface.SettingTable.TABLE_NAME + " ORDER BY " + DBInterface.SettingTable.COLUMN_NAME_GROUP_TITLE, null);
         if (groupNamesCursor == null || groupNamesCursor.getCount() < 1) {
         	throw new DatabaseUninitialisedException("The database has no setting groups. I'm not comfortable with this situation.");
         }
@@ -209,6 +211,7 @@ public class AppListActivity extends Activity {
     	}
         
         groupNamesCursor.close();
+        //db.close();
         final SpinnerAdapter groupSpinnerAdapter = (SpinnerAdapter) new ArrayAdapter<String>(context, android.R.layout.simple_spinner_dropdown_item, settingGroups);
         groupSpinner.setAdapter(groupSpinnerAdapter);
         
@@ -235,7 +238,7 @@ public class AppListActivity extends Activity {
     	PopupMenu popupMenu = new PopupMenu(context, view);
     	      popupMenu.getMenuInflater().inflate(R.menu.activity_applist_longpress_menu, popupMenu.getMenu());
     	      
-    	      final Application targetApp = appList[position];
+    	      final Application targetApp = appList.get(position);
 
     	      popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
     	    	  @Override
@@ -328,13 +331,14 @@ public class AppListActivity extends Activity {
 		startActivity(intent);
     }
     
-    class AppListGeneratorCallback implements IAsyncTaskCallbackWithProgress<Application []>{
+    class AppListGeneratorCallback implements IAsyncTaskCallbackWithProgress<HashMap<String, Application>>{
     	@Override
-    	public void asyncTaskComplete(Application[] returnedAppList) {
+    	public void asyncTaskComplete(HashMap<String, Application> returnedAppList) {
     		if (progDialog != null) {
     			progDialog.dismiss();
     		}
     		
+    		applicationObjects = returnedAppList; 
     		prefs.setIsApplicationListCacheValid(true);
     		loadApplicationList();
     	}
@@ -359,16 +363,21 @@ public class AppListActivity extends Activity {
     	public void asyncTaskComplete(List<String> result) {
     		if (result != null) {
 	    		Log.d("PDroidAlternative","Got result from app list load: length " + result.size());
-	    		appList = new Application[result.size()];
-	    		int appListOffset = 0;
-	    		for (String packageName : result) {
-	    			appList[appListOffset++] = applicationObjects.get(packageName);
-	    		}
-	    		if (listView.getAdapter() == null) {
-	    			listView.setAdapter(new AppListAdapter(context, R.layout.application_list_row, appList));
+	    		if (appList == null) {
+	    			appList = new ArrayList<Application>(result.size());
 	    		} else {
-	    			listView.setAdapter(new AppListAdapter(context, R.layout.application_list_row, appList));
-	    			// 	appListAdapter.notifyDataSetChanged();
+	    			appList.clear();
+	    		}
+	    		
+	    		for (String packageName : result) {
+	    			appList.add(applicationObjects.get(packageName));
+	    		}
+	        	if (appListAdapter == null) {
+	        		appListAdapter = new AppListAdapter(context, R.layout.application_list_row, appList);
+	        		listView.setAdapter(appListAdapter);
+	    		} else {
+	    			//listView.setAdapter(new AppListAdapter(context, R.layout.application_list_row, appList));
+	    			appListAdapter.notifyDataSetChanged();
 	    		}
     		} else {
     			Log.d("PDroidAlternative","No results from app list load");

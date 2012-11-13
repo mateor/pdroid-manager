@@ -513,7 +513,7 @@ public class DBInterface {
 		
 		SQLiteDatabase write_db = dbhelper.getWritableDatabase();
 		write_db.insert(ApplicationLogTable.TABLE_NAME, null, contentValues);
-		write_db.close();
+		//write_db.close();
 	}
 
 	/**
@@ -535,7 +535,7 @@ public class DBInterface {
 			label = cursor.getString(cursor.getColumnIndex(DBInterface.ApplicationTable.COLUMN_NAME_LABEL));
 		}
 		cursor.close();
-		db.close();
+		//db.close();
 		return label;
 	}
 	
@@ -553,7 +553,7 @@ public class DBInterface {
 		db.delete(ApplicationTable.TABLE_NAME, ApplicationTable.WHERE_CLAUSE_PACKAGENAME, new String[]{packageName});
 		db.delete(ApplicationStatusTable.TABLE_NAME, ApplicationStatusTable.WHERE_CLAUSE_PACKAGENAME, new String[]{packageName});
 		db.delete(PermissionApplicationTable.TABLE_NAME, PermissionApplicationTable.WHERE_CLAUSE_PACKAGENAME, new String[]{packageName});
-		db.close();
+		//db.close();
 	}
 
 	
@@ -588,7 +588,7 @@ public class DBInterface {
 			e.printStackTrace();
 		}
 		write_db.endTransaction();
-		write_db.close();
+		//write_db.close();
 		
 	}
 	
@@ -624,7 +624,7 @@ public class DBInterface {
 			e.printStackTrace();
 		}
 		write_db.endTransaction();
-		write_db.close();
+		//write_db.close();
 		
 	}
 

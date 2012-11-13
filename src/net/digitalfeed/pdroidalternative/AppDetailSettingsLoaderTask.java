@@ -192,7 +192,7 @@ public class AppDetailSettingsLoaderTask extends AsyncTask<String, Integer, Link
 			}
 		} while (cursor.moveToNext());
 		cursor.close();
-		db.close();
+		//db.close();
 		return settingSet;
 	}
 	

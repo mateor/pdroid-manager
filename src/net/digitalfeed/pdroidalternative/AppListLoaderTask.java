@@ -71,7 +71,7 @@ public class AppListLoaderTask extends AsyncTask<AppQueryBuilder, Integer, List<
 	    	} while (cursor.moveToNext());
 
 	    	cursor.close();
-	    	db.close();
+	    	//db.close();
 		}
 		return packageNames;
 	}

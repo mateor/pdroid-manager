@@ -101,7 +101,7 @@ public class AppListAppObjectGeneratorTask extends AsyncTask<Void, Integer, Hash
     	} while (cursor.moveToNext());
 
     	cursor.close();
-    	db.close();
+    	//db.close();
     	
     	Log.d("PDroidAlternative","Got matching applications: " + appList.size());
     	

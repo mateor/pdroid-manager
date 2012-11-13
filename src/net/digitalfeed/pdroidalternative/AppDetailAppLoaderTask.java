@@ -110,7 +110,7 @@ public class AppDetailAppLoaderTask extends AsyncTask<String, Integer, Applicati
 		}
 	
 		cursor.close();
-    	db.close();
+    	//db.close();
     	
     	
     	return new Application(packageName, label, versionCode, appFlags, 0, uid, icon, permissionsArray);

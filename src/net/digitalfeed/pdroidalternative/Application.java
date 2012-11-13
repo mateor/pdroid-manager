@@ -26,7 +26,6 @@
  */
 package net.digitalfeed.pdroidalternative;
 
-import java.util.Comparator;
 
 import net.digitalfeed.pdroidalternative.DBInterface.DBHelper;
 
@@ -59,14 +58,6 @@ public class Application {
 	public static final int STATUS_FLAG_NEW = 8;
 	public static final int STATUS_FLAG_UPDATED = 16;
 	
-	
-	public static class LabelComparator implements Comparator<Application> {
-		@Override
-		public int compare(Application lhs, Application rhs) {
-			return lhs.getLabel().compareToIgnoreCase(rhs.getLabel());
-		}
-	}
-
 	//indicates whether this has a full data complement, or just the minimum data set
 	//private boolean isStub;
 	
@@ -359,9 +350,9 @@ public class Application {
 			if (cursor != null && !cursor.isClosed()) {
 				cursor.close();
 			}
-			if (db != null && db.isOpen()) {
+			/*if (db != null && db.isOpen()) {
 				db.close();
-			}
+			}*/
 		}
 		
 		return app;

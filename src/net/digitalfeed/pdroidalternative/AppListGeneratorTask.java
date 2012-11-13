@@ -26,8 +26,7 @@
  */
 package net.digitalfeed.pdroidalternative;
 
-import java.util.Collections;
-import java.util.LinkedList;
+import java.util.HashMap;
 import java.util.List;
 
 import net.digitalfeed.pdroidalternative.DBInterface.ApplicationStatusTable;
@@ -45,7 +44,7 @@ import android.privacy.PrivacySettingsManager;
 import android.text.TextUtils;
 import android.util.Log;
 
-public class AppListGeneratorTask extends AsyncTask<Void, Integer, Application []> {
+public class AppListGeneratorTask extends AsyncTask<Void, Integer, HashMap<String, Application>> {
 		
 	protected static final int APPLICATION_TABLE_COLUMN_NUMBER_OFFSET_LABEL = 0;
 	protected static final int APPLICATION_TABLE_COLUMN_NUMBER_OFFSET_PACKAGENAME = 1;
@@ -58,12 +57,12 @@ public class AppListGeneratorTask extends AsyncTask<Void, Integer, Application [
 	protected static final int APPLICATION_STATUS_TABLE_COLUMN_NUMBER_OFFSET_PACKAGENAME = 0;
 	protected static final int APPLICATION_STATUS_TABLE_COLUMN_NUMBER_OFFSET_FLAGS = 1;
 	
-	IAsyncTaskCallbackWithProgress<Application []> listener;
+	IAsyncTaskCallbackWithProgress<HashMap<String, Application>> listener;
 	
 	Context context;
 	int includeAppTypes;
 	
-	public AppListGeneratorTask(Context context, IAsyncTaskCallbackWithProgress<Application []> listener) {
+	public AppListGeneratorTask(Context context, IAsyncTaskCallbackWithProgress<HashMap<String, Application>> listener) {
 		this.context = context;
 		this.listener = listener;
 	}
@@ -77,10 +76,10 @@ public class AppListGeneratorTask extends AsyncTask<Void, Integer, Application [
 	 * Retrieves the list of applications, and returns as an array of Application objects
 	 */
 	@Override
-	protected Application [] doInBackground(Void... params) {
+	protected HashMap<String, Application> doInBackground(Void... params) {
 		PrivacySettingsManager privacySettingsManager = (PrivacySettingsManager)context.getSystemService("privacy");
 		
-		LinkedList<Application> appList = new LinkedList<Application>();
+		HashMap<String, Application> appList = new HashMap<String, Application>();
 		PackageManager pkgMgr = context.getPackageManager();
 		
 		List<ApplicationInfo> installedApps = pkgMgr.getInstalledApplications(PackageManager.GET_META_DATA);
@@ -199,7 +198,7 @@ public class AppListGeneratorTask extends AsyncTask<Void, Integer, Application [
 						pkgMgr.getApplicationIcon(appInfo.packageName),
 						permissions
 						);
-				appList.add(app);
+				appList.put(appInfo.packageName, app);
 				
 				//Below is the alterative to using the insert helper. It is 'neater' but is almost certainly slower because
 				//it doesn't use compiled SQL queries
@@ -217,9 +216,8 @@ public class AppListGeneratorTask extends AsyncTask<Void, Integer, Application [
 		
 		write_db.setTransactionSuccessful();
 		write_db.endTransaction();
-		write_db.close();
-		Collections.sort(appList, new Application.LabelComparator());
-		return appList.toArray(new Application [appList.size()]);
+		//write_db.close();
+		return appList;
 	}
 	
 	@Override
@@ -228,7 +226,7 @@ public class AppListGeneratorTask extends AsyncTask<Void, Integer, Application [
 	}
 	
 	@Override
-	protected void onPostExecute(Application [] result) {
+	protected void onPostExecute(HashMap<String, Application> result) {
 		super.onPostExecute(result);
 		listener.asyncTaskComplete(result);
 	}

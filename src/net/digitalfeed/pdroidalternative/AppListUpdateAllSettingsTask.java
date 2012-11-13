@@ -88,7 +88,7 @@ public class AppListUpdateAllSettingsTask extends AsyncTask<Application, Void, V
 			helper.setPrivacySettingsToTrustState(db, privacySettings, newTrustState);
 			privacySettingsManager.saveSettings(privacySettings);
 		}
-		db.close();
+		//db.close();
 		return null;
 	}
 	

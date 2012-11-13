@@ -27,6 +27,8 @@
 
 package net.digitalfeed.pdroidalternative;
 
+import java.util.List;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
@@ -51,12 +53,12 @@ public class AppListAdapter extends ArrayAdapter<Application>{
 	
 	Context context;
 	int standardResourceId;
-	Application[] appList = null;
+	List<Application>appList = null;
 	Drawable [] internetAccessIcons;
 	String [] appTypeLabels;
 	String [] appStatusLabels;
 	
-	public AppListAdapter(Context context, int standardResourceId, Application[] appList) {
+	public AppListAdapter(Context context, int standardResourceId, List<Application> appList) {
 		super(context, standardResourceId, appList);
 		
 		this.context = context;
@@ -90,7 +92,7 @@ public class AppListAdapter extends ArrayAdapter<Application>{
 			holder = (AppHolder)row.getTag();
 		}
 		
-		Application app = appList[position];
+		Application app = appList.get(position);
 		holder.icon.setImageDrawable(app.getIcon());
 		holder.appLabel.setText(app.getLabel());
 		if (app.getIsSystemApp()) {
