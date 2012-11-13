@@ -26,8 +26,7 @@
  */
 package net.digitalfeed.pdroidalternative;
 
-import java.security.InvalidParameterException;
-import java.util.LinkedList;
+import java.util.HashMap;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -35,31 +34,45 @@ import android.database.sqlite.SQLiteDatabase;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.AsyncTask;
 import android.util.Log;
 
-public class AppListLoader {
-
-	private Context context;
-	AppQueryBuilder queryBuilder;
-
-	public static final String APP_TYPE_USER = "0";
-	public static final String APP_TYPE_SYSTEM = "1";
+/**
+ * Returns a HashMap of package name and in-memory Application objects for all applications currently
+ * recorded in the database. This allows smaller queries retrieving only package names to be used
+ * to identify packages of interest to list in the UI, rather than having to regenerate
+ * application objects each time.
+ * 
+ * @author smorgan
+ *
+ */
+public class AppListAppObjectGeneratorTask extends AsyncTask<Void, Integer, HashMap<String, Application>> {
 	
-	enum SearchType { ALL, PACKAGE_NAME, PERMISSION, SETTING_GROUP }
-	enum AppType { ALL, USER, SYSTEM }
-	enum ResultsType { ALL, PACKAGE_NAME }
-
-	public AppListLoader(Context context, AppQueryBuilder queryBuilder) throws InvalidParameterException {
+	IAsyncTaskCallback<HashMap<String, Application>> listener;
+	
+	Context context;
+	
+	public AppListAppObjectGeneratorTask(Context context, IAsyncTaskCallback<HashMap<String, Application>> listener) {
 		this.context = context;
-		this.queryBuilder = queryBuilder;
+		this.listener = listener;
 	}
 	
-	public Application [] getMatchingApplications() {
+	@Override
+	protected void onPreExecute(){ 
+		super.onPreExecute();
+	}
+	
+	@Override
+	protected HashMap<String, Application> doInBackground(Void... params) {
+		AppQueryBuilder queryBuilder = new AppQueryBuilder();
+		
+		queryBuilder.addColumns(AppQueryBuilder.COLUMN_TYPE_APP);
+		queryBuilder.addColumns(AppQueryBuilder.COLUMN_TYPE_STATUSFLAGS);
 
-		LinkedList<Application> appList = new LinkedList<Application>();
 		SQLiteDatabase db = DBInterface.getInstance(context).getDBHelper().getReadableDatabase();
-    	
-    	Cursor cursor = this.queryBuilder.doQuery(db);
+		HashMap<String, Application> appList = new HashMap<String, Application>();
+		
+		Cursor cursor = queryBuilder.doQuery(db);
     	
     	if (cursor.getCount() < 1) {
     		throw new DatabaseUninitialisedException("No applications are listed in the database matching the query");
@@ -84,7 +97,7 @@ public class AppListLoader {
     		byte[] iconBlob = cursor.getBlob(iconColumn);
 
     		Drawable icon = new BitmapDrawable(context.getResources(),BitmapFactory.decodeByteArray(iconBlob, 0, iconBlob.length));
-    		appList.add(new Application(packageName, label, versionCode, appFlags, statusFlags, uid, icon));
+    		appList.put(packageName, new Application(packageName, label, versionCode, appFlags, statusFlags, uid, icon));
     	} while (cursor.moveToNext());
 
     	cursor.close();
@@ -92,6 +105,13 @@ public class AppListLoader {
     	
     	Log.d("PDroidAlternative","Got matching applications: " + appList.size());
     	
-    	return appList.toArray(new Application[appList.size()]);
+    	return appList;
 	}
+	
+	@Override
+	protected void onPostExecute(HashMap<String, Application> result) {
+		super.onPostExecute(result);
+		listener.asyncTaskComplete(result);
+	}
+	
 }

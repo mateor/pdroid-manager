@@ -13,6 +13,9 @@ import android.text.TextUtils;
 import android.util.Log;
 
 public class AppQueryBuilder {
+	public static final String APP_TYPE_USER = "0";
+	public static final String APP_TYPE_SYSTEM = "1";
+	
 	public static final int COLUMN_TYPE_APP = 1;
 	public static final int COLUMN_TYPE_STATUSFLAGS = 2;
 	public static final int COLUMN_TYPE_PACKAGENAME = 4;

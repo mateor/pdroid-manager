@@ -29,6 +29,7 @@ package net.digitalfeed.pdroidalternative;
 
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import net.digitalfeed.pdroidalternative.PermissionSettingHelper.TrustState;
@@ -64,20 +65,29 @@ public class AppListActivity extends Activity {
 	public static final int APP_TYPE_SYSTEM_OPTION_POSITION = 1;
 	public static final int APP_TYPE_ALL_OPTION_POSITION = 2;
 	
-	String[] appTitleList;
-	ListView listView;
+	ListView listView; // view for the list of applications
+	AppListAdapter appListAdapter; // array adapter for listView
+	ProgressDialog progDialog; // used to store the progress dialog from start to end of asynctasks
+	ActionBar actionBar;
+	
 	Context context;
-	Application[] appList;
-	ProgressDialog progDialog;
+	
 	DBInterface dbInterface;
 	Preferences prefs;
-	ActionBar actionBar;
-	boolean readyForInput = false;
-	String currentAppType;
-	String currentSettingGroup;
-	List<String> settingGroups;
 	
-	int pkgCounter = 0;
+	Application[] appList; // array of applications to be displayed by the view (basically, an
+						   // array of handles to application objects stored in the applicationObjects hashmap
+	HashMap<String, Application> applicationObjects; // stores application objects for all the applications, including
+													// those not being displayed. This is loaded in advance so no more objects
+													// need to be created when the display filters are changed
+
+	boolean readyForInput = false; // not fully implemented: the idea is to use this to block the interface
+								   // from responding during background operations
+	
+	String currentAppType; // stores the currently displayed app type: Preferences.APPLIST_LAST_APP_TYPE_[USER|SYSTEM|ALL]
+	String currentSettingGroup; // title of the current setting group filter 
+	List<String> settingGroups; // list of all the setting group titles, used for the setting group spinner
+	
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -99,6 +109,7 @@ public class AppListActivity extends Activity {
         
         setContentView(R.layout.activity_main);
         
+        //Hide the title in the action bar - we have more important things to display there.
     	actionBar = getActionBar();
     	actionBar.setDisplayShowTitleEnabled(false);
     }
@@ -115,10 +126,14 @@ public class AppListActivity extends Activity {
         		//The app list isn't valid, so we need to rebuild it
 	            rebuildApplicationList();
         	} else {
+        		loadApplicationObjects();
         		loadApplicationList();
         	}
         } else {
-        	listView.setAdapter(new AppListAdapter(context, R.layout.application_list_row, this.appList));
+        	if (this.appListAdapter == null) {
+        		this.appListAdapter = new AppListAdapter(context, R.layout.application_list_row, this.appList);
+        	}
+        	listView.setAdapter(appListAdapter);
         }
         
         listView.setOnItemClickListener(new OnItemClickListener() {
@@ -170,28 +185,16 @@ public class AppListActivity extends Activity {
         }
         appTypeSpinner.setOnItemSelectedListener(new AppTypeSpinnerListener());
 		
-        
         //TODO: move the query parts of this off into the DBInterface, where they really belong
+        // It may be better to create a specific adapter for this, since we are relying on searching by the group titles
         mSpinner = menu.findItem(R.id.appListMenu_filterByGroupSpinner);
         final Spinner groupSpinner = (Spinner)mSpinner.getActionView();
         
         Cursor groupNamesCursor = DBInterface.getInstance(context).getDBHelper().getReadableDatabase().rawQuery("SELECT DISTINCT " + DBInterface.SettingTable.COLUMN_NAME_GROUP_TITLE + " FROM " + DBInterface.SettingTable.TABLE_NAME + " ORDER BY " + DBInterface.SettingTable.COLUMN_NAME_GROUP_TITLE, null);
-        //List<SimpleImmutableEntry<String, String>> settingGroups = new ArrayList<SimpleImmutableEntry<String, String>>();  
         if (groupNamesCursor == null || groupNamesCursor.getCount() < 1) {
         	throw new DatabaseUninitialisedException("The database has no setting groups. I'm not comfortable with this situation.");
         }
-        
-        /*if (groupNamesCursor.moveToFirst()) {
-        	int groupTitleColumnNum = groupNamesCursor.getColumnIndex(DBInterface.SettingTable.COLUMN_NAME_GROUP_TITLE);
-        	int groupIdColumnNum = groupNamesCursor.getColumnIndex(DBInterface.SettingTable.COLUMN_NAME_GROUP_ID);
-        	do {
-        		settingGroups.add(new SimpleImmutableEntry<String,String>(
-        				groupNamesCursor.getString(groupTitleColumnNum),
-        				groupNamesCursor.getString(groupIdColumnNum)
-        				));
-        	} while (groupNamesCursor.moveToNext());
-        }*/
-        
+               
         if (this.settingGroups == null) {
         	this.settingGroups = new ArrayList<String>();
         } else {
@@ -206,7 +209,6 @@ public class AppListActivity extends Activity {
     	}
         
         groupNamesCursor.close();
-        //groupSpinner.setAdapter((SpinnerAdapter)new SimpleAdapter(context, groupSpinner.getId(), groupNamesCursor, new String[] {DBInterface.SettingTable.COLUMN_NAME_GROUP_TITLE}, new int [] {android.R.id.text1}, 0));
         final SpinnerAdapter groupSpinnerAdapter = (SpinnerAdapter) new ArrayAdapter<String>(context, android.R.layout.simple_spinner_dropdown_item, settingGroups);
         groupSpinner.setAdapter(groupSpinnerAdapter);
         
@@ -277,23 +279,28 @@ public class AppListActivity extends Activity {
 		}
     }
     
+    private void loadApplicationObjects() {
+    	Log.d("PDroidAlternative","About to generate application objects");
+    	AppListAppObjectGeneratorTask appListGeneratorTask = new AppListAppObjectGeneratorTask(this, new AppListAppGeneratorCallback());
+    	appListGeneratorTask.execute();
+    }
+    
     private void loadApplicationList() {
     	Log.d("PDroidAlternative","About to start load");
     	
     	AppQueryBuilder queryBuilder = new AppQueryBuilder();
-		queryBuilder.addColumns(AppQueryBuilder.COLUMN_TYPE_APP);
-		queryBuilder.addColumns(AppQueryBuilder.COLUMN_TYPE_STATUSFLAGS);
+		queryBuilder.addColumns(AppQueryBuilder.COLUMN_TYPE_PACKAGENAME);
 		
 		if (this.currentSettingGroup != null) {
 			//TODO: Right now, the 'general' option is serving as an 'all' option, because all apps include
 			//items from the General group. This is not a good solution.
 			queryBuilder.addFilter(AppQueryBuilder.FILTER_BY_SETTING_GROUP_TITLE, currentSettingGroup);
 		}
-					
+		
 		if (currentAppType.equals(Preferences.APPLIST_LAST_APP_TYPE_SYSTEM)) {
-			queryBuilder.addFilter(AppQueryBuilder.FILTER_BY_TYPE, AppListLoader.APP_TYPE_SYSTEM);
+			queryBuilder.addFilter(AppQueryBuilder.FILTER_BY_TYPE, AppQueryBuilder.APP_TYPE_SYSTEM);
 		} else if (currentAppType.equals(Preferences.APPLIST_LAST_APP_TYPE_USER)) {
-			queryBuilder.addFilter(AppQueryBuilder.FILTER_BY_TYPE, AppListLoader.APP_TYPE_USER);
+			queryBuilder.addFilter(AppQueryBuilder.FILTER_BY_TYPE, AppQueryBuilder.APP_TYPE_USER);
 		} else if (currentAppType.equals(Preferences.APPLIST_LAST_APP_TYPE_ALL)) {
 			//This is just here for the moment for exclusion purposes
 		} else {
@@ -302,7 +309,7 @@ public class AppListActivity extends Activity {
 
 		AppListLoaderTask appListLoaderTask = new AppListLoaderTask(this, new AppListLoaderCallback());
     	Log.d("PDroidAlternative","Created the task");
-    	appListLoaderTask.execute(new AppListLoader(context, queryBuilder));
+    	appListLoaderTask.execute(queryBuilder);
     }
     
     private void rebuildApplicationList() {
@@ -338,12 +345,34 @@ public class AppListActivity extends Activity {
     	}
     }
 
-    class AppListLoaderCallback implements IAsyncTaskCallback<Application []>{
+    class AppListAppGeneratorCallback implements IAsyncTaskCallback<HashMap<String, Application>> {
     	@Override
-    	public void asyncTaskComplete(Application[] returnedAppList) {
-    		Log.d("PDroidAlternative","Got result from app list load: length " + returnedAppList.length);
-    		appList = returnedAppList;
-    		listView.setAdapter(new AppListAdapter(context, R.layout.application_list_row, appList));
+    	public void asyncTaskComplete(HashMap<String, Application> result) {
+    		Log.d("PDroidAlternative","Got result from app list load: length " + result.size());
+    		applicationObjects = result;
+    		loadApplicationList();
+    	}
+    }
+    
+    class AppListLoaderCallback implements IAsyncTaskCallback<List<String>>{
+    	@Override
+    	public void asyncTaskComplete(List<String> result) {
+    		if (result != null) {
+	    		Log.d("PDroidAlternative","Got result from app list load: length " + result.size());
+	    		appList = new Application[result.size()];
+	    		int appListOffset = 0;
+	    		for (String packageName : result) {
+	    			appList[appListOffset++] = applicationObjects.get(packageName);
+	    		}
+	    		if (listView.getAdapter() == null) {
+	    			listView.setAdapter(new AppListAdapter(context, R.layout.application_list_row, appList));
+	    		} else {
+	    			listView.setAdapter(new AppListAdapter(context, R.layout.application_list_row, appList));
+	    			// 	appListAdapter.notifyDataSetChanged();
+	    		}
+    		} else {
+    			Log.d("PDroidAlternative","No results from app list load");
+    		}
     		readyForInput = true;
     	}
     }

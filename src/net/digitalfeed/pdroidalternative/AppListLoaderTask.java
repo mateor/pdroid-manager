@@ -26,16 +26,21 @@
  */
 package net.digitalfeed.pdroidalternative;
 
+import java.util.LinkedList;
+import java.util.List;
+
 import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 
-public class AppListLoaderTask extends AsyncTask<AppListLoader, Integer, Application[]> {
+public class AppListLoaderTask extends AsyncTask<AppQueryBuilder, Integer, List<String>> {
 	
-	IAsyncTaskCallback<Application[]> listener;
+	IAsyncTaskCallback<List<String>> listener;
 	
 	Context context;
 	
-	public AppListLoaderTask(Context context, IAsyncTaskCallback<Application[]> listener) {
+	public AppListLoaderTask(Context context, IAsyncTaskCallback<List<String>> listener) {
 		this.context = context;
 		this.listener = listener;
 	}
@@ -46,16 +51,33 @@ public class AppListLoaderTask extends AsyncTask<AppListLoader, Integer, Applica
 	}
 	
 	@Override
-	protected Application[] doInBackground(AppListLoader... appListLoader) {
-		if (appListLoader != null) {
-			return appListLoader[0].getMatchingApplications();
-		} else {
+	protected List<String> doInBackground(AppQueryBuilder... params) {
+		if (params == null) {
 			throw new NullPointerException("No AppListLoader was provided to the AppListLoaderTask");
 		}
+		
+		LinkedList<String> packageNames = null;
+		SQLiteDatabase db = DBInterface.getInstance(context).getDBHelper().getReadableDatabase();
+		
+		Cursor cursor = params[0].doQuery(db);
+		
+		if (cursor != null && cursor.getCount() > 0 && cursor.moveToFirst()) {
+			packageNames = new LinkedList<String>();
+			
+			int packageNameColumn = cursor.getColumnIndex(DBInterface.ApplicationTable.COLUMN_NAME_PACKAGENAME);
+
+			do {
+	    		packageNames.add(cursor.getString(packageNameColumn));
+	    	} while (cursor.moveToNext());
+
+	    	cursor.close();
+	    	db.close();
+		}
+		return packageNames;
 	}
 	
 	@Override
-	protected void onPostExecute(Application[] result) {
+	protected void onPostExecute(List<String> result) {
 		super.onPostExecute(result);
 		listener.asyncTaskComplete(result);
 	}
