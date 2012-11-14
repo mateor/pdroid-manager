@@ -56,6 +56,14 @@ import android.widget.PopupMenu;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 
+
+/**
+ * The main activity for the application - loads and presents a list of applications to
+ * the user which can be selected and have the settings changed.
+ * 
+ * @author smorgan
+ *
+ */
 public class AppListActivity extends Activity {
 
 	/*
@@ -96,15 +104,20 @@ public class AppListActivity extends Activity {
         context = this;
         
         Log.d("PDroidAlternative", "Getting preferences");
+        
+        //get bridge to the application preferences
         prefs = new Preferences(this);
         
+        //get the most recently selected option from the 'App Type' list, and set as current
         currentAppType = prefs.getLastAppListType();
+
         /*
          * If the database version has changed, we will need to rebuild the application cache 
          */
         if (prefs.getLastRunDatabaseVersion() != DBInterface.DBHelper.DATABASE_VERSION) {
         	Log.d("PDroidAlternative", "Defined database version has changed since last run; we need to rebuild the cache");
-        	prefs.setIsApplicationListCacheValid(false);
+        	//this will force the application list to be rebuilt from the application package manager
+        	prefs.setIsApplicationListCacheValid(false); 
         	prefs.setLastRunDatabaseVersion(DBInterface.DBHelper.DATABASE_VERSION);
         }
         
@@ -114,6 +127,7 @@ public class AppListActivity extends Activity {
     	actionBar = getActionBar();
     	actionBar.setDisplayShowTitleEnabled(false);
     }
+    
     
     @Override
     public void onStart() {
@@ -168,6 +182,11 @@ public class AppListActivity extends Activity {
     	super.onCreateOptionsMenu(menu);
         getMenuInflater().inflate(R.menu.activity_main, menu);
         
+        /*
+         * Get a handle to the application type list spinner, and load the list of options
+         * from a resource file. The order of items in this resource file must match the constants
+         * (e.g. APP_TYPE_USER_OPTION_POSITION) in this java file.
+         */
         MenuItem mSpinner = menu.findItem(R.id.appListMenu_appTypeSpinner);
         final Spinner appTypeSpinner = (Spinner)mSpinner.getActionView();
         final SpinnerAdapter spinnerAdapter = (SpinnerAdapter) ArrayAdapter.createFromResource(this,
@@ -175,7 +194,7 @@ public class AppListActivity extends Activity {
 				android.R.layout.simple_spinner_dropdown_item);
         appTypeSpinner.setAdapter(spinnerAdapter);
         /*
-         * Set the app spinner to be the correct selected option
+         * Set the app spinner to be the 'current' option
          */
         if (currentAppType.equals(Preferences.APPLIST_LAST_APP_TYPE_USER)) {
         	appTypeSpinner.setSelection(APP_TYPE_USER_OPTION_POSITION);
@@ -184,21 +203,29 @@ public class AppListActivity extends Activity {
         } else if (currentAppType.equals(Preferences.APPLIST_LAST_APP_TYPE_ALL)) {
         	appTypeSpinner.setSelection(APP_TYPE_ALL_OPTION_POSITION);
         }
+        // Add the handler for the spinner option being changed
         appTypeSpinner.setOnItemSelectedListener(new AppTypeSpinnerListener());
 		
+        
+        /*
+         * Load the setting group titles and present them in a spinner for filtering
+         */
         //TODO: move the query parts of this off into the DBInterface, where they really belong
         // It may be better to create a specific adapter for this, since we are relying on searching by the group titles
         mSpinner = menu.findItem(R.id.appListMenu_filterByGroupSpinner);
         final Spinner groupSpinner = (Spinner)mSpinner.getActionView();
         
+        //get a list of all the setting groups from the database
         SQLiteDatabase db = DBInterface.getInstance(context).getDBHelper().getReadableDatabase();
         Cursor groupNamesCursor = db.rawQuery("SELECT DISTINCT " + DBInterface.SettingTable.COLUMN_NAME_GROUP_TITLE + " FROM " + DBInterface.SettingTable.TABLE_NAME + " ORDER BY " + DBInterface.SettingTable.COLUMN_NAME_GROUP_TITLE, null);
         if (groupNamesCursor == null || groupNamesCursor.getCount() < 1) {
         	throw new DatabaseUninitialisedException("The database has no setting groups. I'm not comfortable with this situation.");
         }
-               
+        
+        //if there is already a list of settings groups (although will this ever happen??)
+        //clear it; otherwise initialise an arraylist for it
         if (this.settingGroups == null) {
-        	this.settingGroups = new ArrayList<String>();
+        	this.settingGroups = new ArrayList<String>(groupNamesCursor.getCount());
         } else {
         	this.settingGroups.clear();
         }
@@ -212,9 +239,11 @@ public class AppListActivity extends Activity {
         
         groupNamesCursor.close();
         //db.close();
+        //Create an array adapter for the spinner from the values loaded from the database, and assign to the spinner
         final SpinnerAdapter groupSpinnerAdapter = (SpinnerAdapter) new ArrayAdapter<String>(context, android.R.layout.simple_spinner_dropdown_item, settingGroups);
         groupSpinner.setAdapter(groupSpinnerAdapter);
-        
+
+        //Add handler for when the selected option changes
         groupSpinner.setOnItemSelectedListener(new GroupSpinnerListener());
         
         return true;
@@ -234,42 +263,76 @@ public class AppListActivity extends Activity {
 	    return false;
     }
     
+    /**
+     * Handles the display of the long-press pop-up menu, which provides 'allow all',
+     * 'deny all' options for an application.
+     */
     private void showPopupMenu(View view, int position){
     	PopupMenu popupMenu = new PopupMenu(context, view);
-    	      popupMenu.getMenuInflater().inflate(R.menu.activity_applist_longpress_menu, popupMenu.getMenu());
-    	      
-    	      final Application targetApp = appList.get(position);
+    	popupMenu.getMenuInflater().inflate(R.menu.activity_applist_longpress_menu, popupMenu.getMenu());
 
-    	      popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-    	    	  @Override
-    	    	  public boolean onMenuItemClick(MenuItem item) {    	    	      
-    	    		  TrustState newTrustState;
-    	    		  
-    	    		  switch (item.getItemId()) {
-    	    		  case R.id.applist_popupmenu_set_trusted_values:
-    	    			  newTrustState = TrustState.TRUSTED;
-    	    			  targetApp.setIsUntrusted(false);
-    	    			  break;
-    	    		  case R.id.applist_popupmenu_set_untrusted_values:
-    	    			  newTrustState = TrustState.UNTRUSTED;
-    	    			  targetApp.setIsUntrusted(false);
-    	    			  break;
-    	    	      default:
-        	    		  throw new InvalidParameterException();
-    	    		  }
+    	//get the selected Application object from the app list
+    	final Application targetApp = appList.get(position);
+   	
+    	// Add handler for when a menu item is selected
+    	popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+    		@Override
+    		public boolean onMenuItemClick(MenuItem item) {    	    	      
+    			TrustState newTrustState;
 
-    	    		  progDialog = new ProgressDialog(context);
-    	    	      progDialog.setMessage("Updating settings");
-    	    	      progDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-    	    	      AppListUpdateAllSettingsTask updateAllSettingsTask = new AppListUpdateAllSettingsTask(context, newTrustState, new AppListUpdateAllSettingsCallback());
-    	    	      updateAllSettingsTask.execute(targetApp);
-    	    		  return true;
-    	   }
-    	  });
-    	    
-    	  popupMenu.show();
+    			switch (item.getItemId()) {
+    			case R.id.applist_popupmenu_set_trusted_values:
+    				newTrustState = TrustState.TRUSTED;
+    				targetApp.setIsUntrusted(false); //set the app to being trusted in memory: will allow update of the listview
+    				break;
+    			case R.id.applist_popupmenu_set_untrusted_values:
+    				newTrustState = TrustState.UNTRUSTED;
+    				targetApp.setIsUntrusted(true); //set the app to untrusted in memory: will allow update of the listview
+    				break;
+    			default:
+    				throw new InvalidParameterException();
+    			}
+
+    			//display a modal progress dialog: this prevents the user doing anything to the interface
+    			//while the actual update is taking place
+    			progDialog = new ProgressDialog(context);
+    			progDialog.setMessage("Updating settings");
+    			progDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+    			//use an asynctask to actually update the settings, so it doesn't interfere with the UI thread 
+    			AppListUpdateAllSettingsTask updateAllSettingsTask = new AppListUpdateAllSettingsTask(context, newTrustState, new AppListUpdateAllSettingsCallback());
+    			
+    			//TODO: actually create a clone of the app, pass that through to be updated, and THEN put that
+    			//back in the lists -> currently, there could be threading errors because the App object is not threadsafe.
+    			updateAllSettingsTask.execute(targetApp);
+    			return true;
+    		}
+    	});
+
+    	popupMenu.show();
 	}
+
+    /**
+     * Handles callback from AsyncTask used to update all settings. Closes the progress dialog, and
+     * triggers update of Listview contents (notifies adapter of change).
+     */
+    class AppListUpdateAllSettingsCallback implements IAsyncTaskCallback<Void>{
+    	@Override
+    	public void asyncTaskComplete(Void result) {
+    		//TODO: might be worth adding a toast here to notify the settings have been updated?
+    		if (progDialog != null) {
+    			progDialog.dismiss();
+    		}
+    		appListAdapter.notifyDataSetChanged(); //notify adapter that the data has changed, so app will update the trusted state in the listview
+    		Log.d("PDroidAlternative","Updated all settings.");
+    	}
+    }
     
+    /**
+     * A generic function used to update a currently displayed progress dialog.
+     * 
+     * @param currentValue The current value of the progress bar 
+     * @param maxValue The maximum value of the progress bar
+     */
     private void updateProgressDialog(int currentValue, int maxValue) {
 		if (progDialog != null) {
 			if (progDialog.isShowing()) {
@@ -282,17 +345,49 @@ public class AppListActivity extends Activity {
 		}
     }
     
+    /**
+     * Uses an asynctask to generate an hashmap of Application objects representing all applications
+     * in the database. This hashmap can them be used to get application objects
+     * representing specific applications in subsequent searches
+     */
     private void loadApplicationObjects() {
     	Log.d("PDroidAlternative","About to generate application objects");
     	AppListAppObjectGeneratorTask appListGeneratorTask = new AppListAppObjectGeneratorTask(this, new AppListAppGeneratorCallback());
     	appListGeneratorTask.execute();
     }
     
+    /**
+     * Callback handler for the AppListAppGenerator AsyncTask. Receives the generated hashmap
+     * of (all) Application objects, then calls function to load the applications relevant to the filter.
+     */
+    class AppListAppGeneratorCallback implements IAsyncTaskCallback<HashMap<String, Application>> {
+    	
+    	/**
+    	 * Updates this with HashMap from AsyncTask, then initiates loading of list of
+    	 * applications matching current filter settings
+    	 * 
+    	 * @param result HashMap of <package name>,<Application object> for all applications
+    	 * listed in the database 
+    	 */
+    	@Override
+    	public void asyncTaskComplete(HashMap<String, Application> result) {
+    		Log.d("PDroidAlternative","Got result from app list load: length " + result.size());
+    		applicationObjects = result;
+    		loadApplicationList();
+    	}
+    }
+    
+    
+    /**
+     * Sets up and executes an AsyncTask to load a list of packagenames from the database
+     * which match the current filtering criteria set on the spinners 
+     */
     private void loadApplicationList() {
     	Log.d("PDroidAlternative","About to start load");
     	
+    	//Create query builder to pass the the AsyncTask with the relevant filtering settings
     	AppQueryBuilder queryBuilder = new AppQueryBuilder();
-		queryBuilder.addColumns(AppQueryBuilder.COLUMN_TYPE_PACKAGENAME);
+		queryBuilder.addColumns(AppQueryBuilder.COLUMN_TYPE_PACKAGENAME); //only need the package names to look up in the hashmap
 		
 		if (this.currentSettingGroup != null) {
 			//TODO: Right now, the 'general' option is serving as an 'all' option, because all apps include
@@ -310,68 +405,45 @@ public class AppListActivity extends Activity {
 			Log.d("PDroidAlternative","You shouldn't be here!");
 		}
 
+		//Set up and execute the AsyncTask
 		AppListLoaderTask appListLoaderTask = new AppListLoaderTask(this, new AppListLoaderCallback());
     	Log.d("PDroidAlternative","Created the task");
     	appListLoaderTask.execute(queryBuilder);
     }
     
-    private void rebuildApplicationList() {
-        this.progDialog = new ProgressDialog(this);
-        this.progDialog.setMessage("Generating Application List");
-        this.progDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-
-    	AppListGeneratorTask appListGenerator = new AppListGeneratorTask(this, new AppListGeneratorCallback());
-    	appListGenerator.execute();
-    }
-    
-    private void openDetailInterface(Application application) {
-    	Intent intent = new Intent(context, AppDetailActivity.class);
-		intent.putExtra(AppDetailActivity.BUNDLE_PACKAGE_NAME, application.getPackageName());
-		intent.putExtra(AppDetailActivity.BUNDLE_IN_APP, true);
-		startActivity(intent);
-    }
-    
-    class AppListGeneratorCallback implements IAsyncTaskCallbackWithProgress<HashMap<String, Application>>{
-    	@Override
-    	public void asyncTaskComplete(HashMap<String, Application> returnedAppList) {
-    		if (progDialog != null) {
-    			progDialog.dismiss();
-    		}
-    		
-    		applicationObjects = returnedAppList; 
-    		prefs.setIsApplicationListCacheValid(true);
-    		loadApplicationList();
-    	}
-    	
-    	@Override
-    	public void asyncTaskProgressUpdate(Integer... progress) {
-    		updateProgressDialog(progress[0], progress[1]);
-    	}
-    }
-
-    class AppListAppGeneratorCallback implements IAsyncTaskCallback<HashMap<String, Application>> {
-    	@Override
-    	public void asyncTaskComplete(HashMap<String, Application> result) {
-    		Log.d("PDroidAlternative","Got result from app list load: length " + result.size());
-    		applicationObjects = result;
-    		loadApplicationList();
-    	}
-    }
-    
+    /**
+     * Handles callback on completion of loading the list of packagenames matching
+     * the filtering criteria
+     */
     class AppListLoaderCallback implements IAsyncTaskCallback<List<String>>{
+    	
+    	/**
+    	 * Clears the list of currently displayed applications, and updates the list
+    	 * for display by adding Application objects from the application object Map
+    	 * by packageName
+    	 * 
+    	 * @param result  List of packagenames of applications matching the filtering criteria
+    	 */
     	@Override
     	public void asyncTaskComplete(List<String> result) {
     		if (result != null) {
 	    		Log.d("PDroidAlternative","Got result from app list load: length " + result.size());
+	    		
+	    		//Clear the current list of applications
 	    		if (appList == null) {
-	    			appList = new ArrayList<Application>(result.size());
+	    			appList = new ArrayList<Application>(result.size()); //if the appList is null, initialise it to be the right size
 	    		} else {
 	    			appList.clear();
 	    		}
 	    		
+	    		//Grab the application object from the cache of application objects, and add it to the list
+	    		//for display
 	    		for (String packageName : result) {
 	    			appList.add(applicationObjects.get(packageName));
 	    		}
+	    		
+	    		//create an AppListAdapter for displaying apps in the list view if not already present,
+	    		//otherwise tell the adapter the undelying data set has changed (so it will update the listview)
 	        	if (appListAdapter == null) {
 	        		appListAdapter = new AppListAdapter(context, R.layout.application_list_row, appList);
 	        		listView.setAdapter(appListAdapter);
@@ -380,23 +452,63 @@ public class AppListActivity extends Activity {
 	    			appListAdapter.notifyDataSetChanged();
 	    		}
     		} else {
+    			//TODO: Handle the case of no matching apps better: maybe clear the list, or display a
+    			//'no matching entries' message of some sort over the top?
     			Log.d("PDroidAlternative","No results from app list load");
     		}
     		readyForInput = true;
     	}
     }
 
-    class AppListUpdateAllSettingsCallback implements IAsyncTaskCallback<Void>{
+    /**
+     * Commence the regeneration of the application list held in the database from the OS
+     */
+    private void rebuildApplicationList() {
+        this.progDialog = new ProgressDialog(this);
+        this.progDialog.setMessage("Generating Application List");
+        this.progDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+
+        // Start the AsyncTask to build the list of apps and write them to the database
+    	AppListGeneratorTask appListGenerator = new AppListGeneratorTask(this, new AppListGeneratorCallback());
+    	appListGenerator.execute();
+    }
+    
+    /**
+     * Handles completion of the app list generator
+     * Receives the resulting HashMap (which is the Application object cache for use in the view)
+     * and adds to the current object before triggering load of applications to display
+     */
+    class AppListGeneratorCallback implements IAsyncTaskCallbackWithProgress<HashMap<String, Application>>{
     	@Override
-    	public void asyncTaskComplete(Void result) {
-    		//TODO: might be worth adding a toast here to notify the settings have been updated?
+    	public void asyncTaskComplete(HashMap<String, Application> returnedAppList) {
     		if (progDialog != null) {
     			progDialog.dismiss();
     		}
-    		listView.invalidate();
-    		Log.d("PDroidAlternative","Updated all settings.");
+    		
+    		applicationObjects = returnedAppList; 
+    		//set the application cache as valid, so the application data will not be regenerated
+    		//on next start
+    		prefs.setIsApplicationListCacheValid(true);
+    		loadApplicationList(); //trigger loading of package names matching filters for the listview
+    	}
+    	
+    	@Override
+    	public void asyncTaskProgressUpdate(Integer... progress) {
+    		updateProgressDialog(progress[0], progress[1]);
     	}
     }
+    
+    /**
+     * Starts the 'detail' activity to view the details of the provided application object
+     * @param application  Application for which the detail interface should be opened
+     */
+    private void openDetailInterface(Application application) {
+    	Intent intent = new Intent(context, AppDetailActivity.class);
+		intent.putExtra(AppDetailActivity.BUNDLE_PACKAGE_NAME, application.getPackageName());
+		intent.putExtra(AppDetailActivity.BUNDLE_IN_APP, true);
+		startActivity(intent);
+    }
+
     
     class AppTypeSpinnerListener implements OnItemSelectedListener {
 
