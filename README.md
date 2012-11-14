@@ -1,8 +1,10 @@
 pdroid-manager
 ==============
 
-A replacement for the PDroid 2.0 application by CollegeDev (used to configure the updated
-PDroid service). 
+A replacement for the PDroid 2.0 application by CollegeDev (used to configure the updated PDroid service). 
+
+NOTE: THIS SOFTWARE IS PRERELEASE - IT IS CURRENTLY KNOWN TO HAVE BUGS (which you are welcome to fix).
+Because of the signature protection used in other PDroid applications (e.g. PDroid 2.0 by CollegeDev), it is necessary to uninstall these other apps prior to installing PDroid Manager. I don't like it this way, but right now there is no straightforward and safe way to get around it.
 
 
 Copyright (C) 2012 Simeon J. Morgan (smorgan@digitalfeed.net)
