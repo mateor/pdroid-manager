@@ -41,7 +41,6 @@ import android.os.AsyncTask;
 import android.privacy.PrivacySettings;
 import android.privacy.PrivacySettingsManager;
 import android.text.TextUtils;
-import android.util.Log;
 
 
 /**
@@ -168,19 +167,19 @@ public class AppDetailSettingsLoaderTask extends AsyncTask<String, Integer, Link
 						selectedOption = Setting.OPTION_FLAG_RANDOM;
 						break;
 					default:
-						Log.d("PDroidAlternative","What the hell are you doing here...?");
+						//Log.d("PDroidAlternative","What the hell are you doing here...?");
 					}
 				} catch (NoSuchMethodException e) {
-				   Log.d("PDroidAlternative","PrivacySettings object of privacy service is missing the expected method " + settingFunctionName);
+				   //Log.d("PDroidAlternative","PrivacySettings object of privacy service is missing the expected method " + settingFunctionName);
 				   e.printStackTrace();
 				} catch (IllegalArgumentException e) {
-					Log.d("PDroidAlternative","Illegal arguments when calling " + settingFunctionName);
+					//Log.d("PDroidAlternative","Illegal arguments when calling " + settingFunctionName);
 					e.printStackTrace();
 				} catch (IllegalAccessException e) {
-					Log.d("PDroidAlternative","Illegal access when calling " + settingFunctionName);
+					//Log.d("PDroidAlternative","Illegal access when calling " + settingFunctionName);
 					e.printStackTrace();
 				} catch (InvocationTargetException e) {
-					Log.d("PDroidAlternative","InvocationTargetException when calling " + settingFunctionName);
+					//Log.d("PDroidAlternative","InvocationTargetException when calling " + settingFunctionName);
 					e.printStackTrace();
 				}
 			}

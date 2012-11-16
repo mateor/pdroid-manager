@@ -34,7 +34,6 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.text.TextUtils;
-import android.util.Log;
 
 
 /**
@@ -55,11 +54,11 @@ public class AppDetailAppLoaderTask extends AsyncTask<String, Integer, Applicati
 		
 	@Override
 	protected Application doInBackground(String... selectPackageName) {
-		Log.d("PDroidAlternative","Looking up package name: " + selectPackageName[0]);
+		//Log.d("PDroidAlternative","Looking up package name: " + selectPackageName[0]);
 		
 		SQLiteDatabase db = DBInterface.getInstance(context).getDBHelper().getReadableDatabase();
     	Cursor cursor = db.rawQuery(DBInterface.QUERY_GET_APPS_BY_PACKAGENAME_WITH_STATUS, selectPackageName);
-    	Log.d("PDroidAlternative","Returned item count: " + Integer.toString(cursor.getCount()));
+    	//Log.d("PDroidAlternative","Returned item count: " + Integer.toString(cursor.getCount()));
 		
 		cursor.moveToFirst();
 		/*

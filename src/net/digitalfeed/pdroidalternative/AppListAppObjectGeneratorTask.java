@@ -35,7 +35,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
-import android.util.Log;
 
 /**
  * Returns a HashMap of package name and in-memory Application objects for all applications currently
@@ -103,7 +102,7 @@ public class AppListAppObjectGeneratorTask extends AsyncTask<Void, Integer, Hash
     	cursor.close();
     	//db.close();
     	
-    	Log.d("PDroidAlternative","Got matching applications: " + appList.size());
+    	//Log.d("PDroidAlternative","Got matching applications: " + appList.size());
     	
     	return appList;
 	}

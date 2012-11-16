@@ -42,7 +42,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -103,7 +102,7 @@ public class AppListActivity extends Activity {
         super.onCreate(savedInstanceState);
         context = this;
         
-        Log.d("PDroidAlternative", "Getting preferences");
+        //Log.d("PDroidAlternative", "Getting preferences");
         
         //get bridge to the application preferences
         prefs = new Preferences(this);
@@ -115,7 +114,7 @@ public class AppListActivity extends Activity {
          * If the database version has changed, we will need to rebuild the application cache 
          */
         if (prefs.getLastRunDatabaseVersion() != DBInterface.DBHelper.DATABASE_VERSION) {
-        	Log.d("PDroidAlternative", "Defined database version has changed since last run; we need to rebuild the cache");
+        	//Log.d("PDroidAlternative", "Defined database version has changed since last run; we need to rebuild the cache");
         	//this will force the application list to be rebuilt from the application package manager
         	prefs.setIsApplicationListCacheValid(false); 
         	prefs.setLastRunDatabaseVersion(DBInterface.DBHelper.DATABASE_VERSION);
@@ -174,7 +173,7 @@ public class AppListActivity extends Activity {
     @Override
     public void onDestroy() {
     	super.onDestroy();
-    	Log.d("PDroidAlternative", "Destroying");
+    	//Log.d("PDroidAlternative", "Destroying");
     }
     
     @Override
@@ -323,7 +322,7 @@ public class AppListActivity extends Activity {
     			progDialog.dismiss();
     		}
     		appListAdapter.notifyDataSetChanged(); //notify adapter that the data has changed, so app will update the trusted state in the listview
-    		Log.d("PDroidAlternative","Updated all settings.");
+    		//Log.d("PDroidAlternative","Updated all settings.");
     	}
     }
     
@@ -351,7 +350,7 @@ public class AppListActivity extends Activity {
      * representing specific applications in subsequent searches
      */
     private void loadApplicationObjects() {
-    	Log.d("PDroidAlternative","About to generate application objects");
+    	//Log.d("PDroidAlternative","About to generate application objects");
     	AppListAppObjectGeneratorTask appListGeneratorTask = new AppListAppObjectGeneratorTask(this, new AppListAppGeneratorCallback());
     	appListGeneratorTask.execute();
     }
@@ -371,7 +370,7 @@ public class AppListActivity extends Activity {
     	 */
     	@Override
     	public void asyncTaskComplete(HashMap<String, Application> result) {
-    		Log.d("PDroidAlternative","Got result from app list load: length " + result.size());
+    		//Log.d("PDroidAlternative","Got result from app list load: length " + result.size());
     		applicationObjects = result;
     		loadApplicationList();
     	}
@@ -383,7 +382,7 @@ public class AppListActivity extends Activity {
      * which match the current filtering criteria set on the spinners 
      */
     private void loadApplicationList() {
-    	Log.d("PDroidAlternative","About to start load");
+    	//Log.d("PDroidAlternative","About to start load");
     	
     	//Create query builder to pass the the AsyncTask with the relevant filtering settings
     	AppQueryBuilder queryBuilder = new AppQueryBuilder();
@@ -402,12 +401,12 @@ public class AppListActivity extends Activity {
 		} else if (currentAppType.equals(Preferences.APPLIST_LAST_APP_TYPE_ALL)) {
 			//This is just here for the moment for exclusion purposes
 		} else {
-			Log.d("PDroidAlternative","You shouldn't be here!");
+			//Log.d("PDroidAlternative","You shouldn't be here!");
 		}
 
 		//Set up and execute the AsyncTask
 		AppListLoaderTask appListLoaderTask = new AppListLoaderTask(this, new AppListLoaderCallback());
-    	Log.d("PDroidAlternative","Created the task");
+    	//Log.d("PDroidAlternative","Created the task");
     	appListLoaderTask.execute(queryBuilder);
     }
     
@@ -427,7 +426,7 @@ public class AppListActivity extends Activity {
     	@Override
     	public void asyncTaskComplete(List<String> result) {
     		if (result != null) {
-	    		Log.d("PDroidAlternative","Got result from app list load: length " + result.size());
+	    		//Log.d("PDroidAlternative","Got result from app list load: length " + result.size());
 	    		
 	    		//Clear the current list of applications
 	    		if (appList == null) {
@@ -454,7 +453,7 @@ public class AppListActivity extends Activity {
     		} else {
     			//TODO: Handle the case of no matching apps better: maybe clear the list, or display a
     			//'no matching entries' message of some sort over the top?
-    			Log.d("PDroidAlternative","No results from app list load");
+    			//Log.d("PDroidAlternative","No results from app list load");
     		}
     		readyForInput = true;
     	}
@@ -557,7 +556,7 @@ public class AppListActivity extends Activity {
 		@Override
 		public void onItemSelected(AdapterView<?> parent, View view, int itemPosition,
 				long id) {
-			Log.d("PDroidAlternative","Group selected: " + settingGroups.get(itemPosition));
+			//Log.d("PDroidAlternative","Group selected: " + settingGroups.get(itemPosition));
 			
 			if (readyForInput) {        		
 				currentSettingGroup = settingGroups.get(itemPosition);

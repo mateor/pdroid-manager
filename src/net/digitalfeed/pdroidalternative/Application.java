@@ -41,7 +41,6 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
-import android.util.Log;
 
 /**
  * This represents a single application.
@@ -266,7 +265,7 @@ public class Application {
 	 */
 	public static Application fromPackageName(Context context, String packageName) {
 		Application app = null;
-		Log.d("PDroidAlternative", "Attempting to create an application from package name");
+		//Log.d("PDroidAlternative", "Attempting to create an application from package name");
 		try {
 			PackageManager pkgMgr = context.getPackageManager();
 			PackageInfo pkgInfo = pkgMgr.getPackageInfo(packageName, PackageManager.GET_PERMISSIONS);
@@ -296,7 +295,7 @@ public class Application {
 
 		} catch (NameNotFoundException e) {
 			// TODO Auto-generated catch block
-			Log.d("PDroidAlternative", "NameNotFoundException when trying to generate an app from package name");
+			//Log.d("PDroidAlternative", "NameNotFoundException when trying to generate an app from package name");
 			e.printStackTrace();
 		}
 		
@@ -314,7 +313,7 @@ public class Application {
 		Application app = null;
 		SQLiteDatabase db = null;
 		Cursor cursor = null;
-		Log.d("PDroidAlternative", "Attempting to create an application from package name");
+		//Log.d("PDroidAlternative", "Attempting to create an application from package name");
 		try {
 			DBHelper dbHelper = DBInterface.getInstance(context).getDBHelper();
 			db = dbHelper.getReadableDatabase();
@@ -326,10 +325,10 @@ public class Application {
 		    	String permissions = cursor.getString(cursor.getColumnIndex(DBInterface.ApplicationTable.COLUMN_NAME_PERMISSIONS));
 		    	String [] permissionsArray = null; 
 				if (permissions != null) {
-					Log.d("PDroidAlternative", "Application.fromDatabase: permissions was not null");
+					//Log.d("PDroidAlternative", "Application.fromDatabase: permissions was not null");
 					permissionsArray = TextUtils.split(permissions, ",");
 				} else {
-					Log.d("PDroidAlternative", "Application.fromDatabase: permissions was null");
+					//Log.d("PDroidAlternative", "Application.fromDatabase: permissions was null");
 				}
 		    	
 		    	byte[] iconBlob = cursor.getBlob(cursor.getColumnIndex(DBInterface.ApplicationTable.COLUMN_NAME_ICON));

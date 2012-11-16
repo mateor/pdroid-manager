@@ -41,7 +41,6 @@ import android.database.DatabaseUtils.InsertHelper;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.text.TextUtils;
-import android.util.Log;
 
 /**
  * Holds all the individual table-related classes for the database (which then hold
@@ -645,7 +644,7 @@ public class DBInterface {
 	
 		@Override
 		public void onCreate(SQLiteDatabase db) {
-			Log.d("PDroidAlternative", "Executing DBInterface.DBHelper.onCreate");
+			//Log.d("PDroidAlternative", "Executing DBInterface.DBHelper.onCreate");
 			createTables(db, true);
 			loadDefaultData(db);
 		}
@@ -654,7 +653,7 @@ public class DBInterface {
 		
 		@Override
 		public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-			Log.d("PDroidAlternative", "Executing DBInterface.DBHelper.onUpgrade");
+			//Log.d("PDroidAlternative", "Executing DBInterface.DBHelper.onUpgrade");
 			// At version 1 - no upgrades yet!
 			deleteTables(db, false);
 			createTables(db, false);
@@ -694,7 +693,7 @@ public class DBInterface {
 			XmlResourceParser xrp = resources.getXml(R.xml.pdroid_settings);
 			try {
 				db.beginTransaction();
-				Log.d("PDroidAlternative","Begin transaction");
+				//Log.d("PDroidAlternative","Begin transaction");
 				InsertHelper settingInsertHelper = new InsertHelper(db, SettingTable.TABLE_NAME);
 				int [] settingTableColumnNumbers = new int[SettingTable.COLUMN_COUNT];
 				settingTableColumnNumbers[SettingTable.COLUMN_NUMBER_OFFSET_ID] = settingInsertHelper.getColumnIndex(SettingTable.COLUMN_NAME_ID);
@@ -831,15 +830,15 @@ public class DBInterface {
 				}
 				permissionInsertHelper.close();
 				
-				Log.d("PDroidAlternative","Set transaction successful");
+				//Log.d("PDroidAlternative","Set transaction successful");
 				db.setTransactionSuccessful();
 			} catch (XmlPullParserException e) {
-				Log.d("PDroidAlternative",e.getMessage());
+				//Log.d("PDroidAlternative",e.getMessage());
 				//TODO: Exception handling, mayhaps?
 			} catch (IOException e) {
-				Log.d("PDroidAlternative",e.getMessage());
+				//Log.d("PDroidAlternative",e.getMessage());
 			} catch (NotFoundException e) {
-				Log.d("PDroidAlternative",e.getMessage());
+				//Log.d("PDroidAlternative",e.getMessage());
 			} finally {
 				db.endTransaction();
 			}

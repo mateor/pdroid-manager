@@ -33,7 +33,6 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.CheckBox;
@@ -58,7 +57,7 @@ public class AppDetailActivity extends Activity {
         super.onCreate(savedInstanceState);
         context = this;
         
-        Log.d("PDroidAlternative", "onCreate of AppDetailActivity starting");
+        //Log.d("PDroidAlternative", "onCreate of AppDetailActivity starting");
         setContentView(R.layout.activity_app_detail);
         
         
@@ -87,15 +86,15 @@ public class AppDetailActivity extends Activity {
     	checkbox = null;
     	prefs = null;
     	
-        Log.d("PDroidAlternative", "onCreate of AppDetailActivity finished");
+        //Log.d("PDroidAlternative", "onCreate of AppDetailActivity finished");
     }
 
     @Override
     public void onStart() {
     	super.onStart();
-    	Log.d("PDroidAlternative", "onStart of AppDetailActivity starting");
+    	//Log.d("PDroidAlternative", "onStart of AppDetailActivity starting");
 
-        Log.d("PDroidAlternative", "onStart of AppDetailActivity finished");
+        //Log.d("PDroidAlternative", "onStart of AppDetailActivity finished");
     }
     
     @Override
@@ -144,12 +143,12 @@ public class AppDetailActivity extends Activity {
     {
 		@Override
 		public void asyncTaskComplete(Application inApplication) {
-			Log.d("PDroidAlternative", "AppDetailAppLoaderTask completed.");
+			//Log.d("PDroidAlternative", "AppDetailAppLoaderTask completed.");
 			
 			if (inApplication == null) {
-				Log.d("PDroidAlternative", "inApplication is null: the app could have disappeared between the intent being created and the task running?");
+				//Log.d("PDroidAlternative", "inApplication is null: the app could have disappeared between the intent being created and the task running?");
 			} else {
-				Log.d("PDroidAlternative", "inApplication " + inApplication.getPackageName() + " retrieved");
+				//Log.d("PDroidAlternative", "inApplication " + inApplication.getPackageName() + " retrieved");
 				setTitle(inApplication.getLabel());
 				application = inApplication;
 				AppDetailSettingsLoaderTask appDetailSettingsLoader = new AppDetailSettingsLoaderTask(context, new AppDetailSettingsLoaderTaskCompleteHandler());
@@ -162,13 +161,13 @@ public class AppDetailActivity extends Activity {
     {
 		@Override
 		public void asyncTaskComplete(LinkedList<AppSetting> inSettingList) {
-			Log.d("PDroidAlternative", "AppDetailSettingsLoaderTask completed.");
+			//Log.d("PDroidAlternative", "AppDetailSettingsLoaderTask completed.");
 			if (inSettingList == null) {
-				Log.d("PDroidAlternative","AppDetailSettingsLoaderTask returned null");
+				//Log.d("PDroidAlternative","AppDetailSettingsLoaderTask returned null");
 			} else if (inSettingList.size() == 0) {
-				Log.d("PDroidAlternative","AppDetailSettingsLoaderTask returned no AppSettings (size = 0)");
+				//Log.d("PDroidAlternative","AppDetailSettingsLoaderTask returned no AppSettings (size = 0)");
 			} else {
-				Log.d("PDroidAlternative","AppDetailSettingsLoaderTask returned " + Integer.toString(inSettingList.size()) + " settings. Initialising ListView.");
+				//Log.d("PDroidAlternative","AppDetailSettingsLoaderTask returned " + Integer.toString(inSettingList.size()) + " settings. Initialising ListView.");
 				settingList = inSettingList.toArray(new AppSetting[inSettingList.size()]);
 				listView = (ListView)findViewById(R.id.settingList);
 				listView.setAdapter(new AppDetailAdapter(context, R.layout.setting_list_row_standard, settingList));
@@ -180,7 +179,7 @@ public class AppDetailActivity extends Activity {
     {	
 		@Override
 		public void asyncTaskComplete(Void param) {
-			Log.d("PDroidAlternative", "AppDetailSettingWriterTask completed.");
+			//Log.d("PDroidAlternative", "AppDetailSettingWriterTask completed.");
 			if (progDialog != null && progDialog.isShowing()) {
 				progDialog.dismiss();
 			}

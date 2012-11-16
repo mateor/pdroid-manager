@@ -36,7 +36,6 @@ import java.util.List;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.privacy.PrivacySettings;
-import android.util.Log;
 import java.util.AbstractMap.SimpleImmutableEntry;
 class PermissionSettingHelper {
 
@@ -102,10 +101,10 @@ class PermissionSettingHelper {
 							new SimpleImmutableEntry<Method, String>(privacySettings.getClass().getMethod("get" + settingFunctionName), settingTrustedOption)
 							);
 				} catch (NoSuchMethodException e) {
-				   Log.d("PDroidAlternative","PrivacySettings object of privacy service is missing the expected method " + settingFunctionName);
+				   //Log.d("PDroidAlternative","PrivacySettings object of privacy service is missing the expected method " + settingFunctionName);
 				   e.printStackTrace();
 				} catch (IllegalArgumentException e) {
-					Log.d("PDroidAlternative","Illegal arguments when calling " + settingFunctionName);
+					//Log.d("PDroidAlternative","Illegal arguments when calling " + settingFunctionName);
 					e.printStackTrace();
 				}
 			} while (cursor.moveToNext());
@@ -130,13 +129,13 @@ class PermissionSettingHelper {
 					break;
 				}
 			} catch (IllegalArgumentException e) {
-				Log.d("PDroidAlternative","Illegal arguments when calling " + row.getKey().getName());
+				//Log.d("PDroidAlternative","Illegal arguments when calling " + row.getKey().getName());
 				e.printStackTrace();
 			} catch (IllegalAccessException e) {
-				Log.d("PDroidAlternative","Illegal access when calling " + row.getKey().getName());
+				//Log.d("PDroidAlternative","Illegal access when calling " + row.getKey().getName());
 				e.printStackTrace();
 			} catch (InvocationTargetException e) {
-				Log.d("PDroidAlternative","InvocationTargetException when calling " + row.getKey().getName());
+				//Log.d("PDroidAlternative","InvocationTargetException when calling " + row.getKey().getName());
 				e.printStackTrace();
 			}
 		}
@@ -180,10 +179,10 @@ class PermissionSettingHelper {
 							new SimpleImmutableEntry<Method,String>(privacySettings.getClass().getMethod("set" + settingFunctionName, byte.class),settingTrustedOption)
 							);
 				} catch (NoSuchMethodException e) {
-				   Log.d("PDroidAlternative","PrivacySettings object of privacy service is missing the expected method " + settingFunctionName);
+				   //Log.d("PDroidAlternative","PrivacySettings object of privacy service is missing the expected method " + settingFunctionName);
 				   e.printStackTrace();
 				} catch (IllegalArgumentException e) {
-					Log.d("PDroidAlternative","Illegal arguments when calling " + settingFunctionName);
+					//Log.d("PDroidAlternative","Illegal arguments when calling " + settingFunctionName);
 					e.printStackTrace();
 				}
 			} while (cursor.moveToNext());
@@ -218,13 +217,13 @@ class PermissionSettingHelper {
 			try {
 				row.getKey().invoke(privacySettings, newValueByte);
 			} catch (IllegalArgumentException e) {
-				Log.d("PDroidAlternative","Illegal arguments when calling " + row.getKey().getName());
+				//Log.d("PDroidAlternative","Illegal arguments when calling " + row.getKey().getName());
 				e.printStackTrace();
 			} catch (IllegalAccessException e) {
-				Log.d("PDroidAlternative","Illegal access when calling " + row.getKey().getName());
+				//Log.d("PDroidAlternative","Illegal access when calling " + row.getKey().getName());
 				e.printStackTrace();
 			} catch (InvocationTargetException e) {
-				Log.d("PDroidAlternative","InvocationTargetException when calling " + row.getKey().getName());
+				//Log.d("PDroidAlternative","InvocationTargetException when calling " + row.getKey().getName());
 				e.printStackTrace();
 			}
 		}
@@ -266,10 +265,10 @@ class PermissionSettingHelper {
 								new SimpleImmutableEntry<Method,String>(privacySettings.getClass().getMethod("set" + settingFunctionName, byte.class), settingTrustedOption)
 								);
 					} catch (NoSuchMethodException e) {
-					   Log.d("PDroidAlternative","PrivacySettings object of privacy service is missing the expected method " + settingFunctionName);
+					   //Log.d("PDroidAlternative","PrivacySettings object of privacy service is missing the expected method " + settingFunctionName);
 					   e.printStackTrace();
 					} catch (IllegalArgumentException e) {
-						Log.d("PDroidAlternative","Illegal arguments when calling " + settingFunctionName);
+						//Log.d("PDroidAlternative","Illegal arguments when calling " + settingFunctionName);
 						e.printStackTrace();
 					}
 				} while (cursor.moveToNext());
@@ -319,13 +318,13 @@ class PermissionSettingHelper {
 				try {
 					row.getKey().invoke(privacySettings, newValueByte);
 				} catch (IllegalArgumentException e) {
-					Log.d("PDroidAlternative","Illegal arguments when calling " + row.getKey().getName());
+					//Log.d("PDroidAlternative","Illegal arguments when calling " + row.getKey().getName());
 					e.printStackTrace();
 				} catch (IllegalAccessException e) {
-					Log.d("PDroidAlternative","Illegal access when calling " + row.getKey().getName());
+					//Log.d("PDroidAlternative","Illegal access when calling " + row.getKey().getName());
 					e.printStackTrace();
 				} catch (InvocationTargetException e) {
-					Log.d("PDroidAlternative","InvocationTargetException when calling " + row.getKey().getName());
+					//Log.d("PDroidAlternative","InvocationTargetException when calling " + row.getKey().getName());
 					e.printStackTrace();
 				}
 			}

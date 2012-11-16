@@ -42,7 +42,6 @@ import android.os.AsyncTask;
 import android.privacy.PrivacySettings;
 import android.privacy.PrivacySettingsManager;
 import android.text.TextUtils;
-import android.util.Log;
 
 public class AppListGeneratorTask extends AsyncTask<Void, Integer, HashMap<String, Application>> {
 		
@@ -204,7 +203,7 @@ public class AppListGeneratorTask extends AsyncTask<Void, Integer, HashMap<Strin
 				//it doesn't use compiled SQL queries
 				//write_db.insert(DBInterface.ApplicationTable.TABLE_NAME, null, DBInterface.ApplicationTable.getContentValues(app));					
 			} catch (NameNotFoundException e) {	
-				Log.d("PDroidAlternative", String.format("Application %s went missing from installed applications list", appInfo.packageName));
+				//Log.d("PDroidAlternative", String.format("Application %s went missing from installed applications list", appInfo.packageName));
 			}
 			progressObject[0] += 1;
 			publishProgress(progressObject.clone());

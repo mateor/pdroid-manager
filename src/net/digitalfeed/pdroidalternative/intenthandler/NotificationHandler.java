@@ -29,7 +29,6 @@ package net.digitalfeed.pdroidalternative.intenthandler;
 import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -144,7 +143,7 @@ public class NotificationHandler extends BroadcastReceiver {
 		        	
 		        	//Toast.makeText(context, packageName, prefs.getNotificationDuration()).show();	
 	        	} else {
-	        		Log.d("PDroidAlternative","New notification NOT being shown for " + packageName + dataType + "due to timing");
+	        		//Log.d("PDroidAlternative","New notification NOT being shown for " + packageName + dataType + "due to timing");
 	        	}
 	        }
 	        dbInterface = null;
