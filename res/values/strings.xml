@@ -64,11 +64,11 @@
     <string name="notification_toast_random_text">random</string>
     <string name="notification_toast_custom_text">custom</string>
 
-	<string name="notification_newinstall_text">has been installed</string>
-    <string name="notification_newinstall_title">Click to configure PDroid settings</string>
+	<string name="notification_newinstall_title">has been installed</string>
+    <string name="notification_newinstall_text">Click to configure PDroid settings</string>
 
-    <string name="notification_update_text">has changed permissions</string>
-    <string name="notification_update_title">Click to configure PDroid settings</string>
+    <string name="notification_update_title">has changed permissions</string>
+    <string name="notification_update_text">Click to configure PDroid settings</string>
     
     <string name="setting_option_allow">Allow</string>
     <string name="setting_option_random">Random</string>

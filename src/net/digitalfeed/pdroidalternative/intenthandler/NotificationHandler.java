@@ -138,8 +138,8 @@ public class NotificationHandler extends BroadcastReceiver {
 		        	textView.setText(builder);
 		        	final Toast toast = new Toast(context);
 		        	toast.setDuration(notificationDuration);
-
 		        	prefs.setLastNotificationTime(packageName, dataType, currentTime);
+		        	toast.setView(layout);
 		        	toast.show();
 		        	
 		        	//Toast.makeText(context, packageName, prefs.getNotificationDuration()).show();	
