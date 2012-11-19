@@ -32,15 +32,20 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.text.TextUtils;
 
-public class AppListWriter extends AsyncTask<Application, Void, Void> {
+/**
+ * Purges all applications from the database, and writes a replacement set
+ * from the array of Application objects provided.
+ * 
+ * @author smorgan
+ *
+ */
+public class ApplicationsDatabaseRewriterTask extends AsyncTask<Application, Void, Void> {
 	protected static final int PERMISSIONS_TABLE_COLUMN_NUMBER_OFFSET_PACKAGENAME = 0;
 	protected static final int PERMISSIONS_TABLE_COLUMN_NUMBER_OFFSET_PERMISSION = 1;
 	
-
-	
 	private Context context;
 	
-	public AppListWriter(Context context) {
+	public ApplicationsDatabaseRewriterTask(Context context) {
 		this.context = context;
 	}
 

@@ -29,6 +29,7 @@ package net.digitalfeed.pdroidalternative.intenthandler;
 import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
@@ -56,6 +57,7 @@ public class NotificationHandler extends BroadcastReceiver {
 	public void onReceive(Context context, Intent intent) {
 		// Check we're receiving a valid notification to handle: if not, exit
 		if (!intent.getAction().equals(PrivacySettingsManager.ACTION_PRIVACY_NOTIFICATION)) {
+			Log.d("PDroidAlternative","NotificationHandler: Notification has incorrect action: " + intent.getAction());
 			return;
 		}
 		
@@ -67,19 +69,23 @@ public class NotificationHandler extends BroadcastReceiver {
 		final String dataType = bundle.getString("dataType");
         //String output = bundle.getString("output");
         
+		Log.d("PDroidAlternative","NotificationHandler: Notification for: " + packageName + ":" + dataType);
+		
         final Preferences prefs = new Preferences(context);
         
         boolean logEvent = prefs.getDoLogForPackage(packageName);
         boolean notifyEvent = prefs.getDoNotifyForPackage(packageName);
         
-        if (logEvent || notifyEvent) {
+        if (logEvent || notifyEvent) {        	
         	DBInterface dbInterface = DBInterface.getInstance(context);
         	
 	        if (logEvent) {
+	        	Log.d("PDroidAlternative","NotificationHandler: Log setting on for " + packageName);
 		        dbInterface.addLogEntry(packageName, uid, accessMode, dataType);
 	        }
 	        
 	        if (notifyEvent) {
+	        	Log.d("PDroidAlternative","NotificationHandler: Notify setting on for " + packageName);
 	        	//get the last time that this particular notification was presented
 	        	long lastNotificationTime = prefs.getLastNotificationTime(packageName, dataType);
 	        	int notificationDuration = prefs.getNotificationDuration();
@@ -97,6 +103,7 @@ public class NotificationHandler extends BroadcastReceiver {
 	        	//Toast LONG_DELAY = 3.5s, SHORT_DELAY = 2 seconds
 	        	//see http://stackoverflow.com/questions/2220560/can-an-android-toast-be-longer-than-toast-length-long
 	        	if (lastNotificationTime < currentTime) {
+	        		Log.d("PDroidAlternative","NotificationHandler: Minimum inter-toast time exceeded: " + packageName + ":" + dataType);
 		        	String packageLabel = dbInterface.getApplicationLabel(packageName);
 		        	LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		        	View layout = inflater.inflate(R.layout.notification_toast, null);
@@ -143,7 +150,7 @@ public class NotificationHandler extends BroadcastReceiver {
 		        	
 		        	//Toast.makeText(context, packageName, prefs.getNotificationDuration()).show();	
 	        	} else {
-	        		//Log.d("PDroidAlternative","New notification NOT being shown for " + packageName + dataType + "due to timing");
+	        		Log.d("PDroidAlternative","NotificationHandler: Minimum inter-toast time not reached: " + packageName + ":" + dataType);
 	        	}
 	        }
 	        dbInterface = null;

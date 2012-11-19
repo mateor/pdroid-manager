@@ -34,13 +34,22 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 
-public class AppListLoaderTask extends AsyncTask<AppQueryBuilder, Integer, List<String>> {
+/**
+ * Performs a filtered query on applications in the database (using the parameter to .execute
+ * for filtering) and returns the packageNames of matching applications, with case-insensitive
+ * alpha sorting by application label. Case-insensitivity is provided by the collation of the 
+ * Application table label column collation.
+ *  
+ * @author smorgan
+ *
+ */
+public class ApplicationsDatabaseSearchTask extends AsyncTask<AppQueryBuilder, Integer, List<String>> {
 	
 	IAsyncTaskCallback<List<String>> listener;
 	
 	Context context;
 	
-	public AppListLoaderTask(Context context, IAsyncTaskCallback<List<String>> listener) {
+	public ApplicationsDatabaseSearchTask(Context context, IAsyncTaskCallback<List<String>> listener) {
 		this.context = context;
 		this.listener = listener;
 	}

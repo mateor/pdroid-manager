@@ -34,6 +34,7 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -191,13 +192,13 @@ public class AppDetailAdapter extends ArrayAdapter<AppSetting>{
 	public void showCustomValueBox(AppSetting appSetting) {
 		List<SimpleImmutableEntry<String,String>> customValues = appSetting.getCustomValues();
 		if (customValues == null) {
-			//Log.d("PDroidAlternative","No custom setting presents: setting them up");
+			Log.d("PDroidAlternative","No custom setting presents: setting them up");
 			customValues = new LinkedList<SimpleImmutableEntry<String,String>>();
 			if (0 != (appSetting.getSelectedOptionBit() & AppSetting.OPTION_FLAG_CUSTOM)) {
-				//Log.d("PDroidAlternative","Single custom setting");
+				Log.d("PDroidAlternative","Single custom setting");
 				customValues.add(new SimpleImmutableEntry<String,String>("",""));
 			} else if (0 != (appSetting.getSelectedOptionBit() & AppSetting.OPTION_FLAG_CUSTOMLOCATION)) {
-				//Log.d("PDroidAlternative","Lat/Long custom setting");
+				Log.d("PDroidAlternative","Lat/Long custom setting");
 				customValues.add(new SimpleImmutableEntry<String,String>("Lat",""));
 				customValues.add(new SimpleImmutableEntry<String,String>("Lon",""));
 			}
@@ -221,7 +222,7 @@ public class AppDetailAdapter extends ArrayAdapter<AppSetting>{
     	for (SimpleImmutableEntry<String, String> entryItem : customValues) {
     		sublayout = new LinearLayout(context);
     		sublayout.setOrientation(LinearLayout.HORIZONTAL);
-    		//Log.d("PDroidAlternative","Creating new text view/edit text for " + entryItem.getKey());
+    		Log.d("PDroidAlternative","Creating new text view/edit text for " + entryItem.getKey());
     		label = new TextView(context);
     		label.setId(viewId++);
     		label.setGravity(Gravity.LEFT);
@@ -231,7 +232,7 @@ public class AppDetailAdapter extends ArrayAdapter<AppSetting>{
 	    	
 	    	label.setText(entryItem.getKey());
 	    	if (entryItem.getValue() != null) {
-	    		//Log.d("PDroidAlternative","Previous value is not null: " + entryItem.getKey());
+	    		Log.d("PDroidAlternative","Previous value is not null: " + entryItem.getKey());
 	    		input.setText(entryItem.getValue());
     		}
 	    	
@@ -241,7 +242,7 @@ public class AppDetailAdapter extends ArrayAdapter<AppSetting>{
 			//layoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
 			//layoutParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
     		//if (lastInputs != null) {
-    		//	//Log.d("PDroidAlternative","Previous input is not null: going below");
+    		//	Log.d("PDroidAlternative","Previous input is not null: going below");
     		//	layoutParams.addRule(RelativeLayout.BELOW, lastInputs.getKey());
     		//}
     		//layout.addView(label, layoutParams);
@@ -292,7 +293,7 @@ public class AppDetailAdapter extends ArrayAdapter<AppSetting>{
 				break;
 			case R.id.option_custom:
 				if (currentSelectedId != Setting.OPTION_FLAG_CUSTOM) settingList[position].setSelectedOptionBit(Setting.OPTION_FLAG_CUSTOM);
-				//Log.d("PDroidAlternative","Should be showing custom value box around now...");
+				Log.d("PDroidAlternative","Should be showing custom value box around now...");
 				showCustomValueBox(settingList[position]);
 				break;
 			case R.id.option_customlocation:

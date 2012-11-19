@@ -42,8 +42,20 @@ import android.os.AsyncTask;
 import android.privacy.PrivacySettings;
 import android.privacy.PrivacySettingsManager;
 import android.text.TextUtils;
+import android.util.Log;
 
-public class AppListGeneratorTask extends AsyncTask<Void, Integer, HashMap<String, Application>> {
+/**
+ * Generates a list of applications from the OS and writes them to the database.
+ * 
+ * This provides much of the same functionality as the Application.fromPackageName
+ * function, but also checks the 'trust' state from the PDroid core, and writes the
+ * result to the database. It uses optimisations like using transactions, and 
+ * insert helpers, to speed up the process.
+ * 
+ * @author smorgan
+ *
+ */
+public class ApplicationsDatabaseFillerTask extends AsyncTask<Void, Integer, HashMap<String, Application>> {
 		
 	protected static final int APPLICATION_TABLE_COLUMN_NUMBER_OFFSET_LABEL = 0;
 	protected static final int APPLICATION_TABLE_COLUMN_NUMBER_OFFSET_PACKAGENAME = 1;
@@ -61,7 +73,7 @@ public class AppListGeneratorTask extends AsyncTask<Void, Integer, HashMap<Strin
 	Context context;
 	int includeAppTypes;
 	
-	public AppListGeneratorTask(Context context, IAsyncTaskCallbackWithProgress<HashMap<String, Application>> listener) {
+	public ApplicationsDatabaseFillerTask(Context context, IAsyncTaskCallbackWithProgress<HashMap<String, Application>> listener) {
 		this.context = context;
 		this.listener = listener;
 	}
@@ -153,6 +165,7 @@ public class AppListGeneratorTask extends AsyncTask<Void, Integer, HashMap<Strin
 					if (privacySettings.getNotificationSetting() == PrivacySettings.SETTING_NOTIFY_ON) {
 						statusFlags = statusFlags | ApplicationStatusTable.FLAG_NOTIFY_ON_ACCESS;
 					}
+					statusFlags = statusFlags | ApplicationStatusTable.FLAG_HAS_PRIVACYSETTINGS;
 				}
 				
 				/*
@@ -203,7 +216,7 @@ public class AppListGeneratorTask extends AsyncTask<Void, Integer, HashMap<Strin
 				//it doesn't use compiled SQL queries
 				//write_db.insert(DBInterface.ApplicationTable.TABLE_NAME, null, DBInterface.ApplicationTable.getContentValues(app));					
 			} catch (NameNotFoundException e) {	
-				//Log.d("PDroidAlternative", String.format("Application %s went missing from installed applications list", appInfo.packageName));
+				Log.d("PDroidAlternative", String.format("Application %s went missing from installed applications list", appInfo.packageName));
 			}
 			progressObject[0] += 1;
 			publishProgress(progressObject.clone());

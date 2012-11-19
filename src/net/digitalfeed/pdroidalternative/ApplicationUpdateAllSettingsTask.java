@@ -34,13 +34,16 @@ import android.privacy.PrivacySettings;
 import android.privacy.PrivacySettingsManager;
 
 /**
- * Updates all the settings of a single application with the PDroid core, based on the
- * option passed through. Typically, this will be Setting.OPTION_FLAG_ALLOW or
- * Settings.OPTION_FLAG_DENY although others are allowed. 
+ * Updates all settings of a single application to match the trusted or 
+ * untrusted states (depending on parameter passed to the constructor).
+ * The 'untrusted' state is derived by reversing the 'trusted' state internally.
+ * See the PermissionSettingHelper class for more details.
+ * 
+ * 
  * @author smorgan
  *
  */
-public class AppListUpdateAllSettingsTask extends AsyncTask<Application, Void, Void> { 
+public class ApplicationUpdateAllSettingsTask extends AsyncTask<Application, Void, Void> { 
 	
 	final IAsyncTaskCallback<Void> listener;
 	final Context context;
@@ -49,11 +52,11 @@ public class AppListUpdateAllSettingsTask extends AsyncTask<Application, Void, V
 	/**
 	 * Constructor
 	 * @param context Context used to obtain a database connection (beware threading problems!)
-	 * @param newOption The new Setting.OPTION_FLAG_xxx to set (which is mapped to the PDroid core constant)
+	 * @param newTrustState  The new 'trust state' to change settings to
 	 * @param listener Listener implementing IAsyncTaskCallback to which the asyncTaskComplete call will be made
 	 */
 	
-	public AppListUpdateAllSettingsTask(Context context, TrustState newTrustState, IAsyncTaskCallback<Void> listener) {
+	public ApplicationUpdateAllSettingsTask(Context context, TrustState newTrustState, IAsyncTaskCallback<Void> listener) {
 		this.context = context;
 		this.listener = listener;
 		this.newTrustState = newTrustState;
@@ -71,8 +74,8 @@ public class AppListUpdateAllSettingsTask extends AsyncTask<Application, Void, V
 		}
 		
 		//TODO: Update the application_status record with the new trusted/untrusted status when updating the privacy settings
-
-		SQLiteDatabase db = DBInterface.getInstance(context).getDBHelper().getReadableDatabase();
+		DBInterface dbinterface = DBInterface.getInstance(context);
+		SQLiteDatabase db = dbinterface.getDBHelper().getWritableDatabase();
 		PrivacySettingsManager privacySettingsManager = (PrivacySettingsManager)context.getSystemService("privacy");
 		PrivacySettings privacySettings;
 		
@@ -87,6 +90,21 @@ public class AppListUpdateAllSettingsTask extends AsyncTask<Application, Void, V
 			
 			helper.setPrivacySettingsToTrustState(db, privacySettings, newTrustState);
 			privacySettingsManager.saveSettings(privacySettings);
+
+/*			
+			app.setHasSettings(true);
+			switch (newTrustState) {
+			case TRUSTED:
+				app.setIsUntrusted(false); //set the app to being trusted in memory
+				break;
+			case UNTRUSTED:
+				app.setIsUntrusted(true); //set the app to being trusted in memory
+				break;
+			default:
+				break;
+			}
+*/
+			dbinterface.updateApplicationRecord(app);
 		}
 		//db.close();
 		return null;

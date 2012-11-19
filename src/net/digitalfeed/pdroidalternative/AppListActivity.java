@@ -42,6 +42,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -73,6 +74,9 @@ public class AppListActivity extends Activity {
 	public static final int APP_TYPE_SYSTEM_OPTION_POSITION = 1;
 	public static final int APP_TYPE_ALL_OPTION_POSITION = 2;
 	
+	private static final int LONGPRESS_MENU_UPDATE_ALL_SETTINGS = 1;
+	private static final int LONGPRESS_MENU_DELETE_SETTINGS = 2;
+	
 	ListView listView; // view for the list of applications
 	AppListAdapter appListAdapter; // array adapter for listView
 	ProgressDialog progDialog; // used to store the progress dialog from start to end of asynctasks
@@ -93,7 +97,8 @@ public class AppListActivity extends Activity {
 								   // from responding during background operations
 	
 	String currentAppType; // stores the currently displayed app type: Preferences.APPLIST_LAST_APP_TYPE_[USER|SYSTEM|ALL]
-	String currentSettingGroup; // title of the current setting group filter 
+	String currentSettingGroup; // title of the current setting group filter
+	String settingGroupAllOption; // string of the 'all' option for the setting groups
 	List<String> settingGroups; // list of all the setting group titles, used for the setting group spinner
 	
 	
@@ -102,7 +107,7 @@ public class AppListActivity extends Activity {
         super.onCreate(savedInstanceState);
         context = this;
         
-        //Log.d("PDroidAlternative", "Getting preferences");
+        Log.d("PDroidAlternative", "Getting preferences");
         
         //get bridge to the application preferences
         prefs = new Preferences(this);
@@ -114,7 +119,7 @@ public class AppListActivity extends Activity {
          * If the database version has changed, we will need to rebuild the application cache 
          */
         if (prefs.getLastRunDatabaseVersion() != DBInterface.DBHelper.DATABASE_VERSION) {
-        	//Log.d("PDroidAlternative", "Defined database version has changed since last run; we need to rebuild the cache");
+        	Log.d("PDroidAlternative", "Defined database version has changed since last run; we need to rebuild the cache");
         	//this will force the application list to be rebuilt from the application package manager
         	prefs.setIsApplicationListCacheValid(false); 
         	prefs.setLastRunDatabaseVersion(DBInterface.DBHelper.DATABASE_VERSION);
@@ -173,7 +178,7 @@ public class AppListActivity extends Activity {
     @Override
     public void onDestroy() {
     	super.onDestroy();
-    	//Log.d("PDroidAlternative", "Destroying");
+    	Log.d("PDroidAlternative", "Destroying");
     }
     
     @Override
@@ -218,17 +223,18 @@ public class AppListActivity extends Activity {
         SQLiteDatabase db = DBInterface.getInstance(context).getDBHelper().getReadableDatabase();
         Cursor groupNamesCursor = db.rawQuery("SELECT DISTINCT " + DBInterface.SettingTable.COLUMN_NAME_GROUP_TITLE + " FROM " + DBInterface.SettingTable.TABLE_NAME + " ORDER BY " + DBInterface.SettingTable.COLUMN_NAME_GROUP_TITLE, null);
         if (groupNamesCursor == null || groupNamesCursor.getCount() < 1) {
-        	throw new DatabaseUninitialisedException("The database has no setting groups. I'm not comfortable with this situation.");
+        	throw new DatabaseUninitialisedException("AppListActivity: No settings groups found.");
         }
         
         //if there is already a list of settings groups (although will this ever happen??)
         //clear it; otherwise initialise an arraylist for it
         if (this.settingGroups == null) {
-        	this.settingGroups = new ArrayList<String>(groupNamesCursor.getCount());
+        	this.settingGroups = new ArrayList<String>(groupNamesCursor.getCount() + 1);
         } else {
         	this.settingGroups.clear();
         }
-        
+        this.settingGroupAllOption = context.getResources().getString(R.string.applist_setting_filter_spinner_all_option_title);
+        this.settingGroups.add(this.settingGroupAllOption);
         if (groupNamesCursor.moveToFirst()) {
 	    	int groupTitleColumnNum = groupNamesCursor.getColumnIndex(DBInterface.SettingTable.COLUMN_NAME_GROUP_TITLE);
 	    	do {
@@ -272,22 +278,42 @@ public class AppListActivity extends Activity {
 
     	//get the selected Application object from the app list
     	final Application targetApp = appList.get(position);
+    	
+    	//If the app is already trusted, disable the 'make trusted' option
+    	if (targetApp.getHasSettings()) {
+    		if (!targetApp.getIsUntrusted()) {
+    			popupMenu.getMenu().findItem(R.id.applist_popupmenu_set_trusted_values).setEnabled(false);
+    		}
+    	} else {
+    		//if there are no settings, then disable the 'delete settings' option
+    		popupMenu.getMenu().findItem(R.id.applist_popupmenu_delete_settings).setEnabled(false);
+    	}
    	
     	// Add handler for when a menu item is selected
     	popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
     		@Override
     		public boolean onMenuItemClick(MenuItem item) {    	    	      
-    			TrustState newTrustState;
-
+    			TrustState newTrustState = null;
+    			
+    			int action = 0;
     			switch (item.getItemId()) {
     			case R.id.applist_popupmenu_set_trusted_values:
     				newTrustState = TrustState.TRUSTED;
     				targetApp.setIsUntrusted(false); //set the app to being trusted in memory: will allow update of the listview
+        			targetApp.setHasSettings(true);
+        			action = LONGPRESS_MENU_UPDATE_ALL_SETTINGS;
     				break;
     			case R.id.applist_popupmenu_set_untrusted_values:
     				newTrustState = TrustState.UNTRUSTED;
     				targetApp.setIsUntrusted(true); //set the app to untrusted in memory: will allow update of the listview
+        			targetApp.setHasSettings(true);
+        			action = LONGPRESS_MENU_UPDATE_ALL_SETTINGS;
     				break;
+    			case R.id.applist_popupmenu_delete_settings:
+    				targetApp.setIsUntrusted(false); //set the app to untrusted in memory: will allow update of the listview
+        			targetApp.setHasSettings(false);
+        			action = LONGPRESS_MENU_DELETE_SETTINGS;
+        			break;
     			default:
     				throw new InvalidParameterException();
     			}
@@ -297,12 +323,21 @@ public class AppListActivity extends Activity {
     			progDialog = new ProgressDialog(context);
     			progDialog.setMessage("Updating settings");
     			progDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-    			//use an asynctask to actually update the settings, so it doesn't interfere with the UI thread 
-    			AppListUpdateAllSettingsTask updateAllSettingsTask = new AppListUpdateAllSettingsTask(context, newTrustState, new AppListUpdateAllSettingsCallback());
-    			
+
     			//TODO: actually create a clone of the app, pass that through to be updated, and THEN put that
     			//back in the lists -> currently, there could be threading errors because the App object is not threadsafe.
-    			updateAllSettingsTask.execute(targetApp);
+    			switch (action) {
+    			case LONGPRESS_MENU_UPDATE_ALL_SETTINGS:
+	    			//use an asynctask to actually update the settings, so it doesn't interfere with the UI thread
+	    			ApplicationUpdateAllSettingsTask updateAllSettingsTask = new ApplicationUpdateAllSettingsTask(context, newTrustState, new AppListUpdateAllSettingsCallback());
+	    			updateAllSettingsTask.execute(targetApp);
+	    			break;
+    			case LONGPRESS_MENU_DELETE_SETTINGS:
+	    			//use an asynctask to delete settings, so it doesn't interfere with the UI thread
+    				//This task will need to be modified if it is to be usable on multiple applications - right now it only handles one
+	    			AppSettingsDeleteTask deleteSettingsTask = new AppSettingsDeleteTask(context, targetApp.getPackageName(), new AppListUpdateAllSettingsCallback());
+	    			deleteSettingsTask.execute();
+    			}
     			return true;
     		}
     	});
@@ -322,7 +357,7 @@ public class AppListActivity extends Activity {
     			progDialog.dismiss();
     		}
     		appListAdapter.notifyDataSetChanged(); //notify adapter that the data has changed, so app will update the trusted state in the listview
-    		//Log.d("PDroidAlternative","Updated all settings.");
+    		Log.d("PDroidAlternative","Updated all settings.");
     	}
     }
     
@@ -350,8 +385,8 @@ public class AppListActivity extends Activity {
      * representing specific applications in subsequent searches
      */
     private void loadApplicationObjects() {
-    	//Log.d("PDroidAlternative","About to generate application objects");
-    	AppListAppObjectGeneratorTask appListGeneratorTask = new AppListAppObjectGeneratorTask(this, new AppListAppGeneratorCallback());
+    	Log.d("PDroidAlternative","About to generate application objects");
+    	ApplicationsObjectLoaderTask appListGeneratorTask = new ApplicationsObjectLoaderTask(this, new AppListAppGeneratorCallback());
     	appListGeneratorTask.execute();
     }
     
@@ -370,7 +405,7 @@ public class AppListActivity extends Activity {
     	 */
     	@Override
     	public void asyncTaskComplete(HashMap<String, Application> result) {
-    		//Log.d("PDroidAlternative","Got result from app list load: length " + result.size());
+    		Log.d("PDroidAlternative","Got result from app list load: length " + result.size());
     		applicationObjects = result;
     		loadApplicationList();
     	}
@@ -382,15 +417,14 @@ public class AppListActivity extends Activity {
      * which match the current filtering criteria set on the spinners 
      */
     private void loadApplicationList() {
-    	//Log.d("PDroidAlternative","About to start load");
+    	Log.d("PDroidAlternative","About to start load");
     	
     	//Create query builder to pass the the AsyncTask with the relevant filtering settings
     	AppQueryBuilder queryBuilder = new AppQueryBuilder();
 		queryBuilder.addColumns(AppQueryBuilder.COLUMN_TYPE_PACKAGENAME); //only need the package names to look up in the hashmap
 		
-		if (this.currentSettingGroup != null) {
-			//TODO: Right now, the 'general' option is serving as an 'all' option, because all apps include
-			//items from the General group. This is not a good solution.
+		//if the current setting group == the all option, then don't add a filter by group title
+		if (this.currentSettingGroup != null && this.currentSettingGroup != this.settingGroupAllOption) {
 			queryBuilder.addFilter(AppQueryBuilder.FILTER_BY_SETTING_GROUP_TITLE, currentSettingGroup);
 		}
 		
@@ -401,12 +435,12 @@ public class AppListActivity extends Activity {
 		} else if (currentAppType.equals(Preferences.APPLIST_LAST_APP_TYPE_ALL)) {
 			//This is just here for the moment for exclusion purposes
 		} else {
-			//Log.d("PDroidAlternative","You shouldn't be here!");
+			Log.d("PDroidAlternative","You shouldn't be here!");
 		}
 
 		//Set up and execute the AsyncTask
-		AppListLoaderTask appListLoaderTask = new AppListLoaderTask(this, new AppListLoaderCallback());
-    	//Log.d("PDroidAlternative","Created the task");
+		ApplicationsDatabaseSearchTask appListLoaderTask = new ApplicationsDatabaseSearchTask(this, new AppListLoaderCallback());
+    	Log.d("PDroidAlternative","Created the task");
     	appListLoaderTask.execute(queryBuilder);
     }
     
@@ -426,7 +460,7 @@ public class AppListActivity extends Activity {
     	@Override
     	public void asyncTaskComplete(List<String> result) {
     		if (result != null) {
-	    		//Log.d("PDroidAlternative","Got result from app list load: length " + result.size());
+	    		Log.d("PDroidAlternative","Got result from app list load: length " + result.size());
 	    		
 	    		//Clear the current list of applications
 	    		if (appList == null) {
@@ -453,7 +487,7 @@ public class AppListActivity extends Activity {
     		} else {
     			//TODO: Handle the case of no matching apps better: maybe clear the list, or display a
     			//'no matching entries' message of some sort over the top?
-    			//Log.d("PDroidAlternative","No results from app list load");
+    			Log.d("PDroidAlternative","No results from app list load");
     		}
     		readyForInput = true;
     	}
@@ -468,7 +502,7 @@ public class AppListActivity extends Activity {
         this.progDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
 
         // Start the AsyncTask to build the list of apps and write them to the database
-    	AppListGeneratorTask appListGenerator = new AppListGeneratorTask(this, new AppListGeneratorCallback());
+    	ApplicationsDatabaseFillerTask appListGenerator = new ApplicationsDatabaseFillerTask(this, new AppListGeneratorCallback());
     	appListGenerator.execute();
     }
     
@@ -556,7 +590,7 @@ public class AppListActivity extends Activity {
 		@Override
 		public void onItemSelected(AdapterView<?> parent, View view, int itemPosition,
 				long id) {
-			//Log.d("PDroidAlternative","Group selected: " + settingGroups.get(itemPosition));
+			Log.d("PDroidAlternative","Group selected: " + settingGroups.get(itemPosition));
 			
 			if (readyForInput) {        		
 				currentSettingGroup = settingGroups.get(itemPosition);

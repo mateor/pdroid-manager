@@ -35,6 +35,7 @@
     <string-array name="app_status_labels">
         <item >Untrusted</item>
         <item >Trusted</item>
+        <item >No settings</item>
     </string-array>
     <!-- Note that if you change the order of these items, you also need to change the 
     values in AppListActivity to match -->

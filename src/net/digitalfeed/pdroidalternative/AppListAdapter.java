@@ -50,6 +50,7 @@ public class AppListAdapter extends ArrayAdapter<Application>{
 	
 	private static final int APP_STATUS_LABEL_UNTRUSTED = 0;
 	private static final int APP_STATUS_LABEL_TRUSTED = 1;
+	private static final int APP_STATUS_LABEL_NOSETTINGS = 2;
 	
 	Context context;
 	int standardResourceId;
@@ -100,10 +101,14 @@ public class AppListAdapter extends ArrayAdapter<Application>{
 		} else {
 			holder.appType.setText(appTypeLabels[APP_TYPE_LABEL_USER]);
 		}
-		if (app.getIsUntrusted()) {
-			holder.appStatus.setText(appStatusLabels[APP_STATUS_LABEL_UNTRUSTED]);
+		if (app.getHasSettings()) {
+			if (app.getIsUntrusted()) {
+				holder.appStatus.setText(appStatusLabels[APP_STATUS_LABEL_UNTRUSTED]);
+			} else {
+				holder.appStatus.setText(appStatusLabels[APP_STATUS_LABEL_TRUSTED]);
+			}
 		} else {
-			holder.appStatus.setText(appStatusLabels[APP_STATUS_LABEL_TRUSTED]);
+			holder.appStatus.setText(appStatusLabels[APP_STATUS_LABEL_NOSETTINGS]);
 		}
 		if (app.getHasInternet()) {
 			holder.hasNetIcon.setImageDrawable(internetAccessIcons[INTERNET_ACCESS_ICON_ACCESS]);

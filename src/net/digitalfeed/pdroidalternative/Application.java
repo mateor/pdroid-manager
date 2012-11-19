@@ -41,17 +41,20 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
+import android.util.Log;
 
 /**
  * This represents a single application.
  * @author smorgan
  *
  */
-
+//TODO: Consider thread safety: this is not presently a thread-safe object, but it is used concurrently
+//by multiple threads (e.g. AppListActivity triggers an update, which causes the object to be updated)
 public class Application {
 	public static final int APP_FLAG_IS_SYSTEM_APP = 1;
 	public static final int APP_FLAG_HAS_INTERNET = 2;
-	public static final int STATUS_FLAG_IS_UNTRUSTED = 1;
+	public static final int STATUS_FLAG_IS_UNTRUSTED = 1; //indicates that one or more settings are not the 'trusted' setting in PDroid Core
+	public static final int STATUS_FLAG_HAS_PRIVACYSETTINGS = 8; //indicates that no privacysettings have been saved in the PDroid Core
 	public static final int STATUS_FLAG_NOTIFY_ON_ACCESS = 2;
 	public static final int STATUS_FLAG_LOG_ON_ACCESS = 4;
 	public static final int STATUS_FLAG_NEW = 8;
@@ -139,6 +142,19 @@ public class Application {
 		}
 	} 
 
+	public boolean getHasSettings() {
+		return (0 != (this.statusFlags & STATUS_FLAG_HAS_PRIVACYSETTINGS));
+	}
+	
+	public void setHasSettings(boolean newValue) {
+		if (newValue) {
+			this.statusFlags |= STATUS_FLAG_HAS_PRIVACYSETTINGS;
+		} else { 
+			this.statusFlags &= ~STATUS_FLAG_HAS_PRIVACYSETTINGS;
+		}
+	}
+	
+	
 	public boolean getNotifyOnAccess() {
 		return (0 != (this.statusFlags & STATUS_FLAG_NOTIFY_ON_ACCESS));
 	}
@@ -265,7 +281,7 @@ public class Application {
 	 */
 	public static Application fromPackageName(Context context, String packageName) {
 		Application app = null;
-		//Log.d("PDroidAlternative", "Attempting to create an application from package name");
+		Log.d("PDroidAlternative", "Application.fromPackageName: Loading package from OS: " + packageName);
 		try {
 			PackageManager pkgMgr = context.getPackageManager();
 			PackageInfo pkgInfo = pkgMgr.getPackageInfo(packageName, PackageManager.GET_PERMISSIONS);
@@ -292,10 +308,11 @@ public class Application {
 					pkgMgr.getApplicationIcon(appInfo.packageName),
 					pkgInfo.requestedPermissions
 					); 
+			Log.d("PDroidAlternative", "Application.fromPackageName: Object created from OS");
 
 		} catch (NameNotFoundException e) {
 			// TODO Auto-generated catch block
-			//Log.d("PDroidAlternative", "NameNotFoundException when trying to generate an app from package name");
+			Log.d("PDroidAlternative", "NameNotFoundException when trying to generate an app from package name");
 			e.printStackTrace();
 		}
 		
@@ -313,7 +330,7 @@ public class Application {
 		Application app = null;
 		SQLiteDatabase db = null;
 		Cursor cursor = null;
-		//Log.d("PDroidAlternative", "Attempting to create an application from package name");
+		Log.d("PDroidAlternative", "Application.fromDatabase: Loading package: " + packageName);
 		try {
 			DBHelper dbHelper = DBInterface.getInstance(context).getDBHelper();
 			db = dbHelper.getReadableDatabase();
@@ -325,10 +342,7 @@ public class Application {
 		    	String permissions = cursor.getString(cursor.getColumnIndex(DBInterface.ApplicationTable.COLUMN_NAME_PERMISSIONS));
 		    	String [] permissionsArray = null; 
 				if (permissions != null) {
-					//Log.d("PDroidAlternative", "Application.fromDatabase: permissions was not null");
 					permissionsArray = TextUtils.split(permissions, ",");
-				} else {
-					//Log.d("PDroidAlternative", "Application.fromDatabase: permissions was null");
 				}
 		    	
 		    	byte[] iconBlob = cursor.getBlob(cursor.getColumnIndex(DBInterface.ApplicationTable.COLUMN_NAME_ICON));
@@ -344,6 +358,7 @@ public class Application {
 		    			icon,
 		    			permissionsArray
 		    		);
+		    	Log.d("PDroidAlternative", "Application.fromDatabase: Loaded package from DB");
 			}
 		} finally {
 			if (cursor != null && !cursor.isClosed()) {

@@ -36,7 +36,14 @@ import net.digitalfeed.pdroidalternative.DBInterface.SettingTable;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.text.TextUtils;
+import android.util.Log;
 
+/**
+ * Allows construction of a set of filters used for searching for applications.
+ * 
+ * @author smorgan
+ *
+ */
 public class AppQueryBuilder {
 	public static final String APP_TYPE_USER = "0";
 	public static final String APP_TYPE_SYSTEM = "1";
@@ -71,6 +78,11 @@ public class AppQueryBuilder {
 		filterValues = new String[FILTER_TEXT_COUNT];
 	}
 	
+	/**
+	 * Add column set to be returned in the results of a search using this object
+	 * 
+	 * @param columnTypeToAdd  The ID of the column set to add (using the COLUMN_TYPE_* constants)
+	 */
 	public void addColumns(int columnTypeToAdd) {
 		this.queryText = null;
 		switch (columnTypeToAdd) {
@@ -92,6 +104,13 @@ public class AppQueryBuilder {
 		}
 	}
 	
+	/**
+	 * Add a filter to which apps should be returned by the query.
+	 * 
+	 * @param filterTypeToAdd  The type of filter to add: one of the FILTER_BY_* constants 
+	 * @param filterText  The text to be applied to the filter: e.g. if filtering by permission, the name
+	 * of the permission. If filtering by setting group title, the title of the setting group to include.
+	 */
 	public void addFilter(int filterTypeToAdd, String filterText) {
 		this.queryText = null;
 		switch (filterTypeToAdd) {
@@ -122,6 +141,12 @@ public class AppQueryBuilder {
 		}
 	}
 	
+	/**
+	 * Run a query using the filters/column inclusions previously set and return a cursor for the result
+	 * 
+	 * @param db
+	 * @return Cursor representing the results of the search
+	 */
 	public Cursor doQuery(SQLiteDatabase db) {
 		LinkedList<String> projectionIn = new LinkedList<String>();
 		
@@ -190,7 +215,7 @@ public class AppQueryBuilder {
 		this.queryText = queryStringBuilder.toString();
 		
 		this.projectionIn = projectionIn.toArray(new String[projectionIn.size()]);
-		//Log.d("PDroidAlternative", "Query text is: " + this.queryText);
+		Log.d("PDroidAlternative", "Query text is: " + this.queryText);
 		return db.rawQuery(this.queryText, this.projectionIn);
 	}
 	

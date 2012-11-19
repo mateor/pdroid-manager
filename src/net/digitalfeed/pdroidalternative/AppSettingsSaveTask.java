@@ -31,16 +31,18 @@ import java.lang.reflect.Method;
 import java.util.AbstractMap.SimpleImmutableEntry;
 
 import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.privacy.PrivacySettings;
 import android.privacy.PrivacySettingsManager;
+import android.util.Log;
 
 
 /**
  * Loads the settings list for a single application from the database.
  * @author smorgan
  */
-public class AppDetailSettingsWriterTask extends AsyncTask<AppSetting, Integer, Void> {
+public class AppSettingsSaveTask extends AsyncTask<AppSetting, Integer, Void> {
 	
 	final IAsyncTaskCallback<Void> listener;
 	final Context context;
@@ -48,7 +50,7 @@ public class AppDetailSettingsWriterTask extends AsyncTask<AppSetting, Integer, 
 	final boolean notifySetting;
 	final Integer uid;
 	
-	public AppDetailSettingsWriterTask(Context context, String packageName, Integer uid, boolean notifySetting, IAsyncTaskCallback<Void> listener) {
+	public AppSettingsSaveTask(Context context, String packageName, Integer uid, boolean notifySetting, IAsyncTaskCallback<Void> listener) {
 		this.context = context;
 		this.listener = listener;
 		this.notifySetting = notifySetting;
@@ -62,7 +64,7 @@ public class AppDetailSettingsWriterTask extends AsyncTask<AppSetting, Integer, 
 	protected Void doInBackground(AppSetting... appSettings) {
 		//TODO: Exception handling: null appSettings
 
-		//Log.d("PDroidAlternative","Running update of settings for " + packageName);
+		Log.d("PDroidAlternative","Running update of settings for " + packageName);
 		PrivacySettingsManager privacySettingsManager = (PrivacySettingsManager)context.getSystemService("privacy");
 		PrivacySettings privacySettings = privacySettingsManager.getSettings(packageName);
 		
@@ -85,51 +87,60 @@ public class AppDetailSettingsWriterTask extends AsyncTask<AppSetting, Integer, 
 		}
 		
 		for (AppSetting appSetting : appSettings) {
-			//Log.d("PDroidAlternative","Processing setting " + appSetting.getId());
+			Log.d("PDroidAlternative","Processing setting " + appSetting.getId());
 			try {
 				setMethod = privacySettingsClass.getMethod("set" + appSetting.getSettingFunctionName(), byte.class);
-				//Log.d("PDroidAlternative","Get method: " + appSetting.getSettingFunctionName());
+				Log.d("PDroidAlternative","Get method: " + appSetting.getSettingFunctionName());
 				switch (appSetting.getSelectedOptionBit()) {
 				case Setting.OPTION_FLAG_ALLOW:
 				case Setting.OPTION_FLAG_YES:
 					setMethod.invoke(privacySettings, PrivacySettings.REAL);
-					//Log.d("PDroidAlternative","Invoked set" + appSetting.getSettingFunctionName() + " for REAL");
+					Log.d("PDroidAlternative","Invoked set" + appSetting.getSettingFunctionName() + " for REAL");
 					break;
 				case Setting.OPTION_FLAG_CUSTOM:
 				case Setting.OPTION_FLAG_CUSTOMLOCATION:
 					setMethod.invoke(privacySettings, PrivacySettings.CUSTOM);
-					//Log.d("PDroidAlternative","Invoked set" + appSetting.getSettingFunctionName() + " for CUSTOM");
+					Log.d("PDroidAlternative","Invoked set" + appSetting.getSettingFunctionName() + " for CUSTOM");
 					for (SimpleImmutableEntry<String, String> settingValue : appSetting.getCustomValues()) {
 						setMethod = privacySettingsClass.getMethod("set" + appSetting.getValueFunctionNameStub() + settingValue.getKey(), String.class);
 						setMethod.invoke(privacySettings, settingValue.getValue());
-						//Log.d("PDroidAlternative","Invoked set" + appSetting.getValueFunctionNameStub() + settingValue.getKey());
+						Log.d("PDroidAlternative","Invoked set" + appSetting.getValueFunctionNameStub() + settingValue.getKey());
 					}
 					break;				
 				case Setting.OPTION_FLAG_DENY:
 				case Setting.OPTION_FLAG_NO:
 					setMethod.invoke(privacySettings, PrivacySettings.EMPTY);
-					//Log.d("PDroidAlternative","Invoked set" + appSetting.getSettingFunctionName() + " for DENY");
+					Log.d("PDroidAlternative","Invoked set" + appSetting.getSettingFunctionName() + " for DENY");
 					break;
 				case Setting.OPTION_FLAG_RANDOM:
-					//Log.d("PDroidAlternative","Invoked set" + appSetting.getSettingFunctionName() + " for RANDOM");
+					Log.d("PDroidAlternative","Invoked set" + appSetting.getSettingFunctionName() + " for RANDOM");
 					setMethod.invoke(privacySettings, PrivacySettings.RANDOM);
 					break;
 				}
 			} catch (NoSuchMethodException e) {
-			   //Log.d("PDroidAlternative","PrivacySettings object of privacy service is missing the expected method " + appSetting.getSettingFunctionName());
+			   Log.d("PDroidAlternative","PrivacySettings object of privacy service is missing the expected method " + appSetting.getSettingFunctionName());
 			   e.printStackTrace();
 			} catch (IllegalArgumentException e) {
-				//Log.d("PDroidAlternative","Illegal arguments when calling " + appSetting.getSettingFunctionName());
+				Log.d("PDroidAlternative","Illegal arguments when calling " + appSetting.getSettingFunctionName());
 				e.printStackTrace();
 			} catch (IllegalAccessException e) {
-				//Log.d("PDroidAlternative","Illegal access when calling " + appSetting.getSettingFunctionName());
+				Log.d("PDroidAlternative","Illegal access when calling " + appSetting.getSettingFunctionName());
 				e.printStackTrace();
 			} catch (InvocationTargetException e) {
-				//Log.d("PDroidAlternative","InvocationTargetException when calling " + appSetting.getSettingFunctionName());
+				Log.d("PDroidAlternative","InvocationTargetException when calling " + appSetting.getSettingFunctionName());
 				e.printStackTrace();
 			}
 		}
 		privacySettingsManager.saveSettings(privacySettings);
+
+		//Update the app settings based on the new data: 1. check if trusted and 2. it now does have settings
+		Application app = Application.fromDatabase(context, packageName);
+		PermissionSettingHelper psh = new PermissionSettingHelper();
+		DBInterface dbinterface = DBInterface.getInstance(context);
+		SQLiteDatabase write_db = dbinterface.getDBHelper().getWritableDatabase();
+		app.setIsUntrusted(psh.isPrivacySettingsUntrusted(write_db, privacySettings));
+		app.setHasSettings(true);
+		dbinterface.updateApplicationRecord(app);
 		return null;
 	}
 	

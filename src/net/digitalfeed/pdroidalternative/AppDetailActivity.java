@@ -33,11 +33,25 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.CheckBox;
 import android.widget.ListView;
 
+/**
+ * Activity to display the interface for changing the settings of a single
+ * application.
+ * Pass a bundle containing the package name in BUNDLE_PACKAGE_NAME to load
+ * the interface for that package.
+ * To provide 'up' button functionality in the action bar when within the app,
+ * the boolean BUNDLE_IN_APP can be passed ('up' button is used when BUNDLE_IN_APP
+ * is true, and thus the activity is running inside th setting of the app itself, 
+ * rather than from a notification).
+ * 
+ * @author smorgan
+ *
+ */
 public class AppDetailActivity extends Activity {
 	
 	public static final String BUNDLE_PACKAGE_NAME = "packageName";
@@ -57,7 +71,7 @@ public class AppDetailActivity extends Activity {
         super.onCreate(savedInstanceState);
         context = this;
         
-        //Log.d("PDroidAlternative", "onCreate of AppDetailActivity starting");
+        Log.d("PDroidAlternative", "onCreate of AppDetailActivity starting");
         setContentView(R.layout.activity_app_detail);
         
         
@@ -75,7 +89,7 @@ public class AppDetailActivity extends Activity {
         	getActionBar().setDisplayHomeAsUpEnabled(false);
         }
         //this.setTitle(packageName);
-        AppDetailAppLoaderTask appDetailAppLoader = new AppDetailAppLoaderTask(this, new AppDetailAppLoaderTaskCompleteHandler());
+        ApplicationLoadTask appDetailAppLoader = new ApplicationLoadTask(this, new AppDetailAppLoaderTaskCompleteHandler());
         appDetailAppLoader.execute(packageName);
         
     	Preferences prefs = new Preferences(context);
@@ -86,20 +100,30 @@ public class AppDetailActivity extends Activity {
     	checkbox = null;
     	prefs = null;
     	
-        //Log.d("PDroidAlternative", "onCreate of AppDetailActivity finished");
+        Log.d("PDroidAlternative", "onCreate of AppDetailActivity finished");
     }
 
     @Override
     public void onStart() {
     	super.onStart();
-    	//Log.d("PDroidAlternative", "onStart of AppDetailActivity starting");
+    	Log.d("PDroidAlternative", "onStart of AppDetailActivity starting");
 
-        //Log.d("PDroidAlternative", "onStart of AppDetailActivity finished");
+        Log.d("PDroidAlternative", "onStart of AppDetailActivity finished");
     }
     
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
+            case R.id.detailCloseButton:
+            	//Should we be checking if the settings have changed and prompting the user?
+            	//I think that would probably be excessive...
+
+            	//if we are in an app, we should just finish. Otherwise, the behaviour should
+            	//be the same as pressing the 'home' button.
+            	if (!inApp) {
+	            	finish();
+	            	return true;
+            	}
             case android.R.id.home:
                 // This is called when the Home (Up) button is pressed
                 // in the Action Bar.
@@ -110,6 +134,10 @@ public class AppDetailActivity extends Activity {
                 startActivity(parentActivityIntent);
                 finish();
                 return true;
+            case R.id.detailDeleteButton:
+            	AppSettingsDeleteTask settingsDeleterTask = new AppSettingsDeleteTask(context, packageName, new AppDetailSettingActionTaskCompleteHandler());
+            	settingsDeleterTask.execute();
+            	break;
             case R.id.detailSaveButton:
             	progDialog = new ProgressDialog(context);
             	progDialog.setTitle(getString(R.string.detail_saving_dialog_title));
@@ -126,8 +154,8 @@ public class AppDetailActivity extends Activity {
             	
             	AppSetting [] toAsyncTask = this.settingList;
             	this.settingList = null;
-            	AppDetailSettingsWriterTask settingsWriterTask = new AppDetailSettingsWriterTask(context, packageName, application.getUid(), setNotifyTo, new AppDetailSettingWriterTaskCompleteHandler());
-            	settingsWriterTask.execute(toAsyncTask);            	
+            	AppSettingsSaveTask settingsWriterTask = new AppSettingsSaveTask(context, packageName, application.getUid(), setNotifyTo, new AppDetailSettingActionTaskCompleteHandler());
+            	settingsWriterTask.execute(toAsyncTask);
             	break;
         }
         return super.onOptionsItemSelected(item);
@@ -143,15 +171,15 @@ public class AppDetailActivity extends Activity {
     {
 		@Override
 		public void asyncTaskComplete(Application inApplication) {
-			//Log.d("PDroidAlternative", "AppDetailAppLoaderTask completed.");
+			Log.d("PDroidAlternative", "AppDetailAppLoaderTask completed.");
 			
 			if (inApplication == null) {
-				//Log.d("PDroidAlternative", "inApplication is null: the app could have disappeared between the intent being created and the task running?");
+				Log.d("PDroidAlternative", "inApplication is null: the app could have disappeared between the intent being created and the task running?");
 			} else {
-				//Log.d("PDroidAlternative", "inApplication " + inApplication.getPackageName() + " retrieved");
+				Log.d("PDroidAlternative", "inApplication " + inApplication.getPackageName() + " retrieved");
 				setTitle(inApplication.getLabel());
 				application = inApplication;
-				AppDetailSettingsLoaderTask appDetailSettingsLoader = new AppDetailSettingsLoaderTask(context, new AppDetailSettingsLoaderTaskCompleteHandler());
+				AppSettingsLoadTask appDetailSettingsLoader = new AppSettingsLoadTask(context, new AppDetailSettingsLoaderTaskCompleteHandler());
 				appDetailSettingsLoader.execute(application.getPackageName());
 			}
 		}
@@ -161,13 +189,13 @@ public class AppDetailActivity extends Activity {
     {
 		@Override
 		public void asyncTaskComplete(LinkedList<AppSetting> inSettingList) {
-			//Log.d("PDroidAlternative", "AppDetailSettingsLoaderTask completed.");
+			Log.d("PDroidAlternative", "AppDetailSettingsLoaderTask completed.");
 			if (inSettingList == null) {
-				//Log.d("PDroidAlternative","AppDetailSettingsLoaderTask returned null");
+				Log.d("PDroidAlternative","AppDetailSettingsLoaderTask returned null");
 			} else if (inSettingList.size() == 0) {
-				//Log.d("PDroidAlternative","AppDetailSettingsLoaderTask returned no AppSettings (size = 0)");
+				Log.d("PDroidAlternative","AppDetailSettingsLoaderTask returned no AppSettings (size = 0)");
 			} else {
-				//Log.d("PDroidAlternative","AppDetailSettingsLoaderTask returned " + Integer.toString(inSettingList.size()) + " settings. Initialising ListView.");
+				Log.d("PDroidAlternative","AppDetailSettingsLoaderTask returned " + Integer.toString(inSettingList.size()) + " settings. Initialising ListView.");
 				settingList = inSettingList.toArray(new AppSetting[inSettingList.size()]);
 				listView = (ListView)findViewById(R.id.settingList);
 				listView.setAdapter(new AppDetailAdapter(context, R.layout.setting_list_row_standard, settingList));
@@ -175,11 +203,11 @@ public class AppDetailActivity extends Activity {
 		}
     }
     
-    class AppDetailSettingWriterTaskCompleteHandler implements IAsyncTaskCallback<Void>
+    class AppDetailSettingActionTaskCompleteHandler implements IAsyncTaskCallback<Void>
     {	
 		@Override
 		public void asyncTaskComplete(Void param) {
-			//Log.d("PDroidAlternative", "AppDetailSettingWriterTask completed.");
+			Log.d("PDroidAlternative", "AppDetailSettingWriterTask completed.");
 			if (progDialog != null && progDialog.isShowing()) {
 				progDialog.dismiss();
 			}

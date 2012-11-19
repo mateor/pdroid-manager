@@ -35,6 +35,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
+import android.util.Log;
 
 /**
  * Returns a HashMap of package name and in-memory Application objects for all applications currently
@@ -45,13 +46,13 @@ import android.os.AsyncTask;
  * @author smorgan
  *
  */
-public class AppListAppObjectGeneratorTask extends AsyncTask<Void, Integer, HashMap<String, Application>> {
+public class ApplicationsObjectLoaderTask extends AsyncTask<Void, Integer, HashMap<String, Application>> {
 	
 	IAsyncTaskCallback<HashMap<String, Application>> listener;
 	
 	Context context;
 	
-	public AppListAppObjectGeneratorTask(Context context, IAsyncTaskCallback<HashMap<String, Application>> listener) {
+	public ApplicationsObjectLoaderTask(Context context, IAsyncTaskCallback<HashMap<String, Application>> listener) {
 		this.context = context;
 		this.listener = listener;
 	}
@@ -94,6 +95,7 @@ public class AppListAppObjectGeneratorTask extends AsyncTask<Void, Integer, Hash
     		int appFlags = cursor.getInt(appFlagsColumn);
     		int statusFlags = cursor.getInt(statusFlagsColumn);
     		byte[] iconBlob = cursor.getBlob(iconColumn);
+    		Log.d("PDroidAlternative","Application " + packageName);
 
     		Drawable icon = new BitmapDrawable(context.getResources(),BitmapFactory.decodeByteArray(iconBlob, 0, iconBlob.length));
     		appList.put(packageName, new Application(packageName, label, versionCode, appFlags, statusFlags, uid, icon));
@@ -102,7 +104,7 @@ public class AppListAppObjectGeneratorTask extends AsyncTask<Void, Integer, Hash
     	cursor.close();
     	//db.close();
     	
-    	//Log.d("PDroidAlternative","Got matching applications: " + appList.size());
+    	Log.d("PDroidAlternative","Got matching applications: " + appList.size());
     	
     	return appList;
 	}

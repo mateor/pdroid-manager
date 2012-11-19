@@ -34,51 +34,36 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.text.TextUtils;
+import android.util.Log;
 
 
 /**
- * Loads app details for a single app by package name. Assumes the app exists in the database.
- * Maybe should be merged into AppListLoader? There is mostly duplicate functionality
+ * Loads Application object for a single app by package name. Assumes the app exists in the database.
+ * This essentially duplicates the functionality of Application.fromDatabase and should
+ * probably be, or modified to use that function.
  * @author smorgan
  */
-public class AppDetailAppLoaderTask extends AsyncTask<String, Integer, Application> {
+public class ApplicationLoadTask extends AsyncTask<String, Integer, Application> {
 	
 	IAsyncTaskCallback<Application> listener;
 	
 	Context context;
 	
-	public AppDetailAppLoaderTask(Context context, IAsyncTaskCallback<Application> listener) {
+	public ApplicationLoadTask(Context context, IAsyncTaskCallback<Application> listener) {
 		this.context = context;
 		this.listener = listener;
 	}
 		
 	@Override
 	protected Application doInBackground(String... selectPackageName) {
-		//Log.d("PDroidAlternative","Looking up package name: " + selectPackageName[0]);
+		Log.d("PDroidAlternative","Looking up package name: " + selectPackageName[0]);
 		
 		SQLiteDatabase db = DBInterface.getInstance(context).getDBHelper().getReadableDatabase();
     	Cursor cursor = db.rawQuery(DBInterface.QUERY_GET_APPS_BY_PACKAGENAME_WITH_STATUS, selectPackageName);
-    	//Log.d("PDroidAlternative","Returned item count: " + Integer.toString(cursor.getCount()));
+    	Log.d("PDroidAlternative","Returned item count: " + Integer.toString(cursor.getCount()));
 		
 		cursor.moveToFirst();
-		/*
-    	int labelColumn = cursor.getColumnIndex(DBInterface.ApplicationTable.COLUMN_NAME_LABEL);
-    	int packageNameColumn = cursor.getColumnIndex(DBInterface.ApplicationTable.COLUMN_NAME_PACKAGENAME); 
-    	int uidColumn = cursor.getColumnIndex(DBInterface.ApplicationTable.COLUMN_NAME_UID);
-    	int versionCodeColumn = cursor.getColumnIndex(DBInterface.ApplicationTable.COLUMN_NAME_VERSIONCODE);
-    	int appFlagsColumn = cursor.getColumnIndex(DBInterface.ApplicationTable.COLUMN_NAME_FLAGS);
-    	int iconColumn = cursor.getColumnIndex(DBInterface.ApplicationTable.COLUMN_NAME_ICON);
-    	int permissionsColumn = cursor.getColumnIndex(DBInterface.ApplicationTable.COLUMN_NAME_PERMISSIONS);
-
-		String label = cursor.getString(labelColumn);
-		String packageName = cursor.getString(packageNameColumn);
-		int uid = cursor.getInt(uidColumn);
-		int versionCode = cursor.getInt(versionCodeColumn);
-		int appFlags = cursor.getInt(appFlagsColumn);
-		byte[] iconBlob = cursor.getBlob(iconColumn);
-		String permissions = cursor.getString(permissionsColumn);
-		*/
-
+		
 		String label = cursor.getString(
 				cursor.getColumnIndex(DBInterface.ApplicationTable.COLUMN_NAME_LABEL)
 				);

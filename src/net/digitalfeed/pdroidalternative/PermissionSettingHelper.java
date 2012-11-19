@@ -36,7 +36,17 @@ import java.util.List;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.privacy.PrivacySettings;
+import android.util.Log;
+
 import java.util.AbstractMap.SimpleImmutableEntry;
+
+/**
+ * A helper class providing a set of functions to update or parse information from
+ * PrivacySettings objects
+ * 
+ * @author smorgan
+ *
+ */
 class PermissionSettingHelper {
 
 	public enum TrustState {TRUSTED, UNTRUSTED};
@@ -46,6 +56,15 @@ class PermissionSettingHelper {
 	
 	public PermissionSettingHelper() {};
 	
+	/**
+	 * Retrieves a list of permissions to which settings are attached (e.g.
+	 * android.permission.READ_PHONE_STATE is a permission of interest
+	 * because it is tied to the ALLOW_READ_DEVICE_ID setting and others).
+	 * See permission_setting_map.xml for the relationships.
+	 * 
+	 * @param db
+	 * @return
+	 */
 	public static HashSet<String> getPermissionsOfInterest(SQLiteDatabase db) {
 		HashSet <String> permissionsOfInterest = new HashSet<String>();
 		
@@ -71,6 +90,7 @@ class PermissionSettingHelper {
 	 * @param privacySettings - a privacySettings object for the app to check
 	 * @return
 	 */
+	//TODO: There is a bug when all settings are updated to 'trusted', such that the trust detection identifies the app as 'untrusted'.
 	public boolean isPrivacySettingsUntrusted (SQLiteDatabase db, PrivacySettings privacySettings) {
 		if (db == null) {
 			throw new InvalidParameterException("database passed to isPrivacySettingsUntrusted must not be null");
@@ -101,10 +121,10 @@ class PermissionSettingHelper {
 							new SimpleImmutableEntry<Method, String>(privacySettings.getClass().getMethod("get" + settingFunctionName), settingTrustedOption)
 							);
 				} catch (NoSuchMethodException e) {
-				   //Log.d("PDroidAlternative","PrivacySettings object of privacy service is missing the expected method " + settingFunctionName);
+				   Log.d("PDroidAlternative","PrivacySettings object of privacy service is missing the expected method " + settingFunctionName);
 				   e.printStackTrace();
 				} catch (IllegalArgumentException e) {
-					//Log.d("PDroidAlternative","Illegal arguments when calling " + settingFunctionName);
+					Log.d("PDroidAlternative","Illegal arguments when calling " + settingFunctionName);
 					e.printStackTrace();
 				}
 			} while (cursor.moveToNext());
@@ -129,13 +149,13 @@ class PermissionSettingHelper {
 					break;
 				}
 			} catch (IllegalArgumentException e) {
-				//Log.d("PDroidAlternative","Illegal arguments when calling " + row.getKey().getName());
+				Log.d("PDroidAlternative","Illegal arguments when calling " + row.getKey().getName());
 				e.printStackTrace();
 			} catch (IllegalAccessException e) {
-				//Log.d("PDroidAlternative","Illegal access when calling " + row.getKey().getName());
+				Log.d("PDroidAlternative","Illegal access when calling " + row.getKey().getName());
 				e.printStackTrace();
 			} catch (InvocationTargetException e) {
-				//Log.d("PDroidAlternative","InvocationTargetException when calling " + row.getKey().getName());
+				Log.d("PDroidAlternative","InvocationTargetException when calling " + row.getKey().getName());
 				e.printStackTrace();
 			}
 		}
@@ -179,10 +199,10 @@ class PermissionSettingHelper {
 							new SimpleImmutableEntry<Method,String>(privacySettings.getClass().getMethod("set" + settingFunctionName, byte.class),settingTrustedOption)
 							);
 				} catch (NoSuchMethodException e) {
-				   //Log.d("PDroidAlternative","PrivacySettings object of privacy service is missing the expected method " + settingFunctionName);
+				   Log.d("PDroidAlternative","PrivacySettings object of privacy service is missing the expected method " + settingFunctionName);
 				   e.printStackTrace();
 				} catch (IllegalArgumentException e) {
-					//Log.d("PDroidAlternative","Illegal arguments when calling " + settingFunctionName);
+					Log.d("PDroidAlternative","Illegal arguments when calling " + settingFunctionName);
 					e.printStackTrace();
 				}
 			} while (cursor.moveToNext());
@@ -217,13 +237,13 @@ class PermissionSettingHelper {
 			try {
 				row.getKey().invoke(privacySettings, newValueByte);
 			} catch (IllegalArgumentException e) {
-				//Log.d("PDroidAlternative","Illegal arguments when calling " + row.getKey().getName());
+				Log.d("PDroidAlternative","Illegal arguments when calling " + row.getKey().getName());
 				e.printStackTrace();
 			} catch (IllegalAccessException e) {
-				//Log.d("PDroidAlternative","Illegal access when calling " + row.getKey().getName());
+				Log.d("PDroidAlternative","Illegal access when calling " + row.getKey().getName());
 				e.printStackTrace();
 			} catch (InvocationTargetException e) {
-				//Log.d("PDroidAlternative","InvocationTargetException when calling " + row.getKey().getName());
+				Log.d("PDroidAlternative","InvocationTargetException when calling " + row.getKey().getName());
 				e.printStackTrace();
 			}
 		}
@@ -265,10 +285,10 @@ class PermissionSettingHelper {
 								new SimpleImmutableEntry<Method,String>(privacySettings.getClass().getMethod("set" + settingFunctionName, byte.class), settingTrustedOption)
 								);
 					} catch (NoSuchMethodException e) {
-					   //Log.d("PDroidAlternative","PrivacySettings object of privacy service is missing the expected method " + settingFunctionName);
+					   Log.d("PDroidAlternative","PrivacySettings object of privacy service is missing the expected method " + settingFunctionName);
 					   e.printStackTrace();
 					} catch (IllegalArgumentException e) {
-						//Log.d("PDroidAlternative","Illegal arguments when calling " + settingFunctionName);
+						Log.d("PDroidAlternative","Illegal arguments when calling " + settingFunctionName);
 						e.printStackTrace();
 					}
 				} while (cursor.moveToNext());
@@ -318,13 +338,13 @@ class PermissionSettingHelper {
 				try {
 					row.getKey().invoke(privacySettings, newValueByte);
 				} catch (IllegalArgumentException e) {
-					//Log.d("PDroidAlternative","Illegal arguments when calling " + row.getKey().getName());
+					Log.d("PDroidAlternative","Illegal arguments when calling " + row.getKey().getName());
 					e.printStackTrace();
 				} catch (IllegalAccessException e) {
-					//Log.d("PDroidAlternative","Illegal access when calling " + row.getKey().getName());
+					Log.d("PDroidAlternative","Illegal access when calling " + row.getKey().getName());
 					e.printStackTrace();
 				} catch (InvocationTargetException e) {
-					//Log.d("PDroidAlternative","InvocationTargetException when calling " + row.getKey().getName());
+					Log.d("PDroidAlternative","InvocationTargetException when calling " + row.getKey().getName());
 					e.printStackTrace();
 				}
 			}
