@@ -137,16 +137,22 @@ class PermissionSettingHelper {
 			//right now fairly loosely coupled - although to entirely loosely coupled)
 			try {
 				byte pdroidCoreSetting = (Byte)row.getKey().invoke(privacySettings);
-				if (pdroidCoreSetting != PrivacySettings.REAL) return true;
 				switch (pdroidCoreSetting) {
 				case PrivacySettings.REAL:
+					if (!row.getValue().equals(Setting.OPTION_TEXT_ALLOW) &&
+						!row.getValue().equals(Setting.OPTION_TEXT_YES)) {
+						return true;
+					}
 					break;
 				case PrivacySettings.CUSTOM:
-					break;
+					return true;
 				case PrivacySettings.RANDOM:
-					break;
+					return true;
 				case PrivacySettings.EMPTY:
-					break;
+					if (!row.getValue().equals(Setting.OPTION_TEXT_DENY) &&
+						!row.getValue().equals(Setting.OPTION_TEXT_NO)) {
+						return true;
+					}
 				}
 			} catch (IllegalArgumentException e) {
 				Log.d("PDroidAlternative","Illegal arguments when calling " + row.getKey().getName());
