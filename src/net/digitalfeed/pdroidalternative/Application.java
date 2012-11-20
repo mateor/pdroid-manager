@@ -63,13 +63,13 @@ public class Application {
 	//indicates whether this has a full data complement, or just the minimum data set
 	//private boolean isStub;
 	
-	private String packageName;
-	private String label;
-	private int versionCode;
-	private int appFlags;
-	private int statusFlags;
-	private int uid;
-	private Drawable icon;
+	private volatile String packageName;
+	private volatile String label;
+	private volatile int versionCode;
+	private volatile int appFlags;
+	private volatile int statusFlags;
+	private volatile int uid;
+	private volatile Drawable icon;
 	
 	//The value in permissions is only valid if the Application entry is not a stub
 	private String[] permissions;

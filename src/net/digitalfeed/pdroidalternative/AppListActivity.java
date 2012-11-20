@@ -299,19 +299,13 @@ public class AppListActivity extends Activity {
     			switch (item.getItemId()) {
     			case R.id.applist_popupmenu_set_trusted_values:
     				newTrustState = TrustState.TRUSTED;
-    				targetApp.setIsUntrusted(false); //set the app to being trusted in memory: will allow update of the listview
-        			targetApp.setHasSettings(true);
         			action = LONGPRESS_MENU_UPDATE_ALL_SETTINGS;
     				break;
     			case R.id.applist_popupmenu_set_untrusted_values:
     				newTrustState = TrustState.UNTRUSTED;
-    				targetApp.setIsUntrusted(true); //set the app to untrusted in memory: will allow update of the listview
-        			targetApp.setHasSettings(true);
         			action = LONGPRESS_MENU_UPDATE_ALL_SETTINGS;
     				break;
     			case R.id.applist_popupmenu_delete_settings:
-    				targetApp.setIsUntrusted(false); //set the app to untrusted in memory: will allow update of the listview
-        			targetApp.setHasSettings(false);
         			action = LONGPRESS_MENU_DELETE_SETTINGS;
         			break;
     			default:
@@ -321,21 +315,24 @@ public class AppListActivity extends Activity {
     			//display a modal progress dialog: this prevents the user doing anything to the interface
     			//while the actual update is taking place
     			progDialog = new ProgressDialog(context);
-    			progDialog.setMessage("Updating settings");
     			progDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 
-    			//TODO: actually create a clone of the app, pass that through to be updated, and THEN put that
-    			//back in the lists -> currently, there could be threading errors because the App object is not threadsafe.
     			switch (action) {
     			case LONGPRESS_MENU_UPDATE_ALL_SETTINGS:
 	    			//use an asynctask to actually update the settings, so it doesn't interfere with the UI thread
-	    			ApplicationUpdateAllSettingsTask updateAllSettingsTask = new ApplicationUpdateAllSettingsTask(context, newTrustState, new AppListUpdateAllSettingsCallback());
+        			progDialog.setMessage(context.getResources().getString(R.string.applist_dialogtext_updating_settings));
+        			progDialog.show();
+	    			ApplicationsUpdateAllSettingsTask updateAllSettingsTask = new ApplicationsUpdateAllSettingsTask(context, newTrustState, new AppListUpdateAllSettingsCallback());
 	    			updateAllSettingsTask.execute(targetApp);
 	    			break;
     			case LONGPRESS_MENU_DELETE_SETTINGS:
+    				progDialog.setMessage(context.getResources().getString(R.string.applist_dialogtext_deleting_settings));
+    				progDialog.show();
+    				targetApp.setIsUntrusted(false); //set the app to untrusted in memory
+        			targetApp.setHasSettings(false);
 	    			//use an asynctask to delete settings, so it doesn't interfere with the UI thread
     				//This task will need to be modified if it is to be usable on multiple applications - right now it only handles one
-	    			AppSettingsDeleteTask deleteSettingsTask = new AppSettingsDeleteTask(context, targetApp.getPackageName(), new AppListUpdateAllSettingsCallback());
+	    			ApplicationsDeleteSettingsTask deleteSettingsTask = new ApplicationsDeleteSettingsTask(context, new AppListUpdateAllSettingsCallback());
 	    			deleteSettingsTask.execute();
     			}
     			return true;
@@ -498,8 +495,9 @@ public class AppListActivity extends Activity {
      */
     private void rebuildApplicationList() {
         this.progDialog = new ProgressDialog(this);
-        this.progDialog.setMessage("Generating Application List");
+        this.progDialog.setMessage(context.getResources().getString(R.string.applist_dialogtext_generateapplist));
         this.progDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+        this.progDialog.show();
 
         // Start the AsyncTask to build the list of apps and write them to the database
     	ApplicationsDatabaseFillerTask appListGenerator = new ApplicationsDatabaseFillerTask(this, new AppListGeneratorCallback());

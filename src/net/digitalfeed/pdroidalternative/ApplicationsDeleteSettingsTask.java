@@ -26,40 +26,31 @@
  */
 package net.digitalfeed.pdroidalternative;
 
-import net.digitalfeed.pdroidalternative.PermissionSettingHelper.TrustState;
 import android.content.Context;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
-import android.privacy.PrivacySettings;
 import android.privacy.PrivacySettingsManager;
 
 /**
- * Updates all settings of a single application to match the trusted or 
- * untrusted states (depending on parameter passed to the constructor).
- * The 'untrusted' state is derived by reversing the 'trusted' state internally.
- * See the PermissionSettingHelper class for more details.
- * 
+ * Deletes privacy setting of one or more applications from the PDroid core
+ * and updates the database (and application objects) to match
  * 
  * @author smorgan
  *
  */
-public class ApplicationUpdateAllSettingsTask extends AsyncTask<Application, Void, Void> { 
+public class ApplicationsDeleteSettingsTask extends AsyncTask<Application, Void, Void> { 
 	
 	final IAsyncTaskCallback<Void> listener;
 	final Context context;
-	final TrustState newTrustState; 
 	
 	/**
 	 * Constructor
 	 * @param context Context used to obtain a database connection (beware threading problems!)
-	 * @param newTrustState  The new 'trust state' to change settings to
 	 * @param listener Listener implementing IAsyncTaskCallback to which the asyncTaskComplete call will be made
 	 */
 	
-	public ApplicationUpdateAllSettingsTask(Context context, TrustState newTrustState, IAsyncTaskCallback<Void> listener) {
+	public ApplicationsDeleteSettingsTask(Context context, IAsyncTaskCallback<Void> listener) {
 		this.context = context;
 		this.listener = listener;
-		this.newTrustState = newTrustState;
 	}
 	
 	@Override
@@ -70,43 +61,18 @@ public class ApplicationUpdateAllSettingsTask extends AsyncTask<Application, Voi
 	@Override
 	protected Void doInBackground(Application... inApps) {
 		if (inApps == null) {
-			throw new NullPointerException("No apps were provided to the AppListUpdateAllSettingsTask");
+			throw new NullPointerException("No apps were provided");
 		}
 		
-		//TODO: Update the application_status record with the new trusted/untrusted status when updating the privacy settings
-		DBInterface dbinterface = DBInterface.getInstance(context);
-		SQLiteDatabase db = dbinterface.getDBHelper().getWritableDatabase();
 		PrivacySettingsManager privacySettingsManager = (PrivacySettingsManager)context.getSystemService("privacy");
-		PrivacySettings privacySettings;
-		
-		PermissionSettingHelper helper = new PermissionSettingHelper();
-		for (Application app : inApps) {
-			privacySettings = privacySettingsManager.getSettings(app.getPackageName());
-			
-			//There are no existing privacy settings for this app - we need to create them
-			if (privacySettings == null) {
-				privacySettings = new PrivacySettings(null, app.getPackageName(), app.getUid());
-			}
-			
-			helper.setPrivacySettingsToTrustState(db, privacySettings, newTrustState);
-			privacySettingsManager.saveSettings(privacySettings);
+		DBInterface dbinterface = DBInterface.getInstance(context);
 
-/*			
+		for (Application app : inApps) {
+			privacySettingsManager.deleteSettings(app.getPackageName());
 			app.setHasSettings(true);
-			switch (newTrustState) {
-			case TRUSTED:
-				app.setIsUntrusted(false); //set the app to being trusted in memory
-				break;
-			case UNTRUSTED:
-				app.setIsUntrusted(true); //set the app to being trusted in memory
-				break;
-			default:
-				break;
-			}
-*/
+			app.setIsUntrusted(false); //An app with no settings is not untrusted
 			dbinterface.updateApplicationRecord(app);
 		}
-		//db.close();
 		return null;
 	}
 	

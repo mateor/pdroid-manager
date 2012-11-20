@@ -46,6 +46,10 @@
     
 	<string name="applist_setting_filter_spinner_all_option_title">All</string>
     
+	<string name="applist_dialogtext_updating_settings">Updating settings</string>
+	<string name="applist_dialogtext_deleting_settings">Deleting settings</string>
+	<string name="applist_dialogtext_generateapplist">Generating application list</string>
+	
     <string name="applist_popupmenu_set_untrusted_values">Deny all</string>
     <string name="applist_popupmenu_set_trusted_values">Allow all</string>
 	<string name="applist_popupmenu_set_default_values">Reset to default</string>

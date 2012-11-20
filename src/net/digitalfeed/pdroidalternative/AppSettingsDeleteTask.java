@@ -27,7 +27,6 @@
 package net.digitalfeed.pdroidalternative;
 
 import android.content.Context;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.privacy.PrivacySettingsManager;
 import android.util.Log;
