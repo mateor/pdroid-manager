@@ -243,7 +243,7 @@ public class Application {
 		this.packageName = packageName;
 	}
 	
-	public Application(String packageName, String label, int versionCode, int appFlags, int statusFlags, int uid, Drawable icon) {
+/*	public Application(String packageName, String label, int versionCode, int appFlags, int statusFlags, int uid, Drawable icon) {
 		//this.isStub = true;
 		this.packageName = packageName;
 		this.label = label;
@@ -252,7 +252,7 @@ public class Application {
 		this.statusFlags = statusFlags;
 		this.uid = uid;
 		this.icon = icon;
-	}	
+	}*/	
 	
 	public Application(String packageName, String label, int versionCode, int appFlags, int statusFlags, int uid, Drawable icon, String[] permissions) {
 		//this.isStub = false;
@@ -281,7 +281,7 @@ public class Application {
 	 */
 	public static Application fromPackageName(Context context, String packageName) {
 		Application app = null;
-		Log.d("PDroidAlternative", "Application.fromPackageName: Loading package from OS: " + packageName);
+		//Log.d("PDroidAlternative", "Application.fromPackageName: Loading package from OS: " + packageName);
 		try {
 			PackageManager pkgMgr = context.getPackageManager();
 			PackageInfo pkgInfo = pkgMgr.getPackageInfo(packageName, PackageManager.GET_PERMISSIONS);
@@ -308,7 +308,7 @@ public class Application {
 					pkgMgr.getApplicationIcon(appInfo.packageName),
 					pkgInfo.requestedPermissions
 					); 
-			Log.d("PDroidAlternative", "Application.fromPackageName: Object created from OS");
+			//Log.d("PDroidAlternative", "Application.fromPackageName: Object created from OS");
 
 		} catch (NameNotFoundException e) {
 			// TODO Auto-generated catch block
@@ -330,7 +330,7 @@ public class Application {
 		Application app = null;
 		SQLiteDatabase db = null;
 		Cursor cursor = null;
-		Log.d("PDroidAlternative", "Application.fromDatabase: Loading package: " + packageName);
+		//Log.d("PDroidAlternative", "Application.fromDatabase: Loading package: " + packageName);
 		try {
 			DBHelper dbHelper = DBInterface.getInstance(context).getDBHelper();
 			db = dbHelper.getReadableDatabase();
@@ -358,7 +358,7 @@ public class Application {
 		    			icon,
 		    			permissionsArray
 		    		);
-		    	Log.d("PDroidAlternative", "Application.fromDatabase: Loaded package from DB");
+		    	//Log.d("PDroidAlternative", "Application.fromDatabase: Loaded package from DB");
 			}
 		} finally {
 			if (cursor != null && !cursor.isClosed()) {

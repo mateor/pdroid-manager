@@ -293,7 +293,6 @@ public class AppDetailAdapter extends ArrayAdapter<AppSetting>{
 				break;
 			case R.id.option_custom:
 				if (currentSelectedId != Setting.OPTION_FLAG_CUSTOM) settingList[position].setSelectedOptionBit(Setting.OPTION_FLAG_CUSTOM);
-				Log.d("PDroidAlternative","Should be showing custom value box around now...");
 				showCustomValueBox(settingList[position]);
 				break;
 			case R.id.option_customlocation:

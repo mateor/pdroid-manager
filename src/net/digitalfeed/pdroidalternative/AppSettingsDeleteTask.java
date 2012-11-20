@@ -29,7 +29,6 @@ package net.digitalfeed.pdroidalternative;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.privacy.PrivacySettingsManager;
-import android.util.Log;
 
 
 /**
@@ -54,7 +53,6 @@ public class AppSettingsDeleteTask extends AsyncTask<Void, Void, Void> {
 	//TODO: Update the status flag in the DB for the application for which the Privacy settings are being deletede
 	@Override
 	protected Void doInBackground(Void... params) {
-		Log.d("PDroidAlternative","Running update of settings for " + packageName);
 		PrivacySettingsManager privacySettingsManager = (PrivacySettingsManager)context.getSystemService("privacy");
 		//TODO: check what happens if settings don't exist for the package
 		privacySettingsManager.deleteSettings(packageName);

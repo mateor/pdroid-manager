@@ -695,7 +695,6 @@ public class DBInterface {
 			XmlResourceParser xrp = resources.getXml(R.xml.pdroid_settings);
 			try {
 				db.beginTransaction();
-				Log.d("PDroidAlternative","Begin transaction");
 				InsertHelper settingInsertHelper = new InsertHelper(db, SettingTable.TABLE_NAME);
 				int [] settingTableColumnNumbers = new int[SettingTable.COLUMN_COUNT];
 				settingTableColumnNumbers[SettingTable.COLUMN_NUMBER_OFFSET_ID] = settingInsertHelper.getColumnIndex(SettingTable.COLUMN_NAME_ID);
@@ -832,7 +831,6 @@ public class DBInterface {
 				}
 				permissionInsertHelper.close();
 				
-				Log.d("PDroidAlternative","Set transaction successful");
 				db.setTransactionSuccessful();
 			} catch (XmlPullParserException e) {
 				Log.d("PDroidAlternative",e.getMessage());

@@ -69,7 +69,7 @@ public class ApplicationsDeleteSettingsTask extends AsyncTask<Application, Void,
 
 		for (Application app : inApps) {
 			privacySettingsManager.deleteSettings(app.getPackageName());
-			app.setHasSettings(true);
+			app.setHasSettings(false);
 			app.setIsUntrusted(false); //An app with no settings is not untrusted
 			dbinterface.updateApplicationRecord(app);
 		}

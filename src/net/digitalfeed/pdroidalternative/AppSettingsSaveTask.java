@@ -64,7 +64,6 @@ public class AppSettingsSaveTask extends AsyncTask<AppSetting, Integer, Void> {
 	protected Void doInBackground(AppSetting... appSettings) {
 		//TODO: Exception handling: null appSettings
 
-		Log.d("PDroidAlternative","Running update of settings for " + packageName);
 		PrivacySettingsManager privacySettingsManager = (PrivacySettingsManager)context.getSystemService("privacy");
 		PrivacySettings privacySettings = privacySettingsManager.getSettings(packageName);
 		
@@ -87,33 +86,26 @@ public class AppSettingsSaveTask extends AsyncTask<AppSetting, Integer, Void> {
 		}
 		
 		for (AppSetting appSetting : appSettings) {
-			Log.d("PDroidAlternative","Processing setting " + appSetting.getId());
 			try {
 				setMethod = privacySettingsClass.getMethod("set" + appSetting.getSettingFunctionName(), byte.class);
-				Log.d("PDroidAlternative","Get method: " + appSetting.getSettingFunctionName());
 				switch (appSetting.getSelectedOptionBit()) {
 				case Setting.OPTION_FLAG_ALLOW:
 				case Setting.OPTION_FLAG_YES:
 					setMethod.invoke(privacySettings, PrivacySettings.REAL);
-					Log.d("PDroidAlternative","Invoked set" + appSetting.getSettingFunctionName() + " for REAL");
 					break;
 				case Setting.OPTION_FLAG_CUSTOM:
 				case Setting.OPTION_FLAG_CUSTOMLOCATION:
 					setMethod.invoke(privacySettings, PrivacySettings.CUSTOM);
-					Log.d("PDroidAlternative","Invoked set" + appSetting.getSettingFunctionName() + " for CUSTOM");
 					for (SimpleImmutableEntry<String, String> settingValue : appSetting.getCustomValues()) {
 						setMethod = privacySettingsClass.getMethod("set" + appSetting.getValueFunctionNameStub() + settingValue.getKey(), String.class);
 						setMethod.invoke(privacySettings, settingValue.getValue());
-						Log.d("PDroidAlternative","Invoked set" + appSetting.getValueFunctionNameStub() + settingValue.getKey());
 					}
 					break;				
 				case Setting.OPTION_FLAG_DENY:
 				case Setting.OPTION_FLAG_NO:
 					setMethod.invoke(privacySettings, PrivacySettings.EMPTY);
-					Log.d("PDroidAlternative","Invoked set" + appSetting.getSettingFunctionName() + " for DENY");
 					break;
 				case Setting.OPTION_FLAG_RANDOM:
-					Log.d("PDroidAlternative","Invoked set" + appSetting.getSettingFunctionName() + " for RANDOM");
 					setMethod.invoke(privacySettings, PrivacySettings.RANDOM);
 					break;
 				}

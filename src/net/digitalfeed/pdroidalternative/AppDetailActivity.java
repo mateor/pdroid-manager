@@ -59,6 +59,7 @@ public class AppDetailActivity extends Activity {
 	
 	private Application application;
 	private AppSetting [] settingList;
+	private boolean settingsAreLoaded = false;
 	private String packageName;
 	private ListView listView;
 	private Context context;
@@ -71,10 +72,7 @@ public class AppDetailActivity extends Activity {
         super.onCreate(savedInstanceState);
         context = this;
         
-        Log.d("PDroidAlternative", "onCreate of AppDetailActivity starting");
         setContentView(R.layout.activity_app_detail);
-        
-        
         Bundle bundle = getIntent().getExtras();
         packageName = bundle.getString(BUNDLE_PACKAGE_NAME);
         
@@ -99,16 +97,14 @@ public class AppDetailActivity extends Activity {
     	checkbox.setChecked(prefs.getDoLogForPackage(packageName));
     	checkbox = null;
     	prefs = null;
-    	
-        Log.d("PDroidAlternative", "onCreate of AppDetailActivity finished");
     }
 
     @Override
     public void onStart() {
     	super.onStart();
-    	Log.d("PDroidAlternative", "onStart of AppDetailActivity starting");
-
-        Log.d("PDroidAlternative", "onStart of AppDetailActivity finished");
+    	if (!settingsAreLoaded) {
+    		showDialog(null, getString(R.string.detail_dialog_loading_message));
+    	}
     }
     
     @Override
@@ -135,13 +131,15 @@ public class AppDetailActivity extends Activity {
                 finish();
                 return true;
             case R.id.detailDeleteButton:
+        		showDialog(getString(R.string.detail_dialog_saving_title),
+        				getString(R.string.detail_dialog_saving_message));
+
             	AppSettingsDeleteTask settingsDeleterTask = new AppSettingsDeleteTask(context, packageName, new AppDetailSettingActionTaskCompleteHandler());
             	settingsDeleterTask.execute();
             	break;
             case R.id.detailSaveButton:
-            	progDialog = new ProgressDialog(context);
-            	progDialog.setTitle(getString(R.string.detail_saving_dialog_title));
-            	progDialog.setMessage(getString(R.string.detail_saving_dialog_message));
+        		showDialog(getString(R.string.detail_dialog_saving_title),
+        				getString(R.string.detail_dialog_saving_message));
             	
             	Preferences prefs = new Preferences(context);
             	CheckBox checkbox = (CheckBox)findViewById(R.id.detailNotifyOnAccess);
@@ -171,12 +169,12 @@ public class AppDetailActivity extends Activity {
     {
 		@Override
 		public void asyncTaskComplete(Application inApplication) {
-			Log.d("PDroidAlternative", "AppDetailAppLoaderTask completed.");
-			
 			if (inApplication == null) {
 				Log.d("PDroidAlternative", "inApplication is null: the app could have disappeared between the intent being created and the task running?");
+				if (progDialog != null && progDialog.isShowing()) {
+					progDialog.dismiss();
+				}
 			} else {
-				Log.d("PDroidAlternative", "inApplication " + inApplication.getPackageName() + " retrieved");
 				setTitle(inApplication.getLabel());
 				application = inApplication;
 				AppSettingsLoadTask appDetailSettingsLoader = new AppSettingsLoadTask(context, new AppDetailSettingsLoaderTaskCompleteHandler());
@@ -189,13 +187,16 @@ public class AppDetailActivity extends Activity {
     {
 		@Override
 		public void asyncTaskComplete(LinkedList<AppSetting> inSettingList) {
-			Log.d("PDroidAlternative", "AppDetailSettingsLoaderTask completed.");
+			settingsAreLoaded = true;
+			if (progDialog != null && progDialog.isShowing()) {
+				progDialog.dismiss();
+			}
+			
 			if (inSettingList == null) {
 				Log.d("PDroidAlternative","AppDetailSettingsLoaderTask returned null");
 			} else if (inSettingList.size() == 0) {
 				Log.d("PDroidAlternative","AppDetailSettingsLoaderTask returned no AppSettings (size = 0)");
 			} else {
-				Log.d("PDroidAlternative","AppDetailSettingsLoaderTask returned " + Integer.toString(inSettingList.size()) + " settings. Initialising ListView.");
 				settingList = inSettingList.toArray(new AppSetting[inSettingList.size()]);
 				listView = (ListView)findViewById(R.id.settingList);
 				listView.setAdapter(new AppDetailAdapter(context, R.layout.setting_list_row_standard, settingList));
@@ -207,7 +208,6 @@ public class AppDetailActivity extends Activity {
     {	
 		@Override
 		public void asyncTaskComplete(Void param) {
-			Log.d("PDroidAlternative", "AppDetailSettingWriterTask completed.");
 			if (progDialog != null && progDialog.isShowing()) {
 				progDialog.dismiss();
 			}
@@ -230,4 +230,26 @@ public class AppDetailActivity extends Activity {
             finish();
 		}
     }
+    
+    /**
+     * Helper to show a non-cancellable spinner progress dialog
+     * 
+     * @param title  Title for the progress dialog (or null for none)
+     * @param message  Message for the progress dialog (or null for none)
+     */
+	private void showDialog(String title, String message) {
+		if (this.progDialog != null && this.progDialog.isShowing()) {
+			this.progDialog.dismiss();
+		}
+		this.progDialog = new ProgressDialog(context);
+		this.progDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+		if (title != null) {
+			progDialog.setTitle(title);
+		}
+		if (message != null) {
+			progDialog.setMessage(message);
+		}
+    	progDialog.setCancelable(false);
+    	progDialog.show();
+	}
 }

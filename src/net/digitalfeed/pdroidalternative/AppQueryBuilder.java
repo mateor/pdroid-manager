@@ -36,7 +36,6 @@ import net.digitalfeed.pdroidalternative.DBInterface.SettingTable;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.text.TextUtils;
-import android.util.Log;
 
 /**
  * Allows construction of a set of filters used for searching for applications.
@@ -215,7 +214,6 @@ public class AppQueryBuilder {
 		this.queryText = queryStringBuilder.toString();
 		
 		this.projectionIn = projectionIn.toArray(new String[projectionIn.size()]);
-		Log.d("PDroidAlternative", "Query text is: " + this.queryText);
 		return db.rawQuery(this.queryText, this.projectionIn);
 	}
 	

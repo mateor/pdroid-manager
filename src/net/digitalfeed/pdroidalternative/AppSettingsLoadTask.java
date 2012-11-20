@@ -43,7 +43,6 @@ import android.privacy.PrivacySettingsManager;
 import android.text.TextUtils;
 import android.util.Log;
 
-
 /**
  * Loads the settings list for a single application from the database.
  * @author smorgan
@@ -168,7 +167,7 @@ public class AppSettingsLoadTask extends AsyncTask<String, Integer, LinkedList<A
 						selectedOption = Setting.OPTION_FLAG_RANDOM;
 						break;
 					default:
-						Log.d("PDroidAlternative","What the hell are you doing here...?");
+						Log.d("PDroidAlternative","Unrecognised Privacy Setting type");
 					}
 				} catch (NoSuchMethodException e) {
 				   Log.d("PDroidAlternative","PrivacySettings object of privacy service is missing the expected method " + settingFunctionName);

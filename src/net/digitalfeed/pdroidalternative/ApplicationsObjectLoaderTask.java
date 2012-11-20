@@ -35,7 +35,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
-import android.util.Log;
+import android.text.TextUtils;
 
 /**
  * Returns a HashMap of package name and in-memory Application objects for all applications currently
@@ -86,6 +86,7 @@ public class ApplicationsObjectLoaderTask extends AsyncTask<Void, Integer, HashM
     	int statusFlagsColumn = cursor.getColumnIndex(DBInterface.ApplicationStatusTable.COLUMN_NAME_FLAGS);
     	int uidColumn = cursor.getColumnIndex(DBInterface.ApplicationTable.COLUMN_NAME_UID);
     	int iconColumn = cursor.getColumnIndex(DBInterface.ApplicationTable.COLUMN_NAME_ICON);
+    	int permissionsColumn = cursor.getColumnIndex(DBInterface.ApplicationTable.COLUMN_NAME_PERMISSIONS);
 
     	do {
     		String packageName = cursor.getString(packageNameColumn);
@@ -95,17 +96,19 @@ public class ApplicationsObjectLoaderTask extends AsyncTask<Void, Integer, HashM
     		int appFlags = cursor.getInt(appFlagsColumn);
     		int statusFlags = cursor.getInt(statusFlagsColumn);
     		byte[] iconBlob = cursor.getBlob(iconColumn);
-    		Log.d("PDroidAlternative","Application " + packageName);
+    		String permissions = cursor.getString(permissionsColumn);
+    		String [] permissionsArray = null;
+    		if (permissions != null) {
+    			permissionsArray = TextUtils.split(permissions, ",");
+    		}
 
     		Drawable icon = new BitmapDrawable(context.getResources(),BitmapFactory.decodeByteArray(iconBlob, 0, iconBlob.length));
-    		appList.put(packageName, new Application(packageName, label, versionCode, appFlags, statusFlags, uid, icon));
+    		appList.put(packageName, new Application(packageName, label, versionCode, appFlags, statusFlags, uid, icon, permissionsArray));
     	} while (cursor.moveToNext());
 
     	cursor.close();
     	//db.close();
-    	
-    	Log.d("PDroidAlternative","Got matching applications: " + appList.size());
-    	
+    	   	
     	return appList;
 	}
 	

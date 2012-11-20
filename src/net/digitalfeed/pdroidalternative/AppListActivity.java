@@ -107,8 +107,6 @@ public class AppListActivity extends Activity {
         super.onCreate(savedInstanceState);
         context = this;
         
-        Log.d("PDroidAlternative", "Getting preferences");
-        
         //get bridge to the application preferences
         prefs = new Preferences(this);
         
@@ -178,7 +176,6 @@ public class AppListActivity extends Activity {
     @Override
     public void onDestroy() {
     	super.onDestroy();
-    	Log.d("PDroidAlternative", "Destroying");
     }
     
     @Override
@@ -314,26 +311,21 @@ public class AppListActivity extends Activity {
 
     			//display a modal progress dialog: this prevents the user doing anything to the interface
     			//while the actual update is taking place
-    			progDialog = new ProgressDialog(context);
-    			progDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 
     			switch (action) {
     			case LONGPRESS_MENU_UPDATE_ALL_SETTINGS:
-	    			//use an asynctask to actually update the settings, so it doesn't interfere with the UI thread
-        			progDialog.setMessage(context.getResources().getString(R.string.applist_dialogtext_updating_settings));
-        			progDialog.show();
+    				showDialog(null, getString(R.string.applist_dialogtext_updating_settings));
+
+    				//use an asynctask to actually update the settings, so it doesn't interfere with the UI thread
 	    			ApplicationsUpdateAllSettingsTask updateAllSettingsTask = new ApplicationsUpdateAllSettingsTask(context, newTrustState, new AppListUpdateAllSettingsCallback());
 	    			updateAllSettingsTask.execute(targetApp);
 	    			break;
     			case LONGPRESS_MENU_DELETE_SETTINGS:
-    				progDialog.setMessage(context.getResources().getString(R.string.applist_dialogtext_deleting_settings));
-    				progDialog.show();
-    				targetApp.setIsUntrusted(false); //set the app to untrusted in memory
-        			targetApp.setHasSettings(false);
+    				showDialog(null, getString(R.string.applist_dialogtext_deleting_settings));
+
 	    			//use an asynctask to delete settings, so it doesn't interfere with the UI thread
-    				//This task will need to be modified if it is to be usable on multiple applications - right now it only handles one
 	    			ApplicationsDeleteSettingsTask deleteSettingsTask = new ApplicationsDeleteSettingsTask(context, new AppListUpdateAllSettingsCallback());
-	    			deleteSettingsTask.execute();
+	    			deleteSettingsTask.execute(targetApp);
     			}
     			return true;
     		}
@@ -354,7 +346,6 @@ public class AppListActivity extends Activity {
     			progDialog.dismiss();
     		}
     		appListAdapter.notifyDataSetChanged(); //notify adapter that the data has changed, so app will update the trusted state in the listview
-    		Log.d("PDroidAlternative","Updated all settings.");
     	}
     }
     
@@ -382,7 +373,6 @@ public class AppListActivity extends Activity {
      * representing specific applications in subsequent searches
      */
     private void loadApplicationObjects() {
-    	Log.d("PDroidAlternative","About to generate application objects");
     	ApplicationsObjectLoaderTask appListGeneratorTask = new ApplicationsObjectLoaderTask(this, new AppListAppGeneratorCallback());
     	appListGeneratorTask.execute();
     }
@@ -402,7 +392,6 @@ public class AppListActivity extends Activity {
     	 */
     	@Override
     	public void asyncTaskComplete(HashMap<String, Application> result) {
-    		Log.d("PDroidAlternative","Got result from app list load: length " + result.size());
     		applicationObjects = result;
     		loadApplicationList();
     	}
@@ -414,7 +403,6 @@ public class AppListActivity extends Activity {
      * which match the current filtering criteria set on the spinners 
      */
     private void loadApplicationList() {
-    	Log.d("PDroidAlternative","About to start load");
     	
     	//Create query builder to pass the the AsyncTask with the relevant filtering settings
     	AppQueryBuilder queryBuilder = new AppQueryBuilder();
@@ -437,7 +425,6 @@ public class AppListActivity extends Activity {
 
 		//Set up and execute the AsyncTask
 		ApplicationsDatabaseSearchTask appListLoaderTask = new ApplicationsDatabaseSearchTask(this, new AppListLoaderCallback());
-    	Log.d("PDroidAlternative","Created the task");
     	appListLoaderTask.execute(queryBuilder);
     }
     
@@ -457,8 +444,6 @@ public class AppListActivity extends Activity {
     	@Override
     	public void asyncTaskComplete(List<String> result) {
     		if (result != null) {
-	    		Log.d("PDroidAlternative","Got result from app list load: length " + result.size());
-	    		
 	    		//Clear the current list of applications
 	    		if (appList == null) {
 	    			appList = new ArrayList<Application>(result.size()); //if the appList is null, initialise it to be the right size
@@ -494,10 +479,7 @@ public class AppListActivity extends Activity {
      * Commence the regeneration of the application list held in the database from the OS
      */
     private void rebuildApplicationList() {
-        this.progDialog = new ProgressDialog(this);
-        this.progDialog.setMessage(context.getResources().getString(R.string.applist_dialogtext_generateapplist));
-        this.progDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
-        this.progDialog.show();
+    	showDialog(null, getString(R.string.applist_dialogtext_generateapplist), ProgressDialog.STYLE_HORIZONTAL);
 
         // Start the AsyncTask to build the list of apps and write them to the database
     	ApplicationsDatabaseFillerTask appListGenerator = new ApplicationsDatabaseFillerTask(this, new AppListGeneratorCallback());
@@ -588,8 +570,6 @@ public class AppListActivity extends Activity {
 		@Override
 		public void onItemSelected(AdapterView<?> parent, View view, int itemPosition,
 				long id) {
-			Log.d("PDroidAlternative","Group selected: " + settingGroups.get(itemPosition));
-			
 			if (readyForInput) {        		
 				currentSettingGroup = settingGroups.get(itemPosition);
 				loadApplicationList();
@@ -601,4 +581,32 @@ public class AppListActivity extends Activity {
 			// TODO Auto-generated method stub
 		}
     };
+    
+    
+    /**
+     * Helper to show a non-cancellable spinner progress dialog
+     * 
+     * @param title  Title for the progress dialog (or null for none)
+     * @param message  Message for the progress dialog (or null for none)
+     * @param type  ProgressDialog.x for the type of dialog to be displayed
+     */
+	private void showDialog(String title, String message, int type) {
+		if (this.progDialog != null && this.progDialog.isShowing()) {
+			this.progDialog.dismiss();
+		}
+		this.progDialog = new ProgressDialog(context);
+		this.progDialog.setProgressStyle(type);
+		if (title != null) {
+			progDialog.setTitle(title);
+		}
+		if (message != null) {
+			progDialog.setMessage(message);
+		}
+    	progDialog.setCancelable(false);
+    	progDialog.show();
+	}
+	
+	private void showDialog(String title, String message) {
+		showDialog(title, message, ProgressDialog.STYLE_SPINNER);
+	}
 }

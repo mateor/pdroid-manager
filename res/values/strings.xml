@@ -55,9 +55,11 @@
 	<string name="applist_popupmenu_set_default_values">Reset to default</string>
 	<string name="applist_popupmenu_delete_settings">Delete settings</string>
 	
-    <string name="detail_saving_dialog_title">Please wait</string>
-    <string name="detail_saving_dialog_message">Saving&#8230;</string>
-    <string name="detail_actionbar_savebutton_title">Save</string>
+    <string name="detail_dialog_saving_title">Please wait</string>
+    <string name="detail_dialog_saving_message">Updating&#8230;</string>
+    <string name="detail_dialog_loading_message">Loading settings</string>
+    
+    <string name="detail_actionbar_savebutton_title">Save settings</string>
     <string name="detail_actionbar_close_title">Close without saving</string>
     <string name="detail_actionbar_delete_title">Delete settings</string>
     
