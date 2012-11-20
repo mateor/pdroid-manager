@@ -83,11 +83,14 @@ class PermissionSettingHelper {
 
 	
 	/**
-	 * An annoying function to fish through all the settings in a 'PrivacySettings' object to check if it is 'trusted' or 'untrusted'.
-	 * It would be much more helpful if there were functions in the core of PDroid for this (and I'll probably add
-	 * them at some point).
+	 * Calls the 'setting function' on a PrivacyObject for each known setting (using reflection)
+	 * and compares the result against the 'trusted' state for that setting.
+	 * The individual functions of the PrivacySettings object are cached for re-use
+	 * to optimise the checking of large numbers of privacySettings objects
+	 * (e.g. when generating the application list in the first place).
+	 *    
 	 * @param db SQLite database to use - this will *not* be closed at the end
-	 * @param privacySettings - a privacySettings object for the app to check
+	 * @param privacySettings - privacySettings object to check
 	 * @return
 	 */
 	//TODO: There is a bug when all settings are updated to 'trusted', such that the trust detection identifies the app as 'untrusted'.
@@ -134,7 +137,8 @@ class PermissionSettingHelper {
 		for (SimpleImmutableEntry<Method, String> row : this.permissionReadMethods) {
 			//Reflection may not be the best way of doing this, but otherwise this is going to be a great
 			//big select statement, which ties us more closely to the specific set of options (which are
-			//right now fairly loosely coupled - although to entirely loosely coupled)
+			//right now fairly loosely coupled)
+			//The result is short-circuted (i.e. a 'true' is returned when the first untrusted setting is encountered)
 			try {
 				byte pdroidCoreSetting = (Byte)row.getKey().invoke(privacySettings);
 				switch (pdroidCoreSetting) {
