@@ -30,6 +30,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.security.InvalidParameterException;
 import java.util.AbstractMap.SimpleImmutableEntry;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
@@ -47,19 +48,19 @@ import android.util.Log;
  * Loads the settings list for a single application from the database.
  * @author smorgan
  */
-public class AppSettingsLoadTask extends AsyncTask<String, Integer, LinkedList<AppSetting>> {
+public class AppSettingsLoadTask extends AsyncTask<String, Integer, List<AppSetting>> {
 	
-	IAsyncTaskCallback<LinkedList<AppSetting>> listener;
+	IAsyncTaskCallback<List<AppSetting>> listener;
 	
 	Context context;
 	
-	public AppSettingsLoadTask(Context context, IAsyncTaskCallback<LinkedList<AppSetting>> listener) {
+	public AppSettingsLoadTask(Context context, IAsyncTaskCallback<List<AppSetting>> listener) {
 		this.context = context;
 		this.listener = listener;
 	}
 		
 	@Override
-	protected LinkedList<AppSetting> doInBackground(String... selectPackageName) {
+	protected List<AppSetting> doInBackground(String... selectPackageName) {
 		if (selectPackageName == null || selectPackageName.length != 1) {
 			throw new InvalidParameterException("One and only one package name must be provided to the AppDetailSettingsLoader");
 		}
@@ -81,7 +82,7 @@ public class AppSettingsLoadTask extends AsyncTask<String, Integer, LinkedList<A
     	int trustedOptionColumn = cursor.getColumnIndex(DBInterface.SettingTable.COLUMN_NAME_TRUSTED_OPTION);
     	
 		cursor.moveToFirst();
-		LinkedList<AppSetting> settingSet = new LinkedList<AppSetting>();
+		List<AppSetting> settingSet = new ArrayList<AppSetting>(cursor.getCount());
 		
 		Method method;
 		
@@ -196,7 +197,7 @@ public class AppSettingsLoadTask extends AsyncTask<String, Integer, LinkedList<A
 	}
 	
 	@Override
-	protected void onPostExecute(LinkedList<AppSetting> result) {
+	protected void onPostExecute(List<AppSetting> result) {
 		super.onPostExecute(result);
 		listener.asyncTaskComplete(result);
 	}

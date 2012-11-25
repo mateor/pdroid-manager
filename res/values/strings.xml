@@ -68,6 +68,9 @@
     <string name="detail_notifyonaccess_text">Notify on access</string>
     <string name="detail_logonaccess_text">Log access</string>
     
+	<string name="help_dialog_OKtext">OK</string>
+	<string name="button_help_text">Help</string>
+    
     <string name="notification_toast_text1">access to</string>
     <string name="notification_toast_text2">was</string>
     <string name="notification_toast_image_content_description">Icon indicator of event type</string>

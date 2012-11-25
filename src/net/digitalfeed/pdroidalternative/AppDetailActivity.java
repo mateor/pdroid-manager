@@ -26,18 +26,24 @@
  */
 package net.digitalfeed.pdroidalternative;
 
-import java.util.LinkedList;
+import java.util.List;
 
 import android.os.Bundle;
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.CheckBox;
 import android.widget.ListView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.AdapterView.OnItemLongClickListener;
 
 /**
  * Activity to display the interface for changing the settings of a single
@@ -58,7 +64,7 @@ public class AppDetailActivity extends Activity {
 	public static final String BUNDLE_IN_APP = "inApp";
 	
 	private Application application;
-	private AppSetting [] settingList;
+	private List<AppSetting> settingList;
 	private boolean settingsAreLoaded = false;
 	private String packageName;
 	private ListView listView;
@@ -150,7 +156,7 @@ public class AppDetailActivity extends Activity {
             	prefs.setDoLogForPackage(packageName, checkbox.isChecked());
             	checkbox = null;
             	
-            	AppSetting [] toAsyncTask = this.settingList;
+            	AppSetting [] toAsyncTask = this.settingList.toArray(new AppSetting [this.settingList.size()]);
             	this.settingList = null;
             	AppSettingsSaveTask settingsWriterTask = new AppSettingsSaveTask(context, packageName, application.getUid(), setNotifyTo, new AppDetailSettingActionTaskCompleteHandler());
             	settingsWriterTask.execute(toAsyncTask);
@@ -183,10 +189,10 @@ public class AppDetailActivity extends Activity {
 		}
     }
     
-    class AppDetailSettingsLoaderTaskCompleteHandler implements IAsyncTaskCallback<LinkedList<AppSetting>>
+    class AppDetailSettingsLoaderTaskCompleteHandler implements IAsyncTaskCallback<List<AppSetting>>
     {
 		@Override
-		public void asyncTaskComplete(LinkedList<AppSetting> inSettingList) {
+		public void asyncTaskComplete(List<AppSetting> inSettingList) {
 			settingsAreLoaded = true;
 			if (progDialog != null && progDialog.isShowing()) {
 				progDialog.dismiss();
@@ -197,7 +203,7 @@ public class AppDetailActivity extends Activity {
 			} else if (inSettingList.size() == 0) {
 				Log.d("PDroidAlternative","AppDetailSettingsLoaderTask returned no AppSettings (size = 0)");
 			} else {
-				settingList = inSettingList.toArray(new AppSetting[inSettingList.size()]);
+				settingList = inSettingList;
 				listView = (ListView)findViewById(R.id.settingList);
 				listView.setAdapter(new AppDetailAdapter(context, R.layout.setting_list_row_standard, settingList));
 			}

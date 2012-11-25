@@ -34,13 +34,16 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.res.Resources;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 import android.widget.RadioGroup.OnCheckedChangeListener;
@@ -51,19 +54,22 @@ public class AppDetailAdapter extends ArrayAdapter<AppSetting>{
 	protected static final int VIEW_TYPE_LOCATION = 1;
 	protected static final int VIEW_TYPE_YESNO = 2;
 	
+	protected static final String SETTING_HELP_STRING_PREFIX = "SETTING_HELP_";
 	
 	private final Context context;
 	private final int standardResourceId;
-	private final AppSetting[] settingList;
+	private final List<AppSetting> settingList;
 	private OnCheckedChangeListener checkbuttonChangeListener;
+	private OnClickListener helpButtonClickListener;
 	
-	public AppDetailAdapter(Context context, int standardResourceId, AppSetting[] settingList) {
+	public AppDetailAdapter(Context context, int standardResourceId, List<AppSetting> settingList) {
 		super(context, standardResourceId, settingList);
 		
 		this.context = context;
 		this.standardResourceId = standardResourceId;
 		this.settingList = settingList;
 		this.checkbuttonChangeListener = new CheckbuttonChangeListener();
+		this.helpButtonClickListener = new HelpButtonClickListener();
 	}
 	
 	@Override
@@ -88,7 +94,7 @@ public class AppDetailAdapter extends ArrayAdapter<AppSetting>{
 			holder = new SettingHolder();	
 			holder.settingName = (TextView)row.findViewById(R.id.option_title);
 			holder.radioGroup = (RadioGroup)row.findViewById(R.id.setting_choice);
-			
+			holder.helpButton = (ImageButton)row.findViewById(R.id.help_button);
 			holder.allowOption = row.findViewById(R.id.option_allow);
 			holder.yesOption = row.findViewById(R.id.option_yes);
 			holder.customOption = row.findViewById(R.id.option_custom);
@@ -105,8 +111,9 @@ public class AppDetailAdapter extends ArrayAdapter<AppSetting>{
 		//I am not entirely comfortable with always resetting this tag, but I'm not sure creating a class
 		//to hold stuff in there and updating it would be better
 		holder.radioGroup.setTag(Integer.valueOf(position));
+		holder.helpButton.setTag(Integer.valueOf(position));
 		holder.radioGroup.setOnCheckedChangeListener(null);
-		AppSetting setting = settingList[position];
+		AppSetting setting = settingList.get(position);
 		holder.settingName.setText(setting.getTitle());
 		switch (setting.getSelectedOptionBit()){
 		case Setting.OPTION_FLAG_ALLOW:
@@ -173,12 +180,14 @@ public class AppDetailAdapter extends ArrayAdapter<AppSetting>{
 		}
 		 
 		holder.radioGroup.setOnCheckedChangeListener(this.checkbuttonChangeListener);
+		holder.helpButton.setOnClickListener(this.helpButtonClickListener);
 		return row;
 	}
 
 	static class SettingHolder
 	{
 		TextView settingName;
+		ImageButton helpButton;
 		RadioGroup radioGroup;
 		View allowOption;
 		View yesOption;
@@ -283,32 +292,64 @@ public class AppDetailAdapter extends ArrayAdapter<AppSetting>{
 		@Override
 		public void onCheckedChanged(RadioGroup group, int checkedId) {
 			int position = (Integer)group.getTag();
-			int currentSelectedId = settingList[position].getSelectedOptionBit();
+			AppSetting setting = settingList.get(position);
+			int currentSelectedId = setting.getSelectedOptionBit();
 			switch (checkedId){
 			case R.id.option_allow:
-				if (currentSelectedId != Setting.OPTION_FLAG_ALLOW) settingList[position].setSelectedOptionBit(Setting.OPTION_FLAG_ALLOW);
+				if (currentSelectedId != Setting.OPTION_FLAG_ALLOW) setting.setSelectedOptionBit(Setting.OPTION_FLAG_ALLOW);
 				break;
 			case R.id.option_yes:
-				if (currentSelectedId != Setting.OPTION_FLAG_YES) settingList[position].setSelectedOptionBit(Setting.OPTION_FLAG_YES);
+				if (currentSelectedId != Setting.OPTION_FLAG_YES) setting.setSelectedOptionBit(Setting.OPTION_FLAG_YES);
 				break;
 			case R.id.option_custom:
-				if (currentSelectedId != Setting.OPTION_FLAG_CUSTOM) settingList[position].setSelectedOptionBit(Setting.OPTION_FLAG_CUSTOM);
-				showCustomValueBox(settingList[position]);
+				if (currentSelectedId != Setting.OPTION_FLAG_CUSTOM) setting.setSelectedOptionBit(Setting.OPTION_FLAG_CUSTOM);
+				showCustomValueBox(setting);
 				break;
 			case R.id.option_customlocation:
-				if (currentSelectedId != Setting.OPTION_FLAG_CUSTOMLOCATION) settingList[position].setSelectedOptionBit(Setting.OPTION_FLAG_CUSTOMLOCATION);
-				showCustomValueBox(settingList[position]);
+				if (currentSelectedId != Setting.OPTION_FLAG_CUSTOMLOCATION) setting.setSelectedOptionBit(Setting.OPTION_FLAG_CUSTOMLOCATION);
+				showCustomValueBox(setting);
 				break;
 			case R.id.option_random:
-				if (currentSelectedId != Setting.OPTION_FLAG_RANDOM) settingList[position].setSelectedOptionBit(Setting.OPTION_FLAG_RANDOM);
+				if (currentSelectedId != Setting.OPTION_FLAG_RANDOM) setting.setSelectedOptionBit(Setting.OPTION_FLAG_RANDOM);
 				break;
 			case R.id.option_deny:
-				if (currentSelectedId != Setting.OPTION_FLAG_DENY) settingList[position].setSelectedOptionBit(Setting.OPTION_FLAG_DENY);
+				if (currentSelectedId != Setting.OPTION_FLAG_DENY) setting.setSelectedOptionBit(Setting.OPTION_FLAG_DENY);
 				break;
 			case R.id.option_no:
-				if (currentSelectedId != Setting.OPTION_FLAG_NO) settingList[position].setSelectedOptionBit(Setting.OPTION_FLAG_NO);
+				if (currentSelectedId != Setting.OPTION_FLAG_NO) setting.setSelectedOptionBit(Setting.OPTION_FLAG_NO);
 				break;
 			}
 		}
 	};
+	
+	private class HelpButtonClickListener implements OnClickListener {
+
+		@Override
+		public void onClick(View v) {
+			int position = (Integer)v.getTag();
+			Setting setting = settingList.get(position);
+			showHelp(setting);
+		}
+		
+	}
+	
+	private void showHelp(Setting setting) {
+		AlertDialog.Builder builder = new AlertDialog.Builder(context);
+		builder.setTitle(setting.getTitle());
+		Resources res = context.getResources();
+		int helpStringId = res.getIdentifier(SETTING_HELP_STRING_PREFIX + setting.getId(), "string", context.getPackageName());
+		if (helpStringId != 0) {
+			builder.setMessage(res.getString(helpStringId));
+		} else {
+			builder.setMessage(setting.getId());
+		}
+		builder.setPositiveButton(R.string.help_dialog_OKtext, new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int id) {
+	               // User clicked OK button
+	           }
+	       });
+		AlertDialog dialog = builder.create();
+		dialog.show();
+	}
+
 }
