@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="access_notification_deviceID">Device ID</string>
+    <string name="access_notification_line1Number">Phone Number</string>
+    <string name="access_notification_locationGPS">GPS Location</string>
+    <string name="access_notification_locationNetwork">Network Location</string>
+    <string name="access_notification_networkInfoCurrent">Network Information</string>
+    <string name="access_notification_networkInfoSIM">Mobile Network Information</string>
+    <string name="access_notification_simSerial">SIM Serial</string>
+    <string name="access_notification_subscriberID">Subscriber ID</string>
+    <string name="access_notification_accountsList">Accounts List</string>
+    <string name="access_notification_authTokens">Account Credentials</string>
+    <string name="access_notification_outgoingCall">Outgoing Call Number</string>
+    <string name="access_notification_incomingCall">Incoming Call Number</string>
+    <string name="access_notification_contacts">Contacts</string>
+	<string name="access_notification_calendar">Calendar</string>
+	<string name="access_notification_mms">Read MMS</string>
+	<string name="access_notification_sms">Read SMS</string>
+    <string name="access_notification_mmsSms">Read MMS or SMS</string>
+	<string name="access_notification_callLog">Call Log</string>
+	<string name="access_notification_bookmarks">Browser Bookmarks &amp; History</string>
+	<string name="access_notification_systemLogs">System Logs</string>
+	<string name="access_notification_intentBootCompleted">Start on Boot</string>
+	<string name="access_notification_camera">Camera</string>
+	<string name="access_notification_recordAudio">Record Audio</string>
+	<string name="access_notification_SmsSend">Send SMS</string>
+	<string name="access_notification_phoneCall">Make Phone Call</string>
+	<string name="access_notification_android_id">Android ID</string>
+	<string name="access_notification_iccAccess">ICC Access</string>
+	<string name="access_notification_wifiInfo">Wifi Network Information</string>
+	<string name="access_notification_iptables"></string>
+	<string name="access_notification_switchconnectivity">Change Mobile Connectivity</string>
+	<string name="access_notification_sendMms">Send MMS</string>
+	<string name="access_notification_switchWifiState">Change Wifi Connectivity</string>
+</resources>

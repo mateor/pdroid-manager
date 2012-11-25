@@ -47,9 +47,9 @@ import android.os.Bundle;
 import android.privacy.PrivacySettings;
 import android.privacy.PrivacySettingsManager;
 
-public class NotificationHandler extends BroadcastReceiver {
+public class PrivacyNotificationHandler extends BroadcastReceiver {
 
-	public NotificationHandler() {
+	public PrivacyNotificationHandler() {
 		// TODO Auto-generated constructor stub
 	}
 
@@ -119,9 +119,20 @@ public class NotificationHandler extends BroadcastReceiver {
 		        	builder.setSpan(new ForegroundColorSpan(res.getColor(R.color.toast_text_highlight)), 0, packageLabel.length(), 0);
 		        	builder.append(" ").append(res.getString(R.string.notification_toast_text1)).append(" ");
 		        	startOffset = builder.length();
-		        	builder.append(dataType).append(" ").append(res.getString(R.string.notification_toast_text2)).append(" ");
-		        	builder.setSpan(new StyleSpan(Typeface.BOLD), startOffset, startOffset + dataType.length(), 0);
-		        	builder.setSpan(new ForegroundColorSpan(res.getColor(R.color.toast_text_highlight)), startOffset, startOffset + dataType.length(), 0);
+
+		        	//thanks to AndDev for how to get the identifier: http://www.anddev.org/viewtopic.php?p=17846
+		        	//Note that Google recommend against using getIdentifier for performance reasons, but here I don't see we have a choice
+		        	int notificationStringId = res.getIdentifier("access_notification_" + dataType, "string", context.getPackageName());
+		        	String dataTypeMessage;
+		        	if (notificationStringId != 0) {
+		        		dataTypeMessage = res.getString(notificationStringId);
+		        	} else {
+		        		dataTypeMessage = dataType;
+		        	}
+		        	
+		        	builder.append(dataTypeMessage).append(" ").append(res.getString(R.string.notification_toast_text2)).append(" ");
+		        	builder.setSpan(new StyleSpan(Typeface.BOLD), startOffset, startOffset + dataTypeMessage.length(), 0);
+		        	builder.setSpan(new ForegroundColorSpan(res.getColor(R.color.toast_text_highlight)), startOffset, startOffset + dataTypeMessage.length(), 0);
 		        	switch (accessMode) {
 		        	case PrivacySettings.REAL:
 		        		builder.append(res.getString(R.string.notification_toast_allowed_text));

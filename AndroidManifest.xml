@@ -36,7 +36,7 @@
         <!-- This sucks: there is no way to check the source of the notification (without
         modifying the core of PDroid to use a newly defined permission which can't be used
         by other apps -->
-        <receiver android:name=".intenthandler.NotificationHandler">
+        <receiver android:name=".intenthandler.PrivacyNotificationHandler">
 			<intent-filter>
                 <action android:name="com.privacy.pdroid.PRIVACY_NOTIFICATION" />
             </intent-filter>
