@@ -6,7 +6,7 @@ A replacement for the PDroid 2.0 application by CollegeDev (used to configure th
 NOTE: THIS SOFTWARE IS PRERELEASE - IT IS CURRENTLY KNOWN TO HAVE BUGS (which you are welcome to fix).
 Because of the signature protection used in other PDroid applications (e.g. PDroid 2.0 by CollegeDev), it is necessary to uninstall these other apps prior to installing PDroid Manager. I don't like it this way, but right now there is no straightforward and safe way to get around it.
 
-
+Unless explicitly noted in the file headers, the following license applies:
 Copyright (C) 2012 Simeon J. Morgan (smorgan@digitalfeed.net)
 This program is free software; you can redistribute it and/or modify it under
 the terms of the GNU General Public License as published by the Free Software
@@ -28,6 +28,8 @@ or pdroid-manager derived code.
 Modified or derivative versions of the pdroid-manager application must use an
 alternative name, rather than the name pdroid-manager.
 
+Contributions:
+Android.mk thanks to TamCore (https://github.com/TamCore)
 
 Permissions are linked to one or more 'settings', which determine which operations may be performed (e.g. what function calls will return what data)
 The current list of permissions, settings, and affected functions are:
