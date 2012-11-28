@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="access_notification_deviceID">Ger&auml;te ID</string>
+    <string name="access_notification_line1Number">Telefonnummer</string>
+    <string name="access_notification_locationGPS">GPS-Ortung</string>
+    <string name="access_notification_locationNetwork">Netzwerk-Orting</string>
+    <string name="access_notification_networkInfoCurrent">Netzwerk Information</string>
+    <string name="access_notification_networkInfoSIM">Mobile Network Information</string>
+    <string name="access_notification_simSerial">SIM Serial</string>
+    <string name="access_notification_subscriberID">Subscriber ID</string>
+    <string name="access_notification_accountsList">Accountliste</string>
+    <string name="access_notification_authTokens">Account Daten</string>
+    <string name="access_notification_outgoingCall">Ausgehende Anrufer Nummer</string>
+    <string name="access_notification_incomingCall">Eingehende Anrufer Nummer</string>
+    <string name="access_notification_contacts">Kontakte</string>
+	<string name="access_notification_calendar">Kalender</string>
+	<string name="access_notification_mms">MMS lesen</string>
+	<string name="access_notification_sms">SMS lesen</string>
+    <string name="access_notification_mmsSms">MMS oder SMS lesen</string>
+	<string name="access_notification_callLog">Anrufhistory</string>
+	<string name="access_notification_bookmarks">Browser Lesezeichen &amp; Verlauf</string>
+	<string name="access_notification_systemLogs">Systemprotokolle</string>
+	<string name="access_notification_intentBootCompleted">Bei Boot starten</string>
+	<string name="access_notification_camera">Kamera</string>
+	<string name="access_notification_recordAudio">Audio aufnehmen</string>
+	<string name="access_notification_SmsSend">SMS senden</string>
+	<string name="access_notification_phoneCall">Anruf initiieren</string>
+	<string name="access_notification_android_id">Android ID</string>
+	<string name="access_notification_iccAccess">ICC Access</string>
+	<string name="access_notification_wifiInfo">WLAN Netzwerk Informationen</string>
+	<string name="access_notification_iptables">IPTables</string>
+	<string name="access_notification_sendMms">MMS Senden</string>
+	<string name="access_notification_switchconnectivity">Mobiles Netzwerk &auml;ndern</string>
+	<string name="access_notification_switchWifiState">WLAN Status &auml;ndern</string>
+</resources>
