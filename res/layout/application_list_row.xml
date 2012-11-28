@@ -32,15 +32,8 @@
     android:layout_height="fill_parent"
 	android:paddingTop="1dp"
     android:orientation="horizontal" >
-    	
-	<ImageView
-	    android:id="@+id/icon"
-	    android:layout_width="36dp"
-	    android:layout_height="36dp"
-	    android:contentDescription="@string/app_list_app_icon_text"
-	    android:scaleType="fitCenter"
-	    android:gravity="center_vertical"
-	    android:layout_alignParentLeft="true" />
+    
+	<include layout="@layout/application_list_app_icon" />
 
      <RelativeLayout
         android:id="@+id/relLayout"
@@ -48,21 +41,21 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingLeft="2dp"
-        android:layout_toRightOf="@+id/icon" >
+        android:layout_toRightOf="@+id/application_list_app_icon" >
 	    <TextView
-	        android:id="@+id/appLabel"
+	        android:id="@+id/application_list_app_label"
 	        android:layout_width="wrap_content"
 	        android:layout_height="fill_parent"
 	        android:gravity="center_vertical"
 	        android:textSize="18sp"
 	        android:padding="1dp" />
 		<TextView
-		    android:id="@+id/appType"
+		    android:id="@+id/application_list_app_type"
 	        android:layout_width="wrap_content"
 	        android:layout_height="fill_parent"
 	        android:gravity="center_vertical"
 	        android:textSize="14sp"
-	        android:layout_below="@+id/appLabel" />
+	        android:layout_below="@+id/application_list_app_label" />
 		<TextView
 		    android:id="@+id/appSpacer"
 		    android:text=" | "
@@ -70,25 +63,19 @@
 	        android:layout_height="fill_parent"
 	        android:gravity="center_vertical"
 	        android:textSize="14sp"
-	        android:layout_below="@+id/appLabel"
-	        android:layout_toRightOf="@+id/appType" />
+	        android:layout_below="@+id/application_list_app_label"
+	        android:layout_toRightOf="@+id/application_list_app_type" />
 	    <TextView
-	        android:id="@+id/appStatus"
+	        android:id="@+id/application_list_app_status"
 	        android:layout_width="wrap_content"
 	        android:layout_height="fill_parent"
 	        android:lines="1"
 	        android:gravity="center_vertical"
 	        android:textSize="14sp"
-	        android:layout_below="@+id/appLabel"
+	        android:layout_below="@+id/application_list_app_label"
 	        android:layout_toRightOf="@+id/appSpacer" />
 	</RelativeLayout>
-	   	<ImageView
-	    android:id="@+id/hasNetIcon"
-	    android:layout_width="36dp"
-	    android:layout_height="36dp"
-	    android:contentDescription="@string/app_list_has_internet_indicator"
-	    android:scaleType="fitCenter"
-	    android:layout_alignParentRight="true"
-	    android:paddingRight="2dp"/>
+	
+	<include layout="@layout/application_list_net_icon" />
      
 </RelativeLayout>

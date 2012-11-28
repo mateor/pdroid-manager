@@ -33,9 +33,11 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
             <ListView
-                android:id="@+id/applicationList"
+                android:id="@+id/application_list"
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
                 android:fastScrollEnabled="true"
+                android:paddingLeft="2dp"
+                android:paddingRight="4dp"
                 />
 </LinearLayout>

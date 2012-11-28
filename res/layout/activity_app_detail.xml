@@ -34,25 +34,25 @@
 	android:orientation="vertical" >
 
 	    <CheckBox
-	        android:id="@+id/detailNotifyOnAccess"
+	        android:id="@+id/detail_notify_on_access"
 	        android:layout_width="match_parent"
 	        android:layout_height="wrap_content"
 	        android:layout_gravity="left"
 	        android:text="@string/detail_notifyonaccess_text"
 	        />
 		<CheckBox
-	        android:id="@+id/detailLogOnAccess"
+	        android:id="@+id/detail_log_on_access"
 	        android:layout_width="match_parent"
 	        android:layout_height="wrap_content"
 	        android:layout_gravity="left"
 	        android:text="@string/detail_logonaccess_text"
-	        android:layout_below="@+id/detailNotifyOnAccess"
+	        android:layout_below="@+id/detail_notify_on_access"
 	        />
 		<ListView
-                android:id="@+id/settingList"
+                android:id="@+id/detail_setting_list"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/detailLogOnAccess"
+                android:layout_below="@+id/detail_log_on_access"
                 />
     
 </RelativeLayout>

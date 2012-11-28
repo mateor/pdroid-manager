@@ -134,7 +134,7 @@ public class AppListActivity extends Activity {
     @Override
     public void onStart() {
     	super.onStart();
-        listView = (ListView)findViewById(R.id.applicationList);
+        listView = (ListView)findViewById(R.id.application_list);
         
         //Do we have an application list already? is it valid?
         if (appList == null || !prefs.getIsApplicationListCacheValid()) {

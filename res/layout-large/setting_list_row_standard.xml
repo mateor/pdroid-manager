@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 
+/**
+ * Copyright (C) 2012 Simeon J. Morgan (smorgan@digitalfeed.net)
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 3 of the License, or (at your option) any later version.
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License along with
+ * this program; if not, see <http://www.gnu.org/licenses>.
+ * The software has the following requirements (GNU GPL version 3 section 7):
+ * You must retain in pdroid-manager, any modifications or derivatives of
+ * pdroid-manager, or any code or components taken from pdroid-manager the author
+ * attribution included in the files.
+ * In pdroid-manager, any modifications or derivatives of pdroid-manager, or any
+ * application utilizing code or components taken from pdroid-manager must include
+ * in any display or listing of its creators, authors, contributors or developers
+ * the names or pseudonyms included in the author attributions of pdroid-manager
+ * or pdroid-manager derived code.
+ * Modified or derivative versions of the pdroid-manager application must use an
+ * alternative name, rather than the name pdroid-manager.
+ */
+ 
+ /**
+ * @author Simeon J. Morgan <smorgan@digitalfeed.net>
+ */
+-->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+    
+		<RadioGroup 
+		    android:id="@+id/setting_choice"
+		    android:layout_width="wrap_content"
+		    android:layout_height="fill_parent"
+		    android:layout_alignParentRight="true"
+		    android:orientation="horizontal"
+		    >
+		    
+		    <RadioButton
+		        android:id="@+id/option_allow"
+		        android:layout_width="40dp"
+		        android:layout_height="40dp"	        
+		        style="@style/SettingOptionAllow"
+		        />
+			<!--  I'd really like to be able to include
+			android:text="@string/setting_option_allow" 
+			and then hide the text but I haven't worked out how yet -->
+		    
+			<RadioButton
+			    android:id="@+id/option_yes"
+			    android:layout_width="40dp"
+			    android:layout_height="40dp"
+			    style="@style/SettingOptionAllow"
+			    />
+		    
+		    <RadioButton
+			    android:id="@+id/option_random"
+			    android:layout_width="40dp"
+			    android:layout_height="40dp"
+			    style="@style/SettingOptionRandom"
+			    />
+			<!--  I'd really like to be able to include
+			android:text="@string/setting_option_random" 
+			and then hide the text but I haven't worked out how yet -->
+			
+			<RadioButton
+			    android:id="@+id/option_custom"
+			    android:layout_width="40dp"
+			    android:layout_height="40dp"
+			    style="@style/SettingOptionCustom"
+			    />
+			<!--  I'd really like to be able to include
+			android:text="@string/setting_option_custom" 
+			and then hide the text but I haven't worked out how yet -->
+		    
+			<RadioButton
+			    android:id="@+id/option_customlocation"
+			    android:layout_width="40dp"
+			    android:layout_height="40dp"
+			    style="@style/SettingOptionCustom"
+			    />
+		    
+		    <RadioButton
+			    android:id="@+id/option_deny"
+			    android:layout_width="40dp"
+			    android:layout_height="40dp"
+			    style="@style/SettingOptionDeny"
+			    />
+			<!--  I'd really like to be able to include
+			android:text="@string/setting_option_deny" 
+			and then hide the text but I haven't worked out how yet -->
+
+			<RadioButton
+			    android:id="@+id/option_no"
+			    android:layout_width="40dp"
+			    android:layout_height="40dp"
+			    style="@style/SettingOptionNo"
+			    />
+
+		</RadioGroup>
+		
+	    <TextView
+	        android:id="@+id/option_title"
+	        android:layout_width="wrap_content"
+	        android:layout_height="fill_parent"
+	        android:gravity="center_vertical"
+	        android:textSize="16sp"
+	        android:layout_alignParentLeft="true" />
+	    <ImageButton 
+	        android:id="@+id/help_button"
+	        android:layout_width="40dp"
+	        android:layout_height="40dp"
+	        android:padding="0dp"
+	        android:layout_marginLeft="4dp"
+	        android:gravity="center_vertical"
+			android:layout_toRightOf="@+id/option_title"
+			android:src="@drawable/button_help"
+			android:contentDescription="@string/button_help_text"
+	        />
+</RelativeLayout>

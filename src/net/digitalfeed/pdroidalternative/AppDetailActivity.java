@@ -97,9 +97,9 @@ public class AppDetailActivity extends Activity {
         appDetailAppLoader.execute(packageName);
         
     	Preferences prefs = new Preferences(context);
-    	CheckBox checkbox = (CheckBox)findViewById(R.id.detailNotifyOnAccess);
+    	CheckBox checkbox = (CheckBox)findViewById(R.id.detail_notify_on_access);
     	checkbox.setChecked(prefs.getDoNotifyForPackage(packageName));
-    	checkbox = (CheckBox)findViewById(R.id.detailLogOnAccess);
+    	checkbox = (CheckBox)findViewById(R.id.detail_log_on_access);
     	checkbox.setChecked(prefs.getDoLogForPackage(packageName));
     	checkbox = null;
     	prefs = null;
@@ -148,10 +148,10 @@ public class AppDetailActivity extends Activity {
         				getString(R.string.detail_dialog_saving_message));
             	
             	Preferences prefs = new Preferences(context);
-            	CheckBox checkbox = (CheckBox)findViewById(R.id.detailNotifyOnAccess);
+            	CheckBox checkbox = (CheckBox)findViewById(R.id.detail_notify_on_access);
             	prefs.setDoNotifyForPackage(packageName, checkbox.isChecked());
             	boolean setNotifyTo = checkbox.isChecked();
-            	checkbox = (CheckBox)findViewById(R.id.detailLogOnAccess);
+            	checkbox = (CheckBox)findViewById(R.id.detail_log_on_access);
             	setNotifyTo |= checkbox.isChecked();
             	prefs.setDoLogForPackage(packageName, checkbox.isChecked());
             	checkbox = null;
@@ -204,7 +204,7 @@ public class AppDetailActivity extends Activity {
 				Log.d("PDroidAlternative","AppDetailSettingsLoaderTask returned no AppSettings (size = 0)");
 			} else {
 				settingList = inSettingList;
-				listView = (ListView)findViewById(R.id.settingList);
+				listView = (ListView)findViewById(R.id.detail_setting_list);
 				listView.setAdapter(new AppDetailAdapter(context, R.layout.setting_list_row_standard, settingList));
 			}
 		}
