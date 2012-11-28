@@ -5,8 +5,8 @@
         <item >Benutzer</item>
     </string-array>
     <string-array name="app_status_labels">
-        <item >Nicht vertrauensw&uuml;rdig</item>
-        <item >Vertrauensw&uuml;rdig</item>
+        <item >Nicht vertrauensw&#252;rdig</item>
+        <item >Vertrauensw&#252;rdig</item>
         <item >Keine Einstellungen</item>
     </string-array>
     <!-- Note that if you change the order of these items, you also need to change the 

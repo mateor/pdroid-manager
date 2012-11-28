@@ -29,8 +29,10 @@ Modified or derivative versions of the pdroid-manager application must use an
 alternative name, rather than the name pdroid-manager.  
   
 Contributions:   
-Android.mk thanks to TamCore (https://github.com/TamCore)  
-  
+TamCore (https://github.com/TamCore): German translation, Android.mk, formatting of the tables in this file
+wbedard: Help text in original English  
+ 
+
 Permissions are linked to one or more 'settings', which determine which operations may be performed (e.g. what function calls will return what data)  
 The current list of permissions, settings, and affected functions are:  
 <table>

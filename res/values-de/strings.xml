@@ -1,14 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Note for German translation characters:
+	&#252; = &uuml;
+	&#228; = &auml;
+	&#196; = &Auml;
+	&#246; = &ouml;
+	&#223; = &szlig;
+-->
+
 <resources>
     <string name="app_list_menu_search">Suchen</string>
     <string name="app_list_menu_refresh">App-Liste neu laden</string>
 
-    <string name="permission_label_writeprivacysettings">PDroid Einstellungen &auml;ndern</string>
-    <string name="permission_description_writeprivacysettings">Erlaubt die &Auml;nderung von mit Apps verbundenen PDroid Einstellungen</string>
+    <string name="permission_label_writeprivacysettings">PDroid Einstellungen &#228;ndern</string>
+    <string name="permission_description_writeprivacysettings">Erlaubt die &#196;nderung von mit Apps verbundenen PDroid Einstellungen</string>
     <string name="permission_label_readprivacysettings">PDroid Einstellungen lesen</string>
     <string name="permission_description_readprivacysettings">Erlaubt das Lesen von mit Apps verbundenen PDroid Einstellungen.</string>
     <string name="permission_label_manageprivacycontrollers">PDroid Verwaltungs Apps konfigurieren</string>
-    <string name="permission_description_manageprivacycontrollers">Erlaubt es zu konfigurieren, welche Apps PDRoid Einstellungen &auml;ndern k&ouml;nnen.</string>
+    <string name="permission_description_manageprivacycontrollers">Erlaubt es zu konfigurieren, welche Apps PDroid Einstellungen &#228;ndern k&#246;nnen.</string>
 
     <string name="title_activity_app_detail">App</string>
     <string name="app_list_app_icon_text">App Icon</string>
@@ -17,21 +25,21 @@
 	<string name="applist_setting_filter_spinner_all_option_title">Alle</string>
 
 	<string name="applist_dialogtext_updating_settings">Aktualisiere Einstellungen</string>
-	<string name="applist_dialogtext_deleting_settings">L&ouml;sche Einstellungen</string>
+	<string name="applist_dialogtext_deleting_settings">L&#246;sche Einstellungen</string>
 	<string name="applist_dialogtext_generateapplist">Generiere App-liste</string>
 
     <string name="applist_popupmenu_set_untrusted_values">Alle verweigern</string>
     <string name="applist_popupmenu_set_trusted_values">Alle erlauben</string>
-	<string name="applist_popupmenu_set_default_values">Auf Standard zur&uuml;cksetzen</string>
-	<string name="applist_popupmenu_delete_settings">Einstellungen l&ouml;schen</string>
+	<string name="applist_popupmenu_set_default_values">Auf Standard zur&#252;cksetzen</string>
+	<string name="applist_popupmenu_delete_settings">Einstellungen l&#246;schen</string>
 
     <string name="detail_dialog_saving_title">Bitte warten</string>
     <string name="detail_dialog_saving_message">Aktualisiere&#8230;</string>
     <string name="detail_dialog_loading_message">Einstellungen geladen</string>
 
     <string name="detail_actionbar_savebutton_title">Einstellungen speichern</string>
-    <string name="detail_actionbar_close_title">Schlie&szlig;en ohne speichern</string>
-    <string name="detail_actionbar_delete_title">Einstellungen l&ouml;schen</string>
+    <string name="detail_actionbar_close_title">Schlie&#223;en ohne speichern</string>
+    <string name="detail_actionbar_delete_title">Einstellungen l&#246;schen</string>
 
     <string name="detail_custom_input_OKtext">OK</string>
 
@@ -46,17 +54,17 @@
     <string name="notification_toast_image_content_description">Indikator des Event-Typs</string>
     <string name="notification_toast_allowed_text">erlaubt</string>
     <string name="notification_toast_denied_text">verweigert</string>
-    <string name="notification_toast_random_text">zuf&auml;llig</string>
+    <string name="notification_toast_random_text">zuf&#228;llig</string>
     <string name="notification_toast_custom_text">benutzerdefiniert</string>
 
 	<string name="notification_newinstall_title"> installiert</string>
-    <string name="notification_newinstall_text">Ber&uuml;hren um PDroid zu konfigurieren</string>
+    <string name="notification_newinstall_text">Ber&#252;hren um PDroid zu konfigurieren</string>
 
-    <string name="notification_update_title">hat ver&auml;nderte Berechtigungen</string>
-    <string name="notification_update_text">Ber&uuml;hren um PDroid zu konfigurieren</string>
+    <string name="notification_update_title">hat ver&#228;nderte Berechtigungen</string>
+    <string name="notification_update_text">Ber&#252;hren um PDroid zu konfigurieren</string>
 
     <string name="setting_option_allow">Erlauben</string>
-    <string name="setting_option_random">Zuf&auml;llig</string>
+    <string name="setting_option_random">Zuf&#228;llig</string>
     <string name="setting_option_custom">Benutzerdefiniert</string>
     <string name="setting_option_deny">Verweigern</string>
 </resources>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="access_notification_deviceID">Ger&auml;te ID</string>
+    <string name="access_notification_deviceID">Ger&#228;te ID</string>
     <string name="access_notification_line1Number">Telefonnummer</string>
     <string name="access_notification_locationGPS">GPS-Ortung</string>
     <string name="access_notification_locationNetwork">Netzwerk-Orting</string>
@@ -30,6 +30,6 @@
 	<string name="access_notification_wifiInfo">WLAN Netzwerk Informationen</string>
 	<string name="access_notification_iptables">IPTables</string>
 	<string name="access_notification_sendMms">MMS Senden</string>
-	<string name="access_notification_switchconnectivity">Mobiles Netzwerk &auml;ndern</string>
-	<string name="access_notification_switchWifiState">WLAN Status &auml;ndern</string>
+	<string name="access_notification_switchconnectivity">Mobiles Netzwerk &#228;ndern</string>
+	<string name="access_notification_switchWifiState">WLAN Status &#228;ndern</string>
 </resources>
