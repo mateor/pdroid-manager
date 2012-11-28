@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="app_type_labels">
+        <item >System</item>
+        <item >Benutzer</item>
+    </string-array>
+    <string-array name="app_status_labels">
+        <item >Nicht vertrauensw&uuml;rdig</item>
+        <item >Vertrauensw&uuml;rdig</item>
+        <item >Keine Einstellungen</item>
+    </string-array>
+    <!-- Note that if you change the order of these items, you also need to change the 
+    values in AppListActivity to match -->
+    <string-array name="app_type_selection_options">
+        <item>Benutzer</item>
+        <item>System</item>
+        <item>Alle</item>
+    </string-array>
+</resources>
