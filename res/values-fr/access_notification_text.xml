@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="access_notification_deviceID">Identifiant de l&apos;&#233;quipement</string>
+	<string name="access_notification_line1Number">Num&#233;ro de t&#233;l&#233;phone</string>
+	<string name="access_notification_locationGPS">Localisation GPS</string>
+	<string name="access_notification_locationNetwork">Localisation r&#233;seau</string>
+	<string name="access_notification_networkInfoCurrent">Information r&#233;seau</string>
+	<string name="access_notification_networkInfoSIM">Information r&#233;seau mobile</string>
+	<string name="access_notification_simSerial">Num&#233;ro de s&#233;rie SIM</string>
+	<string name="access_notification_subscriberID">Identifiant d&apos;abonn&#233;</string>
+	<string name="access_notification_accountsList">Liste des comptes</string>
+	<string name="access_notification_authTokens">Authentification directe</string>
+	<string name="access_notification_outgoingCall">Numéro d'appel sortant</string>
+	<string name="access_notification_incomingCall">Numéro d'appel entrant</string>
+	<string name="access_notification_contacts">Contacts</string>
+	<string name="access_notification_calendar">Calendier</string>
+	<string name="access_notification_mms">Lire les MMS</string>
+	<string name="access_notification_sms">Lire les SMS</string>
+	<string name="access_notification_mmsSms">Lire les MMS ou les SMS</string>
+	<string name="access_notification_callLog">Historique des appels</string>
+	<string name="access_notification_bookmarks">Historique et favoris WEB</string>
+	<string name="access_notification_systemLogs">Traces syst&#232;me</string>
+	<string name="access_notification_intentBootCompleted">Ex&#233;cution au d&#233;marrage</string>
+	<string name="access_notification_camera">Appareil photo</string>
+	<string name="access_notification_recordAudio">Record Audio</string>
+	<string name="access_notification_SmsSend">Evoyer des SMS</string>
+	<string name="access_notification_phoneCall">Passer un appel voix</string>
+	<string name="access_notification_android_id">Identifiant Android</string>
+	<string name="access_notification_iccAccess">Accès ICC</string>
+	<string name="access_notification_wifiInfo">Information r&#233;seau Wifi </string>
+	<string name="access_notification_iptables"></string>
+	<string name="access_notification_switchconnectivity">Changer le type de connexion data mobile</string>
+	<string name="access_notification_sendMms">Envoyer des MMS</string>
+	<string name="access_notification_switchWifiState">Changer la connectivit&#233; Wifi</string>
+</resources>
