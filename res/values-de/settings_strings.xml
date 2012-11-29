@@ -23,7 +23,7 @@
     <string name="SETTING_LABEL_ALLOW_READ_ACCOUNTS_LIST">Benutzerkonten</string>
     <string name="SETTING_HELP_ALLOW_READ_ACCOUNTS_LIST">Steuert, ob die App eine Liste der Benutzerkonten auf dem Ger&#228;t erstellen darf, einschlie&#223;lich die mit dem Benutzerkonto verbundenen ID (z.B. deine E-Mail Adresse, deine Facebook ID, etc).</string>
     <string name="SETTING_LABEL_ALLOW_READ_CONTACTS">Kontakte</string>
-    <string name="SETTING_HELP_ALLOW_READ_CONTACTS">Steuert dne Zugriff auf alle Details der Kontakte in deinem Adressbuch.</string>
+    <string name="SETTING_HELP_ALLOW_READ_CONTACTS">Steuert den Zugriff auf alle Details der Kontakte in deinem Adressbuch.</string>
     <string name="SETTING_LABEL_ALLOW_READ_CALL_LOG">Anrufliste</string>
     <string name="SETTING_HELP_ALLOW_READ_CALL_LOG">Steuert das Abrufen der Anrufliste.</string>
     <string name="SETTING_LABEL_ALLOW_READ_CALENDAR">Kalender</string>
