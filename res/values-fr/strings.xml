@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/**
+ * Copyright (C) 2012 Simeon J. Morgan (smorgan@digitalfeed.net)
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 3 of the License, or (at your option) any later version.
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License along with
+ * this program; if not, see <http://www.gnu.org/licenses>.
+ * The software has the following requirements (GNU GPL version 3 section 7):
+ * You must retain in pdroid-manager, any modifications or derivatives of
+ * pdroid-manager, or any code or components taken from pdroid-manager the author
+ * attribution included in the files.
+ * In pdroid-manager, any modifications or derivatives of pdroid-manager, or any
+ * application utilizing code or components taken from pdroid-manager must include
+ * in any display or listing of its creators, authors, contributors or developers
+ * the names or pseudonyms included in the author attributions of pdroid-manager
+ * or pdroid-manager derived code.
+ * Modified or derivative versions of the pdroid-manager application must use an
+ * alternative name, rather than the name pdroid-manager.
+ */
+ 
+ /**
+ * @author Simeon J. Morgan <smorgan@digitalfeed.net>
+ */
+-->
+<resources>
+    <string name="app_name">Gestionaire PDroid</string>
+    <string name="app_list_menu_search">Rechercher</string>
+    <string name="app_list_menu_refresh">Recharger la liste des applications</string>
+    <string name="title_activity_main">Gestionnaire PDroid</string>
+    
+    <string name="permission_label_writeprivacysettings">Modifier la configuration PDroid</string>
+    <string name="permission_description_writeprivacysettings">Autoriser la modification de la configuration PDroid associ&#233;e aux applications.</string>
+    <string name="permission_label_readprivacysettings">Lecture configuration PDroid </string>
+    <string name="permission_description_readprivacysettings">Autorise la lecture de la configuration PDroid associ&#233;e aux applications.</string>
+    <string name="permission_label_manageprivacycontrollers">Gestion configuration PDroid</string>
+    <string name="permission_description_manageprivacycontrollers">Permet de configuration l&apos;acc&#232;s &#224; la configuration PDroid par des applications.</string>
+    
+    <string name="title_activity_app_detail">Application</string>
+    <string name="app_list_app_icon_text">Ic&#244;nes d&apos;application</string>
+    <string name="app_list_has_internet_indicator">Indicateur d&apos;acc&#232;s Internet autoris&#233;</string>
+    
+	<string name="applist_setting_filter_spinner_all_option_title">Tous</string>
+    
+	<string name="applist_dialogtext_updating_settings">Enregistrer la configuration</string>
+	<string name="applist_dialogtext_deleting_settings">Supprimer la configuration</string>
+	<string name="applist_dialogtext_generateapplist">G&#233;n&#233;rer la liste des applications</string>
+	
+    <string name="applist_popupmenu_set_untrusted_values">Tout interdire</string>
+    <string name="applist_popupmenu_set_trusted_values">Tout autoriser</string>
+	<string name="applist_popupmenu_set_default_values">R&#233;initialiser</string>
+	<string name="applist_popupmenu_delete_settings">Supprimer la configuration</string>
+	
+    <string name="detail_dialog_saving_title">En cours...</string>
+    <string name="detail_dialog_saving_message">Mise &#224; jour</string>
+    <string name="detail_dialog_loading_message">Chargement</string>
+    
+    <string name="detail_actionbar_savebutton_title">Sauvegarder la configuration</string>
+    <string name="detail_actionbar_close_title">Fermer sans sauvegarder</string>
+    <string name="detail_actionbar_delete_title">Supprimer la configuration</string>
+    
+    <string name="detail_custom_input_OKtext">OK</string>
+    
+    <string name="detail_notifyonaccess_text">Notifier sur acc&#232;s</string>
+    <string name="detail_logonaccess_text">Traces d&apos;acc&#232;s</string>
+    
+	<string name="help_dialog_OKtext">OK</string>
+	<string name="button_help_text">Aide</string>
+    
+    <string name="notification_toast_text1">Acc&#232;s &#224;</string>
+    <string name="notification_toast_text2">a &#233;t&#233;</string>
+    <string name="notification_toast_image_content_description">Icon indicator of event type</string>
+    <string name="notification_toast_allowed_text">autoris&#233;</string>
+    <string name="notification_toast_denied_text">interdit</string>
+    <string name="notification_toast_random_text">al&#233;atoire</string>
+    <string name="notification_toast_custom_text">sp&#233;cifique</string>
+
+	<string name="notification_newinstall_title">est install&#233;</string>
+    <string name="notification_newinstall_text">Cliquer pour configurer les param&#232;tres PDroid</string>
+
+    <string name="notification_update_title">a modifi&#233; ses permissions</string>
+    <string name="notification_update_text">Cliquer pour configurer les param&#232;tres PDroid</string>
+    
+    <string name="setting_option_allow">autoris&#233;</string>
+    <string name="setting_option_random">al&#233;atoire</string>
+    <string name="setting_option_custom">sp&#233;cifique</string>
+    <string name="setting_option_deny">interdit</string>
+</resources>
