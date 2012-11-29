@@ -89,4 +89,6 @@
     <string name="setting_option_random">Random</string>
     <string name="setting_option_custom">Custom</string>
     <string name="setting_option_deny">Deny</string>
+
+    <string name="application_list_app_spacer" translatable="false"> | </string>
 </resources>
