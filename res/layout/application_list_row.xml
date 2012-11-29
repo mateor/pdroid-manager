@@ -58,7 +58,7 @@
 	        android:layout_below="@+id/application_list_app_label" />
 		<TextView
 		    android:id="@+id/appSpacer"
-		    android:text=" | "
+		    android:text="@string/application_list_app_spacer"
 	        android:layout_width="wrap_content"
 	        android:layout_height="fill_parent"
 	        android:gravity="center_vertical"
