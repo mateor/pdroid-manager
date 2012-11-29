@@ -30,11 +30,9 @@ import java.util.List;
 
 import android.os.Bundle;
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -43,11 +41,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.CheckBox;
 import android.widget.ListView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.AdapterView.OnItemLongClickListener;
 
 public class AppDetailFragment extends Fragment {
 		
@@ -94,6 +89,8 @@ public class AppDetailFragment extends Fragment {
 	        ApplicationLoadTask appDetailAppLoader = new ApplicationLoadTask(context, new AppDetailAppLoaderTaskCompleteHandler());
 	        appDetailAppLoader.execute(packageName);
         }
+        
+        setHasOptionsMenu(true);
     }
 
 	@Override
@@ -173,11 +170,13 @@ public class AppDetailFragment extends Fragment {
         return super.onOptionsItemSelected(item);
     }
     
+    
     @Override
     public void onCreateOptionsMenu (Menu menu, MenuInflater inflater) {
         inflater.inflate(R.menu.activity_app_detail, menu);
     }
 
+    
     /**
      * Triggers the load of details for the incoming application, totally ignoring
      * the state of the current application that may or may not have

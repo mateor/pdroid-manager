@@ -45,7 +45,7 @@ public class AppListActivity extends Activity implements AppListFragment.OnAppli
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         
-        setContentView(R.layout.frame_layout);
+        setContentView(R.layout.application_list_frame_layout);
 		AppDetailFragment detailFragment = (AppDetailFragment)
 				getFragmentManager().findFragmentById(R.id.application_detail_fragment);
 		if (detailFragment != null) {
@@ -53,14 +53,19 @@ public class AppListActivity extends Activity implements AppListFragment.OnAppli
 			ft.hide(detailFragment);
 			ft.commit();
 		}
-
     }
 	
-	
+	/**
+	 * Callback for when an app is selected in the Application List fragment.
+	 * If there is a 'detail fragment' in the layout, then the application
+	 * details will be loaded in that interface. Otherwise,
+	 * an intent is used to open the detail interface for the application
+	 * 
+	 * @param application  The application which was selected
+	 */
 	@Override
 	public void onApplicationSelected(Application application) {
 		//openDetailInterface(application);
-		
 		AppDetailFragment detailFragment = (AppDetailFragment)
 				getFragmentManager().findFragmentById(R.id.application_detail_fragment);
 
@@ -80,7 +85,7 @@ public class AppListActivity extends Activity implements AppListFragment.OnAppli
         }
 	}
 
-    
+	
     /**
      * Starts the 'detail' activity to view the details of the provided application object
      * @param application  Application for which the detail interface should be opened
