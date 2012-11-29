@@ -28,9 +28,10 @@ or pdroid-manager derived code.
 Modified or derivative versions of the pdroid-manager application must use an  
 alternative name, rather than the name pdroid-manager.  
   
-Contributions:   
+Contributions:
+patrickpr (https://github.com/patrickpr): French translation
 TamCore (https://github.com/TamCore): German translation, Android.mk, formatting of the tables in this file
-wbedard: Help text in original English  
+wbedard: Help text in original English
  
 
 Permissions are linked to one or more 'settings', which determine which operations may be performed (e.g. what function calls will return what data)  
