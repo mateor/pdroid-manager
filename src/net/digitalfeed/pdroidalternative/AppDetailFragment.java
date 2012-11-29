@@ -33,7 +33,6 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -59,6 +58,16 @@ public class AppDetailFragment extends Fragment {
 	
 	private ProgressDialog progDialog ;
 	
+	OnDetailActionListener callback;
+	
+	public interface OnDetailActionListener {
+		public void onDetailSave();
+		public void onDetailClose();
+		public void onDetailDelete();
+		public void onDetailUp();
+	}
+	
+	
 	@Override
 	public void onAttach (Activity activity) {
 		super.onAttach(activity);
@@ -76,6 +85,15 @@ public class AppDetailFragment extends Fragment {
 	        this.inApp = bundle.getBoolean(AppDetailActivity.BUNDLE_IN_APP, false);
         } else {
         	settingsAreLoaded = true;
+        }
+        
+        // Check the container activity implements the callback interface
+		// Thank you Google for the example code: https://developer.android.com/training/basics/fragments/communicating.html
+        try {
+            callback = (OnDetailActionListener) activity;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(activity.toString()
+                    + " must implement OnActionListener");
         }
 
 	}
@@ -128,24 +146,19 @@ public class AppDetailFragment extends Fragment {
             	//if we are in an app, we should just finish. Otherwise, the behaviour should
             	//be the same as pressing the 'home' button.
             	if (!inApp) {
-	            	//finish();
+            		callback.onDetailClose();
 	            	return true;
             	}
             case android.R.id.home:
                 // This is called when the Home (Up) button is pressed
                 // in the Action Bar.
-                Intent parentActivityIntent = new Intent(context, AppListActivity.class);
-                parentActivityIntent.addFlags(
-                        Intent.FLAG_ACTIVITY_CLEAR_TOP |
-                        Intent.FLAG_ACTIVITY_NEW_TASK); //Not sure if we need the ACTIVITY_NEW_TASK
-                startActivity(parentActivityIntent);
-                //finish();
+                callback.onDetailUp();
                 return true;
             case R.id.detailDeleteButton:
         		showDialog(getString(R.string.detail_dialog_saving_title),
         				getString(R.string.detail_dialog_saving_message));
 
-            	AppSettingsDeleteTask settingsDeleterTask = new AppSettingsDeleteTask(context, packageName, new AppDetailSettingActionTaskCompleteHandler());
+            	AppSettingsDeleteTask settingsDeleterTask = new AppSettingsDeleteTask(context, packageName, new DeleteCompleteHandler());
             	settingsDeleterTask.execute();
             	break;
             case R.id.detailSaveButton:
@@ -163,7 +176,7 @@ public class AppDetailFragment extends Fragment {
             	
             	AppSetting [] toAsyncTask = this.settingList.toArray(new AppSetting [this.settingList.size()]);
             	this.settingList = null;
-            	AppSettingsSaveTask settingsWriterTask = new AppSettingsSaveTask(context, packageName, application.getUid(), setNotifyTo, new AppDetailSettingActionTaskCompleteHandler());
+            	AppSettingsSaveTask settingsWriterTask = new AppSettingsSaveTask(context, packageName, application.getUid(), setNotifyTo, new SaveCompleteHandler());
             	settingsWriterTask.execute(toAsyncTask);
             	break;
         }
@@ -201,9 +214,7 @@ public class AppDetailFragment extends Fragment {
 		public void asyncTaskComplete(Application inApplication) {
 			if (inApplication == null) {
 				Log.d("PDroidAlternative", "inApplication is null: the app could have disappeared between the intent being created and the task running?");
-				if (progDialog != null && progDialog.isShowing()) {
-					progDialog.dismiss();
-				}
+				closeDialog();
 			} else {
 				//setTitle(inApplication.getLabel());
 				application = inApplication;
@@ -218,9 +229,7 @@ public class AppDetailFragment extends Fragment {
 		@Override
 		public void asyncTaskComplete(List<AppSetting> inSettingList) {
 			settingsAreLoaded = true;
-			if (progDialog != null && progDialog.isShowing()) {
-				progDialog.dismiss();
-			}
+			closeDialog();
 			
 			if (inSettingList == null) {
 				Log.d("PDroidAlternative","AppDetailSettingsLoaderTask returned null");
@@ -233,30 +242,21 @@ public class AppDetailFragment extends Fragment {
 		}
     }
     
-    class AppDetailSettingActionTaskCompleteHandler implements IAsyncTaskCallback<Void>
+    class DeleteCompleteHandler implements IAsyncTaskCallback<Void>
     {	
 		@Override
 		public void asyncTaskComplete(Void param) {
-			if (progDialog != null && progDialog.isShowing()) {
-				progDialog.dismiss();
-			}
-			
-			/*
-			 * TODO: add some means for the AppListActivity to update the database (or
-			 * better yet, do it here)
-			 */
-			
-			if (inApp) {
-				//We should return to the parent activity when finishing
-	            Intent parentActivityIntent = new Intent(context, AppListActivity.class);
-	            parentActivityIntent.addFlags(
-	                    Intent.FLAG_ACTIVITY_CLEAR_TOP |
-	                    Intent.FLAG_ACTIVITY_NEW_TASK); //Not sure if we need the ACTIVITY_NEW_TASK
-	            startActivity(parentActivityIntent);
-			}
-			
-			//All done - finish
-            //finish();
+			closeDialog();
+			callback.onDetailDelete();
+		}
+    }
+    
+    class SaveCompleteHandler implements IAsyncTaskCallback<Void>
+    {	
+		@Override
+		public void asyncTaskComplete(Void param) {
+			closeDialog();
+			callback.onDetailSave();
 		}
     }
     
@@ -267,9 +267,7 @@ public class AppDetailFragment extends Fragment {
      * @param message  Message for the progress dialog (or null for none)
      */
 	private void showDialog(String title, String message) {
-		if (this.progDialog != null && this.progDialog.isShowing()) {
-			this.progDialog.dismiss();
-		}
+		closeDialog();
 		this.progDialog = new ProgressDialog(context);
 		this.progDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 		if (title != null) {
@@ -280,5 +278,15 @@ public class AppDetailFragment extends Fragment {
 		}
     	progDialog.setCancelable(false);
     	progDialog.show();
+	}
+	
+	
+	/**
+	 * Helper to close a dialog if one is open
+	 */
+	private void closeDialog() {
+		if (progDialog != null && progDialog.isShowing()) {
+			progDialog.dismiss();
+		}
 	}
 }

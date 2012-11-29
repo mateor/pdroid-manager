@@ -39,21 +39,44 @@ import android.util.Log;
  * @author smorgan
  *
  */
-public class AppListActivity extends Activity implements AppListFragment.OnApplicationSelectedListener {
+public class AppListActivity extends Activity implements AppListFragment.OnApplicationSelectedListener, AppDetailFragment.OnDetailActionListener {
 
+	AppDetailFragment detailFragment;
+	
 	@Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         
         setContentView(R.layout.application_list_frame_layout);
-		AppDetailFragment detailFragment = (AppDetailFragment)
+		detailFragment = (AppDetailFragment)
 				getFragmentManager().findFragmentById(R.id.application_detail_fragment);
+		
 		if (detailFragment != null) {
 			FragmentTransaction ft = getFragmentManager().beginTransaction();
 			ft.hide(detailFragment);
 			ft.commit();
 		}
-    }
+	}
+		
+	@Override
+	public void onDetailUp() {
+		hideDetailInterface();
+	}
+	
+	@Override
+	public void onDetailSave() {
+		hideDetailInterface();
+	}
+	
+	@Override
+	public void onDetailClose() {
+		hideDetailInterface();
+	}
+	
+	@Override
+	public void onDetailDelete() {
+		hideDetailInterface();
+	}
 	
 	/**
 	 * Callback for when an app is selected in the Application List fragment.
@@ -65,26 +88,21 @@ public class AppListActivity extends Activity implements AppListFragment.OnAppli
 	 */
 	@Override
 	public void onApplicationSelected(Application application) {
-		//openDetailInterface(application);
-		AppDetailFragment detailFragment = (AppDetailFragment)
-				getFragmentManager().findFragmentById(R.id.application_detail_fragment);
 
-        if (detailFragment != null) {
+		if (detailFragment != null) {
             // If the detailFragment is available, running in dual-pane
-			FragmentTransaction ft = getFragmentManager().beginTransaction();
-			ft.show(detailFragment);
-			ft.commit();
-
-
         	Log.d("PDroidAlternative","Telling the detail fragment to load package " + application.getPackageName());
             // Call a method in the ArticleFragment to update its content
             detailFragment.loadApplicationDetail(application.getPackageName());
+        	
+			FragmentTransaction ft = getFragmentManager().beginTransaction();
+			ft.show(detailFragment);
+			ft.commit();
         } else {
         	//This is definitely not what Google recommend in https://developer.android.com/guide/components/fragments.html#CommunicatingWithActivity
         	openDetailInterface(application);
         }
 	}
-
 	
     /**
      * Starts the 'detail' activity to view the details of the provided application object
@@ -96,4 +114,13 @@ public class AppListActivity extends Activity implements AppListFragment.OnAppli
 		intent.putExtra(AppDetailActivity.BUNDLE_IN_APP, true);
 		startActivity(intent);
     }
+    
+    private void hideDetailInterface() {
+		if (detailFragment != null) {
+			FragmentTransaction ft = getFragmentManager().beginTransaction();
+			ft.hide(detailFragment);
+			ft.commit();
+		}
+    }
+
 }

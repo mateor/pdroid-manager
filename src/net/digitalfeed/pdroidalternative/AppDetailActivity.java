@@ -28,6 +28,7 @@ package net.digitalfeed.pdroidalternative;
 
 import android.os.Bundle;
 import android.app.Activity;
+import android.content.Intent;
 
 /**
  * Activity to display the interface for changing the settings of a single
@@ -42,10 +43,12 @@ import android.app.Activity;
  * @author smorgan
  *
  */
-public class AppDetailActivity extends Activity {
+public class AppDetailActivity extends Activity implements AppDetailFragment.OnDetailActionListener {
 
 	public static final String BUNDLE_PACKAGE_NAME = "packageName";
 	public static final String BUNDLE_IN_APP = "inApp";
+	
+	private boolean inApp = false;
 	
 	@Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,4 +56,41 @@ public class AppDetailActivity extends Activity {
         
         setContentView(R.layout.app_detail_frame_layout);
     }
+	
+	@Override
+	public void onDetailUp() {
+        Intent parentActivityIntent = new Intent(this, AppListActivity.class);
+        parentActivityIntent.addFlags(
+                Intent.FLAG_ACTIVITY_CLEAR_TOP |
+                Intent.FLAG_ACTIVITY_NEW_TASK); //Not sure if we need the ACTIVITY_NEW_TASK
+        startActivity(parentActivityIntent);
+        finish();
+	}
+	
+	@Override
+	public void onDetailSave() {
+		returnToAppList();
+	}
+	
+	@Override
+	public void onDetailClose() {
+		returnToAppList();
+	}
+	
+	@Override
+	public void onDetailDelete() {
+		returnToAppList();
+	}
+	
+	private void returnToAppList() {
+		if (inApp) {
+			//We should return to the parent activity when finishing
+            Intent parentActivityIntent = new Intent(this, AppListActivity.class);
+            parentActivityIntent.addFlags(
+                    Intent.FLAG_ACTIVITY_CLEAR_TOP |
+                    Intent.FLAG_ACTIVITY_NEW_TASK); //Not sure if we need the ACTIVITY_NEW_TASK
+            startActivity(parentActivityIntent);
+		}
+        finish();
+	}
 }
