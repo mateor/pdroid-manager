@@ -48,6 +48,8 @@ public class Preferences {
 	private static final String APP_LAST_NOTIFICATION_TIME_PREFIX = "appLastNotificationTime";
 	private static final String CURRENT_TOAST_COUNT = "currentToastCount";
 	private static final String LAST_TOAST_TIME = "lastToastTime";
+	private static final String LAST_RUN_LANGUAGE = "lastRunLanguage";
+	private static final String FORCED_LANGUAGE = "forcedLanguage"; //if present, then a 'preferred' language has been specified
 	private static final Object lock = new Object();
 	private SharedPreferences prefs;
 	
@@ -140,6 +142,45 @@ public class Preferences {
 		editor.remove(APP_LAST_NOTIFICATION_TIME_PREFIX + "-" + packageName + "-" + dataType);
 		editor.commit();
 	}
+	
+	public String getLastRunLanguage() {
+		return this.prefs.getString(LAST_RUN_LANGUAGE, "");
+	}
+	
+	public void setLastRunLanguage(String languageName) {
+		Editor editor = this.prefs.edit();
+		editor.putString(LAST_RUN_LANGUAGE, languageName);
+		editor.commit();
+	}
+
+	/**
+	 * Returns the language which has been set as preferred for the application,
+	 * if such a preference has been defined.
+	 * @return  Language name if a language is forced, otherwise null
+	 */
+	public String getForcedLanguage() {
+		return this.prefs.getString(FORCED_LANGUAGE, null);
+	}
+	
+	/**
+	 * Sets the language which should always be used
+	 * @param languageName
+	 */
+	public void setForcedLanguage(String languageName) {
+		Editor editor = this.prefs.edit();
+		editor.putString(FORCED_LANGUAGE, languageName);
+		editor.commit();
+	}
+	
+	/**
+	 * Clears the setting to always use a particular specified language
+	 */
+	public void clearForcedLanguage() {
+		Editor editor = this.prefs.edit();
+		editor.remove(LAST_RUN_LANGUAGE);
+		editor.commit();
+	}
+
 	
 	/**
 	 * This function is used for calculating the offset of the Toast, by checking 

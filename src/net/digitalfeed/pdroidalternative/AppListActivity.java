@@ -46,6 +46,8 @@ public class AppListActivity extends Activity implements AppListFragment.OnAppli
 	@Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        LanguageHelper.updateLanguageIfRequired(this);
         
         setContentView(R.layout.application_list_frame_layout);
 		//detailFragment = (AppDetailFragment)
