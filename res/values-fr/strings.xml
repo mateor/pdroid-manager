@@ -38,11 +38,11 @@
     <string name="permission_label_readprivacysettings">Lecture configuration PDroid </string>
     <string name="permission_description_readprivacysettings">Autorise la lecture de la configuration PDroid associ&#233;e aux applications.</string>
     <string name="permission_label_manageprivacycontrollers">Gestion configuration PDroid</string>
-    <string name="permission_description_manageprivacycontrollers">Permet de configuration l&apos;acc&#232;s &#224; la configuration PDroid par des applications.</string>
+    <string name="permission_description_manageprivacycontrollers">Permet de configuration l\'acc&#232;s &#224; la configuration PDroid par des applications.</string>
     
     <string name="title_activity_app_detail">Application</string>
-    <string name="app_list_app_icon_text">Ic&#244;nes d&apos;application</string>
-    <string name="app_list_has_internet_indicator">Indicateur d&apos;acc&#232;s Internet autoris&#233;</string>
+    <string name="app_list_app_icon_text">Ic&#244;nes d\'application</string>
+    <string name="app_list_has_internet_indicator">Indicateur d\'acc&#232;s Internet autoris&#233;</string>
     
 	<string name="applist_setting_filter_spinner_all_option_title">Tous</string>
     
@@ -55,7 +55,7 @@
 	<string name="applist_popupmenu_set_default_values">R&#233;initialiser</string>
 	<string name="applist_popupmenu_delete_settings">Supprimer la configuration</string>
 	
-    <string name="detail_dialog_saving_title">En cours...</string>
+    <string name="detail_dialog_saving_title">En cours&#8230;</string>
     <string name="detail_dialog_saving_message">Mise &#224; jour</string>
     <string name="detail_dialog_loading_message">Chargement</string>
     
@@ -66,7 +66,7 @@
     <string name="detail_custom_input_OKtext">OK</string>
     
     <string name="detail_notifyonaccess_text">Notifier sur acc&#232;s</string>
-    <string name="detail_logonaccess_text">Traces d&apos;acc&#232;s</string>
+    <string name="detail_logonaccess_text">Traces d\'acc&#232;s</string>
     
 	<string name="help_dialog_OKtext">OK</string>
 	<string name="button_help_text">Aide</string>
