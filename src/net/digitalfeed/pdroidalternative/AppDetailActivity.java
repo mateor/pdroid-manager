@@ -53,7 +53,23 @@ public class AppDetailActivity extends Activity implements AppDetailFragment.OnD
 	@Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        
+    
+        Bundle bundle = this.getIntent().getExtras();
+        //if we have a bundle, we can load the package. Otherwise, we do no such thing
+        if (bundle != null) {
+            /*
+	         * If this action has been called from an app listing, then the action bar should
+	         * have the 'up' functionality which returns to the app listing.
+	         */
+	        this.inApp = bundle.getBoolean(AppDetailActivity.BUNDLE_IN_APP, false);
+        }
+
+        if (inApp) {
+        	getActionBar().setDisplayHomeAsUpEnabled(true);
+        } else {
+        	getActionBar().setDisplayHomeAsUpEnabled(false);
+        }
+
         setContentView(R.layout.app_detail_frame_layout);
     }
 	

@@ -144,7 +144,7 @@ public class AppDetailFragment extends Fragment {
             	//I think that would probably be excessive...
 
             	//if we are in an app, we should just finish. Otherwise, the behaviour should
-            	//be the same as pressing the 'home' button.
+            	//be the same as pressing the 'back' button.
             	if (!inApp) {
             		callback.onDetailClose();
 	            	return true;

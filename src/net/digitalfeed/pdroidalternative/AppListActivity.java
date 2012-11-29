@@ -41,7 +41,7 @@ import android.util.Log;
  */
 public class AppListActivity extends Activity implements AppListFragment.OnApplicationSelectedListener, AppDetailFragment.OnDetailActionListener {
 
-	AppDetailFragment detailFragment;
+	AppDetailFragment detailFragment = null;
 	
 	@Override
     protected void onCreate(Bundle savedInstanceState) {
