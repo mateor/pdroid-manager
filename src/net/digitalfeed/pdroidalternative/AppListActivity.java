@@ -48,8 +48,8 @@ public class AppListActivity extends Activity implements AppListFragment.OnAppli
         super.onCreate(savedInstanceState);
         
         setContentView(R.layout.application_list_frame_layout);
-		detailFragment = (AppDetailFragment)
-				getFragmentManager().findFragmentById(R.id.application_detail_fragment);
+		//detailFragment = (AppDetailFragment)
+		//		getFragmentManager().findFragmentById(R.id.application_detail_fragment);
 		
 		if (detailFragment != null) {
 			FragmentTransaction ft = getFragmentManager().beginTransaction();
