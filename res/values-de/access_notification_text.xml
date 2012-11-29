@@ -3,10 +3,10 @@
     <string name="access_notification_deviceID">Ger&#228;te ID</string>
     <string name="access_notification_line1Number">Telefonnummer</string>
     <string name="access_notification_locationGPS">GPS-Ortung</string>
-    <string name="access_notification_locationNetwork">Netzwerk-Orting</string>
+    <string name="access_notification_locationNetwork">Netzwerk-Ortung</string>
     <string name="access_notification_networkInfoCurrent">Netzwerk Information</string>
-    <string name="access_notification_networkInfoSIM">Mobile Network Information</string>
-    <string name="access_notification_simSerial">SIM Serial</string>
+    <string name="access_notification_networkInfoSIM">Mobilnetzwerk Information</string>
+    <string name="access_notification_simSerial">SIM Seriennummer</string>
     <string name="access_notification_subscriberID">Subscriber ID</string>
     <string name="access_notification_accountsList">Accountliste</string>
     <string name="access_notification_authTokens">Account Daten</string>
@@ -26,7 +26,7 @@
 	<string name="access_notification_SmsSend">SMS senden</string>
 	<string name="access_notification_phoneCall">Anruf initiieren</string>
 	<string name="access_notification_android_id">Android ID</string>
-	<string name="access_notification_iccAccess">ICC Access</string>
+	<string name="access_notification_iccAccess">ICC Zugriff</string>
 	<string name="access_notification_wifiInfo">WLAN Netzwerk Informationen</string>
 	<string name="access_notification_iptables">IPTables</string>
 	<string name="access_notification_sendMms">MMS Senden</string>
