@@ -38,7 +38,7 @@ import java.util.AbstractMap.SimpleImmutableEntry;
  * @author smorgan
  *
  */
-public class AppSetting extends Setting {
+public class PDroidAppSetting extends PDroidSetting {
 	protected int selectedOptionBit;
 	//if there is only one value, then we use 'customValue' to hold it (this applies to almost all
 	//of the currently available settings).
@@ -47,26 +47,26 @@ public class AppSetting extends Setting {
 	protected List<SimpleImmutableEntry<String, String>> customValues;
 	protected String customValue;
 	
-	public AppSetting(String id, String name, String settingFunctionName, String valueFunctionNameStub, String title, String group,
+	public PDroidAppSetting(String id, String name, String settingFunctionName, String valueFunctionNameStub, String title, String group,
 			String groupTitle, String[] options, String trustedOption) {
 		super(id, name, settingFunctionName, valueFunctionNameStub, title, group, groupTitle, options, trustedOption);
 		this.selectedOptionBit = OPTION_FLAG_ALLOW; //if something isn't set, it is assumed to be 'allowed'
 	}
 	
-	public AppSetting(String id, String name, String settingFunctionName, String valueFunctionNameStub, String title, String group,
+	public PDroidAppSetting(String id, String name, String settingFunctionName, String valueFunctionNameStub, String title, String group,
 			String groupTitle, String[] options, String trustedOption, int selectedOptionBit) {
 		super(id, name, settingFunctionName, valueFunctionNameStub, title, group, groupTitle, options, trustedOption);
 		this.setSelectedOptionBit(selectedOptionBit);
 	}
 	
-	public AppSetting(String id, String name, String settingFunctionName, String valueFunctionNameStub, String title, String group,
+	public PDroidAppSetting(String id, String name, String settingFunctionName, String valueFunctionNameStub, String title, String group,
 			String groupTitle, String[] options, String trustedOption, int selectedOptionBit, List<SimpleImmutableEntry<String, String>> customValues) {
 		super(id, name, settingFunctionName, valueFunctionNameStub, title, group, groupTitle, options, trustedOption);
 		this.setSelectedOptionBit(selectedOptionBit);
 		this.customValues = customValues;
 	}
 	
-	public AppSetting(String id, String name, String settingFunctionName, String valueFunctionNameStub, String title, String group,
+	public PDroidAppSetting(String id, String name, String settingFunctionName, String valueFunctionNameStub, String title, String group,
 			String groupTitle, String[] options, String trustedOption, int selectedOptionBit, String customValue) {
 		super(id, name, settingFunctionName, valueFunctionNameStub, title, group, groupTitle, options, trustedOption);
 		this.setSelectedOptionBit(selectedOptionBit);

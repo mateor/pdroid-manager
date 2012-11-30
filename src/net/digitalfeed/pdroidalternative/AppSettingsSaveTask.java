@@ -42,7 +42,7 @@ import android.util.Log;
  * Loads the settings list for a single application from the database.
  * @author smorgan
  */
-public class AppSettingsSaveTask extends AsyncTask<AppSetting, Integer, Void> {
+public class AppSettingsSaveTask extends AsyncTask<PDroidAppSetting, Integer, Void> {
 	
 	final IAsyncTaskCallback<Void> listener;
 	final Context context;
@@ -61,7 +61,7 @@ public class AppSettingsSaveTask extends AsyncTask<AppSetting, Integer, Void> {
 	}
 		
 	@Override
-	protected Void doInBackground(AppSetting... appSettings) {
+	protected Void doInBackground(PDroidAppSetting... appSettings) {
 		//TODO: Exception handling: null appSettings
 
 		PrivacySettingsManager privacySettingsManager = (PrivacySettingsManager)context.getSystemService("privacy");
@@ -85,27 +85,27 @@ public class AppSettingsSaveTask extends AsyncTask<AppSetting, Integer, Void> {
 			privacySettings.setNotificationSetting(PrivacySettings.SETTING_NOTIFY_OFF);
 		}
 		
-		for (AppSetting appSetting : appSettings) {
+		for (PDroidAppSetting appSetting : appSettings) {
 			try {
 				setMethod = privacySettingsClass.getMethod("set" + appSetting.getSettingFunctionName(), byte.class);
 				switch (appSetting.getSelectedOptionBit()) {
-				case Setting.OPTION_FLAG_ALLOW:
-				case Setting.OPTION_FLAG_YES:
+				case PDroidSetting.OPTION_FLAG_ALLOW:
+				case PDroidSetting.OPTION_FLAG_YES:
 					setMethod.invoke(privacySettings, PrivacySettings.REAL);
 					break;
-				case Setting.OPTION_FLAG_CUSTOM:
-				case Setting.OPTION_FLAG_CUSTOMLOCATION:
+				case PDroidSetting.OPTION_FLAG_CUSTOM:
+				case PDroidSetting.OPTION_FLAG_CUSTOMLOCATION:
 					setMethod.invoke(privacySettings, PrivacySettings.CUSTOM);
 					for (SimpleImmutableEntry<String, String> settingValue : appSetting.getCustomValues()) {
 						setMethod = privacySettingsClass.getMethod("set" + appSetting.getValueFunctionNameStub() + settingValue.getKey(), String.class);
 						setMethod.invoke(privacySettings, settingValue.getValue());
 					}
 					break;				
-				case Setting.OPTION_FLAG_DENY:
-				case Setting.OPTION_FLAG_NO:
+				case PDroidSetting.OPTION_FLAG_DENY:
+				case PDroidSetting.OPTION_FLAG_NO:
 					setMethod.invoke(privacySettings, PrivacySettings.EMPTY);
 					break;
-				case Setting.OPTION_FLAG_RANDOM:
+				case PDroidSetting.OPTION_FLAG_RANDOM:
 					setMethod.invoke(privacySettings, PrivacySettings.RANDOM);
 					break;
 				}

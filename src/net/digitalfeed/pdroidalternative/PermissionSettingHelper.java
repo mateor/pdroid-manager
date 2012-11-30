@@ -143,8 +143,8 @@ class PermissionSettingHelper {
 				byte pdroidCoreSetting = (Byte)row.getKey().invoke(privacySettings);
 				switch (pdroidCoreSetting) {
 				case PrivacySettings.REAL:
-					if (!row.getValue().equals(Setting.OPTION_TEXT_ALLOW) &&
-						!row.getValue().equals(Setting.OPTION_TEXT_YES)) {
+					if (!row.getValue().equals(PDroidSetting.OPTION_TEXT_ALLOW) &&
+						!row.getValue().equals(PDroidSetting.OPTION_TEXT_YES)) {
 						return true;
 					}
 					break;
@@ -153,8 +153,8 @@ class PermissionSettingHelper {
 				case PrivacySettings.RANDOM:
 					return true;
 				case PrivacySettings.EMPTY:
-					if (!row.getValue().equals(Setting.OPTION_TEXT_DENY) &&
-						!row.getValue().equals(Setting.OPTION_TEXT_NO)) {
+					if (!row.getValue().equals(PDroidSetting.OPTION_TEXT_DENY) &&
+						!row.getValue().equals(PDroidSetting.OPTION_TEXT_NO)) {
 						return true;
 					}
 				}
@@ -221,19 +221,19 @@ class PermissionSettingHelper {
 				
 		byte newValueByte;
 		switch (newOption) {
-		case Setting.OPTION_FLAG_ALLOW:
-		case Setting.OPTION_FLAG_YES:
+		case PDroidSetting.OPTION_FLAG_ALLOW:
+		case PDroidSetting.OPTION_FLAG_YES:
 			newValueByte = PrivacySettings.REAL;
 			break;
-		case Setting.OPTION_FLAG_CUSTOM:
-		case Setting.OPTION_FLAG_CUSTOMLOCATION:
+		case PDroidSetting.OPTION_FLAG_CUSTOM:
+		case PDroidSetting.OPTION_FLAG_CUSTOMLOCATION:
 			newValueByte = PrivacySettings.CUSTOM;
 			break;				
-		case Setting.OPTION_FLAG_DENY:
-		case Setting.OPTION_FLAG_NO:
+		case PDroidSetting.OPTION_FLAG_DENY:
+		case PDroidSetting.OPTION_FLAG_NO:
 			newValueByte = PrivacySettings.EMPTY;
 			break;
-		case Setting.OPTION_FLAG_RANDOM:
+		case PDroidSetting.OPTION_FLAG_RANDOM:
 			newValueByte = PrivacySettings.RANDOM;
 			break;
 		default:
@@ -312,31 +312,31 @@ class PermissionSettingHelper {
 				//right now fairly loosely coupled - although to entirely loosely coupled)
 
 				if (TrustState.TRUSTED == newTrustState) {
-					if (row.getValue().equals(Setting.OPTION_TEXT_ALLOW) ||
-							row.getValue().equals(Setting.OPTION_TEXT_YES)) {
+					if (row.getValue().equals(PDroidSetting.OPTION_TEXT_ALLOW) ||
+							row.getValue().equals(PDroidSetting.OPTION_TEXT_YES)) {
 						newValueByte = PrivacySettings.REAL;
-					} else if (row.getValue().equals(Setting.OPTION_TEXT_DENY) ||
-							row.getValue().equals(Setting.OPTION_TEXT_NO)) {
+					} else if (row.getValue().equals(PDroidSetting.OPTION_TEXT_DENY) ||
+							row.getValue().equals(PDroidSetting.OPTION_TEXT_NO)) {
 						newValueByte = PrivacySettings.EMPTY;
-					} else if (row.getValue().equals(Setting.OPTION_TEXT_CUSTOM) ||
-							row.getValue().equals(Setting.OPTION_TEXT_CUSTOMLOCATION)) {
+					} else if (row.getValue().equals(PDroidSetting.OPTION_TEXT_CUSTOM) ||
+							row.getValue().equals(PDroidSetting.OPTION_TEXT_CUSTOMLOCATION)) {
 						newValueByte = PrivacySettings.CUSTOM;
-					} else if (row.getValue().equals(Setting.OPTION_TEXT_RANDOM)) {
+					} else if (row.getValue().equals(PDroidSetting.OPTION_TEXT_RANDOM)) {
 						newValueByte = PrivacySettings.RANDOM;
 					} else {
 						throw new RuntimeException("The Setting trusted option must be a recognised option type");
 					}
 				} else if (TrustState.UNTRUSTED == newTrustState) {
-					if (row.getValue().equals(Setting.OPTION_TEXT_ALLOW) ||
-							row.getValue().equals(Setting.OPTION_TEXT_YES)) {
+					if (row.getValue().equals(PDroidSetting.OPTION_TEXT_ALLOW) ||
+							row.getValue().equals(PDroidSetting.OPTION_TEXT_YES)) {
 						newValueByte = PrivacySettings.EMPTY;
-					} else if (row.getValue().equals(Setting.OPTION_TEXT_DENY) ||
-							row.getValue().equals(Setting.OPTION_TEXT_NO)) {
+					} else if (row.getValue().equals(PDroidSetting.OPTION_TEXT_DENY) ||
+							row.getValue().equals(PDroidSetting.OPTION_TEXT_NO)) {
 						newValueByte = PrivacySettings.REAL;
-					} else if (row.getValue().equals(Setting.OPTION_TEXT_CUSTOM) ||
-							row.getValue().equals(Setting.OPTION_TEXT_CUSTOMLOCATION)) {
+					} else if (row.getValue().equals(PDroidSetting.OPTION_TEXT_CUSTOM) ||
+							row.getValue().equals(PDroidSetting.OPTION_TEXT_CUSTOMLOCATION)) {
 						newValueByte = PrivacySettings.EMPTY;
-					} else if (row.getValue().equals(Setting.OPTION_TEXT_RANDOM)) {
+					} else if (row.getValue().equals(PDroidSetting.OPTION_TEXT_RANDOM)) {
 						newValueByte = PrivacySettings.EMPTY;
 					} else {
 						throw new RuntimeException("The Setting trusted option must be a recognised option type");

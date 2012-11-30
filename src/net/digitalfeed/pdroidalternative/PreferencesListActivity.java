@@ -1,5 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!-- 
 /**
  * Copyright (C) 2012 Simeon J. Morgan (smorgan@digitalfeed.net)
  * This program is free software; you can redistribute it and/or modify it under
@@ -22,38 +20,28 @@
  * Modified or derivative versions of the pdroid-manager application must use an
  * alternative name, rather than the name pdroid-manager.
  */
- 
- /**
+
+/**
  * @author Simeon J. Morgan <smorgan@digitalfeed.net>
  */
--->
-<resources>
-    <string-array name="app_type_labels">
-        <item >System</item>
-        <item >User</item>
-    </string-array>
-    <string-array name="app_status_labels">
-        <item >Untrusted</item>
-        <item >Trusted</item>
-        <item >No settings</item>
-    </string-array>
-    <!-- Note that if you change the order of these items, you also need to change the 
-    values in AppListActivity to match -->
-    <string-array name="app_type_selection_options">
-        <item>User</item>
-        <item>System</item>
-        <item>All</item>
-    </string-array>
-    
-    <!-- The two arrays below are tied together - the order of each needs to be the same -->
-    <string-array name="language_titles" translatable="false">
-        <item>English</item>
-        <item>Fran&#231;ais</item>
-        <item>Deutsch</item>
-    </string-array>
-    <string-array name="language_codes" translatable="false">
-        <item>en</item>
-        <item>fr</item>
-        <item>de</item>
-    </string-array>
-</resources>
+package net.digitalfeed.pdroidalternative;
+
+import android.app.Activity;
+import android.os.Bundle;
+
+/**
+ * The main activity for the application - loads and presents a list of applications to
+ * the user which can be selected and have the settings changed.
+ * 
+ * @author smorgan
+ *
+ */
+public class PreferencesListActivity extends Activity {
+	
+	@Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        setContentView(R.layout.preferences_frame_layout);
+	}
+}

@@ -29,7 +29,7 @@ package net.digitalfeed.pdroidalternative;
 import java.security.InvalidParameterException;
 import java.util.LinkedList;
 
-class Setting implements Comparable<Setting> {
+class PDroidSetting implements Comparable<PDroidSetting> {
 	protected String id;
 	protected String name;
 	protected String settingFunctionName;
@@ -56,7 +56,7 @@ class Setting implements Comparable<Setting> {
 	public static final String OPTION_TEXT_NO = "no";
 	protected static final int OPTION_FLAG_NUMBITS = 7;
 	
-	public Setting(String id, String name, String settingFunctionName, String valueFunctionNameStub, String title, String group, String groupTitle, String [] options, String trustedOption) {
+	public PDroidSetting(String id, String name, String settingFunctionName, String valueFunctionNameStub, String title, String group, String groupTitle, String [] options, String trustedOption) {
 		this.id = id;
 		this.name = name;
 		this.settingFunctionName = settingFunctionName;
@@ -222,7 +222,7 @@ class Setting implements Comparable<Setting> {
 	}
 	
 	@Override
-	public int compareTo(Setting another) {
+	public int compareTo(PDroidSetting another) {
 		return this.id.compareTo(another.id);
 	}
 }

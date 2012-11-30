@@ -159,6 +159,7 @@ public class Preferences {
 	 * @return  Language name if a language is forced, otherwise null
 	 */
 	public String getForcedLanguage() {
+		String forcedLang = this.prefs.getString(FORCED_LANGUAGE, null);
 		return this.prefs.getString(FORCED_LANGUAGE, null);
 	}
 	
@@ -177,7 +178,7 @@ public class Preferences {
 	 */
 	public void clearForcedLanguage() {
 		Editor editor = this.prefs.edit();
-		editor.remove(LAST_RUN_LANGUAGE);
+		editor.remove(FORCED_LANGUAGE);
 		editor.commit();
 	}
 

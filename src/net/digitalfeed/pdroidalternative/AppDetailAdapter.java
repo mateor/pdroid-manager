@@ -49,7 +49,7 @@ import android.widget.RadioGroup;
 import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.TextView;
 
-public class AppDetailAdapter extends ArrayAdapter<AppSetting>{
+public class AppDetailAdapter extends ArrayAdapter<PDroidAppSetting>{
 	protected static final int VIEW_TYPE_STANDARD = 0;
 	protected static final int VIEW_TYPE_LOCATION = 1;
 	protected static final int VIEW_TYPE_YESNO = 2;
@@ -58,11 +58,11 @@ public class AppDetailAdapter extends ArrayAdapter<AppSetting>{
 	
 	private final Context context;
 	private final int standardResourceId;
-	private final List<AppSetting> settingList;
+	private final List<PDroidAppSetting> settingList;
 	private OnCheckedChangeListener checkbuttonChangeListener;
 	private OnClickListener helpButtonClickListener;
 	
-	public AppDetailAdapter(Context context, int standardResourceId, List<AppSetting> settingList) {
+	public AppDetailAdapter(Context context, int standardResourceId, List<PDroidAppSetting> settingList) {
 		super(context, standardResourceId, settingList);
 		
 		this.context = context;
@@ -113,28 +113,28 @@ public class AppDetailAdapter extends ArrayAdapter<AppSetting>{
 		holder.radioGroup.setTag(Integer.valueOf(position));
 		holder.helpButton.setTag(Integer.valueOf(position));
 		holder.radioGroup.setOnCheckedChangeListener(null);
-		AppSetting setting = settingList.get(position);
+		PDroidAppSetting setting = settingList.get(position);
 		holder.settingName.setText(setting.getTitle());
 		switch (setting.getSelectedOptionBit()){
-		case Setting.OPTION_FLAG_ALLOW:
+		case PDroidSetting.OPTION_FLAG_ALLOW:
 			holder.radioGroup.check(R.id.option_allow);
 			break;
-		case Setting.OPTION_FLAG_YES:
+		case PDroidSetting.OPTION_FLAG_YES:
 			holder.radioGroup.check(R.id.option_yes);
 			break;
-		case Setting.OPTION_FLAG_CUSTOM:
+		case PDroidSetting.OPTION_FLAG_CUSTOM:
 			holder.radioGroup.check(R.id.option_custom);
 			break;
-		case Setting.OPTION_FLAG_CUSTOMLOCATION:
+		case PDroidSetting.OPTION_FLAG_CUSTOMLOCATION:
 			holder.radioGroup.check(R.id.option_customlocation);
 			break;
-		case Setting.OPTION_FLAG_RANDOM:
+		case PDroidSetting.OPTION_FLAG_RANDOM:
 			holder.radioGroup.check(R.id.option_random);
 			break;
-		case Setting.OPTION_FLAG_DENY:
+		case PDroidSetting.OPTION_FLAG_DENY:
 			holder.radioGroup.check(R.id.option_deny);
 			break;
-		case Setting.OPTION_FLAG_NO:
+		case PDroidSetting.OPTION_FLAG_NO:
 			holder.radioGroup.check(R.id.option_no);
 			break;
 		default:
@@ -143,37 +143,37 @@ public class AppDetailAdapter extends ArrayAdapter<AppSetting>{
 		}
 		
 		int optionsBits = setting.getOptionsBits();
-		if (0 == (optionsBits & Setting.OPTION_FLAG_ALLOW)) {
+		if (0 == (optionsBits & PDroidSetting.OPTION_FLAG_ALLOW)) {
 			holder.allowOption.setVisibility(View.GONE);
 		} else {
 			holder.allowOption.setVisibility(View.VISIBLE);
 		}
-		if (0 == (optionsBits & Setting.OPTION_FLAG_YES)) {
+		if (0 == (optionsBits & PDroidSetting.OPTION_FLAG_YES)) {
 			holder.yesOption.setVisibility(View.GONE);
 		} else {
 			holder.yesOption.setVisibility(View.VISIBLE);
 		}
-		if (0 == (optionsBits & Setting.OPTION_FLAG_CUSTOM)) {
+		if (0 == (optionsBits & PDroidSetting.OPTION_FLAG_CUSTOM)) {
 			holder.customOption.setVisibility(View.GONE);
 		} else {
 			holder.customOption.setVisibility(View.VISIBLE);
 		}
-		if (0 == (optionsBits & Setting.OPTION_FLAG_CUSTOMLOCATION)) {
+		if (0 == (optionsBits & PDroidSetting.OPTION_FLAG_CUSTOMLOCATION)) {
 			holder.customLocationOption.setVisibility(View.GONE);
 		} else {
 			holder.customLocationOption.setVisibility(View.VISIBLE);
 		}
-		if (0 == (optionsBits & Setting.OPTION_FLAG_RANDOM)) {
+		if (0 == (optionsBits & PDroidSetting.OPTION_FLAG_RANDOM)) {
 			holder.randomOption.setVisibility(View.GONE);
 		} else {
 			holder.randomOption.setVisibility(View.VISIBLE);
 		}
-		if (0 == (optionsBits & Setting.OPTION_FLAG_DENY)) {
+		if (0 == (optionsBits & PDroidSetting.OPTION_FLAG_DENY)) {
 			holder.denyOption.setVisibility(View.GONE);
 		} else {
 			holder.denyOption.setVisibility(View.VISIBLE);
 		}
-		if (0 == (optionsBits & Setting.OPTION_FLAG_NO)) {
+		if (0 == (optionsBits & PDroidSetting.OPTION_FLAG_NO)) {
 			holder.noOption.setVisibility(View.GONE);
 		} else {
 			holder.noOption.setVisibility(View.VISIBLE);
@@ -198,22 +198,22 @@ public class AppDetailAdapter extends ArrayAdapter<AppSetting>{
 		View noOption;
 	}
 	
-	public void showCustomValueBox(AppSetting appSetting) {
+	public void showCustomValueBox(PDroidAppSetting appSetting) {
 		List<SimpleImmutableEntry<String,String>> customValues = appSetting.getCustomValues();
 		if (customValues == null) {
 			Log.d("PDroidAlternative","No custom setting presents: setting them up");
 			customValues = new LinkedList<SimpleImmutableEntry<String,String>>();
-			if (0 != (appSetting.getSelectedOptionBit() & AppSetting.OPTION_FLAG_CUSTOM)) {
+			if (0 != (appSetting.getSelectedOptionBit() & PDroidAppSetting.OPTION_FLAG_CUSTOM)) {
 				Log.d("PDroidAlternative","Single custom setting");
 				customValues.add(new SimpleImmutableEntry<String,String>("",""));
-			} else if (0 != (appSetting.getSelectedOptionBit() & AppSetting.OPTION_FLAG_CUSTOMLOCATION)) {
+			} else if (0 != (appSetting.getSelectedOptionBit() & PDroidAppSetting.OPTION_FLAG_CUSTOMLOCATION)) {
 				Log.d("PDroidAlternative","Lat/Long custom setting");
 				customValues.add(new SimpleImmutableEntry<String,String>("Lat",""));
 				customValues.add(new SimpleImmutableEntry<String,String>("Lon",""));
 			}
 		}
 		
-		final AppSetting innerAppSetting = appSetting;
+		final PDroidAppSetting innerAppSetting = appSetting;
     	AlertDialog.Builder valueInput = new AlertDialog.Builder(context, AlertDialog.THEME_DEVICE_DEFAULT_DARK);
     	valueInput.setTitle(appSetting.getTitle());
     	//final RelativeLayout layout = new RelativeLayout(context);
@@ -292,31 +292,31 @@ public class AppDetailAdapter extends ArrayAdapter<AppSetting>{
 		@Override
 		public void onCheckedChanged(RadioGroup group, int checkedId) {
 			int position = (Integer)group.getTag();
-			AppSetting setting = settingList.get(position);
+			PDroidAppSetting setting = settingList.get(position);
 			int currentSelectedId = setting.getSelectedOptionBit();
 			switch (checkedId){
 			case R.id.option_allow:
-				if (currentSelectedId != Setting.OPTION_FLAG_ALLOW) setting.setSelectedOptionBit(Setting.OPTION_FLAG_ALLOW);
+				if (currentSelectedId != PDroidSetting.OPTION_FLAG_ALLOW) setting.setSelectedOptionBit(PDroidSetting.OPTION_FLAG_ALLOW);
 				break;
 			case R.id.option_yes:
-				if (currentSelectedId != Setting.OPTION_FLAG_YES) setting.setSelectedOptionBit(Setting.OPTION_FLAG_YES);
+				if (currentSelectedId != PDroidSetting.OPTION_FLAG_YES) setting.setSelectedOptionBit(PDroidSetting.OPTION_FLAG_YES);
 				break;
 			case R.id.option_custom:
-				if (currentSelectedId != Setting.OPTION_FLAG_CUSTOM) setting.setSelectedOptionBit(Setting.OPTION_FLAG_CUSTOM);
+				if (currentSelectedId != PDroidSetting.OPTION_FLAG_CUSTOM) setting.setSelectedOptionBit(PDroidSetting.OPTION_FLAG_CUSTOM);
 				showCustomValueBox(setting);
 				break;
 			case R.id.option_customlocation:
-				if (currentSelectedId != Setting.OPTION_FLAG_CUSTOMLOCATION) setting.setSelectedOptionBit(Setting.OPTION_FLAG_CUSTOMLOCATION);
+				if (currentSelectedId != PDroidSetting.OPTION_FLAG_CUSTOMLOCATION) setting.setSelectedOptionBit(PDroidSetting.OPTION_FLAG_CUSTOMLOCATION);
 				showCustomValueBox(setting);
 				break;
 			case R.id.option_random:
-				if (currentSelectedId != Setting.OPTION_FLAG_RANDOM) setting.setSelectedOptionBit(Setting.OPTION_FLAG_RANDOM);
+				if (currentSelectedId != PDroidSetting.OPTION_FLAG_RANDOM) setting.setSelectedOptionBit(PDroidSetting.OPTION_FLAG_RANDOM);
 				break;
 			case R.id.option_deny:
-				if (currentSelectedId != Setting.OPTION_FLAG_DENY) setting.setSelectedOptionBit(Setting.OPTION_FLAG_DENY);
+				if (currentSelectedId != PDroidSetting.OPTION_FLAG_DENY) setting.setSelectedOptionBit(PDroidSetting.OPTION_FLAG_DENY);
 				break;
 			case R.id.option_no:
-				if (currentSelectedId != Setting.OPTION_FLAG_NO) setting.setSelectedOptionBit(Setting.OPTION_FLAG_NO);
+				if (currentSelectedId != PDroidSetting.OPTION_FLAG_NO) setting.setSelectedOptionBit(PDroidSetting.OPTION_FLAG_NO);
 				break;
 			}
 		}
@@ -327,13 +327,13 @@ public class AppDetailAdapter extends ArrayAdapter<AppSetting>{
 		@Override
 		public void onClick(View v) {
 			int position = (Integer)v.getTag();
-			Setting setting = settingList.get(position);
+			PDroidSetting setting = settingList.get(position);
 			showHelp(setting);
 		}
 		
 	}
 	
-	private void showHelp(Setting setting) {
+	private void showHelp(PDroidSetting setting) {
 		AlertDialog.Builder builder = new AlertDialog.Builder(context);
 		builder.setTitle(setting.getTitle());
 		Resources res = context.getResources();

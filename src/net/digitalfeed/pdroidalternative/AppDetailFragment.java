@@ -46,7 +46,7 @@ import android.widget.ListView;
 public class AppDetailFragment extends Fragment {
 		
 	private Application application;
-	private List<AppSetting> settingList;
+	private List<PDroidAppSetting> settingList;
 	private boolean settingsAreLoaded = false;
 	private String packageName = null;
 	
@@ -174,7 +174,7 @@ public class AppDetailFragment extends Fragment {
             	prefs.setDoLogForPackage(packageName, checkbox.isChecked());
             	checkbox = null;
             	
-            	AppSetting [] toAsyncTask = this.settingList.toArray(new AppSetting [this.settingList.size()]);
+            	PDroidAppSetting [] toAsyncTask = this.settingList.toArray(new PDroidAppSetting [this.settingList.size()]);
             	this.settingList = null;
             	AppSettingsSaveTask settingsWriterTask = new AppSettingsSaveTask(context, packageName, application.getUid(), setNotifyTo, new SaveCompleteHandler());
             	settingsWriterTask.execute(toAsyncTask);
@@ -224,10 +224,10 @@ public class AppDetailFragment extends Fragment {
 		}
     }
     
-    class AppDetailSettingsLoaderTaskCompleteHandler implements IAsyncTaskCallback<List<AppSetting>>
+    class AppDetailSettingsLoaderTaskCompleteHandler implements IAsyncTaskCallback<List<PDroidAppSetting>>
     {
 		@Override
-		public void asyncTaskComplete(List<AppSetting> inSettingList) {
+		public void asyncTaskComplete(List<PDroidAppSetting> inSettingList) {
 			settingsAreLoaded = true;
 			closeDialog();
 			

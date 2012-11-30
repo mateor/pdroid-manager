@@ -31,6 +31,8 @@ import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 
 /**
  * The main activity for the application - loads and presents a list of applications to
@@ -59,7 +61,26 @@ public class AppListActivity extends Activity implements AppListFragment.OnAppli
 			ft.commit();
 		}
 	}
-		
+
+	
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		getMenuInflater().inflate(R.menu.app_list_activity, menu);
+		return true;
+    }
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		super.onOptionsItemSelected(item);
+		switch (item.getItemId()) {
+		case R.id.app_list_menu_preferences:
+			openPreferenceInterface();
+			return true;
+		}
+
+		return false;
+	}
+	
 	@Override
 	public void onDetailUp() {
 		hideDetailInterface();
@@ -79,7 +100,7 @@ public class AppListActivity extends Activity implements AppListFragment.OnAppli
 	public void onDetailDelete() {
 		hideDetailInterface();
 	}
-	
+		
 	/**
 	 * Callback for when an app is selected in the Application List fragment.
 	 * If there is a 'detail fragment' in the layout, then the application
@@ -123,6 +144,15 @@ public class AppListActivity extends Activity implements AppListFragment.OnAppli
 			ft.hide(detailFragment);
 			ft.commit();
 		}
+    }
+
+    
+    /**
+     * Starts the 'preference' interface
+     */
+    private void openPreferenceInterface() {
+    	Intent intent = new Intent(this, PreferencesListActivity.class);
+		startActivity(intent);
     }
 
 }

@@ -277,7 +277,7 @@ public class AppListFragment extends Fragment {
 	    	switch (item.getItemId()) {
 	    	case R.id.appListMenuRefresh:
 	    		rebuildApplicationList();
-	    		break;
+	    		return true;
 	    	}
     	}
     	

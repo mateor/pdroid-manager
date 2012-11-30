@@ -238,7 +238,7 @@ public class DBInterface {
 		private static final int COLUMN_NUMBER_OFFSET_TRUSTED_OPTION = 8;
 		private static final int COLUMN_COUNT = 9;
 		
-		public static final ContentValues getContentValues(Setting setting) {
+		public static final ContentValues getContentValues(PDroidSetting setting) {
 			ContentValues contentValues = new ContentValues();
 			contentValues.put(COLUMN_NAME_ID, setting.getId());
 			contentValues.put(COLUMN_NAME_NAME, setting.getName());
@@ -279,7 +279,7 @@ public class DBInterface {
 			return contentValues;
 		}
 		
-		public static final ContentValues getContentValues(String permission, Setting setting) {
+		public static final ContentValues getContentValues(String permission, PDroidSetting setting) {
 			return getContentValues(permission, setting.getId());
 		}
 

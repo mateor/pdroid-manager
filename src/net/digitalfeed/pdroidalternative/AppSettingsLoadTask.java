@@ -48,19 +48,19 @@ import android.util.Log;
  * Loads the settings list for a single application from the database.
  * @author smorgan
  */
-public class AppSettingsLoadTask extends AsyncTask<String, Integer, List<AppSetting>> {
+public class AppSettingsLoadTask extends AsyncTask<String, Integer, List<PDroidAppSetting>> {
 	
-	IAsyncTaskCallback<List<AppSetting>> listener;
+	IAsyncTaskCallback<List<PDroidAppSetting>> listener;
 	
 	Context context;
 	
-	public AppSettingsLoadTask(Context context, IAsyncTaskCallback<List<AppSetting>> listener) {
+	public AppSettingsLoadTask(Context context, IAsyncTaskCallback<List<PDroidAppSetting>> listener) {
 		this.context = context;
 		this.listener = listener;
 	}
 		
 	@Override
-	protected List<AppSetting> doInBackground(String... selectPackageName) {
+	protected List<PDroidAppSetting> doInBackground(String... selectPackageName) {
 		if (selectPackageName == null || selectPackageName.length != 1) {
 			throw new InvalidParameterException("One and only one package name must be provided to the AppDetailSettingsLoader");
 		}
@@ -82,7 +82,7 @@ public class AppSettingsLoadTask extends AsyncTask<String, Integer, List<AppSett
     	int trustedOptionColumn = cursor.getColumnIndex(DBInterface.SettingTable.COLUMN_NAME_TRUSTED_OPTION);
     	
 		cursor.moveToFirst();
-		List<AppSetting> settingSet = new ArrayList<AppSetting>(cursor.getCount());
+		List<PDroidAppSetting> settingSet = new ArrayList<PDroidAppSetting>(cursor.getCount());
 		
 		Method method;
 		
@@ -102,7 +102,7 @@ public class AppSettingsLoadTask extends AsyncTask<String, Integer, List<AppSett
 				optionsArray = TextUtils.split(options, ",");
 			}
 						
-			int selectedOption = Setting.OPTION_FLAG_ALLOW;
+			int selectedOption = PDroidSetting.OPTION_FLAG_ALLOW;
 			String customValue = null;
 			LinkedList<SimpleImmutableEntry<String, String>> customValues = null;
 
@@ -125,10 +125,10 @@ public class AppSettingsLoadTask extends AsyncTask<String, Integer, List<AppSett
 					byte pdroidCoreSetting = (Byte)method.invoke(privacySettings);
 					switch (pdroidCoreSetting) {
 					case PrivacySettings.REAL:
-						if (tmpList.contains(Setting.OPTION_TEXT_ALLOW)) {
-							selectedOption = Setting.OPTION_FLAG_ALLOW;
-						} else if (tmpList.contains(Setting.OPTION_TEXT_YES)) {
-							selectedOption = Setting.OPTION_FLAG_YES;
+						if (tmpList.contains(PDroidSetting.OPTION_TEXT_ALLOW)) {
+							selectedOption = PDroidSetting.OPTION_FLAG_ALLOW;
+						} else if (tmpList.contains(PDroidSetting.OPTION_TEXT_YES)) {
+							selectedOption = PDroidSetting.OPTION_FLAG_YES;
 						} else {
 							//I don't think this is the best exception to be using here, but I
 							//am not sure which is a better one
@@ -136,17 +136,17 @@ public class AppSettingsLoadTask extends AsyncTask<String, Integer, List<AppSett
 						}
 						break;
 					case PrivacySettings.CUSTOM:
-						if (tmpList.contains(Setting.OPTION_TEXT_CUSTOM)) {
+						if (tmpList.contains(PDroidSetting.OPTION_TEXT_CUSTOM)) {
 							method = privacySettings.getClass().getMethod("get" + valueFunctionNameStub);
 							customValue = (String)method.invoke(privacySettings);
-							selectedOption = Setting.OPTION_FLAG_CUSTOM;
-						} else if (tmpList.contains(Setting.OPTION_TEXT_CUSTOMLOCATION)) {
+							selectedOption = PDroidSetting.OPTION_FLAG_CUSTOM;
+						} else if (tmpList.contains(PDroidSetting.OPTION_TEXT_CUSTOMLOCATION)) {
 							customValues = new LinkedList<SimpleImmutableEntry<String, String>>();
 							method = privacySettings.getClass().getMethod("get" + valueFunctionNameStub + "Lat");
 							customValues.add(new SimpleImmutableEntry<String, String>("Lat", (String)method.invoke(privacySettings)));
 							method = privacySettings.getClass().getMethod("get" + valueFunctionNameStub + "Lon");
 							customValues.add(new SimpleImmutableEntry<String, String>("Lon", (String)method.invoke(privacySettings)));
-							selectedOption = Setting.OPTION_FLAG_CUSTOMLOCATION;
+							selectedOption = PDroidSetting.OPTION_FLAG_CUSTOMLOCATION;
 						} else {
 							//I don't think this is the best exception to be using here, but I
 							//am not sure which is a better one
@@ -154,10 +154,10 @@ public class AppSettingsLoadTask extends AsyncTask<String, Integer, List<AppSett
 						}
 						break;
 					case PrivacySettings.EMPTY:
-						if (tmpList.contains(Setting.OPTION_TEXT_DENY)) {
-							selectedOption = Setting.OPTION_FLAG_DENY;
-						} else if (tmpList.contains(Setting.OPTION_TEXT_NO)) {
-							selectedOption = Setting.OPTION_FLAG_NO;
+						if (tmpList.contains(PDroidSetting.OPTION_TEXT_DENY)) {
+							selectedOption = PDroidSetting.OPTION_FLAG_DENY;
+						} else if (tmpList.contains(PDroidSetting.OPTION_TEXT_NO)) {
+							selectedOption = PDroidSetting.OPTION_FLAG_NO;
 						} else {
 							//I don't think this is the best exception to be using here, but I
 							//am not sure which is a better one
@@ -165,7 +165,7 @@ public class AppSettingsLoadTask extends AsyncTask<String, Integer, List<AppSett
 						}
 						break;
 					case PrivacySettings.RANDOM:
-						selectedOption = Setting.OPTION_FLAG_RANDOM;
+						selectedOption = PDroidSetting.OPTION_FLAG_RANDOM;
 						break;
 					default:
 						Log.d("PDroidAlternative","Unrecognised Privacy Setting type");
@@ -186,9 +186,9 @@ public class AppSettingsLoadTask extends AsyncTask<String, Integer, List<AppSett
 			}
 			
 			if (customValues != null) {
-				settingSet.add(new AppSetting(id, name, settingFunctionName, valueFunctionNameStub, title, group, groupTitle, optionsArray, trustedOption, selectedOption, customValues));
+				settingSet.add(new PDroidAppSetting(id, name, settingFunctionName, valueFunctionNameStub, title, group, groupTitle, optionsArray, trustedOption, selectedOption, customValues));
 			} else {
-				settingSet.add(new AppSetting(id, name, settingFunctionName, valueFunctionNameStub, title, group, groupTitle, optionsArray, trustedOption, selectedOption, customValue));
+				settingSet.add(new PDroidAppSetting(id, name, settingFunctionName, valueFunctionNameStub, title, group, groupTitle, optionsArray, trustedOption, selectedOption, customValue));
 			}
 		} while (cursor.moveToNext());
 		cursor.close();
@@ -197,7 +197,7 @@ public class AppSettingsLoadTask extends AsyncTask<String, Integer, List<AppSett
 	}
 	
 	@Override
-	protected void onPostExecute(List<AppSetting> result) {
+	protected void onPostExecute(List<PDroidAppSetting> result) {
 		super.onPostExecute(result);
 		listener.asyncTaskComplete(result);
 	}

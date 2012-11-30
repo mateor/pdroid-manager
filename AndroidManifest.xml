@@ -51,6 +51,16 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".PreferencesListActivity"
+            android:exported="false"
+            android:label="@string/title_activity_preferences_list" >
+            <intent-filter>
+                <action android:name="net.digitalfeed.pdroidalternative.PREFERENCES_LIST" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

@@ -31,6 +31,7 @@
     <string name="app_name">PDroid Manager</string>
     <string name="app_list_menu_search">Search</string>
     <string name="app_list_menu_refresh">Regenerate Application List</string>
+    <string name="app_list_menu_preferences">Preferences</string>
     <string name="title_activity_main">PDroid Manager</string>
     
     <string name="permission_label_writeprivacysettings">Modify PDroid settings</string>
@@ -40,6 +41,21 @@
     <string name="permission_label_manageprivacycontrollers">Configure PDroid Management Applications</string>
     <string name="permission_description_manageprivacycontrollers">Allows configuration of which apps are able to change PDroid settings</string>
     
+    <string name="title_activity_preferences_list">Preferences</string>
+    <string name="preferences_heading_about">About</string>
+    <string name="preferences_about_title">About this app</string>
+    <string name="preferences_about_summary">App information and license</string>
+    <string name="preferences_credits_title">Credits</string>
+    <string name="preferences_credits_summary">Creators and contributors</string>
+    <string name="preferences_openxdathread_title">View on XDA</string>
+    <string name="preferences_openxdathread_summary">Open the thread on xda-developers.com in your browser</string>
+    <string name="preferences_switchlanguage_title">Change language</string>
+    <string name="preferences_switchlanguage_summary">Choose your preferred language</string>
+    <!-- This (immediately below) appears when you select the 'change language' option, at the top of the list of languages -->
+    <string name="preferences_chooselangage_alerttitle">Choose language</string>
+    <string name="preferences_usephonelocale_title">Remove language preference</string>
+    <string name="preferences_usephonelocale_summary">Use the device locale to determine the interface language</string>
+        
     <string name="title_activity_app_detail">Application</string>
     <string name="app_list_app_icon_text">Application icon</string>
     <string name="app_list_has_internet_indicator">Indicator of Internet access privilege</string>
@@ -70,6 +86,10 @@
     
 	<string name="help_dialog_OKtext">OK</string>
 	<string name="button_help_text">Help</string>
+	
+	<string name="alert_dialog_ok">OK</string>
+	<string name="alert_dialog_cancel">Cancel</string>
+	<string name="alert_dialog_close">Close</string>
     
     <string name="notification_toast_text1">access to</string>
     <string name="notification_toast_text2">was</string>
@@ -90,5 +110,69 @@
     <string name="setting_option_custom">Custom</string>
     <string name="setting_option_deny">Deny</string>
 
-    <string name="application_list_app_spacer" translatable="false"> | </string>
+    
+	<string name="credits_dialog_title">PDroid Manager Credits</string>
+    <string name="credits_dialog_body"><![CDATA[
+<h2>PDroid Manager</h2>
+<p><i>Development: Simeon Morgan &lt;<a href="mailto:smorgan@digitalfeed.net">smorgan@digitalfeed.net</a>&gt;</i><br />
+Github: <a href="https://github.com/wsot/">wsot</a><br />
+XDA-developers: <a href="http://forum.xda-developers.com/member.php?u=3602796">FFU5y</a></p>
+
+<h3>With contributions from:</h3>
+<p>
+<i>patrickpr</i> (<a href="https://github.com/patrickpr">github</a>): French translation<br />
+<i>TamCore</i> (<a href="https://github.com/TamCore">github</a> | <a href="http://forum.xda-developers.com/member.php?u=2728547">xda</a>): Makefile creation, German translation<br />
+<i>wbedard</i> (<a href="http://forum.xda-developers.com/member.php?u=2769491">xda</a>): Original English descriptions for the settings<br />
+<a href="http://forum.xda-developers.com/showthread.php?p=34190204">PDroid Manager thread at xda-developers.com</a></p>
+</p>
+<h2>PDroid Manager relies on the fine work done on the PDroid core by others</h2>
+<h3>PDroid 2.0 Core</h3>
+<p><i>Development: CollegeDev (<a href="http://forum.xda-developers.com/member.php?u=4711230">xda</a>)</i><br />
+<a href="http://forum.xda-developers.com/showthread.php?t=1923576">PDroid 2.0 thread at xda-developers.com</a></p>
+<h3>PDroid porting to ICS/JB</h3>
+<p><i>Pastime (<a href="http://forum.xda-developers.com/member.php?u=4005966">xda</a>)</i><br /> 
+<a href="http://forum.xda-developers.com/showthread.php?t=1554960">PDroid ICS/JB thread at xda-developers.com</a></p>
+<h3>PDroid</h3>
+<p><i>Development: Syvat (<a href="http://forum.xda-developers.com/member.php?u=2605967">xda</a>)</i><br />
+<a href="http://forum.xda-developers.com/showthread.php?t=1357056">PDroid thread at xda-developers.com</a></p>
+
+<h2>Please note:</h2>
+<p>This app is <i>not endorsed</i> by Syvat, Pastime, or CollegeDev.
+Please <i>do not</i> seek help for the PDroid Manager application on their threads.</p>
+]]></string>
+
+	<string name="about_dialog_title">About PDroid Manager</string>
+    <string name="about_dialog_body"><![CDATA[
+<p><i>PDroid Manager</i> is a setting management application for the Privacy service provided by the PDroid 2.0 Core. It serves as an open-source alternative for the PDroid 2.0 App by CollegeDev.</p>
+<h2>PDroid Manager is currently in alpha</h2>
+<h3>If you find a problem:</h3>
+<b>First, check if the problem you have discovered is a known issue, by <a href="https://github.com/wsot/pdroid-manager/issues">looking at issues on my github</a>.</b> If if has already been lodged, but you have additional information to add, then ideally attach it to the issue in github. Otherwise, you can post it here but please clearly refer to the existing issue in github when doing so.
+<h4>If it is not a known issue in the github:</h4>
+You can open an <a href="https://github.com/wsot/pdroid-manager/issues">issue on my github</a>, providing a logcat: see <a href="http://forum.xda-developers.com/showthread.php?t=1726238">how to get a logcat</a>.
+You can post on <a href="http://forum.xda-developers.com/showthread.php?p=34190204">the XDA thread</a>, providing a logcat.
+
+<h3>Copyright statement</h3>
+<p>Copyright (C) 2012 Simeon J. Morgan (smorgan@digitalfeed.net)
+This program is free software; you can redistribute it and/or modify it under
+the terms of the GNU General Public License as published by the Free Software
+Foundation; either version 3 of the License, or (at your option) any later version.
+This program is distributed in the hope that it will be useful, but WITHOUT ANY
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+PARTICULAR PURPOSE. See the GNU General Public License for more details.
+You should have received a copy of the GNU General Public License along with
+this program; if not, see <http://www.gnu.org/licenses>.
+The software has the following requirements (GNU GPL version 3 section 7):
+You must retain in pdroid-manager, any modifications or derivatives of
+pdroid-manager, or any code or components taken from pdroid-manager the author
+attribution included in the files.
+In pdroid-manager, any modifications or derivatives of pdroid-manager, or any
+application utilizing code or components taken from pdroid-manager must include
+in any display or listing of its creators, authors, contributors or developers
+the names or pseudonyms included in the author attributions of pdroid-manager
+or pdroid-manager derived code.
+Modified or derivative versions of the pdroid-manager application must use an
+alternative name, rather than the name pdroid-manager.</p>
+]]></string>
+    
+    <string name="application_list_app_spacer" translatable="false">&#160;|&#160;</string>
 </resources>

@@ -45,4 +45,10 @@
           android:title="@string/app_list_menu_refresh"
           android:icon="@drawable/ic_menu_refresh"
           android:showAsAction="collapseActionView|ifRoom" />
+	<!-- 
+	<item android:id="@+id/app_list_menu_preferences"
+          android:title="@string/app_list_menu_preferences"
+          android:icon="@android:drawable/ic_menu_preferences"
+          android:showAsAction="collapseActionView|ifRoom" />
+           -->
 </menu>
