@@ -206,7 +206,7 @@ public class PreferencesListFragment extends ListFragment {
 						})
 				);
 		preferences.add(
-				new PreferenceHeader("Language")
+				new PreferenceHeader(getString(R.string.preferences_heading_language))
 				);
 		preferences.add(
 				new Preference(
@@ -238,6 +238,33 @@ public class PreferencesListFragment extends ListFragment {
 					);
 
 		//}
+		preferences.add(
+				new PreferenceHeader(getString(R.string.preferences_heading_backuprestore))
+				);
+		preferences.add(
+				new Preference(
+						getString(R.string.preferences_backup_title),
+						getString(R.string.preferences_backup_summary),
+						null,
+						new ListItemClickListener() {
+							@Override
+							public void onListItemClick (ListView l, View v, int position, long id) {
+								showBackupDialog();
+							}
+						})
+				);
+		preferences.add(
+				new Preference(
+						getString(R.string.preferences_restore_title),
+						getString(R.string.preferences_restore_summary),
+						null,
+						new ListItemClickListener() {
+							@Override
+							public void onListItemClick (ListView l, View v, int position, long id) {
+								showRestoreDialog();
+							}
+						})
+				);
 	}
 	
     @Override
@@ -320,10 +347,42 @@ public class PreferencesListFragment extends ListFragment {
         ft.addToBackStack(null);
 
         // Create and show the dialog.
-        AlertDialogFragment newFragment = AlertDialogFragment.newInstance();        
+        SelectLanguageDialogFragment newFragment = SelectLanguageDialogFragment.newInstance();        
         newFragment.show(ft, "dialog");
     }
     
+    
+    /**
+     * Shows a list of backup files which can be restored and allows the user to select
+     */
+    private void showRestoreDialog() {
+        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        Fragment prev = getFragmentManager().findFragmentByTag("dialog");
+        if (prev != null) {
+            ft.remove(prev);
+        }
+        ft.addToBackStack(null);
+
+        // Create and show the dialog.
+        BackupManager.LoadBackupDialogFragment newFragment = BackupManager.LoadBackupDialogFragment.newInstance();        
+        newFragment.show(ft, "dialog");
+    }
+    
+    /**
+     * Shows a list of backup files which can be loaded
+     */
+    private void showBackupDialog() {
+        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        Fragment prev = getFragmentManager().findFragmentByTag("dialog");
+        if (prev != null) {
+            ft.remove(prev);
+        }
+        ft.addToBackStack(null);
+
+        // Create and show the dialog.
+        BackupManager.LoadBackupDialogFragment newFragment = BackupManager.LoadBackupDialogFragment.newInstance();
+        newFragment.show(ft, "dialog");
+    }
     
     public static class InformationDialog extends DialogFragment {
     	
@@ -373,10 +432,10 @@ public class PreferencesListFragment extends ListFragment {
     
     //String[] bases = getResources().getStringArray(R.array.image_export_list_preference);
     
-    public static class AlertDialogFragment extends DialogFragment {
+    public static class SelectLanguageDialogFragment extends DialogFragment {
 
-        public static AlertDialogFragment newInstance() {
-            return new AlertDialogFragment();
+        public static SelectLanguageDialogFragment newInstance() {
+            return new SelectLanguageDialogFragment();
         }
         
         @Override

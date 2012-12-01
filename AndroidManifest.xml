@@ -12,6 +12,7 @@
     	<uses-permission android:name="android.privacy.WRITE_PRIVACY_SETTINGS" />
     	<!-- <uses-permission android:name="android.privacy.MANAGE_PRIVACY_CONTROLLERS" />
     	<uses-permission android:name="android.privacy.READ_PRIVACY_CONTROLLERS" /> -->
+    	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
         android:icon="@drawable/icon"

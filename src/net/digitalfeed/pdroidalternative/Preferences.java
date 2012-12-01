@@ -27,10 +27,17 @@
 package net.digitalfeed.pdroidalternative;
 
 import java.security.InvalidParameterException;
+import java.security.NoSuchAlgorithmException;
+
+import javax.crypto.KeyGenerator;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.os.Environment;
+import android.util.Base64;
 import android.widget.Toast;
 
 public class Preferences {
@@ -50,6 +57,8 @@ public class Preferences {
 	private static final String LAST_TOAST_TIME = "lastToastTime";
 	private static final String LAST_RUN_LANGUAGE = "lastRunLanguage";
 	private static final String FORCED_LANGUAGE = "forcedLanguage"; //if present, then a 'preferred' language has been specified
+	private static final String BACKUP_SIGNING_KEY = "backupSigningPublicKey";
+	private static final String BACKUP_PATH = "backupPath";
 	private static final Object lock = new Object();
 	private SharedPreferences prefs;
 	
@@ -159,7 +168,6 @@ public class Preferences {
 	 * @return  Language name if a language is forced, otherwise null
 	 */
 	public String getForcedLanguage() {
-		String forcedLang = this.prefs.getString(FORCED_LANGUAGE, null);
 		return this.prefs.getString(FORCED_LANGUAGE, null);
 	}
 	
@@ -179,6 +187,49 @@ public class Preferences {
 	public void clearForcedLanguage() {
 		Editor editor = this.prefs.edit();
 		editor.remove(FORCED_LANGUAGE);
+		editor.commit();
+	}
+	
+	/**
+	 * Get the signing key unique to this installation, or create it if it doesn't exist.
+	 * The purpose of this key is to allow signing of backup files (and any other such files)
+	 * to ensure they are not modified by some other program.
+	 * Of course, if the other program has root then it can modify or read
+	 * this key anyway, so all bets are off.
+	 * 
+	 * @return secret key for signing and verification
+	 */
+	public SecretKey getOrCreateSigningKey() {
+		String signingKey = this.prefs.getString(BACKUP_SIGNING_KEY, null);
+		SecretKey secretKey = null;
+		if (signingKey != null) {
+			secretKey = new SecretKeySpec(Base64.decode(signingKey, Base64.DEFAULT), 0, Base64.decode(signingKey, Base64.DEFAULT).length, "HmacSHA1");
+		} else {
+			//supporting multiple algorithms would be good, but then we also need to store the key type...
+			try {
+				 secretKey = KeyGenerator.getInstance("HmacSHA1").generateKey();
+			} catch (NoSuchAlgorithmException e) {}
+			
+			Editor editor = this.prefs.edit();
+			editor.putString(BACKUP_SIGNING_KEY, Base64.encodeToString(secretKey.getEncoded(), Base64.DEFAULT));
+			editor.commit();
+		}
+		
+		return secretKey;
+	}
+
+
+	/**
+	 * Stores the last-used backup path on the SD card
+	 * @return
+	 */
+	public String getBackupPath() {
+		return this.prefs.getString(BACKUP_PATH, null);
+	}
+	
+	public void setBackupPath(String languageName) {
+		Editor editor = this.prefs.edit();
+		editor.putString(BACKUP_PATH, languageName);
 		editor.commit();
 	}
 

@@ -49,13 +49,34 @@
     <string name="preferences_credits_summary">Creators and contributors</string>
     <string name="preferences_openxdathread_title">View on XDA</string>
     <string name="preferences_openxdathread_summary">Open the thread on xda-developers.com in your browser</string>
+    
+    <string name="preferences_heading_language">Language</string>
     <string name="preferences_switchlanguage_title">Change language</string>
     <string name="preferences_switchlanguage_summary">Choose your preferred language</string>
     <!-- This (immediately below) appears when you select the 'change language' option, at the top of the list of languages -->
     <string name="preferences_chooselangage_alerttitle">Choose language</string>
     <string name="preferences_usephonelocale_title">Remove language preference</string>
     <string name="preferences_usephonelocale_summary">Use the device locale to determine the interface language</string>
-        
+
+    <string name="preferences_heading_backuprestore">Backup &amp; Restore</string>
+	<string name="preferences_backup_title">Backup</string>
+    <string name="preferences_backup_summary">Create a backup of current settings</string>
+    
+    <string name="preferences_restore_title">Restore</string>
+    <string name="preferences_restore_summary">Restore settings from a backup</string>
+    <string name="restore_dialog_title">Restore settings</string>
+    <string name="restore_no_backups">No backups are available to restore</string>
+    <string name="restore_invalid_signature">The digital signature for the selected backup file does not match the backup. The backup may have been modified by another program. Uninstalling and re-installed PDroid Manager since you created the backup will also cause this message.</string>
+    <string name="restore_missing_invalid">No digital signature can be found for the selected backup file. There is no way to verify that the backup file has not been modified by another program since it was created.</string>
+    <string name="restore_dialog_continue_prompt">Continue to restore settings from the file?</string>
+    <string name="restore_failed_dialog_title">Restore failed</string>
+    <string name="restore_invalid_backup">The selected file is corrupted, or not a valid backup file.</string>
+    <string name="storage_error_body">The external storage cannot be accessed. If you device uses an external SD Card or Micro SD Card please ensure it is inserted and properly formatted.</string>
+
+    <string name="backup_dialog_title">Backup settings</string>
+    <string name="backup_filename">Filename for backup</string>
+    
+    
     <string name="title_activity_app_detail">Application</string>
     <string name="app_list_app_icon_text">Application icon</string>
     <string name="app_list_has_internet_indicator">Indicator of Internet access privilege</string>
@@ -88,6 +109,8 @@
 	<string name="button_help_text">Help</string>
 	
 	<string name="alert_dialog_ok">OK</string>
+	<string name="alert_dialog_yes">Yes</string>
+	<string name="alert_dialog_continue">Continue</string>
 	<string name="alert_dialog_cancel">Cancel</string>
 	<string name="alert_dialog_close">Close</string>
     
