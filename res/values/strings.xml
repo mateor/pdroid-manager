@@ -71,6 +71,11 @@
     <string name="restore_dialog_continue_prompt">Continue to restore settings from the file?</string>
     <string name="restore_failed_dialog_title">Restore failed</string>
     <string name="restore_invalid_backup">The selected file is missing, corrupted, or not a valid backup file.</string>
+    <string name="restore_complete_success">Restore complete</string>
+    <string name="restore_complete_fail_invalid">Restore failed: The selected file is not a valid backup file.</string>
+    <string name="restore_complete_fail_reading">Restore failed: The selected file could not be read.</string>
+    <string name="restore_complete_fail_other">Restore failed: An error prevented restoration.</string>
+    
     <string name="storage_error_body">The external storage cannot be accessed. If you device uses an external SD Card or Micro SD Card please ensure it is inserted and properly formatted.</string>
 
     <string name="backup_dialog_title">Backup settings</string>
@@ -78,11 +83,14 @@
     <string name="backup_filename">Filename for backup</string>
     <string name="backup_filename_prefix">pdroidmanager_backup_</string> <!-- Default prefix for the 'suggested' backup filename -->
     <string name="backup_filename_hint">Filename</string> <!-- Hint text in the 'filename' field -->
-    
+    <string name="backup_message_file_exists">A file with the speficied filename already exists. The new backup will replace the existing file.</string>
+    <string name="backup_dialog_continue_prompt">Continue to backup to the file?</string>
+
+    <string name="backup_failed_dialog_title">Backup failed</string>
     <string name="backup_complete_success">Backup complete</string>
-    <string name="backup_complete_fail_signing">Backup failed: signing of the backup failed</string>
-    <string name="backup_complete_fail_writing">Backup failed: the backup file could not be written</string>
-    <string name="backup_complete_fail_other">Backup failed: the backup file could not be generated</string>
+    <string name="backup_complete_fail_signing">Backup failed: Signing of the backup failed</string>
+    <string name="backup_complete_fail_writing">Backup failed: The backup file could not be written</string>
+    <string name="backup_complete_fail_other">Backup failed: The backup file could not be generated</string>
     
     <string name="title_activity_app_detail">Application</string>
     <string name="app_list_app_icon_text">Application icon</string>

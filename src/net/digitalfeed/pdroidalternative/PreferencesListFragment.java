@@ -394,7 +394,7 @@ public class PreferencesListFragment extends ListFragment {
         		//an option is selected; restore the backup
 				switch (validateBackupForRestoring(getActivity(), path, filename)) {
 				case RESTORE_VALIDATION_OK:
-					restoreFromBackup(thisPath, thisFilename);
+					restoreFromBackup(getActivity(), thisPath, thisFilename);
 					break;
 				case RESTORE_VALIDATION_SIGNATUREERROR:
         			showConfirmationDialog(
@@ -403,7 +403,7 @@ public class PreferencesListFragment extends ListFragment {
         					new DialogCallback() {
 								@Override
 								public void onDialogSuccess() {
-									restoreFromBackup(thisPath, thisFilename);	
+									restoreFromBackup(getActivity(), thisPath, thisFilename);	
 								}
 		        			}
         				);
@@ -415,7 +415,7 @@ public class PreferencesListFragment extends ListFragment {
         					new DialogCallback() {
 								@Override
 								public void onDialogSuccess() {
-									restoreFromBackup(thisPath, thisFilename);	
+									restoreFromBackup(getActivity(), thisPath, thisFilename);	
 								}
 		        			}
         				);
@@ -445,16 +445,30 @@ public class PreferencesListFragment extends ListFragment {
         SaveBackupDialogFragment newFragment = SaveBackupDialogFragment.newInstance(new DialogCallbackWithFilename() {
 			@Override
 			public void onDialogSuccess(String path, String filename) {
+				final String thisPath = path;
+				final String thisFilename = filename;
+				
 				Log.d("PDroidAlternative","OnDialogSuccess Callback from load dialog with " + path + " " + filename);
 				switch (validateBackupForWriting(getActivity(), path, filename)) {
 				case BACKUP_VALIDATION_OK:
-					Log.d("PDroidAlternative", "Can't write to target file");
+					Log.d("PDroidAlternative", "Backup Success");
 					saveBackup(getActivity(), path, filename);
 					break;
 				case BACKUP_VALIDATION_EXISTS:
 					Log.d("PDroidAlternative", "target file exists");
+        			showConfirmationDialog(
+        					getString(R.string.backup_dialog_title),
+        					getString(R.string.backup_message_file_exists) + "\n" + getString(R.string.backup_dialog_continue_prompt),
+        					new DialogCallback() {
+								@Override
+								public void onDialogSuccess() {
+									saveBackup(getActivity(), thisPath, thisFilename);	
+								}
+		        			}
+        				);
 					break;
 				case BACKUP_VALIDATION_CANT_WRITE:
+					showInformationDialog(getString(R.string.backup_failed_dialog_title), getString(R.string.backup_complete_fail_writing));
 					Log.d("PDroidAlternative", "Can't write to target file");
 					break;
 				default:
@@ -812,8 +826,6 @@ public class PreferencesListFragment extends ListFragment {
      */
     
 	public static void saveBackup(Context context, String path, String filename) {
-//		final String thisPath = path;
-//		final String thisFilename = filename;
 		final Context thisContext = context;
 		WriteBackupXmlTask backupTask = new WriteBackupXmlTask(
 				context,
@@ -894,11 +906,20 @@ public class PreferencesListFragment extends ListFragment {
 			Mac mac = Mac.getInstance("HmacSHA1");
 			mac.init(key);
 			byte [] signature = mac.doFinal(backupFileBytes);
-			if (!signature.equals(backupSignatureBytes)) {
+/*			if (!signature.equals(backupSignatureBytes)) {
 				return RESTORE_VALIDATION_SIGNATUREERROR;
 			} else {
 				return RESTORE_VALIDATION_OK;
+			}*/
+			if (signature.length != backupSignatureBytes.length) {
+				return RESTORE_VALIDATION_SIGNATUREERROR; 
 			}
+			for (int i = 0; i < signature.length; i++) {
+				if (signature[i] != backupSignatureBytes[i]) {
+					return RESTORE_VALIDATION_SIGNATUREERROR;
+				}
+			}
+			return RESTORE_VALIDATION_OK;
 		} catch (NoSuchAlgorithmException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -910,8 +931,36 @@ public class PreferencesListFragment extends ListFragment {
 		}
 	}
 	
-	private static void restoreFromBackup(String path, String filename) {
-/*		File file = new File(path, filename);
+	private static void restoreFromBackup(Context context, String path, String filename) {
+		final Context thisContext = context;
+		RestoreBackupXmlTask backupTask = new RestoreBackupXmlTask(
+				context,
+				path,
+				filename,
+				new IAsyncTaskCallback<Integer>() {
+					@Override
+					public void asyncTaskComplete(Integer param) {
+						Toast toast = null;
+						switch (param) {
+						case RestoreBackupXmlTask.BACKUP_RESTORE_SUCCESS:
+							toast = Toast.makeText(thisContext, R.string.restore_complete_success, Toast.LENGTH_SHORT);
+							break;
+						case RestoreBackupXmlTask.BACKUP_RESTORE_FAIL_INVALID:
+							toast = Toast.makeText(thisContext, R.string.restore_complete_fail_invalid, Toast.LENGTH_SHORT);
+							break;
+						case RestoreBackupXmlTask.BACKUP_RESTORE_FAIL_READING:
+							toast = Toast.makeText(thisContext, R.string.restore_complete_fail_reading, Toast.LENGTH_SHORT);
+							break;
+						case RestoreBackupXmlTask.BACKUP_RESTORE_FAIL_OTHER:
+							toast = Toast.makeText(thisContext, R.string.restore_complete_fail_other, Toast.LENGTH_SHORT);
+							break;
+						}
+						if (toast != null) {
+							toast.show();
+						}
+					}});
+		backupTask.execute();
+		/*		File file = new File(path, filename);
 		FileInputStream fileIn = new FileInputStream(file);
 		XmlPullParser parser = Xml.newPullParser();
         parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
