@@ -36,7 +36,6 @@ import javax.crypto.spec.SecretKeySpec;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
-import android.os.Environment;
 import android.util.Base64;
 import android.widget.Toast;
 
