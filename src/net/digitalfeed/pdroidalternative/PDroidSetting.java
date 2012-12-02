@@ -37,6 +37,7 @@ class PDroidSetting implements Comparable<PDroidSetting> {
 	protected String title;
 	protected String group;
 	protected String groupTitle;
+	protected String [] customFieldNames = null;
 	protected int optionsBits;
 	protected int trustedOptionBit;
 	
@@ -67,6 +68,15 @@ class PDroidSetting implements Comparable<PDroidSetting> {
 		
 		this.optionsBits = optionsToBits(options);
 		this.trustedOptionBit = optionToBit(trustedOption);
+		//
+		if (0 != (this.optionsBits & OPTION_FLAG_CUSTOMLOCATION)) {
+			customFieldNames = new String[] {"Lat","Lon"};		
+		} if (0 != (this.optionsBits & OPTION_FLAG_CUSTOMLOCATION)) {
+			//I don't really like that 'blank' is used to define 'just one simple value' but
+			//because I'm using the strings to postfix the functions I need it to be blank or
+			//a known value
+			customFieldNames = new String[] {""};
+		}
 	}
 	
 	public static int optionsToBits(String [] options) {
@@ -219,6 +229,10 @@ class PDroidSetting implements Comparable<PDroidSetting> {
 	
 	public int getTrustedOptionBit() {
 		return this.trustedOptionBit;
+	}
+	
+	public String [] getCustomFieldNames() {
+		return customFieldNames;
 	}
 	
 	@Override

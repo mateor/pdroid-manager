@@ -482,9 +482,15 @@ public class DBInterface {
 			" FROM " + SettingTable.TABLE_NAME;
 
 	public static final String QUERY_GET_SETTINGS_AND_VALUE_FUNCTIONS = "SELECT " +
-			SettingTable.TABLE_NAME + "." + SettingTable.COLUMN_NAME_NAME + "," +
-			SettingTable.TABLE_NAME + "." + SettingTable.COLUMN_NAME_SETTINGFUNCTIONNAME + "," + 
-			SettingTable.TABLE_NAME + "." + SettingTable.COLUMN_NAME_VALUEFUNCTIONNAMESTUB + 
+			SettingTable.TABLE_NAME + "." + SettingTable.COLUMN_NAME_ID + ", " +
+			SettingTable.TABLE_NAME + "." + SettingTable.COLUMN_NAME_NAME + ", " +
+			SettingTable.TABLE_NAME + "." + SettingTable.COLUMN_NAME_SETTINGFUNCTIONNAME + ", " +
+			SettingTable.TABLE_NAME + "." + SettingTable.COLUMN_NAME_VALUEFUNCTIONNAMESTUB + ", " +
+			SettingTable.TABLE_NAME + "." + SettingTable.COLUMN_NAME_TITLE + ", " +
+			SettingTable.TABLE_NAME + "." + SettingTable.COLUMN_NAME_GROUP_ID + ", " +
+			SettingTable.TABLE_NAME + "." + SettingTable.COLUMN_NAME_GROUP_TITLE + ", " +
+			SettingTable.TABLE_NAME + "." + SettingTable.COLUMN_NAME_OPTIONS + ", " +
+			SettingTable.TABLE_NAME + "." + SettingTable.COLUMN_NAME_TRUSTED_OPTION +
 			" FROM " + SettingTable.TABLE_NAME;
 
 	
