@@ -476,9 +476,15 @@ public class DBInterface {
 					" WHERE " + PermissionApplicationTable.TABLE_NAME + "." + PermissionApplicationTable.COLUMN_NAME_PACKAGENAME + " = ?" + 
 					");";
 
-	public static final String QUERY_GET_SETTINGSFUNCTIONNAMES = "SELECT " +
+	public static final String QUERY_GET_SETTINGS_FUNCTION_NAMES = "SELECT " +
 			SettingTable.TABLE_NAME + "." + SettingTable.COLUMN_NAME_SETTINGFUNCTIONNAME + "," + 
 			SettingTable.TABLE_NAME + "." + SettingTable.COLUMN_NAME_TRUSTED_OPTION +
+			" FROM " + SettingTable.TABLE_NAME;
+
+	public static final String QUERY_GET_SETTINGS_AND_VALUE_FUNCTIONS = "SELECT " +
+			SettingTable.TABLE_NAME + "." + SettingTable.COLUMN_NAME_NAME + "," +
+			SettingTable.TABLE_NAME + "." + SettingTable.COLUMN_NAME_SETTINGFUNCTIONNAME + "," + 
+			SettingTable.TABLE_NAME + "." + SettingTable.COLUMN_NAME_VALUEFUNCTIONNAMESTUB + 
 			" FROM " + SettingTable.TABLE_NAME;
 
 	

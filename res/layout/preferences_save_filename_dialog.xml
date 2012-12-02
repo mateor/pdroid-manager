@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+	<TextView
+	    android:id="@+id/backup_path_display"
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    />
+	<EditText
+		android:id="@+id/backup_filename"
+	    android:inputType="text"
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content"
+	    android:layout_below="@+id/backup_path_display"
+	    android:hint="@string/backup_filename_hint" />
+</RelativeLayout>

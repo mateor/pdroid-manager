@@ -22,7 +22,7 @@
     android:paddingRight="?android:attr/scrollbarSize">
 
     <RelativeLayout
-        android:layout_width="wrap_content"
+        android:layout_width="0dip"
         android:layout_height="wrap_content"
         android:layout_marginLeft="16sp"
         android:layout_marginRight="6sp"
@@ -53,6 +53,7 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="center_vertical"
+        android:visibility="gone"
         />
 
 </LinearLayout>

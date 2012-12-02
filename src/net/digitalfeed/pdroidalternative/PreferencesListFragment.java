@@ -9,15 +9,16 @@ import java.io.IOException;
 import java.security.InvalidKeyException;
 import java.security.InvalidParameterException;
 import java.security.NoSuchAlgorithmException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import javax.crypto.Mac;
 import javax.crypto.SecretKey;
-
-import org.xmlpull.v1.XmlPullParser;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -34,17 +35,19 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.text.Html;
+import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
 import android.util.Log;
-import android.util.Xml;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class PreferencesListFragment extends ListFragment {
 
@@ -52,17 +55,28 @@ public class PreferencesListFragment extends ListFragment {
 	private static final int ITEM_TYPE_CONTENT = 1;
 	private static final int ITEM_TYPE_COUNT = 2;
 
+	private static final int RESTORE_VALIDATION_OK = 0;
+	private static final int RESTORE_VALIDATION_SIGNATUREERROR = 1;
+	private static final int RESTORE_VALIDATION_SIGNATUREMISSING= 2;
+	private static final int RESTORE_VALIDATION_INVALID = 3;
+	private static final int RESTORE_VALIDATION_MISSING_OR_ERROR = 4;
+	
+	public static final String BACKUP_XML_ROOT_NODE = "pdroidmanager";
+	public static final String BACKUP_XML_APP_NODE = "app";
+	public static final String BACKUP_XML_APP_NODE_PACKAGENAME_ATTRIBUTE = "packagename"; //attribute of the app node which holds the package name
+	public static final String BACKUP_XML_SETTING_ATTRIBUTE = "setting"; //XML attribute which holds the 'setting' - i.e. real, custom, etc.
+	
+	
 	private static final int BACKUP_VALIDATION_OK = 0;
-	private static final int BACKUP_VALIDATION_SIGNATUREERROR = 1;
-	private static final int BACKUP_VALIDATION_SIGNATUREMISSING= 2;
-	private static final int BACKUP_VALIDATION_INVALID = 3;
-	private static final int BACKUP_VALIDATION_MISSING_OR_ERROR = 4;
+	private static final int BACKUP_VALIDATION_EXISTS = 1;
+	private static final int BACKUP_VALIDATION_CANT_WRITE = 2;
 	
 	private static final String PDROIDMANAGER_XDA_THREAD_URL = "http://forum.xda-developers.com/showthread.php?p=34190204";
 	
 	//Should we be trying to handle localisation here? Seems risky!
-	private static final String [] DEFAULT_BACKUP_PATH = new String [] {"pdroidmanager","backups"};
-	private static final String DEFAULT_BACKUP_FILENAME_PREFIX = "pdroidmanager_backup_";
+	private static final String DEFAULT_BACKUP_PATH = "pdroidmanager/backups";
+	private static final String DEFAULT_BACKUP_DATEFORMAT = "yyyyMMdd_kkmm";
+	//private static final String DEFAULT_BACKUP_FILENAME_PREFIX = "pdroidmanager_backup_";
 
 	
 	Context context;
@@ -379,13 +393,13 @@ public class PreferencesListFragment extends ListFragment {
 				Log.d("PDroidAlternative","OnDialogSuccess Callback from load dialog with " + path + " " + filename);
         		//an option is selected; restore the backup
 				switch (validateBackupForRestoring(getActivity(), path, filename)) {
-				case BACKUP_VALIDATION_OK:
+				case RESTORE_VALIDATION_OK:
 					restoreFromBackup(thisPath, thisFilename);
 					break;
-				case BACKUP_VALIDATION_SIGNATUREERROR:
+				case RESTORE_VALIDATION_SIGNATUREERROR:
         			showConfirmationDialog(
         					getString(R.string.restore_dialog_title),
-        					getString(R.string.restore_invalid_signature),
+        					getString(R.string.restore_signature_invalid) + "\n" + getString(R.string.restore_dialog_continue_prompt),
         					new DialogCallback() {
 								@Override
 								public void onDialogSuccess() {
@@ -394,8 +408,24 @@ public class PreferencesListFragment extends ListFragment {
 		        			}
         				);
         			break;
-				case BACKUP_VALIDATION_INVALID:
-					
+				case RESTORE_VALIDATION_SIGNATUREMISSING:
+        			showConfirmationDialog(
+        					getString(R.string.restore_dialog_title),
+        					getString(R.string.restore_signature_missing) + "\n" + getString(R.string.restore_dialog_continue_prompt),
+        					new DialogCallback() {
+								@Override
+								public void onDialogSuccess() {
+									restoreFromBackup(thisPath, thisFilename);	
+								}
+		        			}
+        				);
+        			break;
+				case RESTORE_VALIDATION_MISSING_OR_ERROR:
+					showInformationDialog(
+							getString(R.string.restore_failed_dialog_title),
+							getString(R.string.restore_invalid_backup)
+					);
+					break;
 				}
 			}});        
         fragment.show(ft, "dialog");
@@ -415,8 +445,21 @@ public class PreferencesListFragment extends ListFragment {
         SaveBackupDialogFragment newFragment = SaveBackupDialogFragment.newInstance(new DialogCallbackWithFilename() {
 			@Override
 			public void onDialogSuccess(String path, String filename) {
-				// TODO Auto-generated method stub
 				Log.d("PDroidAlternative","OnDialogSuccess Callback from load dialog with " + path + " " + filename);
+				switch (validateBackupForWriting(getActivity(), path, filename)) {
+				case BACKUP_VALIDATION_OK:
+					Log.d("PDroidAlternative", "Can't write to target file");
+					saveBackup(getActivity(), path, filename);
+					break;
+				case BACKUP_VALIDATION_EXISTS:
+					Log.d("PDroidAlternative", "target file exists");
+					break;
+				case BACKUP_VALIDATION_CANT_WRITE:
+					Log.d("PDroidAlternative", "Can't write to target file");
+					break;
+				default:
+					Log.d("PDroidAlternative", "Something went horribly wrong");
+				}
 			}
         });        
 
@@ -602,7 +645,7 @@ public class PreferencesListFragment extends ListFragment {
         		File backupDirectory = getBackupDirectory(false);
         		if (backupDirectory != null) {
         			backupPath = backupDirectory.getAbsolutePath();
-        			backupFiles = getBackupFileList(backupDirectory);
+        			backupFiles = getBackupFileList(backupDirectory, getString(R.string.backup_filename_extension));
         			backupDirectory = null;
         		}
         	} catch (ExternalStorageNotReadyException e) {
@@ -638,10 +681,9 @@ public class PreferencesListFragment extends ListFragment {
     
     
     public static class SaveBackupDialogFragment extends DialogFragment {
-    	public static CharSequence selectedBackupFilename = null;
     	public static String backupPath = null;
-    	public static CharSequence [] backupFiles = null;
     	public static DialogCallbackWithFilename callback;
+    	public static EditText filenameInput;
 
         public static SaveBackupDialogFragment newInstance(DialogCallbackWithFilename dialogCallback) {
         	callback = dialogCallback;
@@ -650,9 +692,8 @@ public class PreferencesListFragment extends ListFragment {
         
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
-        	selectedBackupFilename = null;
         	backupPath = null;
-
+        	
         	AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         	//builder.setIcon(R.drawable.alert_dialog_icon)
         	builder.setTitle(R.string.backup_dialog_title)
@@ -660,46 +701,54 @@ public class PreferencesListFragment extends ListFragment {
             .setPositiveButton(R.string.alert_dialog_ok, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int id) {
-                	//if no items in the list, then simply close if OK clicked
-                	if (backupFiles == null) {
-                		closeDialog();
-                	} else if (selectedBackupFilename != null) {
-                		//an option is selected; restore the backup
-                		saveBackup(getActivity(), backupPath, selectedBackupFilename.toString());
+                	if (filenameInput == null) {
+                    		Log.d("PDroidAlternative","Filename Input is null, which is a bit weird: something wrong with the dialog?");
+                    		closeDialog();
+                	} else {
+                		String backupFilename = filenameInput.getText().toString();
+                		if (backupFilename == null || backupFilename.isEmpty()) {
+                    		Log.d("PDroidAlternative","Backup Filename is blank");
+                    		closeDialog();
+                		} else {
+                			callback.onDialogSuccess(backupPath, backupFilename);
+                		}
                 	}
                 }
             });
+        	
         	try {
-        		File backupDirectory = getBackupDirectory(false);
-        		if (backupDirectory != null) {
+        		File backupDirectory = getBackupDirectory(true);
+        		if (backupDirectory == null) {
+        			return builder.setMessage(R.string.storage_error_body).create();
+        		} else {
         			backupPath = backupDirectory.getAbsolutePath();
-        			backupFiles = getBackupFileList(backupDirectory);
-        			backupDirectory = null;
         		}
         	} catch (ExternalStorageNotReadyException e) {
         		//Problem with accessing external storage: present a message to the user
         		return builder.setMessage(R.string.storage_error_body).create();
 	    	}
         	
-        	if (backupFiles == null || backupFiles.length == 0) {
-        		//no items are available to restore - provide a message
-            	return builder.setMessage(R.string.restore_no_backups).create();
-        	} else {
-        		selectedBackupFilename = backupFiles[0]; //the first item appears selected by default, so we should 
-	        	return builder.setSingleChoiceItems(backupFiles, 0, new DialogInterface.OnClickListener() {
-							@Override
-							public void onClick(DialogInterface dialog, int which) {
-								selectedBackupFilename = backupFiles[which];
-							}
-	            		})
-	            .setNegativeButton(R.string.alert_dialog_cancel, new DialogInterface.OnClickListener() {
-	                @Override
-	                public void onClick(DialogInterface dialog, int id) {
-	                	closeDialog();
-	                }
-	            })
-	            .create();
-        	}
+        	SimpleDateFormat dateFormatter = new SimpleDateFormat(DEFAULT_BACKUP_DATEFORMAT, Locale.US);
+        	 
+        	LayoutInflater inflater = getActivity().getLayoutInflater();
+        	View rootView = inflater.inflate(R.layout.preferences_save_filename_dialog, null);
+        	TextView pathDisplay = (TextView)rootView.findViewById(R.id.backup_path_display);
+        	StringBuilder suggestedBackupFilename = 
+        			new StringBuilder(getString(R.string.backup_filename_prefix))
+        				.append(dateFormatter.format(new Date()))
+        				.append(getString(R.string.backup_filename_extension));
+        	filenameInput = (EditText)rootView.findViewById(R.id.backup_filename);
+        	filenameInput.setText(suggestedBackupFilename.toString());
+        	pathDisplay.setText(getString(R.string.backup_path_text) + " " + DEFAULT_BACKUP_PATH);
+        	
+            return builder.setNegativeButton(R.string.alert_dialog_cancel, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int id) {
+                	closeDialog();
+                }
+            })
+            .setView(rootView)
+            .create();
         }
         
         private void closeDialog() {
@@ -735,14 +784,14 @@ public class PreferencesListFragment extends ListFragment {
         	.setMessage(getArguments().getString(BUNDLE_BODY))
         	
             // Create the 'ok' button
-            .setPositiveButton(R.string.alert_dialog_ok, new DialogInterface.OnClickListener() {
+            .setPositiveButton(R.string.alert_dialog_yes, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int id) {
                 	callback.onDialogSuccess();
                 	closeDialog();
                 }
             })
-	        .setNegativeButton(R.string.alert_dialog_cancel, new DialogInterface.OnClickListener() {
+	        .setNegativeButton(R.string.alert_dialog_no, new DialogInterface.OnClickListener() {
 	            @Override
 	            public void onClick(DialogInterface dialog, int id) {
 	            	closeDialog();
@@ -762,11 +811,39 @@ public class PreferencesListFragment extends ListFragment {
      * I have temporarily merged it
      */
     
-
-	public static void saveBackup(Context context, String filePath, String filename) {
-		Preferences prefs = new Preferences(context);
-		SecretKey key = prefs.getOrCreateSigningKey();
+	public static void saveBackup(Context context, String path, String filename) {
+//		final String thisPath = path;
+//		final String thisFilename = filename;
+		final Context thisContext = context;
+		WriteBackupXmlTask backupTask = new WriteBackupXmlTask(
+				context,
+				path,
+				filename,
+				new IAsyncTaskCallback<Integer>() {
+					@Override
+					public void asyncTaskComplete(Integer param) {
+						Toast toast = null;
+						switch (param) {
+						case WriteBackupXmlTask.BACKUP_WRITE_SUCCESS:
+							toast = Toast.makeText(thisContext, R.string.backup_complete_success, Toast.LENGTH_SHORT);
+							break;
+						case WriteBackupXmlTask.BACKUP_WRITE_FAIL_SIGNING:
+							toast = Toast.makeText(thisContext, R.string.backup_complete_fail_signing, Toast.LENGTH_SHORT);
+							break;
+						case WriteBackupXmlTask.BACKUP_WRITE_FAIL_WRITING:
+							toast = Toast.makeText(thisContext, R.string.backup_complete_fail_writing, Toast.LENGTH_SHORT);
+							break;
+						case WriteBackupXmlTask.BACKUP_WRITE_FAIL_OTHER:
+							toast = Toast.makeText(thisContext, R.string.backup_complete_fail_other, Toast.LENGTH_SHORT);
+							break;
+						}
+						if (toast != null) {
+							toast.show();
+						}
+					}});
+		backupTask.execute();
 	}
+	
 
 	/**
 	 * Checks that a backup file is valid for restoration, and either returns true if the backup
@@ -783,7 +860,7 @@ public class PreferencesListFragment extends ListFragment {
 		File backupFile = new File(filePath, filename);
 		File backupSignature = new File(filePath, filename + ".sig");
 		if (!backupFile.exists()) {
-			return BACKUP_VALIDATION_MISSING_OR_ERROR;
+			return RESTORE_VALIDATION_MISSING_OR_ERROR;
 		}
 		
 		Log.d("PDroidAlternative","Backup file exists: " + backupFile.getAbsolutePath());
@@ -792,13 +869,13 @@ public class PreferencesListFragment extends ListFragment {
 			//read the backup file
 			backupFileBytes = readFileToByteArray(backupFile);
 		} catch (FileNotFoundException e) {
-			return BACKUP_VALIDATION_MISSING_OR_ERROR;
+			return RESTORE_VALIDATION_MISSING_OR_ERROR;
 		} catch (IOException e) {
-			return BACKUP_VALIDATION_MISSING_OR_ERROR;
+			return RESTORE_VALIDATION_MISSING_OR_ERROR;
 		}
 
 		if (!backupSignature.exists()) {
-			return BACKUP_VALIDATION_SIGNATUREMISSING;
+			return RESTORE_VALIDATION_SIGNATUREMISSING;
 		}
 		
 		Log.d("PDroidAlternative","Backup file signature exists: " + backupSignature.getAbsolutePath());
@@ -808,9 +885,9 @@ public class PreferencesListFragment extends ListFragment {
 			//read the backup file
 			backupSignatureBytes = readFileToByteArray(backupSignature);
 		} catch (FileNotFoundException e) {
-			return BACKUP_VALIDATION_SIGNATUREERROR;
+			return RESTORE_VALIDATION_SIGNATUREERROR;
 		} catch (IOException e) {
-			return BACKUP_VALIDATION_SIGNATUREERROR;
+			return RESTORE_VALIDATION_SIGNATUREERROR;
 		}
 
 		try {
@@ -818,9 +895,9 @@ public class PreferencesListFragment extends ListFragment {
 			mac.init(key);
 			byte [] signature = mac.doFinal(backupFileBytes);
 			if (!signature.equals(backupSignatureBytes)) {
-				return BACKUP_VALIDATION_SIGNATUREERROR;
+				return RESTORE_VALIDATION_SIGNATUREERROR;
 			} else {
-				return BACKUP_VALIDATION_OK;
+				return RESTORE_VALIDATION_OK;
 			}
 		} catch (NoSuchAlgorithmException e) {
 			// TODO Auto-generated catch block
@@ -857,6 +934,21 @@ public class PreferencesListFragment extends ListFragment {
         */
 	}
 	
+	public static int validateBackupForWriting(Context context, String filePath, String filename) {
+		//TODO: Move this to an asynctask or thread!
+		Log.d("PDroidAlternative","Validating file " + filename + " for restoration");
+		Preferences prefs = new Preferences(context);
+		File backupFile = new File(filePath, filename);
+		File backupSignature = new File(filePath, filename + ".sig");
+		if (backupFile.exists()) {
+			return BACKUP_VALIDATION_EXISTS;
+		} else if (backupFile.canWrite()) {
+			return BACKUP_VALIDATION_CANT_WRITE;
+		} else {
+			return BACKUP_VALIDATION_OK;
+		}
+	}
+	
     private static File getBackupDirectory(boolean createIfMissing) throws ExternalStorageNotReadyException {
     	if (!Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
     		//Some problem with the external storage: we could check details,
@@ -866,8 +958,9 @@ public class PreferencesListFragment extends ListFragment {
     	
     	//do I need to loop like this to create each directory as a layer?
     	File dir = Environment.getExternalStorageDirectory();
-    	for (int dirLayer = 0; dirLayer < DEFAULT_BACKUP_PATH.length; dirLayer++) {
-    		dir = new File(dir, DEFAULT_BACKUP_PATH[dirLayer]);
+    	String [] splitBackupPath = TextUtils.split(DEFAULT_BACKUP_PATH, "/");
+    	for (int dirLayer = 0; dirLayer < splitBackupPath.length; dirLayer++) {
+    		dir = new File(dir, splitBackupPath[dirLayer]);
     	}
     	if (dir.isDirectory()) {
     		return dir;
@@ -877,14 +970,15 @@ public class PreferencesListFragment extends ListFragment {
     	return null;
     }
 	
-    public static String [] getBackupFileList(File backupDirectory) {    	
+    public static String [] getBackupFileList(File backupDirectory, String fileExtension) {
+    	final String backupFileExtension = fileExtension;
     	String [] backupFiles = null;
     	if (backupDirectory != null) {
     		backupFiles = backupDirectory.list(new FilenameFilter() {
 				
 				@Override
 				public boolean accept(File dir, String filename) {
-					if (filename.toLowerCase().endsWith(".xml")) {
+					if (filename.toLowerCase().endsWith(backupFileExtension)) {
 						return true;
 					} else {
 						return false;
