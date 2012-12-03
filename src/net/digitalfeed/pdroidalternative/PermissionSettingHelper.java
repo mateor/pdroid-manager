@@ -590,7 +590,7 @@ class PermissionSettingHelper {
 
 										try {
 											if (customSettingMethod != null)
-												if (pdroidCoreValue == null || !pdroidCoreValue.isEmpty()) {
+												if (pdroidCoreValue == null || pdroidCoreValue.isEmpty()) {
 													customSettingMethod.invoke(privacySettings, "");
 												} else {
 													customSettingMethod.invoke(privacySettings, pdroidCoreValue);	

@@ -35,6 +35,10 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.Resources;
+import android.graphics.Typeface;
+import android.text.SpannableStringBuilder;
+import android.text.TextUtils;
+import android.text.style.StyleSpan;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -49,6 +53,20 @@ import android.widget.RadioGroup;
 import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.TextView;
 
+
+/**
+ * Adapter to handle the display of PDroidAppSetting details:
+ * It would be better if it were able to handle PDroidSetting and
+ * all subclasses for more flexibility.
+ * 
+ * Right now, the way that onclick handlers are built into the
+ * ArrayAdapter doesn't seem like a good idea - it would probably be
+ * better to have them out in the parent object. Not sure
+ * what the Android idiom is for this.
+ * 
+ * @author smorgan
+ *
+ */
 public class AppDetailAdapter extends ArrayAdapter<PDroidAppSetting>{
 	protected static final int VIEW_TYPE_STANDARD = 0;
 	protected static final int VIEW_TYPE_LOCATION = 1;
@@ -93,6 +111,8 @@ public class AppDetailAdapter extends ArrayAdapter<PDroidAppSetting>{
 
 			holder = new SettingHolder();	
 			holder.settingName = (TextView)row.findViewById(R.id.option_title);
+			holder.customValuePretext = (TextView)row.findViewById(R.id.option_custom_value_pretext);
+			holder.customValue = (TextView)row.findViewById(R.id.option_custom_value);
 			holder.radioGroup = (RadioGroup)row.findViewById(R.id.setting_choice);
 			holder.helpButton = (ImageButton)row.findViewById(R.id.help_button);
 			holder.allowOption = row.findViewById(R.id.option_allow);
@@ -114,7 +134,11 @@ public class AppDetailAdapter extends ArrayAdapter<PDroidAppSetting>{
 		holder.helpButton.setTag(Integer.valueOf(position));
 		holder.radioGroup.setOnCheckedChangeListener(null);
 		PDroidAppSetting setting = settingList.get(position);
+		
 		holder.settingName.setText(setting.getTitle());
+		
+		
+		String customValueText = null;
 		switch (setting.getSelectedOptionBit()){
 		case PDroidSetting.OPTION_FLAG_ALLOW:
 			holder.radioGroup.check(R.id.option_allow);
@@ -124,9 +148,11 @@ public class AppDetailAdapter extends ArrayAdapter<PDroidAppSetting>{
 			break;
 		case PDroidSetting.OPTION_FLAG_CUSTOM:
 			holder.radioGroup.check(R.id.option_custom);
+			customValueText = getCustomValuesText(setting);
 			break;
 		case PDroidSetting.OPTION_FLAG_CUSTOMLOCATION:
 			holder.radioGroup.check(R.id.option_customlocation);
+			customValueText = getCustomValuesText(setting);
 			break;
 		case PDroidSetting.OPTION_FLAG_RANDOM:
 			holder.radioGroup.check(R.id.option_random);
@@ -140,6 +166,15 @@ public class AppDetailAdapter extends ArrayAdapter<PDroidAppSetting>{
 		default:
 			holder.radioGroup.check(R.id.option_allow);
 			break;
+		}
+		
+		if (customValueText == null) {
+			holder.customValue.setVisibility(View.GONE);
+			holder.customValuePretext.setVisibility(View.GONE);
+		} else {
+			holder.customValue.setText(customValueText);
+			holder.customValue.setVisibility(View.VISIBLE);
+			holder.customValuePretext.setVisibility(View.VISIBLE);
 		}
 		
 		int optionsBits = setting.getOptionsBits();
@@ -187,6 +222,8 @@ public class AppDetailAdapter extends ArrayAdapter<PDroidAppSetting>{
 	static class SettingHolder
 	{
 		TextView settingName;
+		TextView customValue;
+		TextView customValuePretext;
 		ImageButton helpButton;
 		RadioGroup radioGroup;
 		View allowOption;
@@ -319,6 +356,7 @@ public class AppDetailAdapter extends ArrayAdapter<PDroidAppSetting>{
 				if (currentSelectedId != PDroidSetting.OPTION_FLAG_NO) setting.setSelectedOptionBit(PDroidSetting.OPTION_FLAG_NO);
 				break;
 			}
+			notifyDataSetChanged();
 		}
 	};
 	
@@ -350,6 +388,31 @@ public class AppDetailAdapter extends ArrayAdapter<PDroidAppSetting>{
 	       });
 		AlertDialog dialog = builder.create();
 		dialog.show();
+	}
+	
+	private String getCustomValuesText(PDroidAppSetting setting) {
+		if (setting.getCustomValues() != null && setting.getCustomValues().size() > 0) {
+			List<String> customValueStrings = new LinkedList<String>();
+			for (SimpleImmutableEntry<String, String> customValue : setting.getCustomValues()) {
+				SpannableStringBuilder builder = new SpannableStringBuilder();
+				if (customValue.getKey() != null && !(customValue.getKey().isEmpty())) {
+					builder.append(customValue.getKey()).append(":");
+				}
+				if (customValue.getValue() != null && !(customValue.getValue().isEmpty())) {
+					builder.append(customValue.getValue());
+					builder.setSpan(new StyleSpan(Typeface.ITALIC), builder.length() - customValue.getValue().length(), builder.length(), 0);
+				}
+				
+				if (!builder.toString().isEmpty()) {
+					customValueStrings.add(builder.toString());
+				}
+			}
+			
+			if (customValueStrings.size() > 0) {
+				return TextUtils.join(context.getString(R.string.detail_custom_value_spacer), customValueStrings);
+			}
+		}
+		return null;
 	}
 
 }

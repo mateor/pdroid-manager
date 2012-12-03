@@ -102,22 +102,45 @@
 
 		</RadioGroup>
 		
-	    <TextView
-	        android:id="@+id/option_title"
-	        android:layout_width="wrap_content"
-	        android:layout_height="fill_parent"
-	        android:gravity="center_vertical"
-	        android:textSize="16sp"
-	        android:layout_alignParentLeft="true" />
-	    <ImageButton 
+		<ImageButton 
 	        android:id="@+id/help_button"
 	        android:layout_width="40dp"
 	        android:layout_height="40dp"
 	        android:padding="0dp"
-	        android:layout_marginLeft="4dp"
 	        android:gravity="center_vertical"
-			android:layout_toRightOf="@+id/option_title"
 			android:src="@drawable/button_help"
 			android:contentDescription="@string/button_help_text"
+			android:layout_alignParentLeft="true"
 	        />
+		<RelativeLayout
+		    android:layout_width="wrap_content"
+	        android:layout_height="fill_parent"
+	        android:gravity="center_vertical"
+			android:layout_toRightOf="@+id/help_button" >
+	        android:layout_marginLeft="4dp"
+		    <TextView
+		        android:id="@+id/option_title"
+		        android:layout_width="wrap_content"
+		        android:layout_height="fill_parent"
+		        android:textSize="16sp"
+		         />
+			<TextView
+		        android:id="@+id/option_custom_value_pretext"
+		        android:layout_width="wrap_content"
+		        android:layout_height="fill_parent"
+		        android:layout_below="@+id/option_title"
+		        android:textSize="12sp"
+		        android:text="@string/detail_customvalue_pretext"
+		        android:visibility="gone"
+		         />
+		    <TextView
+		        android:id="@+id/option_custom_value"
+		        android:layout_width="wrap_content"
+		        android:layout_height="fill_parent"
+		        android:layout_below="@+id/option_title"
+		        android:layout_toRightOf="@+id/option_custom_value_pretext"
+		        android:textSize="12sp"
+		        android:visibility="gone"
+		         />
+	    </RelativeLayout>
 </RelativeLayout>

@@ -122,6 +122,7 @@
     
     <string name="detail_notifyonaccess_text">Notify on access</string>
     <string name="detail_logonaccess_text">Log access</string>
+    <string name="detail_customvalue_pretext">Custom:</string>
     
 	<string name="help_dialog_OKtext">OK</string>
 	<string name="button_help_text">Help</string>
@@ -217,5 +218,6 @@ alternative name, rather than the name pdroid-manager.</p>
 ]]></string>
     
     <string name="application_list_app_spacer" translatable="false">&#160;|&#160;</string>
+    <string name="detail_custom_value_spacer" translatable="false">&#160;|&#160;</string>
 	<string name="backup_filename_extension" translatable="false">.xml</string>
 </resources>
