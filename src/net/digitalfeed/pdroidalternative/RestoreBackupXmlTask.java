@@ -43,7 +43,7 @@ public class RestoreBackupXmlTask extends AsyncTask<Void, Void, Integer> {
 		if (context == null || path == null || filename == null) {
 			throw new InvalidParameterException("Context, path and filename must be provided to write backup");
 		}
-		Log.d("PDroidAlternative","Starting to write backup");
+		
 		this.context = context;
 		this.path = path;
 		this.filename = filename;
@@ -106,7 +106,7 @@ public class RestoreBackupXmlTask extends AsyncTask<Void, Void, Integer> {
 			if (node.getNodeType() == Node.ELEMENT_NODE) {
 				Element appElement = (Element)node;
 				packageName = appElement.getAttribute(PreferencesListFragment.BACKUP_XML_APP_NODE_PACKAGENAME_ATTRIBUTE);
-				Log.d("PDroidAlternative", "Restoring package " + packageName);
+
 				privacySettings = privacySettingsManager.getSettings(packageName);
 				try {
 					if (privacySettings == null) {
@@ -114,15 +114,13 @@ public class RestoreBackupXmlTask extends AsyncTask<Void, Void, Integer> {
 						pkgInfo = pkgMgr.getPackageInfo(packageName, 0);
 						uid = pkgInfo.applicationInfo.uid;
 						privacySettings = new PrivacySettings(null, packageName, uid);
-					} else {
-						Log.d("PDroidAlternative", "PrivacySettings already present for " + packageName + ": overwriting");
 					}
 					
 					if (privacySettings != null) {
-						Log.d("PDroidAlternative", "Restoring settings from XML:  " + packageName);
 						psh.setPrivacySettingsFromXml(db, privacySettings, appElement);
 						privacySettingsManager.saveSettings(privacySettings);
 					}
+					
 				} catch (NameNotFoundException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();

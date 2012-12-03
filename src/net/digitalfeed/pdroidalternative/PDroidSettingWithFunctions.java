@@ -28,7 +28,6 @@ package net.digitalfeed.pdroidalternative;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;
-
 import android.privacy.PrivacySettings;
 
 class PDroidSettingWithFunctions extends PDroidSetting {
@@ -72,11 +71,15 @@ class PDroidSettingWithFunctions extends PDroidSetting {
 			this.getValueMethods = new HashMap<String, Method>();
 		}
 		
+		StringBuilder methodName = new StringBuilder("get").append(valueFunctionNameStub);
+		if (!valueName.equals("")) {
+			methodName.append(valueName);
+		}
 		Method getValueMethod = null;
 		
 		if (!this.getValueMethods.containsKey(valueName)) {
 			try {
-				getValueMethod = PrivacySettings.class.getMethod("get" + valueFunctionNameStub + valueName);
+				getValueMethod = PrivacySettings.class.getMethod(methodName.toString());
 				this.getValueMethods.put(valueName, getValueMethod);
 			} catch (NoSuchMethodException e) {
 				// TODO Auto-generated catch block
@@ -94,11 +97,15 @@ class PDroidSettingWithFunctions extends PDroidSetting {
 			this.setValueMethods = new HashMap<String, Method>();
 		}
 		
+		StringBuilder methodName = new StringBuilder("set").append(valueFunctionNameStub);
+		if (!valueName.equals("")) {
+			methodName.append(valueName);
+		}
 		Method setValueMethod = null;
 		
 		if (!this.setValueMethods.containsKey(valueName)) {
 			try {
-				setValueMethod = PrivacySettings.class.getMethod("set" + valueFunctionNameStub + valueName);
+				setValueMethod = PrivacySettings.class.getMethod(methodName.toString(), String.class);
 				this.setValueMethods.put(valueName, setValueMethod);
 			} catch (NoSuchMethodException e) {
 				// TODO Auto-generated catch block

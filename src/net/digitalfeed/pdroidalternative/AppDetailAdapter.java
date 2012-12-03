@@ -197,7 +197,7 @@ public class AppDetailAdapter extends ArrayAdapter<PDroidAppSetting>{
 		View denyOption;
 		View noOption;
 	}
-	
+	//TODO: Convert this to a DialogFragment?
 	public void showCustomValueBox(PDroidAppSetting appSetting) {
 		List<SimpleImmutableEntry<String,String>> customValues = appSetting.getCustomValues();
 		if (customValues == null) {

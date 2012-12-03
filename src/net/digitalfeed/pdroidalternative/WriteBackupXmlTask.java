@@ -27,6 +27,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import android.content.Context;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
@@ -52,7 +53,7 @@ public class WriteBackupXmlTask extends AsyncTask<Void, Void, Integer> {
 		if (context == null || path == null || filename == null) {
 			throw new InvalidParameterException("Context, path and filename must be provided to write backup");
 		}
-		Log.d("PDroidAlternative","Starting to write backup");
+
 		this.context = context;
 		this.path = path;
 		this.filename = filename;
@@ -64,6 +65,14 @@ public class WriteBackupXmlTask extends AsyncTask<Void, Void, Integer> {
 	
 	@Override
 	protected Integer doInBackground(Void... params) {
+		//Get the version code to write to the backup. Allows for future compatibility handling if required. 
+		int versionCode = 0;
+		try {
+			versionCode = context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionCode;
+		} catch (NameNotFoundException e) {
+			e.printStackTrace();
+		}
+		
 		DocumentBuilder documentBuilder;
 		DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
 		
@@ -76,12 +85,14 @@ public class WriteBackupXmlTask extends AsyncTask<Void, Void, Integer> {
 			return BACKUP_WRITE_FAIL_OTHER;
 		}
 
-		Document document = documentBuilder.newDocument(); 
-		Element root = document.createElement(PreferencesListFragment.BACKUP_XML_ROOT_NODE);
-		document.appendChild(root);
-		
 		PrivacySettingsManager privacySettingsManager = (PrivacySettingsManager)context.getSystemService("privacy");
 		PrivacySettings privacySettings;
+		
+		Document document = documentBuilder.newDocument(); 
+		Element root = document.createElement(PreferencesListFragment.BACKUP_XML_ROOT_NODE);
+		root.setAttribute(PreferencesListFragment.BACKUP_XML_APP_VERSION_ATTRIBUTE, Integer.toString(versionCode));
+		root.setAttribute(PreferencesListFragment.BACKUP_XML_APP_VERSION_ATTRIBUTE, Double.toString(privacySettingsManager.getVersion()));
+		document.appendChild(root);
 		
 		DBInterface dbinterface = DBInterface.getInstance(context);
 		SQLiteDatabase db = dbinterface.getDBHelper().getReadableDatabase();
@@ -98,7 +109,6 @@ public class WriteBackupXmlTask extends AsyncTask<Void, Void, Integer> {
 
 			do {
 	    		packageName = cursor.getString(packageNameColumn);
-	    		Log.d("PDroidAlternative","Backing up: " + packageName);
 	    		privacySettings = privacySettingsManager.getSettings(packageName);
 	    		if (privacySettings != null) {
 		    		Element appNode = psh.getPrivacySettingsXml(db, privacySettings, document);

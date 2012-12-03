@@ -493,7 +493,6 @@ class PermissionSettingHelper {
 					}
 				}
 				app.appendChild(setting);
-				Log.d("PDroidAlternative", "appending child");
 			}
 			
 			return app;

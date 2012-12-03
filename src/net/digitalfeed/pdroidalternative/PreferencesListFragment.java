@@ -62,6 +62,8 @@ public class PreferencesListFragment extends ListFragment {
 	private static final int RESTORE_VALIDATION_MISSING_OR_ERROR = 4;
 	
 	public static final String BACKUP_XML_ROOT_NODE = "pdroidmanager";
+	public static final String BACKUP_XML_APP_VERSION_ATTRIBUTE = "creatingversion";
+	public static final String BACKUP_XML_PDROID_VERSION_ATTRIBUTE = "pdroidversion";
 	public static final String BACKUP_XML_APP_NODE = "app";
 	public static final String BACKUP_XML_APP_NODE_PACKAGENAME_ATTRIBUTE = "packagename"; //attribute of the app node which holds the package name
 	public static final String BACKUP_XML_SETTING_ATTRIBUTE = "setting"; //XML attribute which holds the 'setting' - i.e. real, custom, etc.
@@ -390,7 +392,6 @@ public class PreferencesListFragment extends ListFragment {
 				final String thisPath = path;
 				final String thisFilename = filename;
 
-				Log.d("PDroidAlternative","OnDialogSuccess Callback from load dialog with " + path + " " + filename);
         		//an option is selected; restore the backup
 				switch (validateBackupForRestoring(getActivity(), path, filename)) {
 				case RESTORE_VALIDATION_OK:
@@ -448,14 +449,11 @@ public class PreferencesListFragment extends ListFragment {
 				final String thisPath = path;
 				final String thisFilename = filename;
 				
-				Log.d("PDroidAlternative","OnDialogSuccess Callback from load dialog with " + path + " " + filename);
 				switch (validateBackupForWriting(getActivity(), path, filename)) {
 				case BACKUP_VALIDATION_OK:
-					Log.d("PDroidAlternative", "Backup Success");
 					saveBackup(getActivity(), path, filename);
 					break;
 				case BACKUP_VALIDATION_EXISTS:
-					Log.d("PDroidAlternative", "target file exists");
         			showConfirmationDialog(
         					getString(R.string.backup_dialog_title),
         					getString(R.string.backup_message_file_exists) + "\n" + getString(R.string.backup_dialog_continue_prompt),
@@ -469,10 +467,9 @@ public class PreferencesListFragment extends ListFragment {
 					break;
 				case BACKUP_VALIDATION_CANT_WRITE:
 					showInformationDialog(getString(R.string.backup_failed_dialog_title), getString(R.string.backup_complete_fail_writing));
-					Log.d("PDroidAlternative", "Can't write to target file");
 					break;
 				default:
-					Log.d("PDroidAlternative", "Something went horribly wrong");
+					throw new RuntimeException("An unknown error has occurred during backup preparation.");
 				}
 			}
         });        
@@ -620,7 +617,12 @@ public class PreferencesListFragment extends ListFragment {
     }
     
 
-    
+    /**
+     * Dialog to select the backup file to be restored.
+     * Uses a callback to provide the path and filename to the next step 
+     * @author smorgan
+     *
+     */
     public static class LoadBackupDialogFragment extends DialogFragment {
     	public static CharSequence selectedBackupFilename = null;
     	public static String backupPath = null;
@@ -641,7 +643,8 @@ public class PreferencesListFragment extends ListFragment {
         	AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         	//builder.setIcon(R.drawable.alert_dialog_icon)
         	builder.setTitle(R.string.restore_dialog_title)
-            // Create the 'ok' button
+
+        	// Create the 'ok' button
             .setPositiveButton(R.string.alert_dialog_ok, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int id) {
@@ -693,7 +696,11 @@ public class PreferencesListFragment extends ListFragment {
         }
     }
     
-    
+    /**
+     * Dialog to choose the filename of the backup file to be created
+     * @author smorgan
+     *
+     */
     public static class SaveBackupDialogFragment extends DialogFragment {
     	public static String backupPath = null;
     	public static DialogCallbackWithFilename callback;
@@ -716,13 +723,11 @@ public class PreferencesListFragment extends ListFragment {
                 @Override
                 public void onClick(DialogInterface dialog, int id) {
                 	if (filenameInput == null) {
-                    		Log.d("PDroidAlternative","Filename Input is null, which is a bit weird: something wrong with the dialog?");
-                    		closeDialog();
+                		throw new RuntimeException("Filename from the SaveBackupDialog input is null"); 
                 	} else {
                 		String backupFilename = filenameInput.getText().toString();
                 		if (backupFilename == null || backupFilename.isEmpty()) {
-                    		Log.d("PDroidAlternative","Backup Filename is blank");
-                    		closeDialog();
+                			throw new RuntimeException("Filename from the SaveBackupDialog input is blank");
                 		} else {
                 			callback.onDialogSuccess(backupPath, backupFilename);
                 		}
@@ -770,7 +775,11 @@ public class PreferencesListFragment extends ListFragment {
         }
     }
     
-    
+    /**
+     * General purpose confirmation dialog, with 'yes' and 'no' options
+     * @author smorgan
+     *
+     */
     public static class ConfirmationDialogFragment extends DialogFragment {
     	private static DialogCallback callback;
     	
@@ -821,10 +830,22 @@ public class PreferencesListFragment extends ListFragment {
     
 
     /**
-     * Backup save/loading code is below here. I'd like to have it in its own class, but due to variable access requests between classes, callbacks, etc
+     * Backup save/loading code is below here. I'd like to have it in its own class,
+     * but due to variable access requests between classes, callbacks, etc.
      * I have temporarily merged it
      */
     
+    /**
+     * Start an AsyncTask to write the backup file and associated signature.
+     * This will overwrite files without confirmation - it assumes the user
+     * has been prompted.
+     * Shows a toast with a message when completed
+     * 
+     * @param context
+     * @param path  Path to which the backup file should be written
+     * @param filename  Backup filename to write. A file with this filename and
+	 *			'.sig' postfix will also be created for the signature.
+     */
 	public static void saveBackup(Context context, String path, String filename) {
 		final Context thisContext = context;
 		WriteBackupXmlTask backupTask = new WriteBackupXmlTask(
@@ -858,15 +879,15 @@ public class PreferencesListFragment extends ListFragment {
 	
 
 	/**
-	 * Checks that a backup file is valid for restoration, and either returns true if the backup
-	 * is fine to restore, otherwise throws an exception
+	 * Checks that a backup file is valid for restoration.
+	 *
 	 * @param context
-	 * @param filePath
-	 * @param filename
+	 * @param filePath  Path containing the backup file
+	 * @param filename  Filename of the backup file to be restored
+	 * @return  RESTORE_VALIDATION_* value to identify the outcome of the check. 
 	 */
 	public static int validateBackupForRestoring(Context context, String filePath, String filename) {
-		//TODO: Move this to an asynctask or thread!
-		Log.d("PDroidAlternative","Validating file " + filename + " for restoration");
+		//TODO: Consider moving this so it doesn't run on the UI thread
 		Preferences prefs = new Preferences(context);
 		SecretKey key = prefs.getOrCreateSigningKey();
 		File backupFile = new File(filePath, filename);
@@ -875,30 +896,33 @@ public class PreferencesListFragment extends ListFragment {
 			return RESTORE_VALIDATION_MISSING_OR_ERROR;
 		}
 		
-		Log.d("PDroidAlternative","Backup file exists: " + backupFile.getAbsolutePath());
+		//Check that the backup file exists and read it
 		byte[] backupFileBytes;
 		try {
-			//read the backup file
 			backupFileBytes = readFileToByteArray(backupFile);
 		} catch (FileNotFoundException e) {
+			e.printStackTrace();
 			return RESTORE_VALIDATION_MISSING_OR_ERROR;
 		} catch (IOException e) {
+			e.printStackTrace();
 			return RESTORE_VALIDATION_MISSING_OR_ERROR;
 		}
 
+		//The backup file exists and was read successfully
+		//Check that the signature file is present and read it
 		if (!backupSignature.exists()) {
 			return RESTORE_VALIDATION_SIGNATUREMISSING;
 		}
 		
-		Log.d("PDroidAlternative","Backup file signature exists: " + backupSignature.getAbsolutePath());
-		
+		//The signature file was loaded. Check the validity of the backup signature.
 		byte[] backupSignatureBytes;
 		try {
-			//read the backup file
 			backupSignatureBytes = readFileToByteArray(backupSignature);
 		} catch (FileNotFoundException e) {
+			e.printStackTrace();
 			return RESTORE_VALIDATION_SIGNATUREERROR;
 		} catch (IOException e) {
+			e.printStackTrace();
 			return RESTORE_VALIDATION_SIGNATUREERROR;
 		}
 
@@ -906,11 +930,6 @@ public class PreferencesListFragment extends ListFragment {
 			Mac mac = Mac.getInstance("HmacSHA1");
 			mac.init(key);
 			byte [] signature = mac.doFinal(backupFileBytes);
-/*			if (!signature.equals(backupSignatureBytes)) {
-				return RESTORE_VALIDATION_SIGNATUREERROR;
-			} else {
-				return RESTORE_VALIDATION_OK;
-			}*/
 			if (signature.length != backupSignatureBytes.length) {
 				return RESTORE_VALIDATION_SIGNATUREERROR; 
 			}
@@ -923,14 +942,23 @@ public class PreferencesListFragment extends ListFragment {
 		} catch (NoSuchAlgorithmException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			throw new RuntimeException("Unknown algorith HmacSHA1");
+			throw new RuntimeException("The HmacSHA1 could not be loaded");
 		} catch (InvalidKeyException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-			throw new RuntimeException("Invalid key for HmacSHA1");
+			throw new RuntimeException("The HmacSHA1 key returned was invalid");
 		}
 	}
 	
+	/**
+	 * Start the restore backup AsyncTask to restore data from backup. This function
+	 * assumed that the file is present and that the signature has been checked
+	 * (or ignored by the user). 
+	 *  
+	 * @param context
+	 * @param path  Path to backup file to be restored
+	 * @param filename  Filename of backup file to be restored
+	 */
 	private static void restoreFromBackup(Context context, String path, String filename) {
 		final Context thisContext = context;
 		RestoreBackupXmlTask backupTask = new RestoreBackupXmlTask(
@@ -960,35 +988,21 @@ public class PreferencesListFragment extends ListFragment {
 						}
 					}});
 		backupTask.execute();
-		/*		File file = new File(path, filename);
-		FileInputStream fileIn = new FileInputStream(file);
-		XmlPullParser parser = Xml.newPullParser();
-        parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
-        parser.setInput(fileIn, null);
-        parser.nextTag();
-        parser.require(XmlPullParser.START_TAG, ns, "pdroidmanagerbackup");
-        List entries = new ArrayList();
-        while (parser.next() != XmlPullParser.END_TAG) {
-            if (parser.getEventType() != XmlPullParser.START_TAG) {
-                continue;
-            }
-            String name = parser.getName();
-            // Starts by looking for the entry tag
-            if (name.equals("entry")) {
-                entries.add(readEntry(parser));
-            } else {
-                skip(parser);
-            }
-        }  
-        */
 	}
 	
+	/**
+	 * Checks that a backup filename is valid for writing - checks if the file exists,
+	 * whether the external storage is mounted, and whether the destination is writable.
+	 * Doesn't check if the signature file exists or can be written. Maybe it should..?
+	 *  
+	 * @param context
+	 * @param filePath  Path to which the backup file will be written
+	 * @param filename  Filename with which the backup will be created
+	 * @return  Outcome of the checks (BACKUP_VALIDATION_*)
+	 */
 	public static int validateBackupForWriting(Context context, String filePath, String filename) {
-		//TODO: Move this to an asynctask or thread!
-		Log.d("PDroidAlternative","Validating file " + filename + " for restoration");
-		Preferences prefs = new Preferences(context);
+		//TODO: Consider moving this to an AsyncTask or thread!
 		File backupFile = new File(filePath, filename);
-		File backupSignature = new File(filePath, filename + ".sig");
 		if (backupFile.exists()) {
 			return BACKUP_VALIDATION_EXISTS;
 		} else if (backupFile.canWrite()) {
@@ -998,6 +1012,12 @@ public class PreferencesListFragment extends ListFragment {
 		}
 	}
 	
+	/**
+	 * Gets a File handle to the backup directory
+	 * @param createIfMissing  If true, will create the backup directory if it doesn't exist
+	 * @return  File handle to backup
+	 * @throws ExternalStorageNotReadyException
+	 */
     private static File getBackupDirectory(boolean createIfMissing) throws ExternalStorageNotReadyException {
     	if (!Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
     		//Some problem with the external storage: we could check details,
@@ -1019,6 +1039,13 @@ public class PreferencesListFragment extends ListFragment {
     	return null;
     }
 	
+    /**
+     * Returns an array of files with the provided file extension in the backup directory
+     * 
+     * @param backupDirectory  Directory to be listed
+     * @param fileExtension  File extensions to include
+     * @return
+     */
     public static String [] getBackupFileList(File backupDirectory, String fileExtension) {
     	final String backupFileExtension = fileExtension;
     	String [] backupFiles = null;
@@ -1048,6 +1075,13 @@ public class PreferencesListFragment extends ListFragment {
     	return backupFiles;
     }
     
+    /**
+     * Loads a file into a byte array and returns it
+     * @param file  File to load into a byte array
+     * @return  byte array of the file
+     * @throws FileNotFoundException
+     * @throws IOException
+     */
     private static byte [] readFileToByteArray(File file) throws FileNotFoundException, IOException {
 		FileInputStream fileIn = new FileInputStream(file);
 		byte[] bytes; 

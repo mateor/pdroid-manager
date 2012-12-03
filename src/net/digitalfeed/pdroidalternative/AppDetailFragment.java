@@ -43,23 +43,31 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.ListView;
 
+/**
+ * Fragment for viewing and modifying the settings of an application.
+ * I plan to make a superclass which allows for managing settings more
+ * generically, rather than attached to a specific application. That superclass
+ * could then be used for modifying profiles, setting up batch operations, etc.
+ * @author smorgan
+ *
+ */
 public class AppDetailFragment extends Fragment {
 		
-	private Application application;
-	private List<PDroidAppSetting> settingList;
-	private boolean settingsAreLoaded = false;
-	private String packageName = null;
+	private String packageName = null; //package name of the app being loaded/displayed
+	private Application application; //stores an application object for the app being displayed
+	private List<PDroidAppSetting> settingList; //List of settings objects
+	private boolean settingsAreLoaded = false; //Used to determine whether the loading dialog should be displayed when the app becomes visible
 	
 	private View rootView;
 	private ListView listView;
 	
 	private Context context;
-	private boolean inApp = false;
+	private boolean inApp = false; //identifies whether in an app or not, which changes the 'up' or 'back' button behaviour 
 	
-	private ProgressDialog progDialog ;
+	private ProgressDialog progDialog; //a holder for progress dialogs which are displayed
 	
-	OnDetailActionListener callback;
-	
+	OnDetailActionListener callback; //callback for when an action occurs (i.e. save, close, delete, up).
+	//Interface for callbacks
 	public interface OnDetailActionListener {
 		public void onDetailSave();
 		public void onDetailClose();
@@ -73,6 +81,7 @@ public class AppDetailFragment extends Fragment {
 		super.onAttach(activity);
 		this.context = activity;
 		
+		//TODO: Move this to the activity, and make a function call to the fragment to load the app?
         Bundle bundle = activity.getIntent().getExtras();
         //if we have a bundle, we can load the package. Otherwise, we do no such thing
         if (bundle != null) {
@@ -84,6 +93,7 @@ public class AppDetailFragment extends Fragment {
 	         */
 	        this.inApp = bundle.getBoolean(AppDetailActivity.BUNDLE_IN_APP, false);
         } else {
+        	//if no bundle has been provided, then there is no need for the dialog, so make sure it doesn't display on load
         	settingsAreLoaded = true;
         }
         
@@ -103,11 +113,14 @@ public class AppDetailFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         //if the packageName is null, then we just hang out until we get something from the other frame
+        //otherwise, load the application
         if (this.packageName != null) {
 	        ApplicationLoadTask appDetailAppLoader = new ApplicationLoadTask(context, new AppDetailAppLoaderTaskCompleteHandler());
 	        appDetailAppLoader.execute(packageName);
         }
         
+        // need to notify do this to notify the activity that
+        // this fragment will contribute to the action menu
         setHasOptionsMenu(true);
     }
 
@@ -193,16 +206,14 @@ public class AppDetailFragment extends Fragment {
     /**
      * Triggers the load of details for the incoming application, totally ignoring
      * the state of the current application that may or may not have
-     * been modified. Used to receive input from other fragments
+     * been modified. Used to receive input from other fragments.
      * 
      * @param packageName
      */
     public void loadApplicationDetail(String packageName) {
-    	Log.d("PDroidAlternative","Fragment has been told to load " + packageName);
     	if (packageName != null) {
     		showDialog(null, getString(R.string.detail_dialog_loading_message));
     		this.packageName = packageName;
-    		Log.d("PDroidAlternative","Fragment is about to load " + packageName);
 	        ApplicationLoadTask appDetailAppLoader = new ApplicationLoadTask(context, new AppDetailAppLoaderTaskCompleteHandler());
 	        appDetailAppLoader.execute(packageName);
     	}
