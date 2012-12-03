@@ -27,6 +27,7 @@ import android.app.DialogFragment;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.app.ListFragment;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -37,7 +38,6 @@ import android.os.Environment;
 import android.text.Html;
 import android.text.TextUtils;
 import android.text.method.LinkMovementMethod;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -58,7 +58,7 @@ public class PreferencesListFragment extends ListFragment {
 	private static final int RESTORE_VALIDATION_OK = 0;
 	private static final int RESTORE_VALIDATION_SIGNATUREERROR = 1;
 	private static final int RESTORE_VALIDATION_SIGNATUREMISSING= 2;
-	private static final int RESTORE_VALIDATION_INVALID = 3;
+	//private static final int RESTORE_VALIDATION_INVALID = 3;
 	private static final int RESTORE_VALIDATION_MISSING_OR_ERROR = 4;
 	
 	public static final String BACKUP_XML_ROOT_NODE = "pdroidmanager";
@@ -85,6 +85,8 @@ public class PreferencesListFragment extends ListFragment {
 	Preferences prefs;
 	PreferencesAdapter adapter;
 	private final List<BasePreference> preferences = new ArrayList<BasePreference>(10);
+	
+	ProgressDialog progDialog = null; // used to store the progress dialog from start to end of AsyncTasks
 	
 	public interface ListItemClickListener {
 		public void onListItemClick (ListView l, View v, int position, long id);
@@ -961,6 +963,11 @@ public class PreferencesListFragment extends ListFragment {
 	 */
 	private static void restoreFromBackup(Context context, String path, String filename) {
 		final Context thisContext = context;
+		final ProgressDialog progDialog = showDialog(
+				context,
+				context.getString(R.string.restore_progress_dialog_title),
+				context.getString(R.string.restore_progress_dialog_message));
+		
 		RestoreBackupXmlTask backupTask = new RestoreBackupXmlTask(
 				context,
 				path,
@@ -972,15 +979,19 @@ public class PreferencesListFragment extends ListFragment {
 						switch (param) {
 						case RestoreBackupXmlTask.BACKUP_RESTORE_SUCCESS:
 							toast = Toast.makeText(thisContext, R.string.restore_complete_success, Toast.LENGTH_SHORT);
+							progDialog.dismiss();
 							break;
 						case RestoreBackupXmlTask.BACKUP_RESTORE_FAIL_INVALID:
 							toast = Toast.makeText(thisContext, R.string.restore_complete_fail_invalid, Toast.LENGTH_SHORT);
+							progDialog.dismiss();
 							break;
 						case RestoreBackupXmlTask.BACKUP_RESTORE_FAIL_READING:
 							toast = Toast.makeText(thisContext, R.string.restore_complete_fail_reading, Toast.LENGTH_SHORT);
+							progDialog.dismiss();
 							break;
 						case RestoreBackupXmlTask.BACKUP_RESTORE_FAIL_OTHER:
 							toast = Toast.makeText(thisContext, R.string.restore_complete_fail_other, Toast.LENGTH_SHORT);
+							progDialog.dismiss();
 							break;
 						}
 						if (toast != null) {
@@ -1096,4 +1107,30 @@ public class PreferencesListFragment extends ListFragment {
 		fileIn.close();
 		return bytes;
     }
+    
+    
+    /**
+     * Helper to show a non-cancellable spinner progress dialog
+     * 
+     * @param title  Title for the progress dialog (or null for none)
+     * @param message  Message for the progress dialog (or null for none)
+     * @param type  ProgressDialog.x for the type of dialog to be displayed
+     */
+	private static ProgressDialog showDialog(Context context, String title, String message, int type) {
+		ProgressDialog progDialog = new ProgressDialog(context);
+		progDialog.setProgressStyle(type);
+		if (title != null) {
+			progDialog.setTitle(title);
+		}
+		if (message != null) {
+			progDialog.setMessage(message);
+		}
+    	progDialog.setCancelable(false);
+    	progDialog.show();
+    	return progDialog;
+	}
+	
+	private static ProgressDialog showDialog(Context context, String title, String message) {
+		return showDialog(context, title, message, ProgressDialog.STYLE_SPINNER);
+	}
 }

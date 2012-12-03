@@ -5,7 +5,6 @@ import java.util.Locale;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.database.sqlite.SQLiteDatabase;
-import android.util.Log;
 
 public class LanguageHelper {
 
