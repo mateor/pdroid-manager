@@ -12,11 +12,11 @@
     <string name="app_list_menu_refresh">App-Liste neu laden</string>
 
     <string name="permission_label_writeprivacysettings">PDroid Einstellungen &#228;ndern</string>
-    <string name="permission_description_writeprivacysettings">Erlaubt die &#196;nderung von mit Apps verbundenen PDroid Einstellungen</string>
+    <string name="permission_description_writeprivacysettings">&#196;nderung von mit Apps verbundenen PDroid Einstellungen</string>
     <string name="permission_label_readprivacysettings">PDroid Einstellungen lesen</string>
-    <string name="permission_description_readprivacysettings">Erlaubt das Lesen von mit Apps verbundenen PDroid Einstellungen.</string>
+    <string name="permission_description_readprivacysettings">Lesen von mit Apps verbundenen PDroid Einstellungen.</string>
     <string name="permission_label_manageprivacycontrollers">PDroid Verwaltungs Apps konfigurieren</string>
-    <string name="permission_description_manageprivacycontrollers">Erlaubt es zu konfigurieren, welche Apps PDroid Einstellungen &#228;ndern k&#246;nnen.</string>
+    <string name="permission_description_manageprivacycontrollers">konfigurieren, welche Apps PDroid Einstellungen &#228;ndern k&#246;nnen.</string>
 
     <string name="title_activity_app_detail">App</string>
     <string name="app_list_app_icon_text">App Icon</string>
