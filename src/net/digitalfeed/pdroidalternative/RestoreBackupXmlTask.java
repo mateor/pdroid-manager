@@ -1,27 +1,13 @@
 package net.digitalfeed.pdroidalternative;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.security.InvalidKeyException;
 import java.security.InvalidParameterException;
-import java.security.NoSuchAlgorithmException;
-import java.util.Properties;
 
-import javax.crypto.Mac;
 import javax.crypto.SecretKey;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerConfigurationException;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -33,7 +19,6 @@ import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.privacy.PrivacySettings;
@@ -134,6 +119,7 @@ public class RestoreBackupXmlTask extends AsyncTask<Void, Void, Integer> {
 					}
 					
 					if (privacySettings != null) {
+						Log.d("PDroidAlternative", "Restoring settings from XML:  " + packageName);
 						psh.setPrivacySettingsFromXml(db, privacySettings, appElement);
 						privacySettingsManager.saveSettings(privacySettings);
 					}

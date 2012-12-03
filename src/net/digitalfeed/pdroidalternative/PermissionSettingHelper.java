@@ -68,7 +68,7 @@ class PermissionSettingHelper {
 	private List<SimpleImmutableEntry<Method,String>> permissionReadMethods = null;
 	private List<SimpleImmutableEntry<Method,String>> permissionWriteMethods = null;
 	private List<PDroidSettingWithFunctions> settingList = null;
-	private HashMap<String, PDroidSettingWithFunctions> settingMap= null;
+	private HashMap<String, PDroidSettingWithFunctions> settingMap = null;
 	
 	public PermissionSettingHelper() {};
 	
@@ -376,17 +376,6 @@ class PermissionSettingHelper {
 			}
 		}
 		
-		private class SettingFunctions {
-			public String name;
-			public Method settingFunctionName;
-			public Method valueFunctionNameStub;
-			
-			public SettingFunctions(String name, Method settingFunctionName, Method valueFunctionNameStub) {
-				this.name = name;
-				this.settingFunctionName = settingFunctionName;
-				this.valueFunctionNameStub = valueFunctionNameStub;
-			}
-		}
 		
 		/**
 		 * Calls the 'setting function' on a PrivacyObject for each known setting (using reflection)
@@ -408,18 +397,22 @@ class PermissionSettingHelper {
 			}
 						
 			if (this.settingList == null) {
+				Log.d("PDroidAlternative", "Loading settinglist");
 				loadSettingsList(db);
 			}
-
+						
+			Log.d("PDroidAlternative", "getPrivacySettingsXml for " + privacySettings.getPackageName());
 			
 			Element app = document.createElement(PreferencesListFragment.BACKUP_XML_APP_NODE);
 			app.setAttribute("packagename", privacySettings.getPackageName());
 			Element setting;
 			
 			byte pdroidCoreSetting = 0;
-			String pdroidCoreValue = null; 
+			Object pdroidCoreValue = null;
 			
 			for (PDroidSettingWithFunctions row : this.settingList) {
+				Log.d("PDroidAlternative", "Processing row " + row.name);
+				
 				try {
 					pdroidCoreSetting = (Byte)row.getGetSettingMethod().invoke(privacySettings);
 				} catch (IllegalArgumentException e) {
@@ -437,28 +430,33 @@ class PermissionSettingHelper {
 				}
 
 				setting = document.createElement(row.name);
-
+								
 				switch (pdroidCoreSetting) {
 				case PrivacySettings.REAL:
+					Log.d("PDroidAlternative", "REAL " + row.name);
 					setting.setAttribute(PreferencesListFragment.BACKUP_XML_SETTING_ATTRIBUTE, BACKUP_SETTING_REAL);
 					break;
 				case PrivacySettings.CUSTOM:
+					Log.d("PDroidAlternative", "CUSTOM " + row.name);
 					setting.setAttribute(PreferencesListFragment.BACKUP_XML_SETTING_ATTRIBUTE, BACKUP_SETTING_CUSTOM);
 					break;
 				case PrivacySettings.RANDOM:
+					Log.d("PDroidAlternative", "RANDOM " + row.name);
 					setting.setAttribute(PreferencesListFragment.BACKUP_XML_SETTING_ATTRIBUTE, BACKUP_SETTING_RANDOM);
 					break;
 				case PrivacySettings.EMPTY:
+					Log.d("PDroidAlternative", "EMPTY " + row.name);
 					setting.setAttribute(PreferencesListFragment.BACKUP_XML_SETTING_ATTRIBUTE, BACKUP_SETTING_EMPTY);
 					break;
 				}
+
 				String [] customValueFieldNames = row.getCustomFieldNames();
 				if (customValueFieldNames != null) {
 					Element customValueElement;
 					for (String customValueField : customValueFieldNames) {
 						if (row.valueFunctionNameStub != null) {
 							try {
-								pdroidCoreValue = (String)row.getGetValueMethod(customValueField).invoke(privacySettings);
+								pdroidCoreValue = row.getGetValueMethod(customValueField).invoke(privacySettings);
 							} catch (IllegalArgumentException e) {
 								Log.d("PDroidAlternative","Illegal arguments when calling " + row.getGetValueMethod(customValueField).getName());
 								e.printStackTrace();
@@ -473,23 +471,29 @@ class PermissionSettingHelper {
 								throw new RuntimeException("InvocationTargetException when calling " + row.getGetValueMethod(customValueField).getName());
 							}
 
-							if (pdroidCoreValue != null && !pdroidCoreValue.isEmpty()) {
-								//create an element for the value. We could probably do away with the 'default element' but that would do
-								//funny things to the nesting.
-								if (customValueField == "") {
-									customValueElement = document.createElement(XML_DEFAULTVALUE_TAG_NAME);	
+							if (pdroidCoreValue != null) {
+								if (pdroidCoreValue instanceof String) {
+									if (!((String)pdroidCoreValue).isEmpty()) {
+										//create an element for the value. We could probably do away with the 'default element' but that would do
+										//funny things to the nesting.
+										if (customValueField == "") {
+											customValueElement = document.createElement(XML_DEFAULTVALUE_TAG_NAME);	
+										} else {
+											customValueElement = document.createElement(customValueField);
+										}
+										customValueElement.setTextContent((String)pdroidCoreValue);
+										setting.appendChild(customValueElement);
+									}
 								} else {
-									customValueElement = document.createElement(customValueField);
+									Log.d("PDroidAlternative", "Got a non-String value back. May mean the API has changed.");
+									throw new RuntimeException("Got a non-String custom value from PDroid Core.");
 								}
-								customValueElement.setTextContent(pdroidCoreValue);
-								setting.appendChild(customValueElement);
 							}
 						}
 					}
 				}
-
 				app.appendChild(setting);
-				
+				Log.d("PDroidAlternative", "appending child");
 			}
 			
 			return app;
@@ -572,7 +576,7 @@ class PermissionSettingHelper {
 
 							if (setting.hasChildNodes()) {
 								NodeList customValueNodes = setting.getChildNodes();
-								for (int customValueNum = 0; customValueNum < customValueNodes.getLength(); settingNum++) {
+								for (int customValueNum = 0; customValueNum < customValueNodes.getLength(); customValueNum++) {
 
 									Node customValueNode = customValueNodes.item(customValueNum);
 									if (customValueNode.getNodeType() == Node.ELEMENT_NODE) {
@@ -583,7 +587,7 @@ class PermissionSettingHelper {
 											customValueName = "";
 										}
 										pdroidCoreValue = customValueElement.getTextContent();
-										Method customSettingMethod = settingWithFunctions.getGetValueMethod(customValueName);
+										Method customSettingMethod = settingWithFunctions.getSetValueMethod(customValueName);
 
 										try {
 											if (customSettingMethod != null)
@@ -619,52 +623,47 @@ class PermissionSettingHelper {
 			this.settingMap = new HashMap<String, PDroidSettingWithFunctions>();
 			PDroidSettingWithFunctions setting = null;
 
-			//If we do not already have handles to the relevant methods, then we need to get them
-			//They are cached on the first run
-			if (this.settingMap == null) {
-				this.settingMap = new HashMap<String, PDroidSettingWithFunctions>();
-				Cursor cursor = db.rawQuery(DBInterface.QUERY_GET_SETTINGS_AND_VALUE_FUNCTIONS, null);
+			Cursor cursor = db.rawQuery(DBInterface.QUERY_GET_SETTINGS_AND_VALUE_FUNCTIONS, null);
 
-				if (cursor != null) {
-					if (cursor.getCount() < 1) {
-						//This will happen if the database is not initialised for some reason
-						throw new DatabaseUninitialisedException("No settings are present in the database: it must not be initialised correctly");
-					}
+			if (cursor != null) {
+				if (cursor.getCount() < 1) {
+					//This will happen if the database is not initialised for some reason
+					throw new DatabaseUninitialisedException("No settings are present in the database: it must not be initialised correctly");
+				}
 
-					if (cursor.moveToFirst()) {
-						int idColumn = cursor.getColumnIndex(DBInterface.SettingTable.COLUMN_NAME_ID);
-						int nameColumn = cursor.getColumnIndex(DBInterface.SettingTable.COLUMN_NAME_NAME);
-						int settingFunctionNameColumn = cursor.getColumnIndex(DBInterface.SettingTable.COLUMN_NAME_SETTINGFUNCTIONNAME);
-						int valueFunctionNameStubColumn = cursor.getColumnIndex(DBInterface.SettingTable.COLUMN_NAME_VALUEFUNCTIONNAMESTUB);
-						int titleColumn = cursor.getColumnIndex(DBInterface.SettingTable.COLUMN_NAME_TITLE);
-						int groupColumn = cursor.getColumnIndex(DBInterface.SettingTable.COLUMN_NAME_GROUP_ID);
-						int groupTitleColumn = cursor.getColumnIndex(DBInterface.SettingTable.COLUMN_NAME_GROUP_TITLE);
-						int optionsColumn = cursor.getColumnIndex(DBInterface.SettingTable.COLUMN_NAME_OPTIONS);
-						int trustedOptionColumn = cursor.getColumnIndex(DBInterface.SettingTable.COLUMN_NAME_TRUSTED_OPTION);
+				if (cursor.moveToFirst()) {
+					int idColumn = cursor.getColumnIndex(DBInterface.SettingTable.COLUMN_NAME_ID);
+					int nameColumn = cursor.getColumnIndex(DBInterface.SettingTable.COLUMN_NAME_NAME);
+					int settingFunctionNameColumn = cursor.getColumnIndex(DBInterface.SettingTable.COLUMN_NAME_SETTINGFUNCTIONNAME);
+					int valueFunctionNameStubColumn = cursor.getColumnIndex(DBInterface.SettingTable.COLUMN_NAME_VALUEFUNCTIONNAMESTUB);
+					int titleColumn = cursor.getColumnIndex(DBInterface.SettingTable.COLUMN_NAME_TITLE);
+					int groupColumn = cursor.getColumnIndex(DBInterface.SettingTable.COLUMN_NAME_GROUP_ID);
+					int groupTitleColumn = cursor.getColumnIndex(DBInterface.SettingTable.COLUMN_NAME_GROUP_TITLE);
+					int optionsColumn = cursor.getColumnIndex(DBInterface.SettingTable.COLUMN_NAME_OPTIONS);
+					int trustedOptionColumn = cursor.getColumnIndex(DBInterface.SettingTable.COLUMN_NAME_TRUSTED_OPTION);
 
 
-						do {
-							String id = cursor.getString(idColumn);
-							String name = cursor.getString(nameColumn);
-							String settingFunctionName = cursor.getString(settingFunctionNameColumn);
-							String valueFunctionNameStub = cursor.getString(valueFunctionNameStubColumn);
-							String title = cursor.getString(titleColumn);
-							String group = cursor.getString(groupColumn);
-							String groupTitle = cursor.getString(groupTitleColumn);
-							String options = cursor.getString(optionsColumn);
-							String trustedOption = cursor.getString(trustedOptionColumn);
+					do {
+						String id = cursor.getString(idColumn);
+						String name = cursor.getString(nameColumn);
+						String settingFunctionName = cursor.getString(settingFunctionNameColumn);
+						String valueFunctionNameStub = cursor.getString(valueFunctionNameStubColumn);
+						String title = cursor.getString(titleColumn);
+						String group = cursor.getString(groupColumn);
+						String groupTitle = cursor.getString(groupTitleColumn);
+						String options = cursor.getString(optionsColumn);
+						String trustedOption = cursor.getString(trustedOptionColumn);
 
-							String [] optionsArray = null;
-							if (options != null) {
-								optionsArray = TextUtils.split(options, ",");
-							}
+						String [] optionsArray = null;
+						if (options != null) {
+							optionsArray = TextUtils.split(options, ",");
+						}
 
-							setting = new PDroidSettingWithFunctions(id, name, settingFunctionName, valueFunctionNameStub, title, group, groupTitle, optionsArray, trustedOption);
-							this.settingMap.put(name, setting);
-							this.settingList.add(setting);
-						} while (cursor.moveToNext());
-						cursor.close();
-					}
+						setting = new PDroidSettingWithFunctions(id, name, settingFunctionName, valueFunctionNameStub, title, group, groupTitle, optionsArray, trustedOption);
+						this.settingMap.put(name, setting);
+						this.settingList.add(setting);
+					} while (cursor.moveToNext());
+					cursor.close();
 				}
 			}
 		}

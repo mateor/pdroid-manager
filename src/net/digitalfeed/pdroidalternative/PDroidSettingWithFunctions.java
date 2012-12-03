@@ -76,7 +76,7 @@ class PDroidSettingWithFunctions extends PDroidSetting {
 		
 		if (!this.getValueMethods.containsKey(valueName)) {
 			try {
-				getValueMethod = this.getSettingMethod = PrivacySettings.class.getMethod("get" + settingFunctionName + valueName);
+				getValueMethod = PrivacySettings.class.getMethod("get" + valueFunctionNameStub + valueName);
 				this.getValueMethods.put(valueName, getValueMethod);
 			} catch (NoSuchMethodException e) {
 				// TODO Auto-generated catch block
@@ -98,7 +98,7 @@ class PDroidSettingWithFunctions extends PDroidSetting {
 		
 		if (!this.setValueMethods.containsKey(valueName)) {
 			try {
-				setValueMethod = this.setSettingMethod = PrivacySettings.class.getMethod("set" + settingFunctionName + valueName);
+				setValueMethod = PrivacySettings.class.getMethod("set" + valueFunctionNameStub + valueName);
 				this.setValueMethods.put(valueName, setValueMethod);
 			} catch (NoSuchMethodException e) {
 				// TODO Auto-generated catch block
