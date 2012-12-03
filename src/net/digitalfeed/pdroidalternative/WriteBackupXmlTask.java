@@ -91,7 +91,7 @@ public class WriteBackupXmlTask extends AsyncTask<Void, Void, Integer> {
 		Document document = documentBuilder.newDocument(); 
 		Element root = document.createElement(PreferencesListFragment.BACKUP_XML_ROOT_NODE);
 		root.setAttribute(PreferencesListFragment.BACKUP_XML_APP_VERSION_ATTRIBUTE, Integer.toString(versionCode));
-		root.setAttribute(PreferencesListFragment.BACKUP_XML_APP_VERSION_ATTRIBUTE, Double.toString(privacySettingsManager.getVersion()));
+		root.setAttribute(PreferencesListFragment.BACKUP_XML_PDROID_VERSION_ATTRIBUTE, Double.toString(privacySettingsManager.getVersion()));
 		document.appendChild(root);
 		
 		DBInterface dbinterface = DBInterface.getInstance(context);
