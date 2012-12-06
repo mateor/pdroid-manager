@@ -115,6 +115,7 @@ public class AppListFragment extends Fragment {
 	@Override
 	public View onCreateView (LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		super.onCreateView(inflater, container, savedInstanceState);
+		Log.d("PDroidAlternative","onCreateView called");
 		this.rootView = inflater.inflate(R.layout.activity_main, container);
 		this.listView = (ListView)this.rootView.findViewById(R.id.application_list);
 		return this.rootView;
@@ -123,11 +124,19 @@ public class AppListFragment extends Fragment {
 	@Override
 	public void onActivityCreated (Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
+		Log.d("PDroidAlternative","onActivityCreated called");
 	}
 	
 	@Override
+	public void onViewCreated (View view, Bundle savedInstanceState) {
+		super.onViewCreated(view, savedInstanceState);
+		Log.d("PDroidAlternative","onViewCreated called");
+	}
+
+	@Override
 	public void onStart () {
 		super.onStart();
+		Log.d("PDroidAlternative","onStart called");
 
 		//Do we have an application list already? is it valid?
         if (appList == null || !prefs.getIsApplicationListCacheValid()) {
@@ -142,8 +151,8 @@ public class AppListFragment extends Fragment {
         } else {
         	if (this.appListAdapter == null) {
         		this.appListAdapter = new AppListAdapter(context, R.layout.application_list_row, this.appList);
+        		listView.setAdapter(appListAdapter);
         	}
-        	listView.setAdapter(appListAdapter);
         }
         
         listView.setOnItemClickListener(new OnItemClickListener() {
@@ -169,31 +178,37 @@ public class AppListFragment extends Fragment {
 	@Override
 	public void onResume() {
 		super.onResume();
+		Log.d("PDroidAlternative","onResume called");
 	}
 	
 	@Override
 	public void onPause () {
 		super.onPause();
+		Log.d("PDroidAlternative","onPause called");
 	}
 
 	@Override
 	public void onStop () {
 		super.onStop();
+		Log.d("PDroidAlternative","onStop called");
 	}
 	
 	@Override
 	public void onDestroyView () {
 		super.onDestroyView();
+		Log.d("PDroidAlternative","onDestroyView called");
 	}
 	
 	@Override
 	public void onDestroy () {
 		super.onDestroy();
+		Log.d("PDroidAlternative","onDestroy called");
 	}
 	
 	@Override
 	public void onDetach () {
 		super.onDetach();
+		Log.d("PDroidAlternative","onDetach called");
 	}
 	
 	
@@ -362,9 +377,7 @@ public class AppListFragment extends Fragment {
     	@Override
     	public void asyncTaskComplete(Void result) {
     		//TODO: might be worth adding a toast here to notify the settings have been updated?
-    		if (progDialog != null) {
-    			progDialog.dismiss();
-    		}
+    		dismissDialog();
     		appListAdapter.notifyDataSetChanged(); //notify adapter that the data has changed, so app will update the trusted state in the listview
     	}
     }
@@ -514,10 +527,7 @@ public class AppListFragment extends Fragment {
     class AppListGeneratorCallback implements IAsyncTaskCallbackWithProgress<HashMap<String, Application>>{
     	@Override
     	public void asyncTaskComplete(HashMap<String, Application> returnedAppList) {
-    		if (progDialog != null) {
-    			progDialog.dismiss();
-    		}
-    		
+    		dismissDialog();
     		applicationObjects = returnedAppList; 
     		//set the application cache as valid, so the application data will not be regenerated
     		//on next start
@@ -599,10 +609,8 @@ public class AppListFragment extends Fragment {
      * @param message  Message for the progress dialog (or null for none)
      * @param type  ProgressDialog.x for the type of dialog to be displayed
      */
-	private void showDialog(String title, String message, int type) {
-		if (this.progDialog != null && this.progDialog.isShowing()) {
-			this.progDialog.dismiss();
-		}
+	void showDialog(String title, String message, int type) {
+		dismissDialog();
 		this.progDialog = new ProgressDialog(context);
 		this.progDialog.setProgressStyle(type);
 		if (title != null) {
@@ -615,8 +623,17 @@ public class AppListFragment extends Fragment {
     	progDialog.show();
 	}
 	
-	private void showDialog(String title, String message) {
+	void showDialog(String title, String message) {
 		showDialog(title, message, ProgressDialog.STYLE_SPINNER);
+	}
+	
+	/**
+	 * Helper to close a dialog if one is open
+	 */
+	void dismissDialog() {
+		if (progDialog != null && progDialog.isShowing()) {
+			progDialog.dismiss();
+		}
 	}
 	
 }

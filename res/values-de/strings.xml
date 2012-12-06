@@ -19,7 +19,7 @@
     <string name="permission_label_readprivacysettings">PDroid Einstellungen lesen</string>
     <string name="permission_description_readprivacysettings">Lesen von mit Apps verbundenen PDroid Einstellungen.</string>
     <string name="permission_label_manageprivacycontrollers">PDroid Verwaltungs Apps konfigurieren</string>
-    <string name="permission_description_manageprivacycontrollers">konfigurieren, welche Apps PDroid Einstellungen &#228;ndern k&#246;nnen.</string>
+    <string name="permission_description_manageprivacycontrollers">Konfigurieren, welche Apps PDroid Einstellungen &#228;ndern k&#246;nnen.</string>
 
     <string name="title_activity_preferences_list">Einstellungen</string>
     <string name="preferences_heading_about">&#220;uber</string>
