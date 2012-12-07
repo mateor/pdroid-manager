@@ -30,6 +30,8 @@ import java.security.InvalidParameterException;
 import java.util.LinkedList;
 
 class PDroidSetting implements Comparable<PDroidSetting> {
+	protected static final String SETTING_HELP_STRING_PREFIX = "SETTING_HELP_";
+	
 	protected String id;
 	protected String name;
 	protected String settingFunctionName;
@@ -55,7 +57,9 @@ class PDroidSetting implements Comparable<PDroidSetting> {
 	public static final String OPTION_TEXT_YES = "yes";
 	public static final int OPTION_FLAG_NO = 64;
 	public static final String OPTION_TEXT_NO = "no";
-	protected static final int OPTION_FLAG_NUMBITS = 7;
+	public static final int OPTION_FLAG_NO_CHANGE = 128;
+	public static final String OPTION_TEXT_NO_CHANGE = "nochange";
+	protected static final int OPTION_FLAG_NUMBITS = 8;
 	
 	public PDroidSetting(String id, String name, String settingFunctionName, String valueFunctionNameStub, String title, String group, String groupTitle, String [] options, String trustedOption) {
 		this.id = id;

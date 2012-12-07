@@ -124,6 +124,14 @@
     <string name="detail_logonaccess_text">Log access</string>
     <string name="detail_customvalue_pretext">Custom:</string>
     
+    <string name="detail_setting_option_nochange_contentdescription">No change</string>
+    <string name="detail_setting_option_allow_contentdescription">Set to allow</string>
+    <string name="detail_setting_option_deny_contentdescription">Set to deny</string>
+    <string name="detail_setting_option_random_contentdescription">Set to random</string>
+    <string name="detail_setting_option_custom_contentdescription">Set to custom</string>
+    <string name="detail_setting_option_yes_contentdescription">Set to yes</string>
+    <string name="detail_setting_option_no_contentdescription">Set to no</string>
+    
 	<string name="help_dialog_OKtext">OK</string>
 	<string name="button_help_text">Help</string>
 	
