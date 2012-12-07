@@ -512,7 +512,7 @@ public class AppListFragment extends Fragment {
      * Commence the regeneration of the application list held in the database from the OS
      */
     private void rebuildApplicationList() {
-    	DialogHelper.showDialog(context, null, getString(R.string.applist_dialogtext_generateapplist), ProgressDialog.STYLE_HORIZONTAL, progDialog);
+    	progDialog = DialogHelper.showDialog(context, null, getString(R.string.applist_dialogtext_generateapplist), ProgressDialog.STYLE_HORIZONTAL, progDialog);
 
         // Start the AsyncTask to build the list of apps and write them to the database
     	ApplicationsDatabaseFillerTask appListGenerator = new ApplicationsDatabaseFillerTask(context, new AppListGeneratorCallback());

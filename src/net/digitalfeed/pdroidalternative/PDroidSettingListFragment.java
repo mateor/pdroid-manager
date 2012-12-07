@@ -211,7 +211,7 @@ abstract class PDroidSettingListFragment extends Fragment {
 
     void applyAdapter() {
     	if (listView != null) {
-    		listView.setAdapter(new PDroidSettingListAdapter(context, this.rowLayout, settingList, null));
+    		listView.setAdapter(new PDroidSettingListAdapter(context, this.rowLayout, settingList, rowCallback));
     	}
     }
         
