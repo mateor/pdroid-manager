@@ -297,6 +297,8 @@ public class Application {
 			}
 			
 			int statusFlags = 0;
+			//TODO: Check if there are actually PDroid settings for the app,
+			//and don't just assume the trust state. It is likely to be wrong.
 			
 			app = new Application(
 					packageName,

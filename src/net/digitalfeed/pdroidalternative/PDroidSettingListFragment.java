@@ -77,6 +77,8 @@ abstract class PDroidSettingListFragment extends Fragment {
 	CheckBox notifyOnAccessCheckbox;
 	CheckBox logOnAccessCheckbox;
 	
+	static boolean hasOptionsMenu = true;
+	
 	ProgressDialog progDialog; //a holder for progress dialogs which are displayed
 	OnDetailActionListener callback; //callback for when an action occurs (i.e. save, close, delete, up).
 	OnDetailRowActionListener rowCallback;
@@ -151,7 +153,7 @@ abstract class PDroidSettingListFragment extends Fragment {
         
         // need to notify do this to notify the activity that
         // this fragment will contribute to the action menu
-        setHasOptionsMenu(hasOptionsMenu());
+        setHasOptionsMenu(hasOptionsMenu);
     }
 
 	@Override
@@ -300,12 +302,6 @@ abstract class PDroidSettingListFragment extends Fragment {
 			onLoadComplete(inSettingList);
 		}
     }
-	
-	//Subclasses can override this to return false if they don't contribute to an options menu
-	static boolean hasOptionsMenu() {
-		return true;
-	}
-	
 	
 	class DetailRowActionHandler implements OnDetailRowActionListener {
 		

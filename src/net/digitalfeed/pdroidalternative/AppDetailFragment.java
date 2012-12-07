@@ -26,22 +26,13 @@
  */
 package net.digitalfeed.pdroidalternative;
 
-import java.util.List;
-
 import android.os.Bundle;
 import android.app.Activity;
-import android.app.Fragment;
-import android.app.ProgressDialog;
-import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
-import android.widget.ListView;
 
 /**
  * Fragment for viewing and modifying the settings of an application.
@@ -51,62 +42,30 @@ import android.widget.ListView;
  * @author smorgan
  *
  */
-public class AppDetailFragment extends Fragment {
-		
+public class AppDetailFragment extends PDroidSettingListFragment {
+
 	private String packageName = null; //package name of the app being loaded/displayed
 	private Application application; //stores an application object for the app being displayed
-	private List<PDroidAppSetting> settingList; //List of settings objects
-	private boolean settingsAreLoaded = false; //Used to determine whether the loading dialog should be displayed when the app becomes visible
-	
-	private View rootView;
-	private ListView listView;
-	
-	private Context context;
-	private boolean inApp = false; //identifies whether in an app or not, which changes the 'up' or 'back' button behaviour 
-	
-	private ProgressDialog progDialog; //a holder for progress dialogs which are displayed
-	
-	OnDetailActionListener callback; //callback for when an action occurs (i.e. save, close, delete, up).
-	//Interface for callbacks
-	public interface OnDetailActionListener {
-		public void onDetailSave();
-		public void onDetailClose();
-		public void onDetailDelete();
-		public void onDetailUp();
-	}
-	
 	
 	@Override
 	public void onAttach (Activity activity) {
 		super.onAttach(activity);
-		this.context = activity;
 		
 		//TODO: Move this to the activity, and make a function call to the fragment to load the app?
         Bundle bundle = activity.getIntent().getExtras();
         //if we have a bundle, we can load the package. Otherwise, we do no such thing
         if (bundle != null) {
         	this.packageName = bundle.getString(AppDetailActivity.BUNDLE_PACKAGE_NAME);
-        
+        	//may still be loading onStart, so show dialog then
+        	showDialogOnStart = true;
 	        /*
 	         * If this action has been called from an app listing, then the action bar should
 	         * have the 'up' functionality which returns to the app listing.
 	         */
 	        this.inApp = bundle.getBoolean(AppDetailActivity.BUNDLE_IN_APP, false);
-        } else {
-        	//if no bundle has been provided, then there is no need for the dialog, so make sure it doesn't display on load
-        	settingsAreLoaded = true;
         }
-        
-        // Check the container activity implements the callback interface
-		// Thank you Google for the example code: https://developer.android.com/training/basics/fragments/communicating.html
-        try {
-            callback = (OnDetailActionListener) activity;
-        } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString()
-                    + " must implement OnActionListener");
-        }
-
 	}
+	
 	
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -115,93 +74,99 @@ public class AppDetailFragment extends Fragment {
         //if the packageName is null, then we just hang out until we get something from the other frame
         //otherwise, load the application
         if (this.packageName != null) {
-	        ApplicationLoadTask appDetailAppLoader = new ApplicationLoadTask(context, new AppDetailAppLoaderTaskCompleteHandler());
+	        ApplicationLoadTask appDetailAppLoader = new ApplicationLoadTask(context, new AppLoadCompleteHandler());
 	        appDetailAppLoader.execute(packageName);
-        }
-        
-        // need to notify do this to notify the activity that
-        // this fragment will contribute to the action menu
-        setHasOptionsMenu(true);
+        }        
     }
-
+	
+    
 	@Override
 	public View onCreateView (LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		super.onCreateView(inflater, container, savedInstanceState);
-		this.rootView = inflater.inflate(R.layout.activity_app_detail, container);
-		this.listView = (ListView)this.rootView.findViewById(R.id.detail_setting_list);
 		
     	Preferences prefs = new Preferences(context);
-    	CheckBox checkbox = (CheckBox)this.rootView.findViewById(R.id.detail_notify_on_access);
-    	checkbox.setChecked(prefs.getDoNotifyForPackage(packageName));
-    	checkbox = (CheckBox)this.rootView.findViewById(R.id.detail_log_on_access);
-    	checkbox.setChecked(prefs.getDoLogForPackage(packageName));
-    	checkbox = null;
+    	if (this.notifyOnAccessCheckbox != null) {
+    		this.notifyOnAccessCheckbox.setChecked(prefs.getDoNotifyForPackage(packageName));
+    	}
+    	if (this.logOnAccessCheckbox != null) {
+    		this.logOnAccessCheckbox.setChecked(prefs.getDoLogForPackage(packageName));
+    	}
     	prefs = null;
 
 		return this.rootView;
 	}
+	
+	@Override
+	void doLoad() {}
 
-    @Override
-    public void onStart() {
-    	super.onStart();
-    	if (!settingsAreLoaded) {
-    		DialogHelper.showDialog(context, null, getString(R.string.detail_dialog_loading_message), progDialog);
+	@Override
+	boolean doDelete() {
+		this.progDialog = DialogHelper.showDialog(context, getString(R.string.detail_dialog_saving_title),
+				getString(R.string.detail_dialog_saving_message), progDialog);
+
+    	AppSettingsDeleteTask settingsDeleterTask = new AppSettingsDeleteTask(context, packageName, new DeleteCompleteHandler());
+    	settingsDeleterTask.execute();
+    	return true;
+	}
+
+	@Override
+	boolean doSave() {
+		this.progDialog = DialogHelper.showDialog(context, getString(R.string.detail_dialog_saving_title),
+				getString(R.string.detail_dialog_saving_message), progDialog);
+    	
+    	Preferences prefs = new Preferences(context);
+    	CheckBox checkbox = (CheckBox)rootView.findViewById(R.id.detail_notify_on_access);
+    	prefs.setDoNotifyForPackage(packageName, checkbox.isChecked());
+    	boolean setNotifyTo = checkbox.isChecked();
+    	checkbox = (CheckBox)rootView.findViewById(R.id.detail_log_on_access);
+    	setNotifyTo |= checkbox.isChecked();
+    	prefs.setDoLogForPackage(packageName, checkbox.isChecked());
+    	checkbox = null;
+    	
+    	PDroidAppSetting [] toAsyncTask = this.settingList.toArray(new PDroidAppSetting [this.settingList.size()]);
+    	this.settingList = null;
+    	AppSettingsSaveTask settingsWriterTask = new AppSettingsSaveTask(context, packageName, application.getUid(), setNotifyTo, new SaveCompleteHandler());
+    	settingsWriterTask.execute(toAsyncTask);
+    	return true;
+	}
+
+	@Override
+	boolean doClose() {
+    	if (!inApp) {
+    		callback.onDetailClose();
+        	return true;
+    	} else {
+    		return false;
     	}
-    }
-    
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.detailCloseButton:
-            	//Should we be checking if the settings have changed and prompting the user?
-            	//I think that would probably be excessive...
+	}
+	
+	@Override
+	boolean doUp() {
+        callback.onDetailUp();
+        return true;
+	}
 
-            	//if we are in an app, we should just finish. Otherwise, the behaviour should
-            	//be the same as pressing the 'back' button.
-            	if (!inApp) {
-            		callback.onDetailClose();
-	            	return true;
-            	}
-            case android.R.id.home:
-                // This is called when the Home (Up) button is pressed
-                // in the Action Bar.
-                callback.onDetailUp();
-                return true;
-            case R.id.detailDeleteButton:
-        		this.progDialog = DialogHelper.showDialog(context, getString(R.string.detail_dialog_saving_title),
-        				getString(R.string.detail_dialog_saving_message), progDialog);
-
-            	AppSettingsDeleteTask settingsDeleterTask = new AppSettingsDeleteTask(context, packageName, new DeleteCompleteHandler());
-            	settingsDeleterTask.execute();
-            	break;
-            case R.id.detailSaveButton:
-        		this.progDialog = DialogHelper.showDialog(context, getString(R.string.detail_dialog_saving_title),
-        				getString(R.string.detail_dialog_saving_message), progDialog);
-            	
-            	Preferences prefs = new Preferences(context);
-            	CheckBox checkbox = (CheckBox)rootView.findViewById(R.id.detail_notify_on_access);
-            	prefs.setDoNotifyForPackage(packageName, checkbox.isChecked());
-            	boolean setNotifyTo = checkbox.isChecked();
-            	checkbox = (CheckBox)rootView.findViewById(R.id.detail_log_on_access);
-            	setNotifyTo |= checkbox.isChecked();
-            	prefs.setDoLogForPackage(packageName, checkbox.isChecked());
-            	checkbox = null;
-            	
-            	PDroidAppSetting [] toAsyncTask = this.settingList.toArray(new PDroidAppSetting [this.settingList.size()]);
-            	this.settingList = null;
-            	AppSettingsSaveTask settingsWriterTask = new AppSettingsSaveTask(context, packageName, application.getUid(), setNotifyTo, new SaveCompleteHandler());
-            	settingsWriterTask.execute(toAsyncTask);
-            	break;
-        }
-        return super.onOptionsItemSelected(item);
+	@Override
+	public String getTitle() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+    class AppLoadCompleteHandler implements IAsyncTaskCallback<Application>
+    {
+		@Override
+		public void asyncTaskComplete(Application inApplication) {
+			if (inApplication == null) {
+				Log.d("PDroidAlternative", "inApplication is null: the app could have disappeared between the intent being created and the task running?");
+				DialogHelper.dismissDialog(progDialog);
+			} else {
+				//setTitle(inApplication.getLabel());
+				application = inApplication;
+				AppSettingsLoadTask appDetailSettingsLoader = new AppSettingsLoadTask(context, new LoadCompleteHandler());
+				appDetailSettingsLoader.execute(application.getPackageName());
+			}
+		}
     }
-    
-    
-    @Override
-    public void onCreateOptionsMenu (Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.activity_app_detail, menu);
-    }
-
     
     /**
      * Triggers the load of details for the incoming application, totally ignoring
@@ -214,60 +179,9 @@ public class AppDetailFragment extends Fragment {
     	if (packageName != null) {
     		progDialog = DialogHelper.showDialog(context, null, getString(R.string.detail_dialog_loading_message), progDialog);
     		this.packageName = packageName;
-	        ApplicationLoadTask appDetailAppLoader = new ApplicationLoadTask(context, new AppDetailAppLoaderTaskCompleteHandler());
+	        ApplicationLoadTask appDetailAppLoader = new ApplicationLoadTask(context, new AppLoadCompleteHandler());
 	        appDetailAppLoader.execute(packageName);
     	}
     }
-    
-    class AppDetailAppLoaderTaskCompleteHandler implements IAsyncTaskCallback<Application>
-    {
-		@Override
-		public void asyncTaskComplete(Application inApplication) {
-			if (inApplication == null) {
-				Log.d("PDroidAlternative", "inApplication is null: the app could have disappeared between the intent being created and the task running?");
-				DialogHelper.dismissDialog(progDialog);
-			} else {
-				//setTitle(inApplication.getLabel());
-				application = inApplication;
-				AppSettingsLoadTask appDetailSettingsLoader = new AppSettingsLoadTask(context, new AppDetailSettingsLoaderTaskCompleteHandler());
-				appDetailSettingsLoader.execute(application.getPackageName());
-			}
-		}
-    }
-    
-    class AppDetailSettingsLoaderTaskCompleteHandler implements IAsyncTaskCallback<List<PDroidAppSetting>>
-    {
-		@Override
-		public void asyncTaskComplete(List<PDroidAppSetting> inSettingList) {
-			settingsAreLoaded = true;
-			DialogHelper.dismissDialog(progDialog);
-			
-			if (inSettingList == null) {
-				Log.d("PDroidAlternative","AppDetailSettingsLoaderTask returned null");
-			} else if (inSettingList.size() == 0) {
-				Log.d("PDroidAlternative","AppDetailSettingsLoaderTask returned no AppSettings (size = 0)");
-			} else {
-				settingList = inSettingList;
-				listView.setAdapter(new AppDetailAdapter(context, R.layout.setting_list_row_standard, settingList));
-			}
-		}
-    }
-    
-    class DeleteCompleteHandler implements IAsyncTaskCallback<Void>
-    {	
-		@Override
-		public void asyncTaskComplete(Void param) {
-			DialogHelper.dismissDialog(progDialog);
-			callback.onDetailDelete();
-		}
-    }
-    
-    class SaveCompleteHandler implements IAsyncTaskCallback<Void>
-    {	
-		@Override
-		public void asyncTaskComplete(Void param) {
-			DialogHelper.dismissDialog(progDialog);
-			callback.onDetailSave();
-		}
-    }
+
 }

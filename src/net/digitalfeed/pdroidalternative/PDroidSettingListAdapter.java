@@ -61,10 +61,6 @@ import android.widget.TextView;
  *
  */
 public class PDroidSettingListAdapter extends ArrayAdapter<PDroidAppSetting>{
-	protected static final int VIEW_TYPE_STANDARD = 0;
-	protected static final int VIEW_TYPE_LOCATION = 1;
-	protected static final int VIEW_TYPE_YESNO = 2;
-	
 	protected static final String SETTING_HELP_STRING_PREFIX = "SETTING_HELP_";
 	
 	private final Context context;
