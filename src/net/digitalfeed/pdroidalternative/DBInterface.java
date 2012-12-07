@@ -319,21 +319,26 @@ public class DBInterface {
 			return getContentValues(permission, application.getPackageName());
 		}
 	}
-	
 
-	public static final class NotificationMessageTable {
-		public NotificationMessageTable(){}
-		public static final String TABLE_NAME = "notification_messages";
-		public static final String COLUMN_NAME_NAME = "name";
-		public static final String COLUMN_NAME_TEXT = "text";
+	public static final class ProfileTable {
+		public ProfileTable () {}
+				
+		public static final String TABLE_NAME = "profile";
+		public static final String COLUMN_NAME_TITLE = "title";
+		public static final String COLUMN_NAME_SETTING_NAME = "settingName";
+		public static final String COLUMN_NAME_SETTING_VALUE = "settingValue";
 		
 		public static final String CREATE_SQL = "CREATE TABLE " + TABLE_NAME + "(" + 
 				"_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
-				COLUMN_NAME_NAME + " TEXT NOT NULL, " + 
-				COLUMN_NAME_TEXT + " TEXT NOT NULL" +
+				COLUMN_NAME_TITLE + " TEXT NOT NULL, " +
+				COLUMN_NAME_SETTING_NAME + " TEXT NOT NULL, " +
+				COLUMN_NAME_SETTING_VALUE + " TEXT NOT NULL, " +
+				"FOREIGN KEY(" + COLUMN_NAME_SETTING_NAME + ") REFERENCES " + SettingTable.TABLE_NAME + "(" + SettingTable.COLUMN_NAME_NAME + ")" + 
 				");";
 		
 		public static final String DROP_SQL = "DROP TABLE IF EXISTS " + TABLE_NAME + ";";
+		
+		public static final String WHERE_CLAUSE_PACKAGENAME = TABLE_NAME + "." + COLUMN_NAME_TITLE + " = ?";
 	}
 	
 	protected static final String QUERYPART_SELECTPART_COLUMNS_PACKAGENAME = 
