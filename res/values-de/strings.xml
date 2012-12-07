@@ -22,7 +22,7 @@
     <string name="permission_description_manageprivacycontrollers">Konfigurieren, welche Apps PDroid Einstellungen &#228;ndern k&#246;nnen.</string>
 
     <string name="title_activity_preferences_list">Einstellungen</string>
-    <string name="preferences_heading_about">&#220;uber</string>
+    <string name="preferences_heading_about">&#220;ber</string>
     <string name="preferences_about_title">&#220;ber diese App</string>
     <string name="preferences_about_summary">Appinformationen und Lizenz</string>
     <string name="preferences_openxdathread_title">Thread auf XDA</string>
@@ -35,7 +35,7 @@
     <string name="preferences_usephonelocale_summary">Benutze die Systemsprache um die Appsprache zu bestimmen</string>
 
     <string name="preferences_heading_backuprestore">Sichern &amp; Wiederherstellen</string>
-    <string name="preferences_backup_title">Bicherung</string>
+    <string name="preferences_backup_title">Sicherung</string>
     <string name="preferences_backup_summary">Erstelle eine Sicherung der aktuellen Einstellungen</string>    
     <string name="preferences_restore_title">Wiederherstellen</string>
     <string name="preferences_restore_summary">Einstellungen aus einer Sicherung wiederherstellen</string>
