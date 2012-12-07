@@ -356,7 +356,7 @@ public class PreferencesListFragment extends ListFragment {
         }
 
         // Create and show the dialog.
-        DialogFragment newFragment = InformationDialog.newInstance(title, body);
+        DialogFragment newFragment = DialogHelper.InformationDialog.newInstance(title, body);
         newFragment.show(ft, "dialog");
     }
     
@@ -403,7 +403,7 @@ public class PreferencesListFragment extends ListFragment {
         			showConfirmationDialog(
         					getString(R.string.restore_dialog_title),
         					getString(R.string.restore_signature_invalid) + "\n" + getString(R.string.restore_dialog_continue_prompt),
-        					new DialogCallback() {
+        					new DialogHelper.DialogCallback() {
 								@Override
 								public void onDialogSuccess() {
 									restoreFromBackup(getActivity(), thisPath, thisFilename);	
@@ -415,7 +415,7 @@ public class PreferencesListFragment extends ListFragment {
         			showConfirmationDialog(
         					getString(R.string.restore_dialog_title),
         					getString(R.string.restore_signature_missing) + "\n" + getString(R.string.restore_dialog_continue_prompt),
-        					new DialogCallback() {
+        					new DialogHelper.DialogCallback() {
 								@Override
 								public void onDialogSuccess() {
 									restoreFromBackup(getActivity(), thisPath, thisFilename);	
@@ -459,7 +459,7 @@ public class PreferencesListFragment extends ListFragment {
         			showConfirmationDialog(
         					getString(R.string.backup_dialog_title),
         					getString(R.string.backup_message_file_exists) + "\n" + getString(R.string.backup_dialog_continue_prompt),
-        					new DialogCallback() {
+        					new DialogHelper.DialogCallback() {
 								@Override
 								public void onDialogSuccess() {
 									saveBackup(getActivity(), thisPath, thisFilename);	
@@ -480,55 +480,7 @@ public class PreferencesListFragment extends ListFragment {
     }
     
     
-    /**
-     * General purpose information presentation dialog. Displays content and an 'ok' button to close.
-     * @author smorgan
-     *
-     */
-    public static class InformationDialog extends DialogFragment {
-    	
-        static InformationDialog newInstance(String title, String body) {
-        	if (title == null || body == null) {
-        		throw new InvalidParameterException("Title and body cannot be null");
-        	}
-            InformationDialog infoDialog = new InformationDialog();
-            Bundle args = new Bundle();
-            args.putString("title", title);
-            args.putString("body", body);
-            infoDialog.setArguments(args);
-            return infoDialog;
-        }
-        
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                Bundle savedInstanceState) {
-        	getDialog().setTitle(getArguments().getString("title"));
-        	getDialog().setCanceledOnTouchOutside(true); 
-        	//getDialog().setTitle(getString(R.string.credits_dialog_title));
-            View view = inflater.inflate(R.layout.preferences_credits_dialog, container, false);
-            Button closeButton = (Button)view.findViewById(R.id.credits_dialog_close_button);
-            closeButton.setOnClickListener(new OnClickListener() {
-				
-				@Override
-				public void onClick(View v) {
-					closeDialog();
-				}
-			});
-            
-            TextView body = (TextView)view.findViewById(R.id.credits_dialog_body);
-            body.setText(Html.fromHtml(getArguments().getString("body")));
-            //Thank you stackoverflow: need to do the setMovementMethod for links to work in TextView.
-            //http://stackoverflow.com/questions/2734270/how-do-i-make-links-in-a-textview-clickable
-            body.setMovementMethod(LinkMovementMethod.getInstance());
 
-            return view;
-        }
-        
-        
-        private void closeDialog() {
-        	this.dismiss();
-        }
-    }
     
 
     
@@ -589,24 +541,11 @@ public class PreferencesListFragment extends ListFragment {
     	void onDialogSuccess(String path, String filename);
     	//void onDialogCancel();
     }
-    
-    
-    /**
-     * Callback used to provide information back from the static alert dialogs
-     * without path and filename details
-     * @author smorgan
-     *
-     */
-    public interface DialogCallback {
-    	void onDialogSuccess();
-    	//void onDialogCancel();
-    }
-
-    
+        
     /**
      * General purpose confirmation dialog 
      */
-    private void showConfirmationDialog(String title, String body, DialogCallback dialogCallback) {
+    private void showConfirmationDialog(String title, String body, DialogHelper.DialogCallback dialogCallback) {
         FragmentTransaction ft = getFragmentManager().beginTransaction();
         Fragment prev = getFragmentManager().findFragmentByTag("dialog");
         if (prev != null) {
@@ -614,7 +553,7 @@ public class PreferencesListFragment extends ListFragment {
         }
 
         // Create and show the dialog.
-        ConfirmationDialogFragment newFragment = ConfirmationDialogFragment.newInstance(title, body, dialogCallback);
+        DialogHelper.ConfirmationDialogFragment newFragment = DialogHelper.ConfirmationDialogFragment.newInstance(title, body, dialogCallback);
         newFragment.show(ft, "dialog");
     }
     
@@ -777,58 +716,7 @@ public class PreferencesListFragment extends ListFragment {
         }
     }
     
-    /**
-     * General purpose confirmation dialog, with 'yes' and 'no' options
-     * @author smorgan
-     *
-     */
-    public static class ConfirmationDialogFragment extends DialogFragment {
-    	private static DialogCallback callback;
-    	
-    	public static final String BUNDLE_TITLE = "title";
-    	public static final String BUNDLE_BODY = "body";
 
-    	public static ConfirmationDialogFragment newInstance(String title, String body, DialogCallback dialogCallback) {
-        	if (title == null || body == null) {
-        		throw new InvalidParameterException("Title and body cannot be null");
-        	}
-            ConfirmationDialogFragment dialog = new ConfirmationDialogFragment();
-            Bundle args = new Bundle();
-            args.putString(BUNDLE_TITLE, title);
-            args.putString(BUNDLE_BODY, body);
-            dialog.setArguments(args);
-            callback = dialogCallback;
-            return dialog;
-        }
-        
-        @Override
-        public Dialog onCreateDialog(Bundle savedInstanceState) {
-        	AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        	//builder.setIcon(R.drawable.alert_dialog_icon)
-        	return builder.setTitle(getArguments().getString(BUNDLE_TITLE))
-        	.setMessage(getArguments().getString(BUNDLE_BODY))
-        	
-            // Create the 'ok' button
-            .setPositiveButton(R.string.alert_dialog_yes, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int id) {
-                	callback.onDialogSuccess();
-                	closeDialog();
-                }
-            })
-	        .setNegativeButton(R.string.alert_dialog_no, new DialogInterface.OnClickListener() {
-	            @Override
-	            public void onClick(DialogInterface dialog, int id) {
-	            	closeDialog();
-	            }
-	        })
-	        .create();
-        }
-        
-        private void closeDialog() {
-        	this.dismiss();
-        }
-    }
     
 
     /**
@@ -963,7 +851,7 @@ public class PreferencesListFragment extends ListFragment {
 	 */
 	private static void restoreFromBackup(Context context, String path, String filename) {
 		final Context thisContext = context;
-		final ProgressDialog progDialog = showDialog(
+		final ProgressDialog progDialog = DialogHelper.showDialog(
 				context,
 				context.getString(R.string.restore_progress_dialog_title),
 				context.getString(R.string.restore_progress_dialog_message));
@@ -1107,30 +995,4 @@ public class PreferencesListFragment extends ListFragment {
 		fileIn.close();
 		return bytes;
     }
-    
-    
-    /**
-     * Helper to show a non-cancellable spinner progress dialog
-     * 
-     * @param title  Title for the progress dialog (or null for none)
-     * @param message  Message for the progress dialog (or null for none)
-     * @param type  ProgressDialog.x for the type of dialog to be displayed
-     */
-	private static ProgressDialog showDialog(Context context, String title, String message, int type) {
-		ProgressDialog progDialog = new ProgressDialog(context);
-		progDialog.setProgressStyle(type);
-		if (title != null) {
-			progDialog.setTitle(title);
-		}
-		if (message != null) {
-			progDialog.setMessage(message);
-		}
-    	progDialog.setCancelable(false);
-    	progDialog.show();
-    	return progDialog;
-	}
-	
-	private static ProgressDialog showDialog(Context context, String title, String message) {
-		return showDialog(context, title, message, ProgressDialog.STYLE_SPINNER);
-	}
 }

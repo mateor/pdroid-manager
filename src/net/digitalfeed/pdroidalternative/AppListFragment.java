@@ -349,14 +349,14 @@ public class AppListFragment extends Fragment {
 
     			switch (action) {
     			case LONGPRESS_MENU_UPDATE_ALL_SETTINGS:
-    				showDialog(null, getString(R.string.applist_dialogtext_updating_settings));
+    				progDialog = DialogHelper.showDialog(context, null, getString(R.string.applist_dialogtext_updating_settings), progDialog);
 
     				//use an asynctask to actually update the settings, so it doesn't interfere with the UI thread
 	    			ApplicationsUpdateAllSettingsTask updateAllSettingsTask = new ApplicationsUpdateAllSettingsTask(context, newTrustState, new AppListUpdateAllSettingsCallback());
 	    			updateAllSettingsTask.execute(targetApp);
 	    			break;
     			case LONGPRESS_MENU_DELETE_SETTINGS:
-    				showDialog(null, getString(R.string.applist_dialogtext_deleting_settings));
+    				progDialog = DialogHelper.showDialog(context, null, getString(R.string.applist_dialogtext_deleting_settings), progDialog);
 
 	    			//use an asynctask to delete settings, so it doesn't interfere with the UI thread
 	    			ApplicationsDeleteSettingsTask deleteSettingsTask = new ApplicationsDeleteSettingsTask(context, new AppListUpdateAllSettingsCallback());
@@ -377,7 +377,7 @@ public class AppListFragment extends Fragment {
     	@Override
     	public void asyncTaskComplete(Void result) {
     		//TODO: might be worth adding a toast here to notify the settings have been updated?
-    		dismissDialog();
+    		DialogHelper.dismissDialog(progDialog);
     		appListAdapter.notifyDataSetChanged(); //notify adapter that the data has changed, so app will update the trusted state in the listview
     	}
     }
@@ -512,7 +512,7 @@ public class AppListFragment extends Fragment {
      * Commence the regeneration of the application list held in the database from the OS
      */
     private void rebuildApplicationList() {
-    	showDialog(null, getString(R.string.applist_dialogtext_generateapplist), ProgressDialog.STYLE_HORIZONTAL);
+    	DialogHelper.showDialog(context, null, getString(R.string.applist_dialogtext_generateapplist), ProgressDialog.STYLE_HORIZONTAL, progDialog);
 
         // Start the AsyncTask to build the list of apps and write them to the database
     	ApplicationsDatabaseFillerTask appListGenerator = new ApplicationsDatabaseFillerTask(context, new AppListGeneratorCallback());
@@ -527,7 +527,7 @@ public class AppListFragment extends Fragment {
     class AppListGeneratorCallback implements IAsyncTaskCallbackWithProgress<HashMap<String, Application>>{
     	@Override
     	public void asyncTaskComplete(HashMap<String, Application> returnedAppList) {
-    		dismissDialog();
+    		DialogHelper.dismissDialog(progDialog);
     		applicationObjects = returnedAppList; 
     		//set the application cache as valid, so the application data will not be regenerated
     		//on next start
@@ -599,41 +599,5 @@ public class AppListFragment extends Fragment {
 		public void onNothingSelected(AdapterView<?> view) {
 			// TODO Auto-generated method stub
 		}
-    };
-    
-    
-    /**
-     * Helper to show a non-cancellable spinner progress dialog
-     * 
-     * @param title  Title for the progress dialog (or null for none)
-     * @param message  Message for the progress dialog (or null for none)
-     * @param type  ProgressDialog.x for the type of dialog to be displayed
-     */
-	void showDialog(String title, String message, int type) {
-		dismissDialog();
-		this.progDialog = new ProgressDialog(context);
-		this.progDialog.setProgressStyle(type);
-		if (title != null) {
-			progDialog.setTitle(title);
-		}
-		if (message != null) {
-			progDialog.setMessage(message);
-		}
-    	progDialog.setCancelable(false);
-    	progDialog.show();
-	}
-	
-	void showDialog(String title, String message) {
-		showDialog(title, message, ProgressDialog.STYLE_SPINNER);
-	}
-	
-	/**
-	 * Helper to close a dialog if one is open
-	 */
-	void dismissDialog() {
-		if (progDialog != null && progDialog.isShowing()) {
-			progDialog.dismiss();
-		}
-	}
-	
+    };	
 }

@@ -145,7 +145,7 @@ public class AppDetailFragment extends Fragment {
     public void onStart() {
     	super.onStart();
     	if (!settingsAreLoaded) {
-    		showDialog(null, getString(R.string.detail_dialog_loading_message));
+    		DialogHelper.showDialog(context, null, getString(R.string.detail_dialog_loading_message), progDialog);
     	}
     }
     
@@ -168,15 +168,15 @@ public class AppDetailFragment extends Fragment {
                 callback.onDetailUp();
                 return true;
             case R.id.detailDeleteButton:
-        		showDialog(getString(R.string.detail_dialog_saving_title),
-        				getString(R.string.detail_dialog_saving_message));
+        		this.progDialog = DialogHelper.showDialog(context, getString(R.string.detail_dialog_saving_title),
+        				getString(R.string.detail_dialog_saving_message), progDialog);
 
             	AppSettingsDeleteTask settingsDeleterTask = new AppSettingsDeleteTask(context, packageName, new DeleteCompleteHandler());
             	settingsDeleterTask.execute();
             	break;
             case R.id.detailSaveButton:
-        		showDialog(getString(R.string.detail_dialog_saving_title),
-        				getString(R.string.detail_dialog_saving_message));
+        		this.progDialog = DialogHelper.showDialog(context, getString(R.string.detail_dialog_saving_title),
+        				getString(R.string.detail_dialog_saving_message), progDialog);
             	
             	Preferences prefs = new Preferences(context);
             	CheckBox checkbox = (CheckBox)rootView.findViewById(R.id.detail_notify_on_access);
@@ -212,7 +212,7 @@ public class AppDetailFragment extends Fragment {
      */
     public void loadApplicationDetail(String packageName) {
     	if (packageName != null) {
-    		showDialog(null, getString(R.string.detail_dialog_loading_message));
+    		progDialog = DialogHelper.showDialog(context, null, getString(R.string.detail_dialog_loading_message), progDialog);
     		this.packageName = packageName;
 	        ApplicationLoadTask appDetailAppLoader = new ApplicationLoadTask(context, new AppDetailAppLoaderTaskCompleteHandler());
 	        appDetailAppLoader.execute(packageName);
@@ -225,7 +225,7 @@ public class AppDetailFragment extends Fragment {
 		public void asyncTaskComplete(Application inApplication) {
 			if (inApplication == null) {
 				Log.d("PDroidAlternative", "inApplication is null: the app could have disappeared between the intent being created and the task running?");
-				closeDialog();
+				DialogHelper.dismissDialog(progDialog);
 			} else {
 				//setTitle(inApplication.getLabel());
 				application = inApplication;
@@ -240,7 +240,7 @@ public class AppDetailFragment extends Fragment {
 		@Override
 		public void asyncTaskComplete(List<PDroidAppSetting> inSettingList) {
 			settingsAreLoaded = true;
-			closeDialog();
+			DialogHelper.dismissDialog(progDialog);
 			
 			if (inSettingList == null) {
 				Log.d("PDroidAlternative","AppDetailSettingsLoaderTask returned null");
@@ -257,7 +257,7 @@ public class AppDetailFragment extends Fragment {
     {	
 		@Override
 		public void asyncTaskComplete(Void param) {
-			closeDialog();
+			DialogHelper.dismissDialog(progDialog);
 			callback.onDetailDelete();
 		}
     }
@@ -266,38 +266,8 @@ public class AppDetailFragment extends Fragment {
     {	
 		@Override
 		public void asyncTaskComplete(Void param) {
-			closeDialog();
+			DialogHelper.dismissDialog(progDialog);
 			callback.onDetailSave();
 		}
     }
-    
-    /**
-     * Helper to show a non-cancellable spinner progress dialog
-     * 
-     * @param title  Title for the progress dialog (or null for none)
-     * @param message  Message for the progress dialog (or null for none)
-     */
-	private void showDialog(String title, String message) {
-		closeDialog();
-		this.progDialog = new ProgressDialog(context);
-		this.progDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-		if (title != null) {
-			progDialog.setTitle(title);
-		}
-		if (message != null) {
-			progDialog.setMessage(message);
-		}
-    	progDialog.setCancelable(false);
-    	progDialog.show();
-	}
-	
-	
-	/**
-	 * Helper to close a dialog if one is open
-	 */
-	private void closeDialog() {
-		if (progDialog != null && progDialog.isShowing()) {
-			progDialog.dismiss();
-		}
-	}
 }
