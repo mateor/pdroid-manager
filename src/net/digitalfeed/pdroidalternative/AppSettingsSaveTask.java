@@ -110,16 +110,16 @@ public class AppSettingsSaveTask extends AsyncTask<PDroidAppSetting, Integer, Vo
 					break;
 				}
 			} catch (NoSuchMethodException e) {
-			   Log.d("PDroidAlternative","PrivacySettings object of privacy service is missing the expected method " + appSetting.getSettingFunctionName());
+			   if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG,"PrivacySettings object of privacy service is missing the expected method " + appSetting.getSettingFunctionName());
 			   e.printStackTrace();
 			} catch (IllegalArgumentException e) {
-				Log.d("PDroidAlternative","Illegal arguments when calling " + appSetting.getSettingFunctionName());
+				if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG,"Illegal arguments when calling " + appSetting.getSettingFunctionName());
 				e.printStackTrace();
 			} catch (IllegalAccessException e) {
-				Log.d("PDroidAlternative","Illegal access when calling " + appSetting.getSettingFunctionName());
+				if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG,"Illegal access when calling " + appSetting.getSettingFunctionName());
 				e.printStackTrace();
 			} catch (InvocationTargetException e) {
-				Log.d("PDroidAlternative","InvocationTargetException when calling " + appSetting.getSettingFunctionName());
+				if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG,"InvocationTargetException when calling " + appSetting.getSettingFunctionName());
 				e.printStackTrace();
 			}
 		}

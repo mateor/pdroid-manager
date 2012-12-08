@@ -34,7 +34,6 @@ import android.os.Bundle;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Fragment;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.Resources;
@@ -79,7 +78,6 @@ abstract class PDroidSettingListFragment extends Fragment {
 	
 	static boolean hasOptionsMenu = true;
 	
-	ProgressDialog progDialog; //a holder for progress dialogs which are displayed
 	OnDetailActionListener callback; //callback for when an action occurs (i.e. save, close, delete, up).
 	OnDetailRowActionListener rowCallback;
 	
@@ -176,7 +174,7 @@ abstract class PDroidSettingListFragment extends Fragment {
     public void onStart() {
     	super.onStart();
     	if (!showDialogOnStart) {
-    		showDialog(null, getString(R.string.detail_dialog_loading_message));
+    		DialogHelper.showProgressDialog(getActivity(), null, getString(R.string.detail_dialog_loading_message));
     	}
     }
         
@@ -214,45 +212,9 @@ abstract class PDroidSettingListFragment extends Fragment {
     		listView.setAdapter(new PDroidSettingListAdapter(context, this.rowLayout, settingList, rowCallback));
     	}
     }
-        
-
-    /**
-     * Helper to show a non-cancellable spinner progress dialog
-     * 
-     * @param title  Title for the progress dialog (or null for none)
-     * @param message  Message for the progress dialog (or null for none)
-     * @param type  ProgressDialog.x for the type of dialog to be displayed
-     */
-	private void showDialog(String title, String message, int type) {
-		dismissDialog();
-		this.progDialog = new ProgressDialog(context);
-		this.progDialog.setProgressStyle(type);
-		if (title != null) {
-			progDialog.setTitle(title);
-		}
-		if (message != null) {
-			progDialog.setMessage(message);
-		}
-    	progDialog.setCancelable(false);
-    	progDialog.show();
-	}
-	
-	private void showDialog(String title, String message) {
-		showDialog(title, message, ProgressDialog.STYLE_SPINNER);
-	}
-	
-	/**
-	 * Helper to close a dialog if one is open
-	 */
-	void dismissDialog() {
-		if (progDialog != null && progDialog.isShowing()) {
-			progDialog.dismiss();
-		}
-	}
-
 
     void onDeleteComplete() {
-		dismissDialog();
+		DialogHelper.dismissProgressDialog();
 		callback.onDetailDelete();
     }
 
@@ -266,7 +228,7 @@ abstract class PDroidSettingListFragment extends Fragment {
    
     
     void onSaveComplete() {
-		dismissDialog();
+		DialogHelper.dismissProgressDialog();
 		callback.onDetailSave();
     }
     
@@ -283,15 +245,15 @@ abstract class PDroidSettingListFragment extends Fragment {
     	this.showDialogOnStart = false;
     	
 		if (inSettingList == null) {
-			Log.d("PDroidAlternative","PDroidSettingListFragment:onLoadComplete:inSettingList is null");
+			if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG,"PDroidSettingListFragment:onLoadComplete:inSettingList is null");
 		} else if (inSettingList.size() == 0) {
-			Log.d("PDroidAlternative","PDroidSettingListFragment:onLoadComplete:inSettingList is of size 0");
+			if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG,"PDroidSettingListFragment:onLoadComplete:inSettingList is of size 0");
 		} else {
 			this.settingList = inSettingList;
 			this.applyAdapter();
 		}
 		
-		dismissDialog();
+		DialogHelper.dismissProgressDialog();
 
     }
     
@@ -382,13 +344,13 @@ abstract class PDroidSettingListFragment extends Fragment {
 	void showCustomValueBox(PDroidAppSetting appSetting) {
 		List<SimpleImmutableEntry<String,String>> customValues = appSetting.getCustomValues();
 		if (customValues == null) {
-			Log.d("PDroidAlternative","No custom setting presents: setting them up");
+			if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG,"No custom setting presents: setting them up");
 			customValues = new LinkedList<SimpleImmutableEntry<String,String>>();
 			if (0 != (appSetting.getSelectedOptionBit() & PDroidAppSetting.OPTION_FLAG_CUSTOM)) {
-				Log.d("PDroidAlternative","Single custom setting");
+				if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG,"Single custom setting");
 				customValues.add(new SimpleImmutableEntry<String,String>("",""));
 			} else if (0 != (appSetting.getSelectedOptionBit() & PDroidAppSetting.OPTION_FLAG_CUSTOMLOCATION)) {
-				Log.d("PDroidAlternative","Lat/Long custom setting");
+				if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG,"Lat/Long custom setting");
 				customValues.add(new SimpleImmutableEntry<String,String>("Lat",""));
 				customValues.add(new SimpleImmutableEntry<String,String>("Lon",""));
 			}
@@ -412,7 +374,7 @@ abstract class PDroidSettingListFragment extends Fragment {
     	for (SimpleImmutableEntry<String, String> entryItem : customValues) {
     		sublayout = new LinearLayout(context);
     		sublayout.setOrientation(LinearLayout.HORIZONTAL);
-    		Log.d("PDroidAlternative","Creating new text view/edit text for " + entryItem.getKey());
+    		if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG,"Creating new text view/edit text for " + entryItem.getKey());
     		label = new TextView(context);
     		label.setId(viewId++);
     		label.setGravity(Gravity.LEFT);
@@ -422,7 +384,7 @@ abstract class PDroidSettingListFragment extends Fragment {
 	    	
 	    	label.setText(entryItem.getKey());
 	    	if (entryItem.getValue() != null) {
-	    		Log.d("PDroidAlternative","Previous value is not null: " + entryItem.getKey());
+	    		if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG,"Previous value is not null: " + entryItem.getKey());
 	    		input.setText(entryItem.getValue());
     		}
 	    	
@@ -432,7 +394,7 @@ abstract class PDroidSettingListFragment extends Fragment {
 			//layoutParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
 			//layoutParams.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
     		//if (lastInputs != null) {
-    		//	Log.d("PDroidAlternative","Previous input is not null: going below");
+    		//	if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG,"Previous input is not null: going below");
     		//	layoutParams.addRule(RelativeLayout.BELOW, lastInputs.getKey());
     		//}
     		//layout.addView(label, layoutParams);

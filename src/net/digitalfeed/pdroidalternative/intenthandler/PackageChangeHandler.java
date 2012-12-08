@@ -32,6 +32,7 @@ import java.util.HashSet;
 import net.digitalfeed.pdroidalternative.AppDetailActivity;
 import net.digitalfeed.pdroidalternative.Application;
 import net.digitalfeed.pdroidalternative.DBInterface;
+import net.digitalfeed.pdroidalternative.GlobalConstants;
 import net.digitalfeed.pdroidalternative.R;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -54,13 +55,13 @@ public class PackageChangeHandler extends BroadcastReceiver {
 
 	@Override
 	public void onReceive(Context context, Intent intent) {
-		Log.d("PDroidAlternative","PackageChangeHandler event received");
+		if (GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG,"PackageChangeHandler event received");
 		//Get the package name. If this fails, then the intent didn't contain the
 		//essential data and should be ignored
 		String packageName;
 		Uri inputUri = Uri.parse(intent.getDataString());
 		if (!inputUri.getScheme().equals("package")) {
-			Log.d("PDroidAlternative","Intent scheme was not 'package'");
+			if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG,"Intent scheme was not 'package'");
 			return;
 		}
 		packageName = inputUri.getSchemeSpecificPart();
@@ -69,7 +70,7 @@ public class PackageChangeHandler extends BroadcastReceiver {
 		//info it is not being updated/replaced by a newer version
 		if (intent.getAction().equals(Intent.ACTION_PACKAGE_REMOVED)) {
 			if (!intent.getBooleanExtra(Intent.EXTRA_REPLACING, false)) {
-				Log.d("PDroidAlternative","Triggering application deletion for package:" + packageName);
+				if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG,"Triggering application deletion for package:" + packageName);
 				DBInterface.getInstance(context).deleteApplicationRecord(packageName);
 			}
 		} else if (intent.getAction().equals(Intent.ACTION_PACKAGE_ADDED)) {
@@ -78,7 +79,7 @@ public class PackageChangeHandler extends BroadcastReceiver {
 						
 			if (intent.getBooleanExtra(Intent.EXTRA_REPLACING, false)) {
 				//TODO: check if the permissions have changed
-				Log.d("PDroidAlternative","PackageChangeHandler: App being replaced: " + packageName);
+				if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG,"PackageChangeHandler: App being replaced: " + packageName);
 				Application oldApp = Application.fromDatabase(context, packageName);
 				Application newApp = Application.fromPackageName(context, packageName);
 				if (havePermissionsChanged(context, oldApp, newApp)) {
@@ -97,7 +98,7 @@ public class PackageChangeHandler extends BroadcastReceiver {
 				 * This is a new app, not an app being replaced. We need to add it to the
 				 * database, then display a notification for it
 				 */
-				Log.d("PDroidAlternative","PackageChangeHandler: New app added: " + packageName);
+				if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG,"PackageChangeHandler: New app added: " + packageName);
 				/*
 				 * I'm not sure if we really want to be doing all this processing here, but
 				 * we do need to record a list of new/updated apps to write to the database
@@ -107,9 +108,9 @@ public class PackageChangeHandler extends BroadcastReceiver {
 				Application app = Application.fromPackageName(context, packageName);
 				app.setStatusFlags(app.getStatusFlags() | Application.STATUS_FLAG_NEW);
 				DBInterface.getInstance(context).addApplicationRecord(app);
-				Log.d("PDroidAlternative","PackageChangeHandler: New app record added: " + packageName);
+				if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG,"PackageChangeHandler: New app record added: " + packageName);
 				displayNotification(context, NotificationType.newinstall, packageName, app.getLabel());
-				Log.d("PDroidAlternative","PackageChangeHandler: Notification presented: " + packageName);
+				if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG,"PackageChangeHandler: Notification presented: " + packageName);
 			}
 		}
 	}
@@ -127,8 +128,8 @@ public class PackageChangeHandler extends BroadcastReceiver {
 				//.setLargeIcon(res.getDrawable(R.drawable.allow_icon))
 		
 		String appLabel = DBInterface.getInstance(context).getApplicationLabel(packageName);
-		Log.d("PDroidAlternative","new packagename is " + packageName);
-		Log.d("PDroidAlternative","app label is " + appLabel);
+		if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG,"new packagename is " + packageName);
+		if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG,"app label is " + appLabel);
 		switch (notificationType) {
 		case newinstall:
 			builder.setContentTitle(appLabel + " " + res.getString(R.string.notification_newinstall_title))
@@ -167,7 +168,7 @@ public class PackageChangeHandler extends BroadcastReceiver {
 		//Maybe add a table which stores 'changed since last' info, so new permissions can be highlighted?
 		if (oldApp == null) {
 			//this is an error situtation
-			Log.d("PDroidAlternative","oldApp == null; thus permissions have changed");
+			if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG,"oldApp == null; thus permissions have changed");
 			return true;
 		} else {
 			/*
@@ -177,31 +178,31 @@ public class PackageChangeHandler extends BroadcastReceiver {
 			//If only one array is null, then permissions have changed. If both are, then they haven't.
 			if (oldApp.getPermissions() == null) {
 				if (newApp.getPermissions() == null) {
-					Log.d("PDroidAlternative","oldApp and newApp permissions are both null; permissions have not changed");
+					if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG,"oldApp and newApp permissions are both null; permissions have not changed");
 					return false;
 				} else {
-					Log.d("PDroidAlternative","oldApp permissions == null; newApp not; thus permissions have changed");
+					if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG,"oldApp permissions == null; newApp not; thus permissions have changed");
 					return true;
 				}
 			} else if (newApp.getPermissions() == null) {
-				Log.d("PDroidAlternative","oldApp permissions != null; newApp are; thus permissions have changed");
+				if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG,"oldApp permissions != null; newApp are; thus permissions have changed");
 				return true;
 			}
 			
 			//if the number of permissions is different, then permissions have changed
 			if (oldApp.getPermissions().length != newApp.getPermissions().length) {
-				Log.d("PDroidAlternative","permissions lengths differ: oldapp: " + Integer.toString(oldApp.getPermissions().length) + " newapp: " + Integer.toString(newApp.getPermissions().length));
+				if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG,"permissions lengths differ: oldapp: " + Integer.toString(oldApp.getPermissions().length) + " newapp: " + Integer.toString(newApp.getPermissions().length));
 				return true;
 			}
 			
 			HashSet<String> currPermissions = new HashSet<String>();
 			currPermissions.addAll(Arrays.asList(oldApp.getPermissions()));
 			if (!currPermissions.containsAll(Arrays.asList(newApp.getPermissions()))) {
-				Log.d("PDroidAlternative","containsAll returned false: thus permissions have changed");
+				if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG,"containsAll returned false: thus permissions have changed");
 				return true;
 			}
 		}
-		Log.d("PDroidAlternative","Got to the end; permissions have stayed the same, it seems");
+		if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG,"Got to the end; permissions have stayed the same, it seems");
 		return false;
 	}
 }

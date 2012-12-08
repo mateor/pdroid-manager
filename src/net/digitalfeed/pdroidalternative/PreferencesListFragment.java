@@ -7,7 +7,6 @@ import java.io.FileNotFoundException;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.security.InvalidKeyException;
-import java.security.InvalidParameterException;
 import java.security.NoSuchAlgorithmException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -20,6 +19,7 @@ import java.util.Locale;
 import javax.crypto.Mac;
 import javax.crypto.SecretKey;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -35,15 +35,11 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
-import android.text.Html;
 import android.text.TextUtils;
-import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -106,6 +102,7 @@ public class PreferencesListFragment extends ListFragment {
 		}}
 	private static class Preference extends BasePreference {
 		public String summary;
+		@SuppressWarnings("unused")
 		public Drawable icon;
 		public ListItemClickListener clickListener;
 		
@@ -116,6 +113,7 @@ public class PreferencesListFragment extends ListFragment {
 			this.clickListener = clickListener;
 		}
 		
+		@SuppressWarnings("unused")
 		public Preference(String title, String summary) {
 			this(title, summary, null, null);
 		}
@@ -851,7 +849,7 @@ public class PreferencesListFragment extends ListFragment {
 	 */
 	private static void restoreFromBackup(Context context, String path, String filename) {
 		final Context thisContext = context;
-		final ProgressDialog progDialog = DialogHelper.showDialog(
+		DialogHelper.showProgressDialog(
 				context,
 				context.getString(R.string.restore_progress_dialog_title),
 				context.getString(R.string.restore_progress_dialog_message));
@@ -867,21 +865,18 @@ public class PreferencesListFragment extends ListFragment {
 						switch (param) {
 						case RestoreBackupXmlTask.BACKUP_RESTORE_SUCCESS:
 							toast = Toast.makeText(thisContext, R.string.restore_complete_success, Toast.LENGTH_SHORT);
-							progDialog.dismiss();
 							break;
 						case RestoreBackupXmlTask.BACKUP_RESTORE_FAIL_INVALID:
 							toast = Toast.makeText(thisContext, R.string.restore_complete_fail_invalid, Toast.LENGTH_SHORT);
-							progDialog.dismiss();
 							break;
 						case RestoreBackupXmlTask.BACKUP_RESTORE_FAIL_READING:
 							toast = Toast.makeText(thisContext, R.string.restore_complete_fail_reading, Toast.LENGTH_SHORT);
-							progDialog.dismiss();
 							break;
 						case RestoreBackupXmlTask.BACKUP_RESTORE_FAIL_OTHER:
 							toast = Toast.makeText(thisContext, R.string.restore_complete_fail_other, Toast.LENGTH_SHORT);
-							progDialog.dismiss();
 							break;
 						}
+						DialogHelper.dismissProgressDialog();
 						if (toast != null) {
 							toast.show();
 						}

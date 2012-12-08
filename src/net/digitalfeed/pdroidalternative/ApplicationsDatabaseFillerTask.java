@@ -219,7 +219,7 @@ public class ApplicationsDatabaseFillerTask extends AsyncTask<Void, Integer, Has
 				//it doesn't use compiled SQL queries
 				//write_db.insert(DBInterface.ApplicationTable.TABLE_NAME, null, DBInterface.ApplicationTable.getContentValues(app));					
 			} catch (NameNotFoundException e) {	
-				Log.d("PDroidAlternative", String.format("Application %s went missing from installed applications list", appInfo.packageName));
+				if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG, String.format("Application %s went missing from installed applications list", appInfo.packageName));
 			}
 			progressObject[0] += 1;
 			publishProgress(progressObject.clone());

@@ -140,10 +140,10 @@ class PermissionSettingHelper {
 							new SimpleImmutableEntry<Method, String>(privacySettings.getClass().getMethod("get" + settingFunctionName), settingTrustedOption)
 							);
 				} catch (NoSuchMethodException e) {
-				   Log.d("PDroidAlternative","PrivacySettings object of privacy service is missing the expected method " + settingFunctionName);
+				   if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG,"PrivacySettings object of privacy service is missing the expected method " + settingFunctionName);
 				   e.printStackTrace();
 				} catch (IllegalArgumentException e) {
-					Log.d("PDroidAlternative","Illegal arguments when calling " + settingFunctionName);
+					if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG,"Illegal arguments when calling " + settingFunctionName);
 					e.printStackTrace();
 				}
 			} while (cursor.moveToNext());
@@ -175,13 +175,13 @@ class PermissionSettingHelper {
 					}
 				}
 			} catch (IllegalArgumentException e) {
-				Log.d("PDroidAlternative","Illegal arguments when calling " + row.getKey().getName());
+				if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG,"Illegal arguments when calling " + row.getKey().getName());
 				e.printStackTrace();
 			} catch (IllegalAccessException e) {
-				Log.d("PDroidAlternative","Illegal access when calling " + row.getKey().getName());
+				if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG,"Illegal access when calling " + row.getKey().getName());
 				e.printStackTrace();
 			} catch (InvocationTargetException e) {
-				Log.d("PDroidAlternative","InvocationTargetException when calling " + row.getKey().getName());
+				if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG,"InvocationTargetException when calling " + row.getKey().getName());
 				e.printStackTrace();
 			}
 		}
@@ -225,10 +225,10 @@ class PermissionSettingHelper {
 							new SimpleImmutableEntry<Method,String>(privacySettings.getClass().getMethod("set" + settingFunctionName, byte.class),settingTrustedOption)
 							);
 				} catch (NoSuchMethodException e) {
-				   Log.d("PDroidAlternative","PrivacySettings object of privacy service is missing the expected method " + settingFunctionName);
+				   if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG,"PrivacySettings object of privacy service is missing the expected method " + settingFunctionName);
 				   e.printStackTrace();
 				} catch (IllegalArgumentException e) {
-					Log.d("PDroidAlternative","Illegal arguments when calling " + settingFunctionName);
+					if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG,"Illegal arguments when calling " + settingFunctionName);
 					e.printStackTrace();
 				}
 			} while (cursor.moveToNext());
@@ -263,13 +263,13 @@ class PermissionSettingHelper {
 			try {
 				row.getKey().invoke(privacySettings, newValueByte);
 			} catch (IllegalArgumentException e) {
-				Log.d("PDroidAlternative","Illegal arguments when calling " + row.getKey().getName());
+				if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG,"Illegal arguments when calling " + row.getKey().getName());
 				e.printStackTrace();
 			} catch (IllegalAccessException e) {
-				Log.d("PDroidAlternative","Illegal access when calling " + row.getKey().getName());
+				if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG,"Illegal access when calling " + row.getKey().getName());
 				e.printStackTrace();
 			} catch (InvocationTargetException e) {
-				Log.d("PDroidAlternative","InvocationTargetException when calling " + row.getKey().getName());
+				if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG,"InvocationTargetException when calling " + row.getKey().getName());
 				e.printStackTrace();
 			}
 		}
@@ -311,10 +311,10 @@ class PermissionSettingHelper {
 								new SimpleImmutableEntry<Method,String>(privacySettings.getClass().getMethod("set" + settingFunctionName, byte.class), settingTrustedOption)
 								);
 					} catch (NoSuchMethodException e) {
-					   Log.d("PDroidAlternative","PrivacySettings object of privacy service is missing the expected method " + settingFunctionName);
+					   if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG,"PrivacySettings object of privacy service is missing the expected method " + settingFunctionName);
 					   e.printStackTrace();
 					} catch (IllegalArgumentException e) {
-						Log.d("PDroidAlternative","Illegal arguments when calling " + settingFunctionName);
+						if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG,"Illegal arguments when calling " + settingFunctionName);
 						e.printStackTrace();
 					}
 				} while (cursor.moveToNext());
@@ -364,13 +364,13 @@ class PermissionSettingHelper {
 				try {
 					row.getKey().invoke(privacySettings, newValueByte);
 				} catch (IllegalArgumentException e) {
-					Log.d("PDroidAlternative","Illegal arguments when calling " + row.getKey().getName());
+					if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG,"Illegal arguments when calling " + row.getKey().getName());
 					e.printStackTrace();
 				} catch (IllegalAccessException e) {
-					Log.d("PDroidAlternative","Illegal access when calling " + row.getKey().getName());
+					if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG,"Illegal access when calling " + row.getKey().getName());
 					e.printStackTrace();
 				} catch (InvocationTargetException e) {
-					Log.d("PDroidAlternative","InvocationTargetException when calling " + row.getKey().getName());
+					if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG,"InvocationTargetException when calling " + row.getKey().getName());
 					e.printStackTrace();
 				}
 			}
@@ -397,11 +397,11 @@ class PermissionSettingHelper {
 			}
 						
 			if (this.settingList == null) {
-				Log.d("PDroidAlternative", "Loading settinglist");
+				if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG, "Loading settinglist");
 				loadSettingsList(db);
 			}
 						
-			Log.d("PDroidAlternative", "getPrivacySettingsXml for " + privacySettings.getPackageName());
+			if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG, "getPrivacySettingsXml for " + privacySettings.getPackageName());
 			
 			Element app = document.createElement(PreferencesListFragment.BACKUP_XML_APP_NODE);
 			app.setAttribute("packagename", privacySettings.getPackageName());
@@ -411,20 +411,20 @@ class PermissionSettingHelper {
 			Object pdroidCoreValue = null;
 			
 			for (PDroidSettingWithFunctions row : this.settingList) {
-				Log.d("PDroidAlternative", "Processing row " + row.name);
+				if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG, "Processing row " + row.name);
 				
 				try {
 					pdroidCoreSetting = (Byte)row.getGetSettingMethod().invoke(privacySettings);
 				} catch (IllegalArgumentException e) {
-					Log.d("PDroidAlternative","Illegal arguments when calling " + row.getGetSettingMethod().getName());
+					if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG,"Illegal arguments when calling " + row.getGetSettingMethod().getName());
 					e.printStackTrace();
 					throw new RuntimeException("Illegal arguments when calling " + row.getGetSettingMethod().getName());
 				} catch (IllegalAccessException e) {
-					Log.d("PDroidAlternative","Illegal access when calling " + row.getGetSettingMethod().getName());
+					if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG,"Illegal access when calling " + row.getGetSettingMethod().getName());
 					e.printStackTrace();
 					throw new RuntimeException("Illegal access when calling " + row.getGetSettingMethod().getName());
 				} catch (InvocationTargetException e) {
-					Log.d("PDroidAlternative","InvocationTargetException when calling " + row.getGetSettingMethod().getName());
+					if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG,"InvocationTargetException when calling " + row.getGetSettingMethod().getName());
 					e.printStackTrace();
 					throw new RuntimeException("InvocationTargetException when calling " + row.getGetSettingMethod().getName());
 				}
@@ -433,19 +433,19 @@ class PermissionSettingHelper {
 								
 				switch (pdroidCoreSetting) {
 				case PrivacySettings.REAL:
-					Log.d("PDroidAlternative", "REAL " + row.name);
+					if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG, "REAL " + row.name);
 					setting.setAttribute(PreferencesListFragment.BACKUP_XML_SETTING_ATTRIBUTE, BACKUP_SETTING_REAL);
 					break;
 				case PrivacySettings.CUSTOM:
-					Log.d("PDroidAlternative", "CUSTOM " + row.name);
+					if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG, "CUSTOM " + row.name);
 					setting.setAttribute(PreferencesListFragment.BACKUP_XML_SETTING_ATTRIBUTE, BACKUP_SETTING_CUSTOM);
 					break;
 				case PrivacySettings.RANDOM:
-					Log.d("PDroidAlternative", "RANDOM " + row.name);
+					if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG, "RANDOM " + row.name);
 					setting.setAttribute(PreferencesListFragment.BACKUP_XML_SETTING_ATTRIBUTE, BACKUP_SETTING_RANDOM);
 					break;
 				case PrivacySettings.EMPTY:
-					Log.d("PDroidAlternative", "EMPTY " + row.name);
+					if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG, "EMPTY " + row.name);
 					setting.setAttribute(PreferencesListFragment.BACKUP_XML_SETTING_ATTRIBUTE, BACKUP_SETTING_EMPTY);
 					break;
 				}
@@ -458,15 +458,15 @@ class PermissionSettingHelper {
 							try {
 								pdroidCoreValue = row.getGetValueMethod(customValueField).invoke(privacySettings);
 							} catch (IllegalArgumentException e) {
-								Log.d("PDroidAlternative","Illegal arguments when calling " + row.getGetValueMethod(customValueField).getName());
+								if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG,"Illegal arguments when calling " + row.getGetValueMethod(customValueField).getName());
 								e.printStackTrace();
 								throw new RuntimeException("Illegal arguments when calling " + row.getGetValueMethod(customValueField).getName());
 							} catch (IllegalAccessException e) {
-								Log.d("PDroidAlternative","Illegal access when calling " + row.getGetValueMethod(customValueField).getName());
+								if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG,"Illegal access when calling " + row.getGetValueMethod(customValueField).getName());
 								e.printStackTrace();
 								throw new RuntimeException("Illegal access when calling " + row.getGetValueMethod(customValueField).getName());
 							} catch (InvocationTargetException e) {
-								Log.d("PDroidAlternative","InvocationTargetException when calling " + row.getGetValueMethod(customValueField).getName());
+								if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG,"InvocationTargetException when calling " + row.getGetValueMethod(customValueField).getName());
 								e.printStackTrace();
 								throw new RuntimeException("InvocationTargetException when calling " + row.getGetValueMethod(customValueField).getName());
 							}
@@ -485,7 +485,7 @@ class PermissionSettingHelper {
 										setting.appendChild(customValueElement);
 									}
 								} else {
-									Log.d("PDroidAlternative", "Got a non-String value back. May mean the API has changed.");
+									if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG, "Got a non-String value back. May mean the API has changed.");
 									throw new RuntimeException("Got a non-String custom value from PDroid Core.");
 								}
 							}
@@ -560,15 +560,15 @@ class PermissionSettingHelper {
 							try {
 								settingWithFunctions.getSetSettingMethod().invoke(privacySettings, pdroidCoreSetting);
 							} catch (IllegalArgumentException e) {
-								Log.d("PDroidAlternative","Illegal arguments when calling " + settingWithFunctions.getGetSettingMethod().getName());
+								if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG,"Illegal arguments when calling " + settingWithFunctions.getGetSettingMethod().getName());
 								e.printStackTrace();
 								throw new RuntimeException("Illegal arguments when calling " + settingWithFunctions.getGetSettingMethod().getName());
 							} catch (IllegalAccessException e) {
-								Log.d("PDroidAlternative","Illegal access when calling " + settingWithFunctions.getGetSettingMethod().getName());
+								if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG,"Illegal access when calling " + settingWithFunctions.getGetSettingMethod().getName());
 								e.printStackTrace();
 								throw new RuntimeException("Illegal access when calling " + settingWithFunctions.getGetSettingMethod().getName());
 							} catch (InvocationTargetException e) {
-								Log.d("PDroidAlternative","InvocationTargetException when calling " + settingWithFunctions.getGetSettingMethod().getName());
+								if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG,"InvocationTargetException when calling " + settingWithFunctions.getGetSettingMethod().getName());
 								e.printStackTrace();
 								throw new RuntimeException("InvocationTargetException when calling " + settingWithFunctions.getGetSettingMethod().getName());
 							}
@@ -596,15 +596,15 @@ class PermissionSettingHelper {
 													customSettingMethod.invoke(privacySettings, pdroidCoreValue);	
 												}
 										} catch (IllegalArgumentException e) {
-											Log.d("PDroidAlternative","Illegal arguments when calling " + customSettingMethod.getName());
+											if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG,"Illegal arguments when calling " + customSettingMethod.getName());
 											e.printStackTrace();
 											throw new RuntimeException("Illegal arguments when calling " + customSettingMethod.getName());
 										} catch (IllegalAccessException e) {
-											Log.d("PDroidAlternative","Illegal access when calling " + customSettingMethod.getName());
+											if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG,"Illegal access when calling " + customSettingMethod.getName());
 											e.printStackTrace();
 											throw new RuntimeException("Illegal access when calling " + customSettingMethod.getName());
 										} catch (InvocationTargetException e) {
-											Log.d("PDroidAlternative","InvocationTargetException when calling " + customSettingMethod.getName());
+											if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG,"InvocationTargetException when calling " + customSettingMethod.getName());
 											e.printStackTrace();
 											throw new RuntimeException("InvocationTargetException when calling " + customSettingMethod.getName());
 										}

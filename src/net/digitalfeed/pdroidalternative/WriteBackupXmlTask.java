@@ -104,7 +104,7 @@ public class WriteBackupXmlTask extends AsyncTask<Void, Void, Integer> {
 		PermissionSettingHelper psh = new PermissionSettingHelper();
 		
 		if (cursor != null && cursor.getCount() > 0 && cursor.moveToFirst()) {
-			Log.d("PDroidAlternative","Number of apps to backup: " + Integer.toString(cursor.getCount()));
+			if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG,"Number of apps to backup: " + Integer.toString(cursor.getCount()));
 			int packageNameColumn = cursor.getColumnIndex(DBInterface.ApplicationTable.COLUMN_NAME_PACKAGENAME);
 
 			do {

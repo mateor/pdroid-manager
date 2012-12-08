@@ -292,7 +292,7 @@ public class Application {
 	 */
 	public static Application fromPackageName(Context context, String packageName) {
 		Application app = null;
-		//Log.d("PDroidAlternative", "Application.fromPackageName: Loading package from OS: " + packageName);
+		if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG, "Application.fromPackageName: Loading package from OS: " + packageName);
 		try {
 			PackageManager pkgMgr = context.getPackageManager();
 			PackageInfo pkgInfo = pkgMgr.getPackageInfo(packageName, PackageManager.GET_PERMISSIONS);
@@ -321,11 +321,11 @@ public class Application {
 					pkgMgr.getApplicationIcon(appInfo.packageName),
 					pkgInfo.requestedPermissions
 					); 
-			//Log.d("PDroidAlternative", "Application.fromPackageName: Object created from OS");
+			if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG, "Application.fromPackageName: Object created from OS");
 
 		} catch (NameNotFoundException e) {
 			// TODO Auto-generated catch block
-			Log.d("PDroidAlternative", "NameNotFoundException when trying to generate an app from package name");
+			if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG, "NameNotFoundException when trying to generate an app from package name");
 			e.printStackTrace();
 		}
 		
@@ -343,7 +343,7 @@ public class Application {
 		Application app = null;
 		SQLiteDatabase db = null;
 		Cursor cursor = null;
-		//Log.d("PDroidAlternative", "Application.fromDatabase: Loading package: " + packageName);
+		if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG, "Application.fromDatabase: Loading package: " + packageName);
 		try {
 			DBHelper dbHelper = DBInterface.getInstance(context).getDBHelper();
 			db = dbHelper.getReadableDatabase();
@@ -371,7 +371,7 @@ public class Application {
 		    			icon,
 		    			permissionsArray
 		    		);
-		    	//Log.d("PDroidAlternative", "Application.fromDatabase: Loaded package from DB");
+		    	if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG, "Application.fromDatabase: Loaded package from DB");
 			}
 		} finally {
 			if (cursor != null && !cursor.isClosed()) {

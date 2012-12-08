@@ -11,6 +11,7 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.text.Html;
 import android.text.method.LinkMovementMethod;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +21,8 @@ import android.widget.TextView;
 
 public class DialogHelper {
 
+	private static ProgressDialog progDialog;
+	
 	private DialogHelper() {}
 	
     /**
@@ -40,8 +43,9 @@ public class DialogHelper {
      * @param message  Message for the progress dialog (or null for none)
      * @param type  ProgressDialog.x for the type of dialog to be displayed
      */	
-	static ProgressDialog showDialog(Context context, String title, String message, int type) {
-		ProgressDialog progDialog = new ProgressDialog(context);
+	static void showProgressDialog(Context context, String title, String message, int type) {
+		dismissProgressDialog();
+		progDialog = new ProgressDialog(context);
 		progDialog.setProgressStyle(type);
 		if (title != null) {
 			progDialog.setTitle(title);
@@ -51,22 +55,8 @@ public class DialogHelper {
 		}
     	progDialog.setCancelable(false);
     	progDialog.show();
-    	return progDialog;
 	}
 	
-    /**
-     * Helper to show a non-cancellable spinner progress dialog
-     * 
-     * @param title  Title for the progress dialog (or null for none)
-     * @param message  Message for the progress dialog (or null for none)
-     * @param type  ProgressDialog.x for the type of dialog to be displayed
-     * @param oldDialog  Previous dialog to be dismissed if showing
-     */	
-	static ProgressDialog showDialog(Context context, String title, String message, int type, ProgressDialog oldDialog) {
-		dismissDialog(oldDialog);
-		return showDialog(context, title, message, type);
-	}
-
 	
     /**
      * Helper to show a non-cancellable spinner progress dialog
@@ -74,29 +64,31 @@ public class DialogHelper {
      * @param title  Title for the progress dialog (or null for none)
      * @param message  Message for the progress dialog (or null for none)
      */
-	static ProgressDialog showDialog(Context context, String title, String message) {
-		return showDialog(context, title, message, ProgressDialog.STYLE_SPINNER);
+	static void showProgressDialog(Context context, String title, String message) {
+		showProgressDialog(context, title, message, ProgressDialog.STYLE_SPINNER);
 	}
-
-    /**
-     * Helper to show a non-cancellable spinner progress dialog
-     * 
-     * @param title  Title for the progress dialog (or null for none)
-     * @param message  Message for the progress dialog (or null for none)
-     * @param oldDialog  Previous dialog to be dismissed if showing
-     */
-	static ProgressDialog showDialog(Context context, String title, String message, ProgressDialog oldDialog) {
-		dismissDialog(oldDialog);
-		return showDialog(context, title, message, ProgressDialog.STYLE_SPINNER);
-	}
+	
 	
 	/**
 	 * Helper to close a dialog if one is open
 	 */
-	static void dismissDialog(ProgressDialog progDialog) {
-		if (progDialog != null && progDialog.isShowing()) {
+	static void dismissProgressDialog() {
+		if (progDialog != null) {
 			progDialog.dismiss();
 		}
+	}
+	
+	static void updateProgressDialog(int currentValue, int maxValue) {
+	    if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG, "DialogHelper:updateProgressDialog");
+	    if (progDialog != null) {
+	    	if (progDialog.isShowing()) {
+	    		progDialog.setProgress(currentValue);
+	    	} else {
+	    		progDialog.setMax(maxValue);
+	    		progDialog.setProgress(currentValue);
+	    		progDialog.show();
+			}
+	    }
 	}
 	
 	

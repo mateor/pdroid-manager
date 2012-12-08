@@ -65,7 +65,7 @@ public class ApplicationsObjectLoaderTask extends AsyncTask<Void, Integer, HashM
 	
 	@Override
 	protected HashMap<String, Application> doInBackground(Void... params) {
-		Log.d("PDroidAlternative", "ApplicationsObjectLoaderTask:doInBackground");
+		if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG, "ApplicationsObjectLoaderTask:doInBackground");
 		AppQueryBuilder queryBuilder = new AppQueryBuilder();
 		
 		queryBuilder.addColumns(AppQueryBuilder.COLUMN_TYPE_APP);

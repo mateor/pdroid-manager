@@ -110,7 +110,7 @@ public class RestoreBackupXmlTask extends AsyncTask<Void, Void, Integer> {
 				privacySettings = privacySettingsManager.getSettings(packageName);
 				try {
 					if (privacySettings == null) {
-						Log.d("PDroidAlternative", "Settings not found for " + packageName + ": using pkgMgr");
+						if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG, "Settings not found for " + packageName + ": using pkgMgr");
 						pkgInfo = pkgMgr.getPackageInfo(packageName, 0);
 						uid = pkgInfo.applicationInfo.uid;
 						privacySettings = new PrivacySettings(null, packageName, uid);
@@ -124,7 +124,7 @@ public class RestoreBackupXmlTask extends AsyncTask<Void, Void, Integer> {
 				} catch (NameNotFoundException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
-					Log.d("PDroidAlternative", "Could not find package " + packageName);
+					if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG, "Could not find package " + packageName);
 				}
 			}
 		}

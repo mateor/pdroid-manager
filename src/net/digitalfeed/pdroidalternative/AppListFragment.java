@@ -56,7 +56,6 @@ public class AppListFragment extends Fragment {
 	View rootView; // view for the root view element of this listing 
 	ListView listView; // view for the list of applications
 	AppListAdapter appListAdapter; // array adapter for listView
-	ProgressDialog progDialog; // used to store the progress dialog from start to end of AsyncTasks
 	//ActionBar actionBar;
 	
 	Context context;
@@ -83,7 +82,7 @@ public class AppListFragment extends Fragment {
 	@Override
 	public void onAttach (Activity activity) {
 		super.onAttach(activity);
-		Log.d("PDroidAlternative", "AppListFragment:OnAttach");
+		if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG, "AppListFragment:OnAttach");
 		this.context = activity;
 		
         // Check the container activity implements the callback interface
@@ -99,7 +98,7 @@ public class AppListFragment extends Fragment {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		Log.d("PDroidAlternative", "AppListFragment:OnCreate");
+		if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG, "AppListFragment:OnCreate");
 		
         //get handle to the application preferences
         prefs = new Preferences(context);
@@ -111,7 +110,7 @@ public class AppListFragment extends Fragment {
          * If the database version has changed, we will need to rebuild the application cache 
          */
         if (prefs.getLastRunDatabaseVersion() != DBInterface.DBHelper.DATABASE_VERSION) {
-        	Log.d("PDroidAlternative", "Defined database version has changed since last run; we need to rebuild the cache");
+        	if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG, "Defined database version has changed since last run; we need to rebuild the cache");
         	//this will force the application list to be rebuilt from the application package manager
         	prefs.setIsApplicationListCacheValid(false); 
         	prefs.setLastRunDatabaseVersion(DBInterface.DBHelper.DATABASE_VERSION);
@@ -126,7 +125,7 @@ public class AppListFragment extends Fragment {
         		//The app list isn't valid, so we need to rebuild it
 	            rebuildApplicationList();
         	} else {
-        		Log.d("PDroidAlternative", "AppListFragment:appList == null: reloading application objects");
+        		if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG, "AppListFragment:appList == null: reloading application objects");
         		loadApplicationObjects();
         		loadApplicationList();
         	}
@@ -136,7 +135,7 @@ public class AppListFragment extends Fragment {
 	@Override
 	public View onCreateView (LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		super.onCreateView(inflater, container, savedInstanceState);
-		Log.d("PDroidAlternative", "AppListFragment:OnCreateView");
+		if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG, "AppListFragment:OnCreateView");
 		this.rootView = inflater.inflate(R.layout.activity_main, container);
 		this.listView = (ListView)this.rootView.findViewById(R.id.application_list);
 		return this.rootView;
@@ -145,13 +144,13 @@ public class AppListFragment extends Fragment {
 	@Override
 	public void onActivityCreated (Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
-		Log.d("PDroidAlternative", "AppListFragment:OnActivityCreated");
+		if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG, "AppListFragment:OnActivityCreated");
 	}
 	
 	@Override
 	public void onViewCreated (View view, Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
-		Log.d("PDroidAlternative", "AppListFragment:OnViewCreated");
+		if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG, "AppListFragment:OnViewCreated");
         listView.setOnItemClickListener(new OnItemClickListener() {
 
 			@Override
@@ -175,20 +174,20 @@ public class AppListFragment extends Fragment {
 	@Override
 	public void onStart () {
 		super.onStart();
-		Log.d("PDroidAlternative", "AppListFragment:OnStart");
+		if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG, "AppListFragment:OnStart");
 
 		switch (showDialogOnStart) {
 		case DIALOG_LINEAR:
-			DialogHelper.showDialog(context, null, getString(R.string.applist_dialogtext_generateapplist), ProgressDialog.STYLE_HORIZONTAL, progDialog);
+			DialogHelper.showProgressDialog(context, null, getString(R.string.applist_dialogtext_generateapplist), ProgressDialog.STYLE_HORIZONTAL);
 		case DIALOG_NONE:
-			DialogHelper.dismissDialog(progDialog);
+			DialogHelper.dismissProgressDialog();
 		}
 		
 		// if the application list is loaded, and the listView has been build (which it should have)
 		// but the adapter has not been set, we should set it now.
 		// (If this is the case, then the asynctask finished before onStart)
 		if (listView != null && this.appList != null && listView.getAdapter() == null) {
-    		Log.d("PDroidAlternative", "AppListFragment:setting appListAdapter in onStart");
+    		if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG, "AppListFragment:setting appListAdapter in onStart");
     		listView.setAdapter(appListAdapter);
 		}
 	}
@@ -196,43 +195,43 @@ public class AppListFragment extends Fragment {
 	@Override
 	public void onResume() {
 		super.onResume();
-		Log.d("PDroidAlternative", "AppListFragment:OnResume");
+		if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG, "AppListFragment:OnResume");
 	}
 	
 	@Override
 	public void onPause () {
 		super.onPause();
-		Log.d("PDroidAlternative", "AppListFragment:OnPause");
+		if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG, "AppListFragment:OnPause");
 	}
 
 	@Override
 	public void onStop () {
 		super.onStop();
-		Log.d("PDroidAlternative", "AppListFragment:OnStop");
+		if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG, "AppListFragment:OnStop");
 	}
 	
 	@Override
 	public void onDestroyView () {
 		super.onDestroyView();
-		Log.d("PDroidAlternative","onDestroyView called");
+		if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG,"onDestroyView called");
 	}
 	
 	@Override
 	public void onDestroy () {
 		super.onDestroy();
-		Log.d("PDroidAlternative", "AppListFragment:OnDestroy");
+		if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG, "AppListFragment:OnDestroy");
 	}
 	
 	@Override
 	public void onDetach () {
 		super.onDetach();
-		Log.d("PDroidAlternative", "AppListFragment:OnDetach");
+		if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG, "AppListFragment:OnDetach");
 	}
 	
 	
 	@Override
 	public void onCreateOptionsMenu (Menu menu, MenuInflater inflater) {
-		Log.d("PDroidAlternative", "AppListFragment:onCreateOptionsMenu");
+		if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG, "AppListFragment:onCreateOptionsMenu");
         inflater.inflate(R.menu.activity_main, menu);
         
         /*
@@ -306,7 +305,7 @@ public class AppListFragment extends Fragment {
 	
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-		Log.d("PDroidAlternative", "AppListFragment:onOptionsItemSelected");
+		if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG, "AppListFragment:onOptionsItemSelected");
     	super.onOptionsItemSelected(item);
     	if (readyForInput) {
 	    	switch (item.getItemId()) {
@@ -325,7 +324,7 @@ public class AppListFragment extends Fragment {
      * 'deny all' options for an application.
      */
     private void showPopupMenu(View view, int position){
-		Log.d("PDroidAlternative", "AppListFragment:showPopupMenu");
+		if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG, "AppListFragment:showPopupMenu");
     	PopupMenu popupMenu = new PopupMenu(context, view);
     	popupMenu.getMenuInflater().inflate(R.menu.activity_applist_longpress_menu, popupMenu.getMenu());
 
@@ -346,7 +345,7 @@ public class AppListFragment extends Fragment {
     	popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
     		@Override
     		public boolean onMenuItemClick(MenuItem item) {    
-    			Log.d("PDroidAlternative", "AppListFragment:popMenu.OnMenuItemClickListener:onMenuItemClick");
+    			if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG, "AppListFragment:popMenu.OnMenuItemClickListener:onMenuItemClick");
     			TrustState newTrustState = null;
     			
     			int action = 0;
@@ -371,14 +370,14 @@ public class AppListFragment extends Fragment {
 
     			switch (action) {
     			case LONGPRESS_MENU_UPDATE_ALL_SETTINGS:
-    				progDialog = DialogHelper.showDialog(context, null, getString(R.string.applist_dialogtext_updating_settings), progDialog);
+    				DialogHelper.showProgressDialog(context, null, getString(R.string.applist_dialogtext_updating_settings));
 
     				//use an asynctask to actually update the settings, so it doesn't interfere with the UI thread
 	    			ApplicationsUpdateAllSettingsTask updateAllSettingsTask = new ApplicationsUpdateAllSettingsTask(context, newTrustState, new AppListUpdateAllSettingsCallback());
 	    			updateAllSettingsTask.execute(targetApp);
 	    			break;
     			case LONGPRESS_MENU_DELETE_SETTINGS:
-    				progDialog = DialogHelper.showDialog(context, null, getString(R.string.applist_dialogtext_deleting_settings), progDialog);
+    				DialogHelper.showProgressDialog(context, null, getString(R.string.applist_dialogtext_deleting_settings));
 
 	    			//use an asynctask to delete settings, so it doesn't interfere with the UI thread
 	    			ApplicationsDeleteSettingsTask deleteSettingsTask = new ApplicationsDeleteSettingsTask(context, new AppListUpdateAllSettingsCallback());
@@ -398,31 +397,13 @@ public class AppListFragment extends Fragment {
     class AppListUpdateAllSettingsCallback implements IAsyncTaskCallback<Void>{
     	@Override
     	public void asyncTaskComplete(Void result) {
-    		Log.d("PDroidAlternative", "AppListFragment:AppListUpdateAllSettingsCallback:asyncTaskComplete");
+    		if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG, "AppListFragment:AppListUpdateAllSettingsCallback:asyncTaskComplete");
     		//TODO: might be worth adding a toast here to notify the settings have been updated?
-    		DialogHelper.dismissDialog(progDialog);
+    		DialogHelper.dismissProgressDialog();
     		appListAdapter.notifyDataSetChanged(); //notify adapter that the data has changed, so app will update the trusted state in the listview
     	}
     }
     
-    /**
-     * A generic function used to update a currently displayed progress dialog.
-     * 
-     * @param currentValue The current value of the progress bar 
-     * @param maxValue The maximum value of the progress bar
-     */
-    private void updateProgressDialog(int currentValue, int maxValue) {
-    	Log.d("PDroidAlternative", "AppListFragment:updateProgressDialog");
-		if (progDialog != null) {
-			if (progDialog.isShowing()) {
-				progDialog.setProgress(currentValue);
-			} else {
-				progDialog.setMax(maxValue);
-				progDialog.setProgress(currentValue);
-				progDialog.show();
-			}
-		}
-    }
     
     /**
      * Uses an asynctask to generate an hashmap of Application objects representing all applications
@@ -430,7 +411,7 @@ public class AppListFragment extends Fragment {
      * representing specific applications in subsequent searches
      */
     private void loadApplicationObjects() {
-    	Log.d("PDroidAlternative", "AppListFragment:loadApplicationObjects");
+    	if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG, "AppListFragment:loadApplicationObjects");
     	ApplicationsObjectLoaderTask appListGeneratorTask = new ApplicationsObjectLoaderTask(context, new AppListAppGeneratorCallback());
     	appListGeneratorTask.execute();
     }
@@ -450,7 +431,7 @@ public class AppListFragment extends Fragment {
     	 */
     	@Override
     	public void asyncTaskComplete(HashMap<String, Application> result) {
-    		Log.d("PDroidAlternative", "AppListAppGeneratorCallback:asyncTaskComplete");
+    		if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG, "AppListAppGeneratorCallback:asyncTaskComplete");
     		applicationObjects = result;
     		loadApplicationList();
     	}
@@ -462,7 +443,7 @@ public class AppListFragment extends Fragment {
      * which match the current filtering criteria set on the spinners 
      */
     private void loadApplicationList() {
-    	Log.d("PDroidAlternative", "AppListFragment:loadApplicationList");
+    	if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG, "AppListFragment:loadApplicationList");
     	//Create query builder to pass the the AsyncTask with the relevant filtering settings
     	AppQueryBuilder queryBuilder = new AppQueryBuilder();
 		queryBuilder.addColumns(AppQueryBuilder.COLUMN_TYPE_PACKAGENAME); //only need the package names to look up in the hashmap
@@ -479,7 +460,7 @@ public class AppListFragment extends Fragment {
 		} else if (currentAppType.equals(Preferences.APPLIST_LAST_APP_TYPE_ALL)) {
 			//This is just here for the moment for exclusion purposes
 		} else {
-			Log.d("PDroidAlternative","You shouldn't be here!");
+			if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG,"You shouldn't be here!");
 		}
 
 		//Set up and execute the AsyncTask
@@ -502,7 +483,7 @@ public class AppListFragment extends Fragment {
     	 */
     	@Override
     	public void asyncTaskComplete(List<String> result) {
-    		Log.d("PDroidAlternative", "AppListFragment:AppListLoaderCallback:asyncTaskComplete");
+    		if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG, "AppListFragment:AppListLoaderCallback:asyncTaskComplete");
     		if (result != null) {
 	    		//Clear the current list of applications
 	    		if (appList == null) {
@@ -531,7 +512,7 @@ public class AppListFragment extends Fragment {
     		} else {
     			//TODO: Handle the case of no matching apps better: maybe clear the list, or display a
     			//'no matching entries' message of some sort over the top?
-    			Log.d("PDroidAlternative","No results from app list load");
+    			if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG,"No results from app list load");
     		}
     		readyForInput = true;
     	}
@@ -541,7 +522,7 @@ public class AppListFragment extends Fragment {
      * Commence the regeneration of the application list held in the database from the OS
      */
     private void rebuildApplicationList() {
-    	Log.d("PDroidAlternative", "AppListFragment:rebuildApplicationList");
+    	if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG, "AppListFragment:rebuildApplicationList");
     	showDialogOnStart = DIALOG_LINEAR;
 
         // Start the AsyncTask to build the list of apps and write them to the database
@@ -557,8 +538,8 @@ public class AppListFragment extends Fragment {
     class AppListGeneratorCallback implements IAsyncTaskCallbackWithProgress<HashMap<String, Application>>{
     	@Override
     	public void asyncTaskComplete(HashMap<String, Application> returnedAppList) {
-    		Log.d("PDroidAlternative", "AppListFragment:AppListGeneratorCallback:asyncTaskComplete");
-                DialogHelper.dismissDialog(progDialog);
+    		if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG, "AppListFragment:AppListGeneratorCallback:asyncTaskComplete");
+                DialogHelper.dismissProgressDialog();
     		applicationObjects = returnedAppList; 
     		//set the application cache as valid, so the application data will not be regenerated
     		//on next start
@@ -568,7 +549,7 @@ public class AppListFragment extends Fragment {
     	
     	@Override
     	public void asyncTaskProgressUpdate(Integer... progress) {
-    		updateProgressDialog(progress[0], progress[1]);
+    		DialogHelper.updateProgressDialog(progress[0], progress[1]);
     	}
     }
 

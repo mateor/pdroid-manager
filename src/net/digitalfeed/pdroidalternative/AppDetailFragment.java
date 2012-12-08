@@ -101,8 +101,8 @@ public class AppDetailFragment extends PDroidSettingListFragment {
 
 	@Override
 	boolean doDelete() {
-		this.progDialog = DialogHelper.showDialog(context, getString(R.string.detail_dialog_saving_title),
-				getString(R.string.detail_dialog_saving_message), progDialog);
+		DialogHelper.showProgressDialog(context, getString(R.string.detail_dialog_saving_title),
+				getString(R.string.detail_dialog_saving_message));
 
     	AppSettingsDeleteTask settingsDeleterTask = new AppSettingsDeleteTask(context, packageName, new DeleteCompleteHandler());
     	settingsDeleterTask.execute();
@@ -111,8 +111,8 @@ public class AppDetailFragment extends PDroidSettingListFragment {
 
 	@Override
 	boolean doSave() {
-		this.progDialog = DialogHelper.showDialog(context, getString(R.string.detail_dialog_saving_title),
-				getString(R.string.detail_dialog_saving_message), progDialog);
+		DialogHelper.showProgressDialog(context, getString(R.string.detail_dialog_saving_title),
+				getString(R.string.detail_dialog_saving_message));
     	
     	Preferences prefs = new Preferences(context);
     	CheckBox checkbox = (CheckBox)rootView.findViewById(R.id.detail_notify_on_access);
@@ -157,8 +157,8 @@ public class AppDetailFragment extends PDroidSettingListFragment {
 		@Override
 		public void asyncTaskComplete(Application inApplication) {
 			if (inApplication == null) {
-				Log.d("PDroidAlternative", "inApplication is null: the app could have disappeared between the intent being created and the task running?");
-				DialogHelper.dismissDialog(progDialog);
+				if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG, "inApplication is null: the app could have disappeared between the intent being created and the task running?");
+				DialogHelper.dismissProgressDialog();
 			} else {
 				//setTitle(inApplication.getLabel());
 				application = inApplication;
@@ -177,7 +177,7 @@ public class AppDetailFragment extends PDroidSettingListFragment {
      */
     public void loadApplicationDetail(String packageName) {
     	if (packageName != null) {
-    		progDialog = DialogHelper.showDialog(context, null, getString(R.string.detail_dialog_loading_message), progDialog);
+    		DialogHelper.showProgressDialog(context, null, getString(R.string.detail_dialog_loading_message));
     		this.packageName = packageName;
 	        ApplicationLoadTask appDetailAppLoader = new ApplicationLoadTask(context, new AppLoadCompleteHandler());
 	        appDetailAppLoader.execute(packageName);

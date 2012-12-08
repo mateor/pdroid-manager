@@ -168,19 +168,19 @@ public class AppSettingsLoadTask extends AsyncTask<String, Integer, List<PDroidA
 						selectedOption = PDroidSetting.OPTION_FLAG_RANDOM;
 						break;
 					default:
-						Log.d("PDroidAlternative","Unrecognised Privacy Setting type");
+						if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG,"Unrecognised Privacy Setting type");
 					}
 				} catch (NoSuchMethodException e) {
-				   Log.d("PDroidAlternative","PrivacySettings object of privacy service is missing the expected method " + settingFunctionName);
+				   if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG,"PrivacySettings object of privacy service is missing the expected method " + settingFunctionName);
 				   e.printStackTrace();
 				} catch (IllegalArgumentException e) {
-					Log.d("PDroidAlternative","Illegal arguments when calling " + settingFunctionName);
+					if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG,"Illegal arguments when calling " + settingFunctionName);
 					e.printStackTrace();
 				} catch (IllegalAccessException e) {
-					Log.d("PDroidAlternative","Illegal access when calling " + settingFunctionName);
+					if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG,"Illegal access when calling " + settingFunctionName);
 					e.printStackTrace();
 				} catch (InvocationTargetException e) {
-					Log.d("PDroidAlternative","InvocationTargetException when calling " + settingFunctionName);
+					if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG,"InvocationTargetException when calling " + settingFunctionName);
 					e.printStackTrace();
 				}
 			}

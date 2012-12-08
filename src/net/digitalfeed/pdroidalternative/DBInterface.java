@@ -663,7 +663,7 @@ public class DBInterface {
 	
 		@Override
 		public void onCreate(SQLiteDatabase db) {
-			Log.d("PDroidAlternative", "Executing DBInterface.DBHelper.onCreate");
+			if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG, "Executing DBInterface.DBHelper.onCreate");
 			createTables(db, true);
 			loadDefaultData(db);
 		}
@@ -672,7 +672,7 @@ public class DBInterface {
 		
 		@Override
 		public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-			Log.d("PDroidAlternative", "Executing DBInterface.DBHelper.onUpgrade");
+			if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG, "Executing DBInterface.DBHelper.onUpgrade");
 			// At version 1 - no upgrades yet!
 			deleteTables(db, false);
 			createTables(db, false);
@@ -850,12 +850,12 @@ public class DBInterface {
 				
 				db.setTransactionSuccessful();
 			} catch (XmlPullParserException e) {
-				Log.d("PDroidAlternative",e.getMessage());
+				if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG,e.getMessage());
 				//TODO: Exception handling, mayhaps?
 			} catch (IOException e) {
-				Log.d("PDroidAlternative",e.getMessage());
+				if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG,e.getMessage());
 			} catch (NotFoundException e) {
-				Log.d("PDroidAlternative",e.getMessage());
+				if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG,e.getMessage());
 			} finally {
 				db.endTransaction();
 			}

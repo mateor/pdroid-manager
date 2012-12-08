@@ -28,6 +28,7 @@ package net.digitalfeed.pdroidalternative;
 
 import android.content.Context;
 import android.os.AsyncTask;
+import android.util.Log;
 
 
 /**
@@ -49,7 +50,7 @@ public class ApplicationLoadTask extends AsyncTask<String, Integer, Application>
 		
 	@Override
 	protected Application doInBackground(String... selectPackageName) {
-		//Log.d("PDroidAlternative","Looking up package name: " + selectPackageName[0]);
+		if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG,"Looking up package name: " + selectPackageName[0]);
 		return Application.fromDatabase(context, selectPackageName[0]);
 	}
 	
