@@ -33,20 +33,27 @@ import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 
 public class IconHelper {
-	public static Bitmap getIconBitmap(Drawable icon) {
+	public static Bitmap getIconBitmap(Drawable icon, int maxSize) {
+		int iconWidth = icon.getIntrinsicWidth();
+		int iconHeight = icon.getIntrinsicHeight();
+		if (maxSize > -1) {
+			iconWidth = (iconWidth > maxSize) ? maxSize : iconWidth;
+			iconHeight = (iconHeight > maxSize) ? maxSize : iconHeight;
+		}
+		
 		//Thanks go to André on http://stackoverflow.com/questions/3035692/how-to-convert-a-drawable-to-a-bitmap
-        Bitmap bitmap = Bitmap.createBitmap(icon.getIntrinsicWidth(), icon.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+        //Bitmap bitmap = Bitmap.createBitmap(icon.getIntrinsicWidth(), icon.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+        Bitmap bitmap = Bitmap.createBitmap(iconWidth, iconHeight, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(bitmap);
         icon.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
         icon.draw(canvas);
         return bitmap;
 	}
 	
-	public static byte[] getIconByteArray(Drawable icon) {
-		Bitmap bitmap = getIconBitmap(icon);
+	public static byte[] getIconByteArray(Drawable icon, int maxSize) {
+		Bitmap bitmap = getIconBitmap(icon, maxSize);
 		ByteArrayOutputStream byteArrayBitmapStream = new ByteArrayOutputStream();
 		bitmap.compress(Bitmap.CompressFormat.PNG, DBInterface.ApplicationTable.COMPRESS_ICON_QUALITY, byteArrayBitmapStream);
 		return byteArrayBitmapStream.toByteArray();
 	}
-
 }

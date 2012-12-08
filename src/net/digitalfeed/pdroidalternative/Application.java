@@ -60,6 +60,8 @@ public class Application {
 	public static final int STATUS_FLAG_NEW = 8;
 	public static final int STATUS_FLAG_UPDATED = 16;
 	
+	public static final int TARGET_ICON_SIZE = 32;
+	
 	//indicates whether this has a full data complement, or just the minimum data set
 	//private boolean isStub;
 	
@@ -215,13 +217,22 @@ public class Application {
 		return this.icon;
 	}
 
+	public Bitmap getIconBitmap(int maxSize) {
+        return IconHelper.getIconBitmap(this.icon, maxSize);
+	}
+	
+	public byte[] getIconByteArray(int maxSize) {
+		return IconHelper.getIconByteArray(this.icon, maxSize);
+	}
+
 	public Bitmap getIconBitmap() {
-        return IconHelper.getIconBitmap(this.icon);
+        return IconHelper.getIconBitmap(this.icon, -1);
 	}
 	
 	public byte[] getIconByteArray() {
-		return IconHelper.getIconByteArray(this.icon);
+		return IconHelper.getIconByteArray(this.icon, -1);
 	}
+
 	
 	public void setIcon(Drawable icon) {
 		this.icon = icon;

@@ -33,6 +33,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -58,6 +59,7 @@ public class AppListAdapter extends ArrayAdapter<Application>{
 	
 	public AppListAdapter(Context context, int standardResourceId, List<Application> appList) {
 		super(context, standardResourceId, appList);
+		Log.d("PDroidAlternative", "AppListAdapter:AppListAdapter");
 		
 		this.context = context;
 		this.standardResourceId = standardResourceId;
@@ -69,6 +71,7 @@ public class AppListAdapter extends ArrayAdapter<Application>{
 	
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
+		Log.d("PDroidAlternative", "AppListAdapter:getView");
 		View row = convertView;
 		AppHolder holder = null;
 		

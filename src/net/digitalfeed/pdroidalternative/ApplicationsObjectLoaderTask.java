@@ -36,6 +36,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.text.TextUtils;
+import android.util.Log;
 
 /**
  * Returns a HashMap of package name and in-memory Application objects for all applications currently
@@ -64,6 +65,7 @@ public class ApplicationsObjectLoaderTask extends AsyncTask<Void, Integer, HashM
 	
 	@Override
 	protected HashMap<String, Application> doInBackground(Void... params) {
+		Log.d("PDroidAlternative", "ApplicationsObjectLoaderTask:doInBackground");
 		AppQueryBuilder queryBuilder = new AppQueryBuilder();
 		
 		queryBuilder.addColumns(AppQueryBuilder.COLUMN_TYPE_APP);
@@ -101,7 +103,7 @@ public class ApplicationsObjectLoaderTask extends AsyncTask<Void, Integer, HashM
     		if (permissions != null) {
     			permissionsArray = TextUtils.split(permissions, ",");
     		}
-
+    		
     		Drawable icon = new BitmapDrawable(context.getResources(),BitmapFactory.decodeByteArray(iconBlob, 0, iconBlob.length));
     		appList.put(packageName, new Application(packageName, label, versionCode, appFlags, statusFlags, uid, icon, permissionsArray));
     	} while (cursor.moveToNext());

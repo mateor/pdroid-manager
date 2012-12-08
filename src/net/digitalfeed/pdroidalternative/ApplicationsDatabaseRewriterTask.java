@@ -31,6 +31,7 @@ import android.database.DatabaseUtils.InsertHelper;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.text.TextUtils;
+import android.util.DisplayMetrics;
 
 /**
  * Purges all applications from the database, and writes a replacement set
@@ -51,6 +52,9 @@ public class ApplicationsDatabaseRewriterTask extends AsyncTask<Application, Voi
 
 	@Override
 	protected Void doInBackground(Application... params) {
+		
+		int iconSizePx = context.getResources().getDisplayMetrics().densityDpi / DisplayMetrics.DENSITY_MEDIUM * Application.TARGET_ICON_SIZE;
+		
 		SQLiteDatabase write_db = DBInterface.getInstance(context).getDBHelper().getWritableDatabase();
 		//Clear the application list before putting in a new list.
 		write_db.delete(DBInterface.ApplicationTable.TABLE_NAME, null, null);
@@ -92,7 +96,7 @@ public class ApplicationsDatabaseRewriterTask extends AsyncTask<Application, Voi
 			applicationsInsertHelper.bind(applicationTableColumnNumbers[DBInterface.ApplicationTable.COLUMN_NUMBER_OFFSET_PACKAGENAME], app.getPackageName());
 			applicationsInsertHelper.bind(applicationTableColumnNumbers[DBInterface.ApplicationTable.COLUMN_NUMBER_OFFSET_UID], app.getUid());
 			applicationsInsertHelper.bind(applicationTableColumnNumbers[DBInterface.ApplicationTable.COLUMN_NUMBER_OFFSET_VERSIONCODE], app.getVersionCode());
-			applicationsInsertHelper.bind(applicationTableColumnNumbers[DBInterface.ApplicationTable.COLUMN_NUMBER_OFFSET_ICON], app.getIconByteArray());
+			applicationsInsertHelper.bind(applicationTableColumnNumbers[DBInterface.ApplicationTable.COLUMN_NUMBER_OFFSET_ICON], app.getIconByteArray(iconSizePx));
 			applicationsInsertHelper.bind(applicationTableColumnNumbers[DBInterface.ApplicationTable.COLUMN_NUMBER_OFFSET_APPFLAGS], app.getAppFlags());
 			applicationsInsertHelper.execute();
 		}
