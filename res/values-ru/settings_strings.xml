@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 
+/**
+ * Copyright (C) 2012 Simeon J. Morgan (smorgan@digitalfeed.net)
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 3 of the License, or (at your option) any later version.
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License along with
+ * this program; if not, see <http://www.gnu.org/licenses>.
+ * The software has the following requirements (GNU GPL version 3 section 7):
+ * You must retain in pdroid-manager, any modifications or derivatives of
+ * pdroid-manager, or any code or components taken from pdroid-manager the author
+ * attribution included in the files.
+ * In pdroid-manager, any modifications or derivatives of pdroid-manager, or any
+ * application utilizing code or components taken from pdroid-manager must include
+ * in any display or listing of its creators, authors, contributors or developers
+ * the names or pseudonyms included in the author attributions of pdroid-manager
+ * or pdroid-manager derived code.
+ * Modified or derivative versions of the pdroid-manager application must use an
+ * alternative name, rather than the name pdroid-manager.
+ */
+ 
+ /**
+ * @author Simeon J. Morgan <smorgan@digitalfeed.net>
+ * @author wbedard - contributed the bulk of the text for help entries
+ * @translator beasty (of XDA-developers) 
+ */
+-->
+<resources>
+	<string name="SETTING_LABEL_ALLOW_READ_DEVICE_ID">Идентификатор Устройства</string>
+	<string name="SETTING_HELP_ALLOW_READ_DEVICE_ID">Доступ к идентификатору устройства, либо IMEI для GSM или MEID/ESN для CDMA телефонов. Уникальный идентификатор устройства постоянно привязан к телефону.</string>
+	<string name="SETTING_LABEL_ALLOW_READ_PHONE_NUMBER">Номер Телефона</string>
+	<string name="SETTING_HELP_ALLOW_READ_PHONE_NUMBER">Доступ к номеру телефона абонента и/или номеру голосовой почты.</string>
+	<string name="SETTING_LABEL_ALLOW_READ_SIM_SERIAL">Серийный Номер SIM</string>
+	<string name="SETTING_HELP_ALLOW_READ_SIM_SERIAL">Доступ к серийному номеру SIM карты.</string>
+	<string name="SETTING_LABEL_ALLOW_READ_SUBSCRIBER_ID">Идентификатор Абонента</string>
+	<string name="SETTING_HELP_ALLOW_READ_SUBSCRIBER_ID">Доступ к уникальному идентификатору абонента, например, International Mobile Subscriber Identity (IMSI) для GSM телефонов или Mobile Identification Number (MIN) для CDMA телефонов.</string>
+	<string name="SETTING_LABEL_ALLOW_READ_INCOMING_CALL_NUMBER">Входящий Номер Телефона</string>
+	<string name="SETTING_HELP_ALLOW_READ_INCOMING_CALL_NUMBER">Доступ к номеру входящего звонка.</string>
+	<string name="SETTING_LABEL_ALLOW_READ_OUTGOING_CALL_NUMBER">Исходящий Номер Телефона</string>
+	<string name="SETTING_HELP_ALLOW_READ_OUTGOING_CALL_NUMBER">Доступ к номеру исходящего звонка.</string>
+	<string name="SETTING_LABEL_ALLOW_INITIATE_PHONE_CALL">Сделать Телефонный Звонок</string>
+	<string name="SETTING_HELP_ALLOW_INITIATE_PHONE_CALL">Управляет возможностью приложения соваршать телефонные звонки без привлечения системного приложения Dialer. Системное приложение Dialer позволяет пользователю подтвердить или отклонить звонок. Запрещая возможность Сделать Телефонный Звонок также предотвращает возможность приложения звонить на номера экстренных  служб (т.е. 01, 02, 03).</string>
+	<string name="SETTING_LABEL_ALLOW_READ_NETWORK_LOCATION">Позиция Сети</string>
+	<string name="SETTING_HELP_ALLOW_READ_NETWORK_LOCATION">Позиция абонента по станциям мобильной связи и WiFi.</string>
+	<string name="SETTING_LABEL_ALLOW_READ_GPS_LOCATION">Позиция GPS</string>
+	<string name="SETTING_HELP_ALLOW_READ_GPS_LOCATION">Позиция абонента полученная от устройства GPS.</string>
+	<string name="SETTING_LABEL_ALLOW_USE_ACCOUNT_CREDENTIALS">Права Учетной Записи</string>
+	<string name="SETTING_HELP_ALLOW_USE_ACCOUNT_CREDENTIALS">Управляет доступом приложения к средству идентификации учетных записей(например приложение Facebook использующее права доступа к Facebook)</string>
+	<string name="SETTING_LABEL_ALLOW_READ_ACCOUNTS_LIST">Учетные Записи</string>
+	<string name="SETTING_HELP_ALLOW_READ_ACCOUNTS_LIST">Управляет доступом к списку учетных записей доступных на устройстве.  Кроме вашей учетной записи Google  у вас могут быть другие, например: Dropbox, Twitter, LinkedIn, Firefox, и т.п. Детали учетной записи включают название сервиса и логин (например, ваш почтовый адрес Gmail)</string>
+	<string name="SETTING_LABEL_ALLOW_READ_CONTACTS">Контакты</string>
+	<string name="SETTING_HELP_ALLOW_READ_CONTACTS">Управляет доступом к списку контактов Android.</string>
+	<string name="SETTING_LABEL_ALLOW_READ_CALL_LOG">Список Вызовов</string>
+	<string name="SETTING_HELP_ALLOW_READ_CALL_LOG">Управляет доступом к списку вызовов Android.</string>
+	<string name="SETTING_LABEL_ALLOW_READ_CALENDAR">Календарь</string>
+	<string name="SETTING_HELP_ALLOW_READ_CALENDAR">Управляет доступом к календарю Android..</string>
+	<string name="SETTING_LABEL_ALLOW_READ_SMS">Доступ к SMS</string>
+	<string name="SETTING_HELP_ALLOW_READ_SMS">Управляет доступом к SMS, хранящимся на устройстве Android, за исключением тех которые хранятся непосредственно в SIM карте.</string>
+	<string name="SETTING_LABEL_ALLOW_SEND_SMS">Отсылка SMS</string>
+	<string name="SETTING_HELP_ALLOW_SEND_SMS">Управляет возможностью приложения отсылать SMS сообщения.</string>
+	<string name="SETTING_LABEL_ALLOW_READ_MMS">Доступ к MMS</string>
+	<string name="SETTING_HELP_ALLOW_READ_MMS">Управляет доступом к MMS, хранящимся на устройстве Android, за исключением тех которые хранятся непосредственно в SIM карте.</string>
+	<string name="SETTING_LABEL_ALLOW_SEND_MMS">Отсылка MMS</string>
+	<string name="SETTING_HELP_ALLOW_SEND_MMS">Управляет возможностью приложения отсылать MMS сообщения.</string>
+	<string name="SETTING_LABEL_ALLOW_RECORD_AUDIO">Запись Звука</string>
+	<string name="SETTING_HELP_ALLOW_RECORD_AUDIO">Управляет возможностью приложения записывать звук в любой момент используя микрофон устройства, за исключением телефонных звонков.</string>
+	<string name="SETTING_LABEL_ALLOW_CAMERA">Камера</string>
+	<string name="SETTING_HELP_ALLOW_CAMERA">Управляет возможностью приложения делать фотоснимки в любой момент используя камеру(ы) устройства.</string>
+	<string name="SETTING_LABEL_ALLOW_READ_BOOKMARKS_AND_HISTORY">Закладки и История</string>
+	<string name="SETTING_HELP_ALLOW_READ_BOOKMARKS_AND_HISTORY">Управляет доступом к истории браузера и закладкам.</string>
+	<string name="SETTING_LABEL_ALLOW_READ_SYSTEM_LOGS">Системный Журнал</string>
+	<string name="SETTING_HELP_ALLOW_READ_SYSTEM_LOGS">Управляет доступом к системному журналу на устройстве, где могут храниться персональные данные. Приложения с ROOT правами имеют доступ к системному журналу в любом случае.</string>
+	<string name="SETTING_LABEL_ALLOW_RECEIVE_BOOT_COMPLETED_INTENT">Запуск при Загрузке</string>
+	<string name="SETTING_HELP_ALLOW_RECEIVE_BOOT_COMPLETED_INTENT">Управляет доступом приложения к уведомлению о завершении загрузки устройства. Эта информация может быть использована для запуска приложения при загрузке, либо совершения лругих действий.</string>
+	<string name="SETTING_LABEL_ALLOW_READ_WIFI_INFO">Информация о Сети WiFi</string>
+	<string name="SETTING_HELP_ALLOW_READ_WIFI_INFO">Управляет доступом приложения к списку всех беспроводных подключений на устройстве, текущей сети WiFi, ближайшим точкам доступа WiFi и текущему IP адресу (если он получен посредством DHCP).</string>
+	<string name="SETTING_LABEL_ALLOW_CHANGE_WIFI_STATE">Изменение WiFi Подключения</string>
+	<string name="SETTING_HELP_ALLOW_CHANGE_WIFI_STATE">Управляет возможностью приложения подключаться и отключаться от точек доступа WiFi и изменять параметры конфигурации WiFi сетей.</string>
+	<string name="SETTING_LABEL_ALLOW_CHANGE_MOBILE_DATA_STATE">Изменение Мобильного Подключения</string>
+	<string name="SETTING_HELP_ALLOW_CHANGE_MOBILE_DATA_STATE">Управляет возможностью приложения включать и выключать предачу данных посредством мобильной сети.</string>
+	<string name="SETTING_LABEL_ALLOW_READ_NETWORK_INFO">Информация о Сети</string>
+	<string name="SETTING_HELP_ALLOW_READ_NETWORK_INFO">Управляет доступом приложения к детальной информации о текущем сетевом подключении, включая состояние подключения, роуминг, DNS сервера, IP адрес, и др.</string>
+	<string name="SETTING_LABEL_ALLOW_READ_ANDROID_ID">Android ID</string>
+	<string name="SETTING_HELP_ALLOW_READ_ANDROID_ID">Управляет доступом приложения к уникальному идентификатору утановки системы - Andoid ID.</string>
+	<string name="SETTING_LABEL_ALLOW_READ_SIM_INFO">Информация о SIM</string>
+	<string name="SETTING_HELP_ALLOW_READ_SIM_INFO">Управляет доступом приложения к информации о стране и операторе мобильной связи, хранящейся на SIM карте.  Обычно эта информация доступна для всех приложений и не требует специальных прав доступа.</string>
+	<string name="SETTING_LABEL_ALLOW_ACCESS_IP_TABLES">IP Таблицы</string>
+	<string name="SETTING_HELP_ALLOW_ACCESS_IP_TABLES">Управляет возможностью приложения запускать скрипты, которые включают команду iptables (или, выражаясь точнее, содержат текст iptables или ip6tables)</string>
+	<string name="SETTING_LABEL_ALLOW_READ_ICC_ID">ICC Доступ</string>
+	<string name="SETTING_HELP_ALLOW_READ_ICC_ID">Управляет возможностью приложения читать/записывать SMS сообщения в Integrated Circuit Card (ICC), R-UIM или SIM карту.</string>
+	<string name="SETTING_LABEL_FAKE_ALWAYS_ONLINE">Онлайн Статус</string>
+	<string name="SETTING_HELP_FAKE_ALWAYS_ONLINE">Управляет доступом приложения к уведомлению о выходе устройства в онлайн (т.е. о том что Интернет соединение установлено</string>
+	
+	<string name="SETTING_GROUP_LABEL_GENERAL">Общие</string>
+	<string name="SETTING_GROUP_LABEL_PHONE">Телефон и Звонки</string>
+	<string name="SETTING_GROUP_LABEL_MESSAGES">Сообщения</string>
+	<string name="SETTING_GROUP_LABEL_PERSONAL_DATA">Персональная Информация</string>
+	<string name="SETTING_GROUP_LABEL_MEDIA">Медиа</string>
+	<string name="SETTING_GROUP_LABEL_NETWORK">Сеть</string>
+	<string name="SETTING_GROUP_LABEL_LOCATION">Местоположение</string>
+</resources>

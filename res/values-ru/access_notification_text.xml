@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 
+/**
+ * Copyright (C) 2012 Simeon J. Morgan (smorgan@digitalfeed.net)
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 3 of the License, or (at your option) any later version.
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License along with
+ * this program; if not, see <http://www.gnu.org/licenses>.
+ * The software has the following requirements (GNU GPL version 3 section 7):
+ * You must retain in pdroid-manager, any modifications or derivatives of
+ * pdroid-manager, or any code or components taken from pdroid-manager the author
+ * attribution included in the files.
+ * In pdroid-manager, any modifications or derivatives of pdroid-manager, or any
+ * application utilizing code or components taken from pdroid-manager must include
+ * in any display or listing of its creators, authors, contributors or developers
+ * the names or pseudonyms included in the author attributions of pdroid-manager
+ * or pdroid-manager derived code.
+ * Modified or derivative versions of the pdroid-manager application must use an
+ * alternative name, rather than the name pdroid-manager.
+ */
+ 
+ /**
+ * @author Simeon J. Morgan <smorgan@digitalfeed.net>
+ * @translator beasty (of XDA-developers)
+ */
+-->
+<resources>
+    <string name="access_notification_deviceID">Идентификатор Устройства</string>
+    <string name="access_notification_line1Number">Номер Телефона</string>
+    <string name="access_notification_locationGPS">Позиция GPS</string>
+    <string name="access_notification_locationNetwork">Позиция Сети</string>
+    <string name="access_notification_networkInfoCurrent">Сетевая Информация</string>
+    <string name="access_notification_networkInfoSIM">Мобильная Сетевая Информация</string>
+    <string name="access_notification_simSerial">Серийный Номер SIM</string>
+    <string name="access_notification_subscriberID">Идентификатор Абонента</string>
+    <string name="access_notification_accountsList">Список Учетных Записей</string>
+    <string name="access_notification_authTokens">Права Учетной Записи</string>
+    <string name="access_notification_outgoingCall">Исходящий Номер Телефона</string>
+    <string name="access_notification_incomingCall">Входящий Номер Телефона</string>
+    <string name="access_notification_contacts">Контакты</string>
+	<string name="access_notification_calendar">Календарь</string>
+	<string name="access_notification_mms">Чтение MMS</string>
+	<string name="access_notification_sms">Чтение SMS</string>
+    <string name="access_notification_mmsSms">Чтение MMS или SMS</string>
+	<string name="access_notification_callLog">Список Вызовов</string>
+	<string name="access_notification_bookmarks">Закладки и История</string>
+	<string name="access_notification_systemLogs">Системный Журнал</string>
+	<string name="access_notification_intentBootCompleted">Запуск при Загрузке</string>
+	<string name="access_notification_camera">Камера</string>
+	<string name="access_notification_recordAudio">Запись Звука</string>
+	<string name="access_notification_SmsSend">Отсылка SMS</string>
+	<string name="access_notification_phoneCall">Сделать Телефонный Звонок</string>
+	<string name="access_notification_android_id">Android ID</string>
+	<string name="access_notification_iccAccess">ICC Доступ</string>
+	<string name="access_notification_wifiInfo">Информация о Сети WiFi</string>
+	<string name="access_notification_iptables"></string>
+	<string name="access_notification_switchconnectivity">Изменение Мобильного Подключения</string>
+	<string name="access_notification_sendMms">Отсылка MMS</string>
+	<string name="access_notification_switchWifiState">Изменение WiFi Подключения</string>
+</resources>
