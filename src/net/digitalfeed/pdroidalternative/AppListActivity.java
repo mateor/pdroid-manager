@@ -48,6 +48,7 @@ public class AppListActivity extends Activity implements AppListFragment.OnAppli
 	@Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.d("PDroidAlternative", "AppListActivity:onCreate");
 
         LanguageHelper.updateLanguageIfRequired(this);
         
@@ -65,6 +66,7 @@ public class AppListActivity extends Activity implements AppListFragment.OnAppli
 	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
+		Log.d("PDroidAlternative", "AppListActivity:onCreateOptionsMenu");
 		getMenuInflater().inflate(R.menu.app_list_activity, menu);
 		return true;
     }
@@ -72,6 +74,7 @@ public class AppListActivity extends Activity implements AppListFragment.OnAppli
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		super.onOptionsItemSelected(item);
+		Log.d("PDroidAlternative", "AppListActivity:onOptionsItemSelected");
 		switch (item.getItemId()) {
 		case R.id.app_list_menu_preferences:
 			openPreferenceInterface();
@@ -83,21 +86,25 @@ public class AppListActivity extends Activity implements AppListFragment.OnAppli
 	
 	@Override
 	public void onDetailUp() {
+		Log.d("PDroidAlternative", "AppListActivity:onDetailUp");
 		hideDetailInterface();
 	}
 	
 	@Override
 	public void onDetailSave() {
+		Log.d("PDroidAlternative", "AppListActivity:onDetailSave");
 		hideDetailInterface();
 	}
 	
 	@Override
 	public void onDetailClose() {
+		Log.d("PDroidAlternative", "AppListActivity:onDetailClose");
 		hideDetailInterface();
 	}
 	
 	@Override
 	public void onDetailDelete() {
+		Log.d("PDroidAlternative", "AppListActivity:onDetailHide");
 		hideDetailInterface();
 	}
 		
@@ -111,7 +118,7 @@ public class AppListActivity extends Activity implements AppListFragment.OnAppli
 	 */
 	@Override
 	public void onApplicationSelected(Application application) {
-
+		Log.d("PDroidAlternative", "AppListActivity:onApplicationSelected");
 		if (detailFragment != null) {
             // If the detailFragment is available, running in dual-pane
         	Log.d("PDroidAlternative","Telling the detail fragment to load package " + application.getPackageName());
@@ -132,6 +139,7 @@ public class AppListActivity extends Activity implements AppListFragment.OnAppli
      * @param application  Application for which the detail interface should be opened
      */
     private void openDetailInterface(Application application) {
+    	Log.d("PDroidAlternative", "AppListActivity:openDetailInterface");
     	Intent intent = new Intent(this, AppDetailActivity.class);
 		intent.putExtra(AppDetailActivity.BUNDLE_PACKAGE_NAME, application.getPackageName());
 		intent.putExtra(AppDetailActivity.BUNDLE_IN_APP, true);
@@ -139,6 +147,7 @@ public class AppListActivity extends Activity implements AppListFragment.OnAppli
     }
     
     private void hideDetailInterface() {
+    	Log.d("PDroidAlternative", "AppListActivity:hideDetailInterface");
 		if (detailFragment != null) {
 			FragmentTransaction ft = getFragmentManager().beginTransaction();
 			ft.hide(detailFragment);
@@ -151,6 +160,7 @@ public class AppListActivity extends Activity implements AppListFragment.OnAppli
      * Starts the 'preference' interface
      */
     private void openPreferenceInterface() {
+    	Log.d("PDroidAlternative", "AppListActivity:openPreferenceInterface");
     	Intent intent = new Intent(this, PreferencesListActivity.class);
 		startActivity(intent);
     }

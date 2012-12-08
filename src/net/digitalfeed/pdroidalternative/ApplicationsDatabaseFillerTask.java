@@ -42,6 +42,7 @@ import android.os.AsyncTask;
 import android.privacy.PrivacySettings;
 import android.privacy.PrivacySettingsManager;
 import android.text.TextUtils;
+import android.util.DisplayMetrics;
 import android.util.Log;
 
 /**
@@ -139,6 +140,8 @@ public class ApplicationsDatabaseFillerTask extends AsyncTask<Void, Integer, Has
 		
 		PermissionSettingHelper psh = new PermissionSettingHelper();
 		
+		int iconSizePx = context.getResources().getDisplayMetrics().densityDpi / DisplayMetrics.DENSITY_MEDIUM * Application.TARGET_ICON_SIZE;
+
 		for (ApplicationInfo appInfo : installedApps) {
 			try {
 				PackageInfo pkgInfo = pkgMgr.getPackageInfo(appInfo.packageName, PackageManager.GET_PERMISSIONS);
@@ -191,7 +194,7 @@ public class ApplicationsDatabaseFillerTask extends AsyncTask<Void, Integer, Has
 				applicationsInsertHelper.bind(applicationTableColumnNumbers[APPLICATION_TABLE_COLUMN_NUMBER_OFFSET_PACKAGENAME], appInfo.packageName);
 				applicationsInsertHelper.bind(applicationTableColumnNumbers[APPLICATION_TABLE_COLUMN_NUMBER_OFFSET_UID], appInfo.uid);
 				applicationsInsertHelper.bind(applicationTableColumnNumbers[APPLICATION_TABLE_COLUMN_NUMBER_OFFSET_VERSIONCODE], pkgInfo.versionCode);
-				applicationsInsertHelper.bind(applicationTableColumnNumbers[APPLICATION_TABLE_COLUMN_NUMBER_OFFSET_ICON], IconHelper.getIconByteArray(pkgMgr.getApplicationIcon(appInfo.packageName)));
+				applicationsInsertHelper.bind(applicationTableColumnNumbers[APPLICATION_TABLE_COLUMN_NUMBER_OFFSET_ICON], IconHelper.getIconByteArray(pkgMgr.getApplicationIcon(appInfo.packageName), iconSizePx));
 				applicationsInsertHelper.bind(applicationTableColumnNumbers[APPLICATION_TABLE_COLUMN_NUMBER_OFFSET_APPFLAGS], appFlags);
 				applicationsInsertHelper.execute();
 
