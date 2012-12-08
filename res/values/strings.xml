@@ -109,6 +109,7 @@
     <string name="applist_popupmenu_set_trusted_values">Allow all</string>
 	<string name="applist_popupmenu_set_default_values">Reset to default</string>
 	<string name="applist_popupmenu_delete_settings">Delete settings</string>
+	<string name="applist_popupmenu_customise_settings">Custom settings</string>
 	
     <string name="detail_dialog_saving_title">Please wait</string>
     <string name="detail_dialog_saving_message">Updating&#8230;</string>

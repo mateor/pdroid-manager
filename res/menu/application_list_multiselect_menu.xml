@@ -16,15 +16,19 @@
 
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 	<item android:id="@+id/application_list_multiselect_set_trusted"
-          android:title="Set Trusted"
+          android:title="@string/applist_popupmenu_set_trusted_values"
           android:icon="@drawable/actionbar_allow"
           android:showAsAction="collapseActionView|ifRoom" />
     <item android:id="@+id/application_list_multiselect_set_untrusted"
-          android:title="Set Untrusted"
+          android:title="@string/applist_popupmenu_set_untrusted_values"
           android:icon="@drawable/actionbar_deny"
           android:showAsAction="collapseActionView|ifRoom" />
     <item android:id="@+id/application_list_multiselect_set_delete_settings"
-          android:title="Delete settings"
+          android:title="@string/applist_popupmenu_delete_settings"
           android:icon="@android:drawable/ic_menu_delete"
+          android:showAsAction="collapseActionView|ifRoom" />
+	<item android:id="@+id/application_list_multiselect_set_all_settings"
+          android:title="@string/applist_popupmenu_customise_settings"
+          android:icon="@drawable/actionbar_allsettings"
           android:showAsAction="collapseActionView|ifRoom" />
 </menu>

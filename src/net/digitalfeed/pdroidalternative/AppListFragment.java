@@ -1,13 +1,9 @@
 package net.digitalfeed.pdroidalternative;
 
-import java.security.InvalidParameterException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
 
 import net.digitalfeed.pdroidalternative.PermissionSettingHelper.TrustState;
 
@@ -30,12 +26,9 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.PopupMenu;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
-import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.AdapterView.OnItemSelectedListener;
 
 public class AppListFragment extends Fragment {
@@ -159,25 +152,15 @@ public class AppListFragment extends Fragment {
 	public void onViewCreated (View view, Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
 		if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG, "AppListFragment:OnViewCreated");
-/*        listView.setOnItemClickListener(new OnItemClickListener() {
+        listView.setOnItemClickListener(new OnItemClickListener() {
 
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position,
 					long id) {
 				callback.onApplicationSelected(appList.get(position));
 			}
-        });*/
+        });
         
-/*        listView.setOnItemLongClickListener(new OnItemLongClickListener() {
-        	
-			@Override
-			public boolean onItemLongClick(AdapterView<?> parent, View view, int position,
-					long id) {
-				showPopupMenu(view, position);
-				return true;
-			}
-        });*/
-
         listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
         listView.setMultiChoiceModeListener(new ModeCallback());
 
@@ -330,89 +313,19 @@ public class AppListFragment extends Fragment {
 	    return false;
     }
     
-        
-    /**
-     * Handles the display of the long-press pop-up menu, which provides 'allow all',
-     * 'deny all' options for an application.
-     */
-    private void showPopupMenu(View view, int position){
-		if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG, "AppListFragment:showPopupMenu");
-    	PopupMenu popupMenu = new PopupMenu(context, view);
-    	popupMenu.getMenuInflater().inflate(R.menu.activity_applist_longpress_menu, popupMenu.getMenu());
-
-    	//get the selected Application object from the app list
-    	final Application targetApp = appList.get(position);
-    	
-    	//If the app is already trusted, disable the 'make trusted' option
-    	if (targetApp.getHasSettings()) {
-    		if (!targetApp.getIsUntrusted()) {
-    			popupMenu.getMenu().findItem(R.id.applist_popupmenu_set_trusted_values).setEnabled(false);
-    		}
-    	} else {
-    		//if there are no settings, then disable the 'delete settings' option
-    		popupMenu.getMenu().findItem(R.id.applist_popupmenu_delete_settings).setEnabled(false);
-    	}
-   	
-    	// Add handler for when a menu item is selected
-    	popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-    		@Override
-    		public boolean onMenuItemClick(MenuItem item) {    
-    			if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG, "AppListFragment:popMenu.OnMenuItemClickListener:onMenuItemClick");
-    			TrustState newTrustState = null;
-    			
-    			int action = 0;
-    			switch (item.getItemId()) {
-    			case R.id.applist_popupmenu_set_trusted_values:
-    				newTrustState = TrustState.TRUSTED;
-        			action = LONGPRESS_MENU_UPDATE_ALL_SETTINGS;
-    				break;
-    			case R.id.applist_popupmenu_set_untrusted_values:
-    				newTrustState = TrustState.UNTRUSTED;
-        			action = LONGPRESS_MENU_UPDATE_ALL_SETTINGS;
-    				break;
-    			case R.id.applist_popupmenu_delete_settings:
-        			action = LONGPRESS_MENU_DELETE_SETTINGS;
-        			break;
-    			default:
-    				throw new InvalidParameterException();
-    			}
-
-    			//display a modal progress dialog: this prevents the user doing anything to the interface
-    			//while the actual update is taking place
-
-    			switch (action) {
-    			case LONGPRESS_MENU_UPDATE_ALL_SETTINGS:
-    				DialogHelper.showProgressDialog(context, null, getString(R.string.applist_dialogtext_updating_settings));
-
-    				//use an asynctask to actually update the settings, so it doesn't interfere with the UI thread
-	    			ApplicationsUpdateAllSettingsTask updateAllSettingsTask = new ApplicationsUpdateAllSettingsTask(context, newTrustState, new AppListUpdateAllSettingsCallback());
-	    			updateAllSettingsTask.execute(targetApp);
-	    			break;
-    			case LONGPRESS_MENU_DELETE_SETTINGS:
-    				DialogHelper.showProgressDialog(context, null, getString(R.string.applist_dialogtext_deleting_settings));
-
-	    			//use an asynctask to delete settings, so it doesn't interfere with the UI thread
-	    			ApplicationsDeleteSettingsTask deleteSettingsTask = new ApplicationsDeleteSettingsTask(context, new AppListUpdateAllSettingsCallback());
-	    			deleteSettingsTask.execute(targetApp);
-    			}
-    			return true;
-    		}
-    	});
-
-    	popupMenu.show();
-	}
 
     /**
      * Handles callback from AsyncTask used to update all settings. Closes the progress dialog, and
      * triggers update of Listview contents (notifies adapter of change).
      */
-    class AppListUpdateAllSettingsCallback implements IAsyncTaskCallback<Void>{
+    class UpdateAllSettingsCallback implements IAsyncTaskCallback<Void>{
     	@Override
     	public void asyncTaskComplete(Void result) {
     		if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG, "AppListFragment:AppListUpdateAllSettingsCallback:asyncTaskComplete");
     		//TODO: might be worth adding a toast here to notify the settings have been updated?
     		DialogHelper.dismissProgressDialog();
     		appListAdapter.notifyDataSetChanged(); //notify adapter that the data has changed, so app will update the trusted state in the listview
+    		
     	}
     }
     
@@ -642,7 +555,6 @@ public class AppListFragment extends Fragment {
 			if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG, "AppListFragment:ModeCallback:onActionItemClicked");
 			TrustState newTrustState = null;
 			int action = 0;
-			Application [] targetApps = null;
 			
             switch (item.getItemId()) {
             case R.id.application_list_multiselect_set_trusted:
@@ -683,7 +595,7 @@ public class AppListFragment extends Fragment {
 				DialogHelper.showProgressDialog(context, null, getString(R.string.applist_dialogtext_updating_settings));
 
 				//use an asynctask to actually update the settings, so it doesn't interfere with the UI thread
-    			ApplicationsUpdateAllSettingsTask updateAllSettingsTask = new ApplicationsUpdateAllSettingsTask(context, newTrustState, new AppListUpdateAllSettingsCallback());
+    			ApplicationsUpdateAllSettingsTask updateAllSettingsTask = new ApplicationsUpdateAllSettingsTask(context, newTrustState, new UpdateAllSettingsCallback());
     			updateAllSettingsTask.execute(checkedAppsArray);
     			
     			break;
@@ -691,9 +603,10 @@ public class AppListFragment extends Fragment {
 				DialogHelper.showProgressDialog(context, null, getString(R.string.applist_dialogtext_deleting_settings));
 
     			//use an asynctask to delete settings, so it doesn't interfere with the UI thread
-    			ApplicationsDeleteSettingsTask deleteSettingsTask = new ApplicationsDeleteSettingsTask(context, new AppListUpdateAllSettingsCallback());
+    			ApplicationsDeleteSettingsTask deleteSettingsTask = new ApplicationsDeleteSettingsTask(context, new UpdateAllSettingsCallback());
     			deleteSettingsTask.execute(checkedAppsArray);
 			}
+			mode.finish();
 			return true;
         }
 
