@@ -26,12 +26,7 @@
  */
 package net.digitalfeed.pdroidalternative;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.security.InvalidParameterException;
-import java.util.AbstractMap.SimpleImmutableEntry;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -41,8 +36,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
-import android.privacy.PrivacySettings;
-import android.privacy.PrivacySettingsManager;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -105,7 +98,7 @@ public class AppsSettingsLoadTask extends AsyncTask<String, Integer, List<PDroid
 							optionsArray = TextUtils.split(options, ",");
 						}
 
-						settingSet.add(new PDroidAppSetting(id, name, settingFunctionName, valueFunctionNameStub, title, group, groupTitle, optionsArray, trustedOption, selectedOption, (String)null));
+						settingSet.add(new PDroidAppSetting(id, name, settingFunctionName, valueFunctionNameStub, title, group, groupTitle, optionsArray, trustedOption, selectedOption, customValue));
 					}
 				} while (cursor.moveToNext());
 				cursor.close();

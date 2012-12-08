@@ -26,10 +26,20 @@
  */
 package net.digitalfeed.pdroidalternative;
 
+import java.lang.reflect.Method;
 import java.security.InvalidParameterException;
+import java.util.HashMap;
 import java.util.LinkedList;
 
+import android.privacy.PrivacySettings;
+
 class PDroidSetting implements Comparable<PDroidSetting> {
+	
+	protected Method getSettingMethod = null;
+	protected Method setSettingMethod = null;
+	protected HashMap<String, Method> getValueMethods = null;
+	protected HashMap<String, Method> setValueMethods = null;
+
 	protected static final String SETTING_HELP_STRING_PREFIX = "SETTING_HELP_";
 	
 	protected String id;
@@ -237,6 +247,82 @@ class PDroidSetting implements Comparable<PDroidSetting> {
 	
 	public String [] getCustomFieldNames() {
 		return customFieldNames;
+	}
+	
+	public Method getGetSettingMethod() {
+		if (this.getSettingMethod == null) {
+			try {
+				this.getSettingMethod = PrivacySettings.class.getMethod("get" + settingFunctionName);
+			} catch (NoSuchMethodException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return this.getSettingMethod;
+	}
+	
+	public Method getSetSettingMethod() {
+		if (this.setSettingMethod == null) {
+			try {
+				this.setSettingMethod = PrivacySettings.class.getMethod("set" + settingFunctionName, byte.class);
+			} catch (NoSuchMethodException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return this.setSettingMethod;
+	}
+	
+	
+	public Method getGetValueMethod(String valueName) {
+		if (this.getValueMethods == null) {
+			this.getValueMethods = new HashMap<String, Method>();
+		}
+		
+		StringBuilder methodName = new StringBuilder("get").append(valueFunctionNameStub);
+		if (!valueName.equals("")) {
+			methodName.append(valueName);
+		}
+		Method getValueMethod = null;
+		
+		if (!this.getValueMethods.containsKey(valueName)) {
+			try {
+				getValueMethod = PrivacySettings.class.getMethod(methodName.toString());
+				this.getValueMethods.put(valueName, getValueMethod);
+			} catch (NoSuchMethodException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}  else {
+			getValueMethod = this.getValueMethods.get(valueName);
+		}
+		return getValueMethod;
+	}
+	
+	
+	public Method getSetValueMethod(String valueName) {
+		if (this.setValueMethods == null) {
+			this.setValueMethods = new HashMap<String, Method>();
+		}
+		
+		StringBuilder methodName = new StringBuilder("set").append(valueFunctionNameStub);
+		if (!valueName.equals("")) {
+			methodName.append(valueName);
+		}
+		Method setValueMethod = null;
+		
+		if (!this.setValueMethods.containsKey(valueName)) {
+			try {
+				setValueMethod = PrivacySettings.class.getMethod(methodName.toString(), String.class);
+				this.setValueMethods.put(valueName, setValueMethod);
+			} catch (NoSuchMethodException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}  else {
+			setValueMethod = this.setValueMethods.get(valueName);
+		}
+		return setValueMethod;
 	}
 	
 	@Override

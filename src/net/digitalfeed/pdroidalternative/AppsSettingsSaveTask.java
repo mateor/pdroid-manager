@@ -26,18 +26,12 @@
  */
 package net.digitalfeed.pdroidalternative;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.AbstractMap.SimpleImmutableEntry;
-
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.privacy.PrivacySettings;
 import android.privacy.PrivacySettingsManager;
-import android.util.Log;
 
 
 /**
@@ -65,8 +59,6 @@ public class AppsSettingsSaveTask extends AsyncTask<PDroidAppSetting, Integer, V
 		//TODO: Exception handling: null appSettings
 
 		PrivacySettingsManager privacySettingsManager = (PrivacySettingsManager)context.getSystemService("privacy");
-		Method setMethod;
-		Class<?> privacySettingsClass = PrivacySettings.class;
 
 		PackageManager pkgMgr = null;
 		int uid;
@@ -82,7 +74,6 @@ public class AppsSettingsSaveTask extends AsyncTask<PDroidAppSetting, Integer, V
 		
 		PermissionSettingHelper psh = new PermissionSettingHelper();
 		DBInterface dbinterface = DBInterface.getInstance(context);
-		SQLiteDatabase write_db = dbinterface.getDBHelper().getWritableDatabase();
 
 		//update the privacySetting objects for the packages
 		for (String packageName : packageNames) {
@@ -118,7 +109,7 @@ public class AppsSettingsSaveTask extends AsyncTask<PDroidAppSetting, Integer, V
 	
 			//Update the app settings based on the new data: 1. check if trusted and 2. it now does have settings
 			Application app = Application.fromDatabase(context, packageName);
-			app.setIsUntrusted(psh.isPrivacySettingsUntrusted(write_db, privacySettings));
+			app.setIsUntrusted(!isTrusted);
 			app.setHasSettings(true);
 			dbinterface.updateApplicationRecord(app);
 		}

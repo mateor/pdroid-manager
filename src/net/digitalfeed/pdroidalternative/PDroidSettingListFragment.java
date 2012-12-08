@@ -344,15 +344,11 @@ abstract class PDroidSettingListFragment extends Fragment {
 	void showCustomValueBox(PDroidAppSetting appSetting) {
 		List<SimpleImmutableEntry<String,String>> customValues = appSetting.getCustomValues();
 		if (customValues == null) {
+			customValues = new LinkedList<SimpleImmutableEntry<String,String>>();
 			if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG,"No custom setting presents: setting them up");
 			customValues = new LinkedList<SimpleImmutableEntry<String,String>>();
-			if (0 != (appSetting.getSelectedOptionBit() & PDroidAppSetting.OPTION_FLAG_CUSTOM)) {
-				if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG,"Single custom setting");
-				customValues.add(new SimpleImmutableEntry<String,String>("",""));
-			} else if (0 != (appSetting.getSelectedOptionBit() & PDroidAppSetting.OPTION_FLAG_CUSTOMLOCATION)) {
-				if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG,"Lat/Long custom setting");
-				customValues.add(new SimpleImmutableEntry<String,String>("Lat",""));
-				customValues.add(new SimpleImmutableEntry<String,String>("Lon",""));
+			for (String customFieldName : appSetting.getCustomFieldNames()) {
+				customValues.add(new SimpleImmutableEntry<String,String>(customFieldName,""));
 			}
 		}
 		

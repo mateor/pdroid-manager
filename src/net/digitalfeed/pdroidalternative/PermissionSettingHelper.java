@@ -67,8 +67,8 @@ class PermissionSettingHelper {
 	//TODO: instead of using four lists with different structures, just use PDroidSettingWithFunctions lists for everything?
 	private List<SimpleImmutableEntry<Method,String>> permissionReadMethods = null;
 	private List<SimpleImmutableEntry<Method,String>> permissionWriteMethods = null;
-	private List<PDroidSettingWithFunctions> settingList = null;
-	private HashMap<String, PDroidSettingWithFunctions> settingMap = null;
+	private List<PDroidSetting> settingList = null;
+	private HashMap<String, PDroidSetting> settingMap = null;
 	private HashMap<String, Method> permissionWriteMethodMap = null;
 	private HashMap<String, Method> valueWriteMethodMap = null;
 
@@ -412,7 +412,7 @@ class PermissionSettingHelper {
 		byte pdroidCoreSetting = 0;
 		Object pdroidCoreValue = null;
 
-		for (PDroidSettingWithFunctions row : this.settingList) {
+		for (PDroidSetting row : this.settingList) {
 			if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG, "Processing row " + row.name);
 
 			try {
@@ -533,7 +533,7 @@ class PermissionSettingHelper {
 			String pdroidCoreValue = null;
 			String pdroidSettingValue;
 			String pdroidSettingName;
-			PDroidSettingWithFunctions settingWithFunctions;
+			PDroidSetting settingWithFunctions;
 
 			for (int settingNum = 0; settingNum < settings.getLength(); settingNum++) {
 				Node node = settings.item(settingNum);
@@ -620,9 +620,9 @@ class PermissionSettingHelper {
 	}
 
 	private void loadSettingsList(SQLiteDatabase db) {			
-		this.settingList = new LinkedList<PDroidSettingWithFunctions>();
-		this.settingMap = new HashMap<String, PDroidSettingWithFunctions>();
-		PDroidSettingWithFunctions setting = null;
+		this.settingList = new LinkedList<PDroidSetting>();
+		this.settingMap = new HashMap<String, PDroidSetting>();
+		PDroidSetting setting = null;
 
 		Cursor cursor = db.rawQuery(DBInterface.QUERY_GET_SETTINGS_AND_VALUE_FUNCTIONS, null);
 
@@ -660,7 +660,7 @@ class PermissionSettingHelper {
 						optionsArray = TextUtils.split(options, ",");
 					}
 
-					setting = new PDroidSettingWithFunctions(id, name, settingFunctionName, valueFunctionNameStub, title, group, groupTitle, optionsArray, trustedOption);
+					setting = new PDroidSetting(id, name, settingFunctionName, valueFunctionNameStub, title, group, groupTitle, optionsArray, trustedOption);
 					this.settingMap.put(name, setting);
 					this.settingList.add(setting);
 				} while (cursor.moveToNext());

@@ -26,19 +26,16 @@
  */
 package net.digitalfeed.pdroidalternative;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import android.os.Bundle;
 import android.app.Activity;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CheckBox;
 
 /**
  * Fragment for viewing and modifying the settings of an application.
