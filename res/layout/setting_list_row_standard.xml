@@ -38,67 +38,62 @@
 		    android:layout_alignParentRight="true"
 		    android:orientation="horizontal"
 		    >
+
+			<RadioButton
+		        android:id="@+id/option_nochange"
+		        style="@style/SettingOptionNochange"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:contentDescription="@string/detail_setting_option_nochange_contentdescription" />
 		    
 		    <RadioButton
 		        android:id="@+id/option_allow"
-		        android:layout_width="wrap_content"
-		        android:layout_height="wrap_content"	        
 		        style="@style/SettingOptionAllow"
-		        />
-			<!--  I'd really like to be able to include
-			android:text="@string/setting_option_allow" 
-			and then hide the text but I haven't worked out how yet -->
-		    
-			<RadioButton
-			    android:id="@+id/option_yes"
-			    android:layout_width="wrap_content"
-			    android:layout_height="wrap_content"
-			    style="@style/SettingOptionAllow"
-			    />
-		    
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:contentDescription="@string/detail_setting_option_allow_contentdescription" />
+		
 		    <RadioButton
-			    android:id="@+id/option_random"
-			    android:layout_width="wrap_content"
-			    android:layout_height="wrap_content"
-			    style="@style/SettingOptionRandom"
-			    />
-			<!--  I'd really like to be able to include
-			android:text="@string/setting_option_random" 
-			and then hide the text but I haven't worked out how yet -->
-			
-			<RadioButton
-			    android:id="@+id/option_custom"
-			    android:layout_width="wrap_content"
-			    android:layout_height="wrap_content"
-			    style="@style/SettingOptionCustom"
-			    />
-			<!--  I'd really like to be able to include
-			android:text="@string/setting_option_custom" 
-			and then hide the text but I haven't worked out how yet -->
-		    
-			<RadioButton
-			    android:id="@+id/option_customlocation"
-			    android:layout_width="wrap_content"
-			    android:layout_height="wrap_content"
-			    style="@style/SettingOptionCustom"
-			    />
-		    
+		        android:id="@+id/option_yes"
+		        style="@style/SettingOptionAllow"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:contentDescription="@string/detail_setting_option_yes_contentdescription" />
+		
 		    <RadioButton
-			    android:id="@+id/option_deny"
-			    android:layout_width="wrap_content"
-			    android:layout_height="wrap_content"
-			    style="@style/SettingOptionDeny"
-			    />
-			<!--  I'd really like to be able to include
-			android:text="@string/setting_option_deny" 
-			and then hide the text but I haven't worked out how yet -->
-
-			<RadioButton
-			    android:id="@+id/option_no"
-			    android:layout_width="wrap_content"
-			    android:layout_height="wrap_content"
-			    style="@style/SettingOptionNo"
-			    />
+		        android:id="@+id/option_random"
+		        style="@style/SettingOptionRandom"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:contentDescription="@string/detail_setting_option_random_contentdescription" />
+		
+		    <RadioButton
+		        android:id="@+id/option_custom"
+		        style="@style/SettingOptionCustom"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+				android:contentDescription="@string/detail_setting_option_custom_contentdescription" />
+		
+		    <RadioButton
+		        android:id="@+id/option_customlocation"
+		        style="@style/SettingOptionCustom"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:contentDescription="@string/detail_setting_option_custom_contentdescription" />
+		
+		    <RadioButton
+		        android:id="@+id/option_deny"
+		        style="@style/SettingOptionDeny"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:contentDescription="@string/detail_setting_option_deny_contentdescription" />
+		
+		    <RadioButton
+		        android:id="@+id/option_no"
+		        style="@style/SettingOptionNo"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:contentDescription="@string/detail_setting_option_no_contentdescription" />
 
 		</RadioGroup>
 		

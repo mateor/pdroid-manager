@@ -27,24 +27,17 @@
  * @author Simeon J. Morgan <smorgan@digitalfeed.net>
  */
 -->
-<resources xmlns:android="http://schemas.android.com/apk/res/android">
-    <style name="AppTheme" parent="android:Theme.DeviceDefault" />
-	<style name="SettingOptionNochange" parent="@android:style/Widget.CompoundButton.RadioButton">
-        <item name="android:button">@drawable/button_nochange</item>
-    </style>
-	<style name="SettingOptionAllow" parent="@android:style/Widget.CompoundButton.RadioButton">
-        <item name="android:button">@drawable/button_allow</item>
-    </style>
-    <style name="SettingOptionRandom" parent="@android:style/Widget.CompoundButton.RadioButton">
-        <item name="android:button">@drawable/button_random</item>
-    </style>
-    <style name="SettingOptionCustom" parent="@android:style/Widget.CompoundButton.RadioButton">
-        <item name="android:button">@drawable/button_custom</item>
-    </style>
-        <style name="SettingOptionDeny" parent="@android:style/Widget.CompoundButton.RadioButton">
-        <item name="android:button">@drawable/button_deny</item>
-    </style>
-    <style name="SettingOptionNo" parent="@android:style/Widget.CompoundButton.RadioButton">
-        <item name="android:button">@drawable/button_no</item>
-    </style>
-</resources>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+	<item android:state_checked="true" android:state_window_focused="false" android:drawable="@drawable/button_nochange_on" />        
+  	<item android:state_checked="false" android:state_window_focused="false" android:drawable="@drawable/button_nochange_off" />
+
+  	<item android:state_checked="true" android:state_pressed="true" android:drawable="@drawable/button_nochange_on_pressed" />
+	<item android:state_checked="false" android:state_pressed="true" android:drawable="@drawable/button_nochange_on_pressed" />
+
+	<item android:state_checked="true" android:state_focused="true" android:drawable="@drawable/button_nochange_on_selected" />
+  	<item android:state_checked="false" android:state_focused="true" android:drawable="@drawable/button_nochange_off_selected" />
+
+  	<item android:state_checked="true" android:drawable="@drawable/button_nochange_on" />
+	<item android:state_checked="false" android:drawable="@drawable/button_nochange_off" />
+
+</selector>

@@ -31,7 +31,8 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
 	android:paddingTop="1dp"
-    android:orientation="horizontal" >
+    android:orientation="horizontal"
+    android:background="?android:attr/activatedBackgroundIndicator" >
     
 	<include layout="@layout/application_list_app_icon" />
 
@@ -76,6 +77,8 @@
 	        android:layout_toRightOf="@+id/appSpacer" />
 	</RelativeLayout>
 	
-	<include layout="@layout/application_list_net_icon" />
-     
+	<include 
+	    android:id="@+id/application_list_net_icons"
+	    layout="@layout/application_list_net_icon" />
+	
 </RelativeLayout>

@@ -2,8 +2,13 @@ package net.digitalfeed.pdroidalternative;
 
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
+
 import net.digitalfeed.pdroidalternative.PermissionSettingHelper.TrustState;
 
 import android.app.Activity;
@@ -14,6 +19,8 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.SparseBooleanArray;
+import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -26,6 +33,7 @@ import android.widget.ListView;
 import android.widget.PopupMenu;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
+import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemLongClickListener;
 import android.widget.AdapterView.OnItemSelectedListener;
@@ -151,16 +159,16 @@ public class AppListFragment extends Fragment {
 	public void onViewCreated (View view, Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
 		if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG, "AppListFragment:OnViewCreated");
-        listView.setOnItemClickListener(new OnItemClickListener() {
+/*        listView.setOnItemClickListener(new OnItemClickListener() {
 
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position,
 					long id) {
 				callback.onApplicationSelected(appList.get(position));
 			}
-        });
+        });*/
         
-        listView.setOnItemLongClickListener(new OnItemLongClickListener() {
+/*        listView.setOnItemLongClickListener(new OnItemLongClickListener() {
         	
 			@Override
 			public boolean onItemLongClick(AdapterView<?> parent, View view, int position,
@@ -168,7 +176,11 @@ public class AppListFragment extends Fragment {
 				showPopupMenu(view, position);
 				return true;
 			}
-        });
+        });*/
+
+        listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE_MODAL);
+        listView.setMultiChoiceModeListener(new ModeCallback());
+
 	}
 
 	@Override
@@ -611,5 +623,99 @@ public class AppListFragment extends Fragment {
 		public void onNothingSelected(AdapterView<?> view) {
 			// TODO Auto-generated method stub
 		}
-    };	
+    }
+    
+    private class ModeCallback implements ListView.MultiChoiceModeListener {
+    	
+        public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+            MenuInflater inflater = getActivity().getMenuInflater();
+            inflater.inflate(R.menu.application_list_multiselect_menu, menu); 
+            mode.setTitle("Select apps");
+            return true;
+        }
+
+        public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+            return true;
+        }
+
+        public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+			if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG, "AppListFragment:ModeCallback:onActionItemClicked");
+			TrustState newTrustState = null;
+			int action = 0;
+			Application [] targetApps = null;
+			
+            switch (item.getItemId()) {
+            case R.id.application_list_multiselect_set_trusted:
+				newTrustState = TrustState.TRUSTED;
+    			action = LONGPRESS_MENU_UPDATE_ALL_SETTINGS;
+                break;
+            case R.id.application_list_multiselect_set_untrusted:
+				newTrustState = TrustState.UNTRUSTED;
+    			action = LONGPRESS_MENU_UPDATE_ALL_SETTINGS;
+                break;
+            case R.id.application_list_multiselect_set_delete_settings:
+    			action = LONGPRESS_MENU_DELETE_SETTINGS;
+                break;
+            default:
+                return false;
+            }
+            
+            LinkedList<Application> checkedApps = new LinkedList<Application>();;
+            SparseBooleanArray checkedItems = listView.getCheckedItemPositions();
+            if (checkedItems == null) {
+            	return false;
+            }
+            for (int position = 0; position < checkedItems.size(); position++) {
+                if (checkedItems.valueAt(position)) {
+                	if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG,
+                			"AppListFragment:ModeCallback:onActionItemClicked: position is checked " + Integer.toString(checkedItems.keyAt(position)));
+
+                    checkedApps.add(appList.get(checkedItems.keyAt(position)));
+                }
+            }
+            if (checkedApps.size() == 0) {
+            	return false;
+            }
+            Application [] checkedAppsArray = checkedApps.toArray(new Application [checkedApps.size()]);
+            
+			switch (action) {
+			case LONGPRESS_MENU_UPDATE_ALL_SETTINGS:
+				DialogHelper.showProgressDialog(context, null, getString(R.string.applist_dialogtext_updating_settings));
+
+				//use an asynctask to actually update the settings, so it doesn't interfere with the UI thread
+    			ApplicationsUpdateAllSettingsTask updateAllSettingsTask = new ApplicationsUpdateAllSettingsTask(context, newTrustState, new AppListUpdateAllSettingsCallback());
+    			updateAllSettingsTask.execute(checkedAppsArray);
+    			
+    			break;
+			case LONGPRESS_MENU_DELETE_SETTINGS:
+				DialogHelper.showProgressDialog(context, null, getString(R.string.applist_dialogtext_deleting_settings));
+
+    			//use an asynctask to delete settings, so it doesn't interfere with the UI thread
+    			ApplicationsDeleteSettingsTask deleteSettingsTask = new ApplicationsDeleteSettingsTask(context, new AppListUpdateAllSettingsCallback());
+    			deleteSettingsTask.execute(checkedAppsArray);
+			}
+			return true;
+        }
+
+        public void onDestroyActionMode(ActionMode mode) {
+        }
+
+        public void onItemCheckedStateChanged(ActionMode mode,
+                int position, long id, boolean checked) {
+            final int checkedCount = listView.getCheckedItemCount();
+            
+            switch (checkedCount) {
+                case 0:
+                    mode.setSubtitle(null);
+                    break;
+                case 1:
+                    mode.setSubtitle("One app selected");
+                    break;
+                default:
+                    mode.setSubtitle("" + checkedCount + " apps selected");
+                    break;
+            }
+        }
+        
+    }
 }

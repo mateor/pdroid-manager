@@ -40,65 +40,60 @@
 		    >
 		    
 		    <RadioButton
-		        android:id="@+id/option_allow"
+		        android:id="@+id/option_nochange"
+		        style="@style/SettingOptionNochange"
 		        android:layout_width="40dp"
-		        android:layout_height="40dp"	        
-		        style="@style/SettingOptionAllow"
-		        />
-			<!--  I'd really like to be able to include
-			android:text="@string/setting_option_allow" 
-			and then hide the text but I haven't worked out how yet -->
-		    
-			<RadioButton
-			    android:id="@+id/option_yes"
-			    android:layout_width="40dp"
-			    android:layout_height="40dp"
-			    style="@style/SettingOptionAllow"
-			    />
-		    
-		    <RadioButton
-			    android:id="@+id/option_random"
-			    android:layout_width="40dp"
-			    android:layout_height="40dp"
-			    style="@style/SettingOptionRandom"
-			    />
-			<!--  I'd really like to be able to include
-			android:text="@string/setting_option_random" 
-			and then hide the text but I haven't worked out how yet -->
-			
-			<RadioButton
-			    android:id="@+id/option_custom"
-			    android:layout_width="40dp"
-			    android:layout_height="40dp"
-			    style="@style/SettingOptionCustom"
-			    />
-			<!--  I'd really like to be able to include
-			android:text="@string/setting_option_custom" 
-			and then hide the text but I haven't worked out how yet -->
-		    
-			<RadioButton
-			    android:id="@+id/option_customlocation"
-			    android:layout_width="40dp"
-			    android:layout_height="40dp"
-			    style="@style/SettingOptionCustom"
-			    />
-		    
-		    <RadioButton
-			    android:id="@+id/option_deny"
-			    android:layout_width="40dp"
-			    android:layout_height="40dp"
-			    style="@style/SettingOptionDeny"
-			    />
-			<!--  I'd really like to be able to include
-			android:text="@string/setting_option_deny" 
-			and then hide the text but I haven't worked out how yet -->
+		        android:layout_height="40dp"
+		        android:contentDescription="@string/detail_setting_option_nochange_contentdescription" />
 
-			<RadioButton
-			    android:id="@+id/option_no"
-			    android:layout_width="40dp"
-			    android:layout_height="40dp"
-			    style="@style/SettingOptionNo"
-			    />
+		    <RadioButton
+		        android:id="@+id/option_allow"
+		        style="@style/SettingOptionAllow"
+		        android:layout_width="40dp"
+		        android:layout_height="40dp"
+		        android:contentDescription="@string/detail_setting_option_allow_contentdescription" />
+		
+		    <RadioButton
+		        android:id="@+id/option_yes"
+		        style="@style/SettingOptionAllow"
+		        android:layout_width="40dp"
+		        android:layout_height="40dp"
+		        android:contentDescription="@string/detail_setting_option_yes_contentdescription" />
+		
+		    <RadioButton
+		        android:id="@+id/option_random"
+		        style="@style/SettingOptionRandom"
+		        android:layout_width="40dp"
+		        android:layout_height="40dp"
+		        android:contentDescription="@string/detail_setting_option_random_contentdescription" />
+		
+		    <RadioButton
+		        android:id="@+id/option_custom"
+		        style="@style/SettingOptionCustom"
+		        android:layout_width="40dp"
+		        android:layout_height="40dp"
+				android:contentDescription="@string/detail_setting_option_custom_contentdescription" />
+		
+		    <RadioButton
+		        android:id="@+id/option_customlocation"
+		        style="@style/SettingOptionCustom"
+		        android:layout_width="40dp"
+		        android:layout_height="40dp"
+		        android:contentDescription="@string/detail_setting_option_custom_contentdescription" />
+		
+		    <RadioButton
+		        android:id="@+id/option_deny"
+		        style="@style/SettingOptionDeny"
+		        android:layout_width="40dp"
+		        android:layout_height="40dp"
+		        android:contentDescription="@string/detail_setting_option_deny_contentdescription" />
+		
+		    <RadioButton
+		        android:id="@+id/option_no"
+		        style="@style/SettingOptionNo"
+		        android:layout_width="40dp"
+		        android:layout_height="40dp"
+		        android:contentDescription="@string/detail_setting_option_no_contentdescription" />
 
 		</RadioGroup>
 		
@@ -116,8 +111,8 @@
 		    android:layout_width="wrap_content"
 	        android:layout_height="fill_parent"
 	        android:gravity="center_vertical"
-			android:layout_toRightOf="@+id/help_button" >
 	        android:layout_marginLeft="4dp"
+			android:layout_toRightOf="@+id/help_button">
 		    <TextView
 		        android:id="@+id/option_title"
 		        android:layout_width="wrap_content"
