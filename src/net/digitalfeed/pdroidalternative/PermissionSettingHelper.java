@@ -61,17 +61,19 @@ class PermissionSettingHelper {
 	public static final String BACKUP_SETTING_CUSTOM  = "custom";
 	public static final String BACKUP_SETTING_RANDOM = "random";
 	public static final String BACKUP_SETTING_EMPTY = "empty";
-	
+
 	public static final String XML_DEFAULTVALUE_TAG_NAME = "default";
-	
+
 	//TODO: instead of using four lists with different structures, just use PDroidSettingWithFunctions lists for everything?
 	private List<SimpleImmutableEntry<Method,String>> permissionReadMethods = null;
 	private List<SimpleImmutableEntry<Method,String>> permissionWriteMethods = null;
 	private List<PDroidSettingWithFunctions> settingList = null;
 	private HashMap<String, PDroidSettingWithFunctions> settingMap = null;
-	
+	private HashMap<String, Method> permissionWriteMethodMap = null;
+	private HashMap<String, Method> valueWriteMethodMap = null;
+
 	public PermissionSettingHelper() {};
-	
+
 	/**
 	 * Retrieves a list of permissions to which settings are attached (e.g.
 	 * android.permission.READ_PHONE_STATE is a permission of interest
@@ -83,7 +85,7 @@ class PermissionSettingHelper {
 	 */
 	public static HashSet<String> getPermissionsOfInterest(SQLiteDatabase db) {
 		HashSet <String> permissionsOfInterest = new HashSet<String>();
-		
+
 		Cursor cursor = db.rawQuery(DBInterface.QUERY_GET_PERMISSIONS_OF_INTEREST, null);
 		if (cursor.getCount() > 0) {
 			int permissionColumnNum = cursor.getColumnIndex(DBInterface.PermissionSettingTable.COLUMN_NAME_PERMISSION);
@@ -92,12 +94,12 @@ class PermissionSettingHelper {
 				permissionsOfInterest.add(cursor.getString(permissionColumnNum));
 			} while (cursor.moveToNext());
 		}
-		
+
 		return permissionsOfInterest;
 	}
-	
 
-	
+
+
 	/**
 	 * Calls the 'setting function' on a PrivacyObject for each known setting (using reflection)
 	 * and compares the result against the 'trusted' state for that setting.
@@ -123,14 +125,14 @@ class PermissionSettingHelper {
 		if (this.permissionReadMethods == null) {
 			this.permissionReadMethods = new LinkedList<SimpleImmutableEntry<Method,String>>();
 			Cursor cursor = db.rawQuery(DBInterface.QUERY_GET_SETTINGS_FUNCTION_NAMES, null);
-	    	int settingFunctionNameColumn = cursor.getColumnIndex(DBInterface.SettingTable.COLUMN_NAME_SETTINGFUNCTIONNAME);
-	    	int settingTrustedOptionColumn = cursor.getColumnIndex(DBInterface.SettingTable.COLUMN_NAME_TRUSTED_OPTION);
-	    	
-	    	if (cursor.getCount() < 1) {
-	    		//This will happen if the database is not initialised for some reason
-	    		throw new DatabaseUninitialisedException("No settings are present in the database: it must not be initialised correctly");
-	    	}
-	    	
+			int settingFunctionNameColumn = cursor.getColumnIndex(DBInterface.SettingTable.COLUMN_NAME_SETTINGFUNCTIONNAME);
+			int settingTrustedOptionColumn = cursor.getColumnIndex(DBInterface.SettingTable.COLUMN_NAME_TRUSTED_OPTION);
+
+			if (cursor.getCount() < 1) {
+				//This will happen if the database is not initialised for some reason
+				throw new DatabaseUninitialisedException("No settings are present in the database: it must not be initialised correctly");
+			}
+
 			cursor.moveToFirst();
 			do {
 				String settingFunctionName = cursor.getString(settingFunctionNameColumn);
@@ -140,8 +142,8 @@ class PermissionSettingHelper {
 							new SimpleImmutableEntry<Method, String>(privacySettings.getClass().getMethod("get" + settingFunctionName), settingTrustedOption)
 							);
 				} catch (NoSuchMethodException e) {
-				   if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG,"PrivacySettings object of privacy service is missing the expected method " + settingFunctionName);
-				   e.printStackTrace();
+					if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG,"PrivacySettings object of privacy service is missing the expected method " + settingFunctionName);
+					e.printStackTrace();
 				} catch (IllegalArgumentException e) {
 					if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG,"Illegal arguments when calling " + settingFunctionName);
 					e.printStackTrace();
@@ -149,7 +151,7 @@ class PermissionSettingHelper {
 			} while (cursor.moveToNext());
 			cursor.close();
 		}
-		
+
 		for (SimpleImmutableEntry<Method, String> row : this.permissionReadMethods) {
 			//Reflection may not be the best way of doing this, but otherwise this is going to be a great
 			//big select statement, which ties us more closely to the specific set of options (which are
@@ -160,7 +162,7 @@ class PermissionSettingHelper {
 				switch (pdroidCoreSetting) {
 				case PrivacySettings.REAL:
 					if (!row.getValue().equals(PDroidSetting.OPTION_TEXT_ALLOW) &&
-						!row.getValue().equals(PDroidSetting.OPTION_TEXT_YES)) {
+							!row.getValue().equals(PDroidSetting.OPTION_TEXT_YES)) {
 						return true;
 					}
 					break;
@@ -170,7 +172,7 @@ class PermissionSettingHelper {
 					return true;
 				case PrivacySettings.EMPTY:
 					if (!row.getValue().equals(PDroidSetting.OPTION_TEXT_DENY) &&
-						!row.getValue().equals(PDroidSetting.OPTION_TEXT_NO)) {
+							!row.getValue().equals(PDroidSetting.OPTION_TEXT_NO)) {
 						return true;
 					}
 				}
@@ -185,22 +187,22 @@ class PermissionSettingHelper {
 				e.printStackTrace();
 			}
 		}
-		
+
 		return false;
 	}
-	
-/**
- * Updates all privacy settings on a PrivacySettings object to a new state/value. Note that this does
- * not actually save the changes back to the service - this needs to be done outside this function.
- * The functions on the PrivacySettings (accessed using reflection) are cached for multiple calls
- * to the function (i.e. if running operations on multiple apps)
- * This was originally added to handle 'deny all' and 'allow all', but this has been replaced in function
- * by 'setPrivacySettingsToTrustState' which handles reversal of 'trusted' options.
- * 
- * @param db Readable database handle used to get the name of settings functions
- * @param privacySettings PrivacySettings object for the relevant application retrieved from the privacy service
- * @param newOption The new Setting.OPTION_FLAG_xxx to set (which is mapped to the PDroid core constant)
- */
+
+	/**
+	 * Updates all privacy settings on a PrivacySettings object to a new state/value. Note that this does
+	 * not actually save the changes back to the service - this needs to be done outside this function.
+	 * The functions on the PrivacySettings (accessed using reflection) are cached for multiple calls
+	 * to the function (i.e. if running operations on multiple apps)
+	 * This was originally added to handle 'deny all' and 'allow all', but this has been replaced in function
+	 * by 'setPrivacySettingsToTrustState' which handles reversal of 'trusted' options.
+	 * 
+	 * @param db Readable database handle used to get the name of settings functions
+	 * @param privacySettings PrivacySettings object for the relevant application retrieved from the privacy service
+	 * @param newOption The new Setting.OPTION_FLAG_xxx to set (which is mapped to the PDroid core constant)
+	 */
 	public void setPrivacySettings (SQLiteDatabase db, PrivacySettings privacySettings, int newOption) {
 		//If we do not already have handles to the relevant methods, then we need to get them
 		//They are cached on the first run
@@ -208,14 +210,14 @@ class PermissionSettingHelper {
 			this.permissionWriteMethods = new LinkedList<SimpleImmutableEntry<Method,String>>();
 
 			Cursor cursor = db.rawQuery(DBInterface.QUERY_GET_SETTINGS_FUNCTION_NAMES, null);
-	    	int settingFunctionNameColumn = cursor.getColumnIndex(DBInterface.SettingTable.COLUMN_NAME_SETTINGFUNCTIONNAME);
-	    	int settingTrustedOptionColumn = cursor.getColumnIndex(DBInterface.SettingTable.COLUMN_NAME_TRUSTED_OPTION);
-	    	
-	    	if (cursor.getCount() < 1) {
-	    		//This will happen if the database is not initialised for some reason
-	    		throw new DatabaseUninitialisedException("No settings are present in the database: it must not be initialised correctly");
-	    	}
-	    	
+			int settingFunctionNameColumn = cursor.getColumnIndex(DBInterface.SettingTable.COLUMN_NAME_SETTINGFUNCTIONNAME);
+			int settingTrustedOptionColumn = cursor.getColumnIndex(DBInterface.SettingTable.COLUMN_NAME_TRUSTED_OPTION);
+
+			if (cursor.getCount() < 1) {
+				//This will happen if the database is not initialised for some reason
+				throw new DatabaseUninitialisedException("No settings are present in the database: it must not be initialised correctly");
+			}
+
 			cursor.moveToFirst();
 			do {
 				String settingFunctionName = cursor.getString(settingFunctionNameColumn);
@@ -225,8 +227,8 @@ class PermissionSettingHelper {
 							new SimpleImmutableEntry<Method,String>(privacySettings.getClass().getMethod("set" + settingFunctionName, byte.class),settingTrustedOption)
 							);
 				} catch (NoSuchMethodException e) {
-				   if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG,"PrivacySettings object of privacy service is missing the expected method " + settingFunctionName);
-				   e.printStackTrace();
+					if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG,"PrivacySettings object of privacy service is missing the expected method " + settingFunctionName);
+					e.printStackTrace();
 				} catch (IllegalArgumentException e) {
 					if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG,"Illegal arguments when calling " + settingFunctionName);
 					e.printStackTrace();
@@ -234,7 +236,7 @@ class PermissionSettingHelper {
 			} while (cursor.moveToNext());
 			cursor.close();
 		}
-				
+
 		byte newValueByte;
 		switch (newOption) {
 		case PDroidSetting.OPTION_FLAG_ALLOW:
@@ -255,7 +257,7 @@ class PermissionSettingHelper {
 		default:
 			throw new InvalidParameterException("The supplied parameter two update settings was invalid");
 		}
-		
+
 		for (SimpleImmutableEntry<Method, String> row : this.permissionWriteMethods) {
 			//Reflection may not be the best way of doing this, but otherwise this is going to be a great
 			//big select statement, which ties us more closely to the specific set of options (which are
@@ -274,7 +276,7 @@ class PermissionSettingHelper {
 			}
 		}
 	}
-	
+
 	/**
 	 * Updates all privacy settings on a PrivacySettings object to either 'trusted' or 'untrusted'.
 	 * Because there can be multiple 'untrusted' options, the 'untrusted' option is assumed to be
@@ -287,385 +289,468 @@ class PermissionSettingHelper {
 	 * @param privacySettings PrivacySettings object for the relevant application retrieved from the privacy service
 	 * @param toTrusted True to set all values to their 'trusted' state, false to set to their 'untrusted' state.
 	 */
-		public void setPrivacySettingsToTrustState (SQLiteDatabase db, PrivacySettings privacySettings, TrustState newTrustState) {
-			//If we do not already have handles to the relevant methods, then we need to get them
-			//They are cached on the first run
-			if (this.permissionWriteMethods == null) {
-				this.permissionWriteMethods = new LinkedList<SimpleImmutableEntry<Method,String>>();
+	public void setPrivacySettingsToTrustState (SQLiteDatabase db, PrivacySettings privacySettings, TrustState newTrustState) {
+		//If we do not already have handles to the relevant methods, then we need to get them
+		//They are cached on the first run
+		if (this.permissionWriteMethods == null) {
+			this.permissionWriteMethods = new LinkedList<SimpleImmutableEntry<Method,String>>();
 
-				Cursor cursor = db.rawQuery(DBInterface.QUERY_GET_SETTINGS_FUNCTION_NAMES, null);
-		    	int settingFunctionNameColumn = cursor.getColumnIndex(DBInterface.SettingTable.COLUMN_NAME_SETTINGFUNCTIONNAME);
-		    	int settingTrustedOptionColumn = cursor.getColumnIndex(DBInterface.SettingTable.COLUMN_NAME_TRUSTED_OPTION);
-		    	
-		    	if (cursor.getCount() < 1) {
-		    		//This will happen if the database is not initialised for some reason
-		    		throw new DatabaseUninitialisedException("No settings are present in the database: it must not be initialised correctly");
-		    	}
-		    	
-				cursor.moveToFirst();
-				do {
-					String settingFunctionName = cursor.getString(settingFunctionNameColumn);
-					String settingTrustedOption = cursor.getString(settingTrustedOptionColumn);
-					try {
-						permissionWriteMethods.add(
-								new SimpleImmutableEntry<Method,String>(privacySettings.getClass().getMethod("set" + settingFunctionName, byte.class), settingTrustedOption)
-								);
-					} catch (NoSuchMethodException e) {
-					   if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG,"PrivacySettings object of privacy service is missing the expected method " + settingFunctionName);
-					   e.printStackTrace();
-					} catch (IllegalArgumentException e) {
-						if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG,"Illegal arguments when calling " + settingFunctionName);
-						e.printStackTrace();
+			Cursor cursor = db.rawQuery(DBInterface.QUERY_GET_SETTINGS_FUNCTION_NAMES, null);
+			int settingFunctionNameColumn = cursor.getColumnIndex(DBInterface.SettingTable.COLUMN_NAME_SETTINGFUNCTIONNAME);
+			int settingTrustedOptionColumn = cursor.getColumnIndex(DBInterface.SettingTable.COLUMN_NAME_TRUSTED_OPTION);
+
+			if (cursor.getCount() < 1) {
+				//This will happen if the database is not initialised for some reason
+				throw new DatabaseUninitialisedException("No settings are present in the database: it must not be initialised correctly");
+			}
+
+			cursor.moveToFirst();
+			do {
+				String settingFunctionName = cursor.getString(settingFunctionNameColumn);
+				String settingTrustedOption = cursor.getString(settingTrustedOptionColumn);
+				try {
+					permissionWriteMethods.add(
+							new SimpleImmutableEntry<Method,String>(privacySettings.getClass().getMethod("set" + settingFunctionName, byte.class), settingTrustedOption)
+							);
+				} catch (NoSuchMethodException e) {
+					if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG,"PrivacySettings object of privacy service is missing the expected method " + settingFunctionName);
+					e.printStackTrace();
+				} catch (IllegalArgumentException e) {
+					if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG,"Illegal arguments when calling " + settingFunctionName);
+					e.printStackTrace();
+				}
+			} while (cursor.moveToNext());
+			cursor.close();
+		}
+
+		byte newValueByte;
+		for (SimpleImmutableEntry<Method, String> row : this.permissionWriteMethods) {
+			//Reflection may not be the best way of doing this, but otherwise this is going to be a great
+			//big select statement, which ties us more closely to the specific set of options (which are
+			//right now fairly loosely coupled - although to entirely loosely coupled)
+
+			if (TrustState.TRUSTED == newTrustState) {
+				if (row.getValue().equals(PDroidSetting.OPTION_TEXT_ALLOW) ||
+						row.getValue().equals(PDroidSetting.OPTION_TEXT_YES)) {
+					newValueByte = PrivacySettings.REAL;
+				} else if (row.getValue().equals(PDroidSetting.OPTION_TEXT_DENY) ||
+						row.getValue().equals(PDroidSetting.OPTION_TEXT_NO)) {
+					newValueByte = PrivacySettings.EMPTY;
+				} else if (row.getValue().equals(PDroidSetting.OPTION_TEXT_CUSTOM) ||
+						row.getValue().equals(PDroidSetting.OPTION_TEXT_CUSTOMLOCATION)) {
+					newValueByte = PrivacySettings.CUSTOM;
+				} else if (row.getValue().equals(PDroidSetting.OPTION_TEXT_RANDOM)) {
+					newValueByte = PrivacySettings.RANDOM;
+				} else {
+					throw new RuntimeException("The Setting trusted option must be a recognised option type");
+				}
+			} else if (TrustState.UNTRUSTED == newTrustState) {
+				if (row.getValue().equals(PDroidSetting.OPTION_TEXT_ALLOW) ||
+						row.getValue().equals(PDroidSetting.OPTION_TEXT_YES)) {
+					newValueByte = PrivacySettings.EMPTY;
+				} else if (row.getValue().equals(PDroidSetting.OPTION_TEXT_DENY) ||
+						row.getValue().equals(PDroidSetting.OPTION_TEXT_NO)) {
+					newValueByte = PrivacySettings.REAL;
+				} else if (row.getValue().equals(PDroidSetting.OPTION_TEXT_CUSTOM) ||
+						row.getValue().equals(PDroidSetting.OPTION_TEXT_CUSTOMLOCATION)) {
+					newValueByte = PrivacySettings.EMPTY;
+				} else if (row.getValue().equals(PDroidSetting.OPTION_TEXT_RANDOM)) {
+					newValueByte = PrivacySettings.EMPTY;
+				} else {
+					throw new RuntimeException("The Setting trusted option must be a recognised option type");
+				}
+			} else {
+				throw new RuntimeException("In invalid trust state was somehow used.");
+			}
+
+			try {
+				row.getKey().invoke(privacySettings, newValueByte);
+			} catch (IllegalArgumentException e) {
+				if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG,"Illegal arguments when calling " + row.getKey().getName());
+				e.printStackTrace();
+			} catch (IllegalAccessException e) {
+				if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG,"Illegal access when calling " + row.getKey().getName());
+				e.printStackTrace();
+			} catch (InvocationTargetException e) {
+				if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG,"InvocationTargetException when calling " + row.getKey().getName());
+				e.printStackTrace();
+			}
+		}
+	}
+
+
+	/**
+	 * Calls the 'setting function' on a PrivacyObject for each known setting (using reflection)
+	 * and builds an XML node tree recording the settings
+	 * The individual functions of the PrivacySettings object are cached for re-use
+	 * to optimise the checking of large numbers of privacySettings objects
+	 *    
+	 * @param db SQLite database to use - this will *not* be closed at the end
+	 * @param privacySettings - privacySettings object to check
+	 * @param document XML document from which the returned Element will be created 
+	 * @return XML element containing settings
+	 */
+	public Element getPrivacySettingsXml (SQLiteDatabase db, PrivacySettings privacySettings, Document document) {
+		if (db == null) {
+			throw new InvalidParameterException("database passed to getPrivacySettingsXml must not be null");
+		}
+		if (privacySettings == null) {
+			throw new InvalidParameterException("Privacy settings passed to getPrivacySettingsXml must not be null");
+		}
+
+		if (this.settingList == null) {
+			if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG, "Loading settinglist");
+			loadSettingsList(db);
+		}
+
+		if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG, "getPrivacySettingsXml for " + privacySettings.getPackageName());
+
+		Element app = document.createElement(PreferencesListFragment.BACKUP_XML_APP_NODE);
+		app.setAttribute("packagename", privacySettings.getPackageName());
+		Element setting;
+
+		byte pdroidCoreSetting = 0;
+		Object pdroidCoreValue = null;
+
+		for (PDroidSettingWithFunctions row : this.settingList) {
+			if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG, "Processing row " + row.name);
+
+			try {
+				pdroidCoreSetting = (Byte)row.getGetSettingMethod().invoke(privacySettings);
+			} catch (IllegalArgumentException e) {
+				if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG,"Illegal arguments when calling " + row.getGetSettingMethod().getName());
+				e.printStackTrace();
+				throw new RuntimeException("Illegal arguments when calling " + row.getGetSettingMethod().getName());
+			} catch (IllegalAccessException e) {
+				if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG,"Illegal access when calling " + row.getGetSettingMethod().getName());
+				e.printStackTrace();
+				throw new RuntimeException("Illegal access when calling " + row.getGetSettingMethod().getName());
+			} catch (InvocationTargetException e) {
+				if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG,"InvocationTargetException when calling " + row.getGetSettingMethod().getName());
+				e.printStackTrace();
+				throw new RuntimeException("InvocationTargetException when calling " + row.getGetSettingMethod().getName());
+			}
+
+			setting = document.createElement(row.name);
+
+			switch (pdroidCoreSetting) {
+			case PrivacySettings.REAL:
+				if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG, "REAL " + row.name);
+				setting.setAttribute(PreferencesListFragment.BACKUP_XML_SETTING_ATTRIBUTE, BACKUP_SETTING_REAL);
+				break;
+			case PrivacySettings.CUSTOM:
+				if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG, "CUSTOM " + row.name);
+				setting.setAttribute(PreferencesListFragment.BACKUP_XML_SETTING_ATTRIBUTE, BACKUP_SETTING_CUSTOM);
+				break;
+			case PrivacySettings.RANDOM:
+				if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG, "RANDOM " + row.name);
+				setting.setAttribute(PreferencesListFragment.BACKUP_XML_SETTING_ATTRIBUTE, BACKUP_SETTING_RANDOM);
+				break;
+			case PrivacySettings.EMPTY:
+				if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG, "EMPTY " + row.name);
+				setting.setAttribute(PreferencesListFragment.BACKUP_XML_SETTING_ATTRIBUTE, BACKUP_SETTING_EMPTY);
+				break;
+			}
+
+			String [] customValueFieldNames = row.getCustomFieldNames();
+			if (customValueFieldNames != null) {
+				Element customValueElement;
+				for (String customValueField : customValueFieldNames) {
+					if (row.valueFunctionNameStub != null) {
+						try {
+							pdroidCoreValue = row.getGetValueMethod(customValueField).invoke(privacySettings);
+						} catch (IllegalArgumentException e) {
+							if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG,"Illegal arguments when calling " + row.getGetValueMethod(customValueField).getName());
+							e.printStackTrace();
+							throw new RuntimeException("Illegal arguments when calling " + row.getGetValueMethod(customValueField).getName());
+						} catch (IllegalAccessException e) {
+							if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG,"Illegal access when calling " + row.getGetValueMethod(customValueField).getName());
+							e.printStackTrace();
+							throw new RuntimeException("Illegal access when calling " + row.getGetValueMethod(customValueField).getName());
+						} catch (InvocationTargetException e) {
+							if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG,"InvocationTargetException when calling " + row.getGetValueMethod(customValueField).getName());
+							e.printStackTrace();
+							throw new RuntimeException("InvocationTargetException when calling " + row.getGetValueMethod(customValueField).getName());
+						}
+
+						if (pdroidCoreValue != null) {
+							if (pdroidCoreValue instanceof String) {
+								if (!((String)pdroidCoreValue).isEmpty()) {
+									//create an element for the value. We could probably do away with the 'default element' but that would do
+									//funny things to the nesting.
+									if (customValueField == "") {
+										customValueElement = document.createElement(XML_DEFAULTVALUE_TAG_NAME);	
+									} else {
+										customValueElement = document.createElement(customValueField);
+									}
+									customValueElement.setTextContent((String)pdroidCoreValue);
+									setting.appendChild(customValueElement);
+								}
+							} else {
+								if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG, "Got a non-String value back. May mean the API has changed.");
+								throw new RuntimeException("Got a non-String custom value from PDroid Core.");
+							}
+						}
 					}
+				}
+			}
+			app.appendChild(setting);
+		}
+
+		return app;
+	}
+
+	/**
+	 * Calls the 'setting function' on a PrivacyObject for each known setting (using reflection)
+	 * restoring data from the provided XML node
+	 * The individual functions of the PrivacySettings object are cached for re-use
+	 * to optimise the checking of large numbers of privacySettings objects
+	 *    
+	 * @param db SQLite database to use - this will *not* be closed at the end
+	 * @param privacySettings - privacySettings object to check or update?
+	 * @param XML element representing the app for which settings are being restored 
+	 */
+	public void setPrivacySettingsFromXml (SQLiteDatabase db, PrivacySettings privacySettings, Element element) {
+		if (db == null) {
+			throw new InvalidParameterException("database passed to getPrivacySettingsXml must not be null");
+		}
+		if (privacySettings == null) {
+			throw new InvalidParameterException("Privacy settings passed to getPrivacySettingsXml must not be null");
+		}
+
+		//If we have not loaded the list of settings, do so now.
+		//This is held across runs to improve performance. The objects stored in the
+		//list and map also grab the methods for reflection on demand and cache them
+		//for subsequent runs
+		if (this.settingMap == null) {
+			loadSettingsList(db);
+		}
+
+		if (element.hasChildNodes()) {
+			NodeList settings = element.getChildNodes();
+			Element setting;
+			byte pdroidCoreSetting = 0;
+			String pdroidCoreValue = null;
+			String pdroidSettingValue;
+			String pdroidSettingName;
+			PDroidSettingWithFunctions settingWithFunctions;
+
+			for (int settingNum = 0; settingNum < settings.getLength(); settingNum++) {
+				Node node = settings.item(settingNum);
+				if (node.getNodeType() == Node.ELEMENT_NODE) {
+					setting = (Element)node; //TODO: verify this is actually an element
+					pdroidSettingName = setting.getTagName();
+
+					if (this.settingMap.containsKey(pdroidSettingName)) {
+						settingWithFunctions = this.settingMap.get(pdroidSettingName);
+
+						pdroidSettingValue = setting.getAttribute(PreferencesListFragment.BACKUP_XML_SETTING_ATTRIBUTE);
+						pdroidCoreValue = setting.getTextContent();
+
+						if (pdroidSettingValue.equals(BACKUP_SETTING_REAL)) {
+							pdroidCoreSetting = PrivacySettings.REAL;
+						} else if (pdroidSettingValue.equals(BACKUP_SETTING_CUSTOM)) {
+							pdroidCoreSetting = PrivacySettings.CUSTOM;
+						} else if (pdroidSettingValue.equals(BACKUP_SETTING_RANDOM)) {
+							pdroidCoreSetting = PrivacySettings.RANDOM;
+						} else if (pdroidSettingValue.equals(BACKUP_SETTING_EMPTY)) {
+							pdroidCoreSetting = PrivacySettings.EMPTY;
+						} else {
+							throw new RuntimeException("Unrecognised setting");
+						}
+
+						try {
+							settingWithFunctions.getSetSettingMethod().invoke(privacySettings, pdroidCoreSetting);
+						} catch (IllegalArgumentException e) {
+							if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG,"Illegal arguments when calling " + settingWithFunctions.getGetSettingMethod().getName());
+							e.printStackTrace();
+							throw new RuntimeException("Illegal arguments when calling " + settingWithFunctions.getGetSettingMethod().getName());
+						} catch (IllegalAccessException e) {
+							if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG,"Illegal access when calling " + settingWithFunctions.getGetSettingMethod().getName());
+							e.printStackTrace();
+							throw new RuntimeException("Illegal access when calling " + settingWithFunctions.getGetSettingMethod().getName());
+						} catch (InvocationTargetException e) {
+							if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG,"InvocationTargetException when calling " + settingWithFunctions.getGetSettingMethod().getName());
+							e.printStackTrace();
+							throw new RuntimeException("InvocationTargetException when calling " + settingWithFunctions.getGetSettingMethod().getName());
+						}
+
+						if (setting.hasChildNodes()) {
+							NodeList customValueNodes = setting.getChildNodes();
+							for (int customValueNum = 0; customValueNum < customValueNodes.getLength(); customValueNum++) {
+
+								Node customValueNode = customValueNodes.item(customValueNum);
+								if (customValueNode.getNodeType() == Node.ELEMENT_NODE) {
+									Element customValueElement = (Element)customValueNode;
+									String customValueName = customValueElement.getNodeName();
+									//have to have some tag name for the 'default' values - i.e. unnamed values.
+									if (customValueName.equals(XML_DEFAULTVALUE_TAG_NAME)) {
+										customValueName = "";
+									}
+									pdroidCoreValue = customValueElement.getTextContent();
+									Method customSettingMethod = settingWithFunctions.getSetValueMethod(customValueName);
+
+									try {
+										if (customSettingMethod != null)
+											if (pdroidCoreValue == null || pdroidCoreValue.isEmpty()) {
+												customSettingMethod.invoke(privacySettings, "");
+											} else {
+												customSettingMethod.invoke(privacySettings, pdroidCoreValue);	
+											}
+									} catch (IllegalArgumentException e) {
+										if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG,"Illegal arguments when calling " + customSettingMethod.getName());
+										e.printStackTrace();
+										throw new RuntimeException("Illegal arguments when calling " + customSettingMethod.getName());
+									} catch (IllegalAccessException e) {
+										if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG,"Illegal access when calling " + customSettingMethod.getName());
+										e.printStackTrace();
+										throw new RuntimeException("Illegal access when calling " + customSettingMethod.getName());
+									} catch (InvocationTargetException e) {
+										if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG,"InvocationTargetException when calling " + customSettingMethod.getName());
+										e.printStackTrace();
+										throw new RuntimeException("InvocationTargetException when calling " + customSettingMethod.getName());
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+	private void loadSettingsList(SQLiteDatabase db) {			
+		this.settingList = new LinkedList<PDroidSettingWithFunctions>();
+		this.settingMap = new HashMap<String, PDroidSettingWithFunctions>();
+		PDroidSettingWithFunctions setting = null;
+
+		Cursor cursor = db.rawQuery(DBInterface.QUERY_GET_SETTINGS_AND_VALUE_FUNCTIONS, null);
+
+		if (cursor != null) {
+			if (cursor.getCount() < 1) {
+				//This will happen if the database is not initialised for some reason
+				throw new DatabaseUninitialisedException("No settings are present in the database: it must not be initialised correctly");
+			}
+
+			if (cursor.moveToFirst()) {
+				int idColumn = cursor.getColumnIndex(DBInterface.SettingTable.COLUMN_NAME_ID);
+				int nameColumn = cursor.getColumnIndex(DBInterface.SettingTable.COLUMN_NAME_NAME);
+				int settingFunctionNameColumn = cursor.getColumnIndex(DBInterface.SettingTable.COLUMN_NAME_SETTINGFUNCTIONNAME);
+				int valueFunctionNameStubColumn = cursor.getColumnIndex(DBInterface.SettingTable.COLUMN_NAME_VALUEFUNCTIONNAMESTUB);
+				int titleColumn = cursor.getColumnIndex(DBInterface.SettingTable.COLUMN_NAME_TITLE);
+				int groupColumn = cursor.getColumnIndex(DBInterface.SettingTable.COLUMN_NAME_GROUP_ID);
+				int groupTitleColumn = cursor.getColumnIndex(DBInterface.SettingTable.COLUMN_NAME_GROUP_TITLE);
+				int optionsColumn = cursor.getColumnIndex(DBInterface.SettingTable.COLUMN_NAME_OPTIONS);
+				int trustedOptionColumn = cursor.getColumnIndex(DBInterface.SettingTable.COLUMN_NAME_TRUSTED_OPTION);
+
+
+				do {
+					String id = cursor.getString(idColumn);
+					String name = cursor.getString(nameColumn);
+					String settingFunctionName = cursor.getString(settingFunctionNameColumn);
+					String valueFunctionNameStub = cursor.getString(valueFunctionNameStubColumn);
+					String title = cursor.getString(titleColumn);
+					String group = cursor.getString(groupColumn);
+					String groupTitle = cursor.getString(groupTitleColumn);
+					String options = cursor.getString(optionsColumn);
+					String trustedOption = cursor.getString(trustedOptionColumn);
+
+					String [] optionsArray = null;
+					if (options != null) {
+						optionsArray = TextUtils.split(options, ",");
+					}
+
+					setting = new PDroidSettingWithFunctions(id, name, settingFunctionName, valueFunctionNameStub, title, group, groupTitle, optionsArray, trustedOption);
+					this.settingMap.put(name, setting);
+					this.settingList.add(setting);
 				} while (cursor.moveToNext());
 				cursor.close();
 			}
+		}
+	}
 
-			byte newValueByte;
-			for (SimpleImmutableEntry<Method, String> row : this.permissionWriteMethods) {
-				//Reflection may not be the best way of doing this, but otherwise this is going to be a great
-				//big select statement, which ties us more closely to the specific set of options (which are
-				//right now fairly loosely coupled - although to entirely loosely coupled)
+	/**
+	 * Updates all privacy settings on a PrivacySettings object to a new state/value. Note that this does
+	 * not actually save the changes back to the service - this needs to be done outside this function.
+	 * The functions on the PrivacySettings (accessed using reflection) are cached for multiple calls
+	 * to the function (i.e. if running operations on multiple apps)
+	 * This was originally added to handle 'deny all' and 'allow all', but this has been replaced in function
+	 * by 'setPrivacySettingsToTrustState' which handles reversal of 'trusted' options.
+	 * 
+	 * @param privacySettings PrivacySettings object for the relevant application retrieved from the privacy service
+	 * @param appSettings  array of PDroidAppSettings to write to the privacy settings
+	 */
+	public void setPrivacySettings (PrivacySettings privacySettings, PDroidAppSetting [] appSettings) {
 
-				if (TrustState.TRUSTED == newTrustState) {
-					if (row.getValue().equals(PDroidSetting.OPTION_TEXT_ALLOW) ||
-							row.getValue().equals(PDroidSetting.OPTION_TEXT_YES)) {
-						newValueByte = PrivacySettings.REAL;
-					} else if (row.getValue().equals(PDroidSetting.OPTION_TEXT_DENY) ||
-							row.getValue().equals(PDroidSetting.OPTION_TEXT_NO)) {
-						newValueByte = PrivacySettings.EMPTY;
-					} else if (row.getValue().equals(PDroidSetting.OPTION_TEXT_CUSTOM) ||
-							row.getValue().equals(PDroidSetting.OPTION_TEXT_CUSTOMLOCATION)) {
-						newValueByte = PrivacySettings.CUSTOM;
-					} else if (row.getValue().equals(PDroidSetting.OPTION_TEXT_RANDOM)) {
-						newValueByte = PrivacySettings.RANDOM;
-					} else {
-						throw new RuntimeException("The Setting trusted option must be a recognised option type");
-					}
-				} else if (TrustState.UNTRUSTED == newTrustState) {
-					if (row.getValue().equals(PDroidSetting.OPTION_TEXT_ALLOW) ||
-							row.getValue().equals(PDroidSetting.OPTION_TEXT_YES)) {
-						newValueByte = PrivacySettings.EMPTY;
-					} else if (row.getValue().equals(PDroidSetting.OPTION_TEXT_DENY) ||
-							row.getValue().equals(PDroidSetting.OPTION_TEXT_NO)) {
-						newValueByte = PrivacySettings.REAL;
-					} else if (row.getValue().equals(PDroidSetting.OPTION_TEXT_CUSTOM) ||
-							row.getValue().equals(PDroidSetting.OPTION_TEXT_CUSTOMLOCATION)) {
-						newValueByte = PrivacySettings.EMPTY;
-					} else if (row.getValue().equals(PDroidSetting.OPTION_TEXT_RANDOM)) {
-						newValueByte = PrivacySettings.EMPTY;
-					} else {
-						throw new RuntimeException("The Setting trusted option must be a recognised option type");
-					}
+		this.permissionWriteMethodMap = new HashMap<String, Method>();
+		this.valueWriteMethodMap = new HashMap<String, Method>();
+
+		Class<PrivacySettings> privacySettingsClass = PrivacySettings.class;
+		Method method;
+		try {
+			for (PDroidAppSetting appSetting : appSettings) {
+				if (!permissionWriteMethodMap.containsKey(appSetting.id)) {
+					method = privacySettingsClass.getMethod("set" + appSetting.settingFunctionName, byte.class);
+					permissionWriteMethodMap.put(appSetting.id, method);	
 				} else {
-					throw new RuntimeException("In invalid trust state was somehow used.");
+					method = permissionWriteMethodMap.get(appSetting.id);
 				}
-				
-				try {
-					row.getKey().invoke(privacySettings, newValueByte);
-				} catch (IllegalArgumentException e) {
-					if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG,"Illegal arguments when calling " + row.getKey().getName());
-					e.printStackTrace();
-				} catch (IllegalAccessException e) {
-					if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG,"Illegal access when calling " + row.getKey().getName());
-					e.printStackTrace();
-				} catch (InvocationTargetException e) {
-					if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG,"InvocationTargetException when calling " + row.getKey().getName());
-					e.printStackTrace();
-				}
-			}
-		}
-		
-		
-		/**
-		 * Calls the 'setting function' on a PrivacyObject for each known setting (using reflection)
-		 * and builds an XML node tree recording the settings
-		 * The individual functions of the PrivacySettings object are cached for re-use
-		 * to optimise the checking of large numbers of privacySettings objects
-		 *    
-		 * @param db SQLite database to use - this will *not* be closed at the end
-		 * @param privacySettings - privacySettings object to check
-		 * @param document XML document from which the returned Element will be created 
-		 * @return XML element containing settings
-		 */
-		public Element getPrivacySettingsXml (SQLiteDatabase db, PrivacySettings privacySettings, Document document) {
-			if (db == null) {
-				throw new InvalidParameterException("database passed to getPrivacySettingsXml must not be null");
-			}
-			if (privacySettings == null) {
-				throw new InvalidParameterException("Privacy settings passed to getPrivacySettingsXml must not be null");
-			}
-						
-			if (this.settingList == null) {
-				if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG, "Loading settinglist");
-				loadSettingsList(db);
-			}
-						
-			if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG, "getPrivacySettingsXml for " + privacySettings.getPackageName());
-			
-			Element app = document.createElement(PreferencesListFragment.BACKUP_XML_APP_NODE);
-			app.setAttribute("packagename", privacySettings.getPackageName());
-			Element setting;
-			
-			byte pdroidCoreSetting = 0;
-			Object pdroidCoreValue = null;
-			
-			for (PDroidSettingWithFunctions row : this.settingList) {
-				if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG, "Processing row " + row.name);
-				
-				try {
-					pdroidCoreSetting = (Byte)row.getGetSettingMethod().invoke(privacySettings);
-				} catch (IllegalArgumentException e) {
-					if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG,"Illegal arguments when calling " + row.getGetSettingMethod().getName());
-					e.printStackTrace();
-					throw new RuntimeException("Illegal arguments when calling " + row.getGetSettingMethod().getName());
-				} catch (IllegalAccessException e) {
-					if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG,"Illegal access when calling " + row.getGetSettingMethod().getName());
-					e.printStackTrace();
-					throw new RuntimeException("Illegal access when calling " + row.getGetSettingMethod().getName());
-				} catch (InvocationTargetException e) {
-					if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG,"InvocationTargetException when calling " + row.getGetSettingMethod().getName());
-					e.printStackTrace();
-					throw new RuntimeException("InvocationTargetException when calling " + row.getGetSettingMethod().getName());
-				}
-
-				setting = document.createElement(row.name);
-								
-				switch (pdroidCoreSetting) {
-				case PrivacySettings.REAL:
-					if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG, "REAL " + row.name);
-					setting.setAttribute(PreferencesListFragment.BACKUP_XML_SETTING_ATTRIBUTE, BACKUP_SETTING_REAL);
+				int selectedOptionBit = appSetting.getSelectedOptionBit();
+				switch (selectedOptionBit) {
+				case PDroidSetting.OPTION_FLAG_ALLOW:
+				case PDroidSetting.OPTION_FLAG_YES:
+					method.invoke(privacySettings, PrivacySettings.REAL);
 					break;
-				case PrivacySettings.CUSTOM:
-					if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG, "CUSTOM " + row.name);
-					setting.setAttribute(PreferencesListFragment.BACKUP_XML_SETTING_ATTRIBUTE, BACKUP_SETTING_CUSTOM);
+				case PDroidSetting.OPTION_FLAG_DENY:
+				case PDroidSetting.OPTION_FLAG_NO:
+					method.invoke(privacySettings, PrivacySettings.EMPTY);
 					break;
-				case PrivacySettings.RANDOM:
-					if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG, "RANDOM " + row.name);
-					setting.setAttribute(PreferencesListFragment.BACKUP_XML_SETTING_ATTRIBUTE, BACKUP_SETTING_RANDOM);
+				case PDroidSetting.OPTION_FLAG_CUSTOM:
+				case PDroidSetting.OPTION_FLAG_CUSTOMLOCATION:
+					method.invoke(privacySettings, PrivacySettings.CUSTOM);
 					break;
-				case PrivacySettings.EMPTY:
-					if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG, "EMPTY " + row.name);
-					setting.setAttribute(PreferencesListFragment.BACKUP_XML_SETTING_ATTRIBUTE, BACKUP_SETTING_EMPTY);
+				case PDroidSetting.OPTION_FLAG_RANDOM:
+					method.invoke(privacySettings, PrivacySettings.RANDOM);
 					break;
 				}
 
-				String [] customValueFieldNames = row.getCustomFieldNames();
-				if (customValueFieldNames != null) {
-					Element customValueElement;
-					for (String customValueField : customValueFieldNames) {
-						if (row.valueFunctionNameStub != null) {
-							try {
-								pdroidCoreValue = row.getGetValueMethod(customValueField).invoke(privacySettings);
-							} catch (IllegalArgumentException e) {
-								if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG,"Illegal arguments when calling " + row.getGetValueMethod(customValueField).getName());
-								e.printStackTrace();
-								throw new RuntimeException("Illegal arguments when calling " + row.getGetValueMethod(customValueField).getName());
-							} catch (IllegalAccessException e) {
-								if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG,"Illegal access when calling " + row.getGetValueMethod(customValueField).getName());
-								e.printStackTrace();
-								throw new RuntimeException("Illegal access when calling " + row.getGetValueMethod(customValueField).getName());
-							} catch (InvocationTargetException e) {
-								if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG,"InvocationTargetException when calling " + row.getGetValueMethod(customValueField).getName());
-								e.printStackTrace();
-								throw new RuntimeException("InvocationTargetException when calling " + row.getGetValueMethod(customValueField).getName());
+				if (selectedOptionBit == PDroidSetting.OPTION_FLAG_CUSTOM ||
+						selectedOptionBit == PDroidSetting.OPTION_FLAG_CUSTOMLOCATION) {
+					List<SimpleImmutableEntry<String, String>> customValues = appSetting.getCustomValues();
+					if (customValues != null) {
+						for (SimpleImmutableEntry<String, String> customValue : customValues) {
+						    //TODO: This is a woefully inefficient way to do this, and requires vastly more string concatenation that should really be needed
+							StringBuilder methodName = new StringBuilder("set").append(appSetting.valueFunctionNameStub);
+							if (!customValue.getKey().equals("")) {
+								methodName.append(customValue.getKey());
 							}
-
-							if (pdroidCoreValue != null) {
-								if (pdroidCoreValue instanceof String) {
-									if (!((String)pdroidCoreValue).isEmpty()) {
-										//create an element for the value. We could probably do away with the 'default element' but that would do
-										//funny things to the nesting.
-										if (customValueField == "") {
-											customValueElement = document.createElement(XML_DEFAULTVALUE_TAG_NAME);	
-										} else {
-											customValueElement = document.createElement(customValueField);
-										}
-										customValueElement.setTextContent((String)pdroidCoreValue);
-										setting.appendChild(customValueElement);
-									}
-								} else {
-									if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG, "Got a non-String value back. May mean the API has changed.");
-									throw new RuntimeException("Got a non-String custom value from PDroid Core.");
-								}
-							}
-						}
-					}
-				}
-				app.appendChild(setting);
-			}
-			
-			return app;
-		}
-		
-		/**
-		 * Calls the 'setting function' on a PrivacyObject for each known setting (using reflection)
-		 * restoring data from the provided XML node
-		 * The individual functions of the PrivacySettings object are cached for re-use
-		 * to optimise the checking of large numbers of privacySettings objects
-		 *    
-		 * @param db SQLite database to use - this will *not* be closed at the end
-		 * @param privacySettings - privacySettings object to check or update?
-		 * @param XML element representing the app for which settings are being restored 
-		 */
-		public void setPrivacySettingsFromXml (SQLiteDatabase db, PrivacySettings privacySettings, Element element) {
-			if (db == null) {
-				throw new InvalidParameterException("database passed to getPrivacySettingsXml must not be null");
-			}
-			if (privacySettings == null) {
-				throw new InvalidParameterException("Privacy settings passed to getPrivacySettingsXml must not be null");
-			}
-
-			//If we have not loaded the list of settings, do so now.
-			//This is held across runs to improve performance. The objects stored in the
-			//list and map also grab the methods for reflection on demand and cache them
-			//for subsequent runs
-			if (this.settingMap == null) {
-				loadSettingsList(db);
-			}
-			
-			if (element.hasChildNodes()) {
-				NodeList settings = element.getChildNodes();
-				Element setting;
-				byte pdroidCoreSetting = 0;
-				String pdroidCoreValue = null;
-				String pdroidSettingValue;
-				String pdroidSettingName;
-				PDroidSettingWithFunctions settingWithFunctions;
-
-				for (int settingNum = 0; settingNum < settings.getLength(); settingNum++) {
-					Node node = settings.item(settingNum);
-					if (node.getNodeType() == Node.ELEMENT_NODE) {
-						setting = (Element)node; //TODO: verify this is actually an element
-						pdroidSettingName = setting.getTagName();
-						
-						if (this.settingMap.containsKey(pdroidSettingName)) {
-							settingWithFunctions = this.settingMap.get(pdroidSettingName);
-							
-							pdroidSettingValue = setting.getAttribute(PreferencesListFragment.BACKUP_XML_SETTING_ATTRIBUTE);
-							pdroidCoreValue = setting.getTextContent();
 	
-							if (pdroidSettingValue.equals(BACKUP_SETTING_REAL)) {
-								pdroidCoreSetting = PrivacySettings.REAL;
-							} else if (pdroidSettingValue.equals(BACKUP_SETTING_CUSTOM)) {
-								pdroidCoreSetting = PrivacySettings.CUSTOM;
-							} else if (pdroidSettingValue.equals(BACKUP_SETTING_RANDOM)) {
-								pdroidCoreSetting = PrivacySettings.RANDOM;
-							} else if (pdroidSettingValue.equals(BACKUP_SETTING_EMPTY)) {
-								pdroidCoreSetting = PrivacySettings.EMPTY;
+							if (!valueWriteMethodMap.containsKey(methodName.toString())) {
+								method = privacySettingsClass.getMethod(methodName.toString(), String.class);
+								valueWriteMethodMap.put(methodName.toString(), method);	
 							} else {
-								throw new RuntimeException("Unrecognised setting");
+								method = valueWriteMethodMap.get(methodName.toString());
 							}
-							
-							try {
-								settingWithFunctions.getSetSettingMethod().invoke(privacySettings, pdroidCoreSetting);
-							} catch (IllegalArgumentException e) {
-								if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG,"Illegal arguments when calling " + settingWithFunctions.getGetSettingMethod().getName());
-								e.printStackTrace();
-								throw new RuntimeException("Illegal arguments when calling " + settingWithFunctions.getGetSettingMethod().getName());
-							} catch (IllegalAccessException e) {
-								if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG,"Illegal access when calling " + settingWithFunctions.getGetSettingMethod().getName());
-								e.printStackTrace();
-								throw new RuntimeException("Illegal access when calling " + settingWithFunctions.getGetSettingMethod().getName());
-							} catch (InvocationTargetException e) {
-								if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG,"InvocationTargetException when calling " + settingWithFunctions.getGetSettingMethod().getName());
-								e.printStackTrace();
-								throw new RuntimeException("InvocationTargetException when calling " + settingWithFunctions.getGetSettingMethod().getName());
-							}
-
-							if (setting.hasChildNodes()) {
-								NodeList customValueNodes = setting.getChildNodes();
-								for (int customValueNum = 0; customValueNum < customValueNodes.getLength(); customValueNum++) {
-
-									Node customValueNode = customValueNodes.item(customValueNum);
-									if (customValueNode.getNodeType() == Node.ELEMENT_NODE) {
-										Element customValueElement = (Element)customValueNode;
-										String customValueName = customValueElement.getNodeName();
-										//have to have some tag name for the 'default' values - i.e. unnamed values.
-										if (customValueName.equals(XML_DEFAULTVALUE_TAG_NAME)) {
-											customValueName = "";
-										}
-										pdroidCoreValue = customValueElement.getTextContent();
-										Method customSettingMethod = settingWithFunctions.getSetValueMethod(customValueName);
-
-										try {
-											if (customSettingMethod != null)
-												if (pdroidCoreValue == null || pdroidCoreValue.isEmpty()) {
-													customSettingMethod.invoke(privacySettings, "");
-												} else {
-													customSettingMethod.invoke(privacySettings, pdroidCoreValue);	
-												}
-										} catch (IllegalArgumentException e) {
-											if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG,"Illegal arguments when calling " + customSettingMethod.getName());
-											e.printStackTrace();
-											throw new RuntimeException("Illegal arguments when calling " + customSettingMethod.getName());
-										} catch (IllegalAccessException e) {
-											if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG,"Illegal access when calling " + customSettingMethod.getName());
-											e.printStackTrace();
-											throw new RuntimeException("Illegal access when calling " + customSettingMethod.getName());
-										} catch (InvocationTargetException e) {
-											if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG,"InvocationTargetException when calling " + customSettingMethod.getName());
-											e.printStackTrace();
-											throw new RuntimeException("InvocationTargetException when calling " + customSettingMethod.getName());
-										}
-									}
-								}
-							}
+	
+							method.invoke(privacySettings, customValue.getValue());
 						}
 					}
 				}
 			}
+		} catch (NoSuchMethodException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalArgumentException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InvocationTargetException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-		
-		private void loadSettingsList(SQLiteDatabase db) {			
-			this.settingList = new LinkedList<PDroidSettingWithFunctions>();
-			this.settingMap = new HashMap<String, PDroidSettingWithFunctions>();
-			PDroidSettingWithFunctions setting = null;
-
-			Cursor cursor = db.rawQuery(DBInterface.QUERY_GET_SETTINGS_AND_VALUE_FUNCTIONS, null);
-
-			if (cursor != null) {
-				if (cursor.getCount() < 1) {
-					//This will happen if the database is not initialised for some reason
-					throw new DatabaseUninitialisedException("No settings are present in the database: it must not be initialised correctly");
-				}
-
-				if (cursor.moveToFirst()) {
-					int idColumn = cursor.getColumnIndex(DBInterface.SettingTable.COLUMN_NAME_ID);
-					int nameColumn = cursor.getColumnIndex(DBInterface.SettingTable.COLUMN_NAME_NAME);
-					int settingFunctionNameColumn = cursor.getColumnIndex(DBInterface.SettingTable.COLUMN_NAME_SETTINGFUNCTIONNAME);
-					int valueFunctionNameStubColumn = cursor.getColumnIndex(DBInterface.SettingTable.COLUMN_NAME_VALUEFUNCTIONNAMESTUB);
-					int titleColumn = cursor.getColumnIndex(DBInterface.SettingTable.COLUMN_NAME_TITLE);
-					int groupColumn = cursor.getColumnIndex(DBInterface.SettingTable.COLUMN_NAME_GROUP_ID);
-					int groupTitleColumn = cursor.getColumnIndex(DBInterface.SettingTable.COLUMN_NAME_GROUP_TITLE);
-					int optionsColumn = cursor.getColumnIndex(DBInterface.SettingTable.COLUMN_NAME_OPTIONS);
-					int trustedOptionColumn = cursor.getColumnIndex(DBInterface.SettingTable.COLUMN_NAME_TRUSTED_OPTION);
-
-
-					do {
-						String id = cursor.getString(idColumn);
-						String name = cursor.getString(nameColumn);
-						String settingFunctionName = cursor.getString(settingFunctionNameColumn);
-						String valueFunctionNameStub = cursor.getString(valueFunctionNameStubColumn);
-						String title = cursor.getString(titleColumn);
-						String group = cursor.getString(groupColumn);
-						String groupTitle = cursor.getString(groupTitleColumn);
-						String options = cursor.getString(optionsColumn);
-						String trustedOption = cursor.getString(trustedOptionColumn);
-
-						String [] optionsArray = null;
-						if (options != null) {
-							optionsArray = TextUtils.split(options, ",");
-						}
-
-						setting = new PDroidSettingWithFunctions(id, name, settingFunctionName, valueFunctionNameStub, title, group, groupTitle, optionsArray, trustedOption);
-						this.settingMap.put(name, setting);
-						this.settingList.add(setting);
-					} while (cursor.moveToNext());
-					cursor.close();
-				}
-			}
-		}
+	}
 }
 /*
 Configurable items:

@@ -43,6 +43,7 @@ public class AppListFragment extends Fragment {
 	
 	private static final int LONGPRESS_MENU_UPDATE_ALL_SETTINGS = 1;
 	private static final int LONGPRESS_MENU_DELETE_SETTINGS = 2;
+	private static final int LONGPRESS_MENU_MODIFY_ALLSETTINGS = 3;
 	
 	// Used to specify which, if any, type of progress dialog should appear on start
 	private static final int DIALOG_NONE = 0;
@@ -52,6 +53,7 @@ public class AppListFragment extends Fragment {
 	
 	public interface OnApplicationSelectedListener {
 		public void onApplicationSelected(Application application);
+		public void onBatchCommence(String [] packageNames);
 	}
 	
 	View rootView; // view for the root view element of this listing 
@@ -568,6 +570,9 @@ public class AppListFragment extends Fragment {
             case R.id.application_list_multiselect_set_delete_settings:
     			action = LONGPRESS_MENU_DELETE_SETTINGS;
                 break;
+            case R.id.application_list_multiselect_set_all_settings:
+            	action = LONGPRESS_MENU_MODIFY_ALLSETTINGS;
+            	break;
             default:
                 return false;
             }
@@ -588,23 +593,35 @@ public class AppListFragment extends Fragment {
             if (checkedApps.size() == 0) {
             	return false;
             }
-            Application [] checkedAppsArray = checkedApps.toArray(new Application [checkedApps.size()]);
+            
+            Application [] checkedAppsArray;
             
 			switch (action) {
 			case LONGPRESS_MENU_UPDATE_ALL_SETTINGS:
 				DialogHelper.showProgressDialog(context, null, getString(R.string.applist_dialogtext_updating_settings));
 
+				checkedAppsArray = checkedApps.toArray(new Application [checkedApps.size()]);
 				//use an asynctask to actually update the settings, so it doesn't interfere with the UI thread
     			ApplicationsUpdateAllSettingsTask updateAllSettingsTask = new ApplicationsUpdateAllSettingsTask(context, newTrustState, new UpdateAllSettingsCallback());
     			updateAllSettingsTask.execute(checkedAppsArray);
-    			
     			break;
 			case LONGPRESS_MENU_DELETE_SETTINGS:
 				DialogHelper.showProgressDialog(context, null, getString(R.string.applist_dialogtext_deleting_settings));
 
+				checkedAppsArray = checkedApps.toArray(new Application [checkedApps.size()]);
     			//use an asynctask to delete settings, so it doesn't interfere with the UI thread
     			ApplicationsDeleteSettingsTask deleteSettingsTask = new ApplicationsDeleteSettingsTask(context, new UpdateAllSettingsCallback());
     			deleteSettingsTask.execute(checkedAppsArray);
+    			break;
+			case LONGPRESS_MENU_MODIFY_ALLSETTINGS:
+				
+				String [] packageNames = new String [checkedApps.size()];
+				int packageNum = 0;
+				for (Application app : checkedApps) {
+					packageNames[packageNum] = app.getPackageName();
+					packageNum++;
+				}
+				callback.onBatchCommence(packageNames);
 			}
 			mode.finish();
 			return true;

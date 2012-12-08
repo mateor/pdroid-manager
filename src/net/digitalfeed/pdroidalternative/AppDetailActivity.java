@@ -43,9 +43,10 @@ import android.content.Intent;
  * @author smorgan
  *
  */
-public class AppDetailActivity extends Activity implements AppDetailFragment.OnDetailActionListener {
+public class AppDetailActivity extends Activity implements PDroidSettingListFragment.OnDetailActionListener {
 
 	public static final String BUNDLE_PACKAGE_NAME = "packageName";
+	public static final String BUNDLE_PACKAGE_NAMES = "packageNames";
 	public static final String BUNDLE_IN_APP = "inApp";
 	
 	private boolean inApp = false;
@@ -54,6 +55,7 @@ public class AppDetailActivity extends Activity implements AppDetailFragment.OnD
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     
+        int layoutId = R.layout.app_detail_frame_layout;
         Bundle bundle = this.getIntent().getExtras();
         //if we have a bundle, we can load the package. Otherwise, we do no such thing
         if (bundle != null) {
@@ -62,6 +64,10 @@ public class AppDetailActivity extends Activity implements AppDetailFragment.OnD
 	         * have the 'up' functionality which returns to the app listing.
 	         */
 	        this.inApp = bundle.getBoolean(AppDetailActivity.BUNDLE_IN_APP, false);
+	        
+	        if (bundle.containsKey(AppDetailActivity.BUNDLE_PACKAGE_NAMES)) {
+	        	layoutId = R.layout.app_detail_batch_frame_layout;
+	        }
         }
 
         if (inApp) {
@@ -70,7 +76,7 @@ public class AppDetailActivity extends Activity implements AppDetailFragment.OnD
         	getActionBar().setDisplayHomeAsUpEnabled(false);
         }
 
-        setContentView(R.layout.app_detail_frame_layout);
+        setContentView(layoutId);
     }
 	
 	@Override

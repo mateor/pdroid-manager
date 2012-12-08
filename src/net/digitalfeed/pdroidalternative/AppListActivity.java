@@ -41,9 +41,9 @@ import android.view.MenuItem;
  * @author smorgan
  *
  */
-public class AppListActivity extends Activity implements AppListFragment.OnApplicationSelectedListener, AppDetailFragment.OnDetailActionListener {
+public class AppListActivity extends Activity implements AppListFragment.OnApplicationSelectedListener, PDroidSettingListFragment.OnDetailActionListener {
 
-	AppDetailFragment detailFragment = null;
+	AppDetailSingleFragment detailFragment = null;
 	
 	@Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -164,5 +164,15 @@ public class AppListActivity extends Activity implements AppListFragment.OnAppli
     	Intent intent = new Intent(this, PreferencesListActivity.class);
 		startActivity(intent);
     }
+
+
+	@Override
+	public void onBatchCommence(String[] packageNames) {
+    	if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG, "AppListActivity:onBatchCommence");
+    	Intent intent = new Intent(this, AppDetailActivity.class);
+		intent.putExtra(AppDetailActivity.BUNDLE_PACKAGE_NAMES, packageNames);
+		intent.putExtra(AppDetailActivity.BUNDLE_IN_APP, true);
+		startActivity(intent);
+	}
 
 }

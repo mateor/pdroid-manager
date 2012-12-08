@@ -42,7 +42,7 @@ import android.widget.CheckBox;
  * @author smorgan
  *
  */
-public class AppDetailFragment extends PDroidSettingListFragment {
+public class AppDetailSingleFragment extends PDroidSettingListFragment {
 
 	private String packageName = null; //package name of the app being loaded/displayed
 	private Application application; //stores an application object for the app being displayed
