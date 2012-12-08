@@ -140,13 +140,13 @@ The current list of permissions, settings, and affected functions are:
 		Call Phone
 	</td>
 	<td>
-		DATA_PHONE_CALL phoneCallSetting
+		DATA_PHONE_CALL
 	</td>
 	<td>
-		android.permission.CALL_PHONE
+	    phoneCallSetting
 	</td>
 	<td>
-		android.permission.CALL_PRIVILEGED
+		android.permission.CALL_PHONE, android.permission.CALL_PRIVILEGED	
 	</td>
 </tr>
 <tr>
