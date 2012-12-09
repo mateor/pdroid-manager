@@ -604,6 +604,7 @@ public class AppListFragment extends Fragment {
 				//use an asynctask to actually update the settings, so it doesn't interfere with the UI thread
     			ApplicationsUpdateAllSettingsTask updateAllSettingsTask = new ApplicationsUpdateAllSettingsTask(context, newTrustState, new UpdateAllSettingsCallback());
     			updateAllSettingsTask.execute(checkedAppsArray);
+    			mode.finish();
     			break;
 			case LONGPRESS_MENU_DELETE_SETTINGS:
 				DialogHelper.showProgressDialog(context, null, getString(R.string.applist_dialogtext_deleting_settings));
@@ -612,6 +613,7 @@ public class AppListFragment extends Fragment {
     			//use an asynctask to delete settings, so it doesn't interfere with the UI thread
     			ApplicationsDeleteSettingsTask deleteSettingsTask = new ApplicationsDeleteSettingsTask(context, new UpdateAllSettingsCallback());
     			deleteSettingsTask.execute(checkedAppsArray);
+    			mode.finish();
     			break;
 			case LONGPRESS_MENU_MODIFY_ALLSETTINGS:
 				
@@ -623,7 +625,6 @@ public class AppListFragment extends Fragment {
 				}
 				callback.onBatchCommence(packageNames);
 			}
-			mode.finish();
 			return true;
         }
 

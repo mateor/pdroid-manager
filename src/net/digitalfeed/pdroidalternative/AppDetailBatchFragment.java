@@ -68,6 +68,7 @@ public class AppDetailBatchFragment extends PDroidSettingListFragment {
 	         */
 	        this.inApp = bundle.getBoolean(AppDetailActivity.BUNDLE_IN_APP, false);
         }
+        getActivity().setTitle(getTitle());
 	}
 	
 	
@@ -140,12 +141,8 @@ public class AppDetailBatchFragment extends PDroidSettingListFragment {
 
 	@Override
 	boolean doClose() {
-    	if (!inApp) {
-    		callback.onDetailClose();
-        	return true;
-    	} else {
-    		return false;
-    	}
+		callback.onDetailClose();
+    	return true;
 	}
 	
 	@Override

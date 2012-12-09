@@ -132,12 +132,8 @@ public class AppDetailSingleFragment extends PDroidSettingListFragment {
 
 	@Override
 	boolean doClose() {
-    	if (!inApp) {
-    		callback.onDetailClose();
-        	return true;
-    	} else {
-    		return false;
-    	}
+		callback.onDetailClose();
+    	return true;
 	}
 	
 	@Override
@@ -148,7 +144,6 @@ public class AppDetailSingleFragment extends PDroidSettingListFragment {
 
 	@Override
 	public String getTitle() {
-		// TODO Auto-generated method stub
 		if (this.application != null) {
 			return this.application.getLabel();
 		} else {
@@ -166,6 +161,8 @@ public class AppDetailSingleFragment extends PDroidSettingListFragment {
 			} else {
 				//setTitle(inApplication.getLabel());
 				application = inApplication;
+				getActivity().setTitle(getTitle());
+				getActivity().getActionBar().setIcon(application.getIcon());
 				AppSettingsLoadTask appDetailSettingsLoader = new AppSettingsLoadTask(context, new LoadCompleteHandler());
 				appDetailSettingsLoader.execute(application.getPackageName());
 			}
