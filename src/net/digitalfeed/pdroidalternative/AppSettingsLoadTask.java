@@ -80,6 +80,7 @@ public class AppSettingsLoadTask extends AsyncTask<String, Integer, List<PDroidA
     	int groupTitleColumn = cursor.getColumnIndex(DBInterface.SettingTable.COLUMN_NAME_GROUP_TITLE);
     	int optionsColumn = cursor.getColumnIndex(DBInterface.SettingTable.COLUMN_NAME_OPTIONS);
     	int trustedOptionColumn = cursor.getColumnIndex(DBInterface.SettingTable.COLUMN_NAME_TRUSTED_OPTION);
+    	int sortColumn = cursor.getColumnIndex(DBInterface.SettingTable.COLUMN_NAME_SORT);
     	
 		cursor.moveToFirst();
 		List<PDroidAppSetting> settingSet = new ArrayList<PDroidAppSetting>(cursor.getCount());
@@ -96,6 +97,7 @@ public class AppSettingsLoadTask extends AsyncTask<String, Integer, List<PDroidA
 			String groupTitle = cursor.getString(groupTitleColumn);
 			String options = cursor.getString(optionsColumn);
 			String trustedOption = cursor.getString(trustedOptionColumn);
+			int sort = cursor.getInt(sortColumn);
 
 			String [] optionsArray = null;
 			if (options != null) {
@@ -186,9 +188,9 @@ public class AppSettingsLoadTask extends AsyncTask<String, Integer, List<PDroidA
 			}
 			
 			if (customValues != null) {
-				settingSet.add(new PDroidAppSetting(id, name, settingFunctionName, valueFunctionNameStub, title, group, groupTitle, optionsArray, trustedOption, selectedOption, customValues));
+				settingSet.add(new PDroidAppSetting(id, name, settingFunctionName, valueFunctionNameStub, title, group, groupTitle, optionsArray, trustedOption, sort, selectedOption, customValues));
 			} else {
-				settingSet.add(new PDroidAppSetting(id, name, settingFunctionName, valueFunctionNameStub, title, group, groupTitle, optionsArray, trustedOption, selectedOption, customValue));
+				settingSet.add(new PDroidAppSetting(id, name, settingFunctionName, valueFunctionNameStub, title, group, groupTitle, optionsArray, trustedOption, sort, selectedOption, customValue));
 			}
 		} while (cursor.moveToNext());
 		cursor.close();

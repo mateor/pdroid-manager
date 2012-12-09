@@ -211,6 +211,7 @@ public class DBInterface {
 		public static final String COLUMN_NAME_GROUP_TITLE = "groupTitle"; //As with the above 'group' column, may be better in a separate column, but then we need to be doing joins.
 		public static final String COLUMN_NAME_OPTIONS = "options"; //Options are stored as a string array
 		public static final String COLUMN_NAME_TRUSTED_OPTION = "trustedOption"; //Options which qualify as 'trusted' are stored as string array
+		public static final String COLUMN_NAME_SORT = "sort"; //A number which indicates the order in which the options should be sorted
 		
 		public static final String CREATE_SQL = "CREATE TABLE " + TABLE_NAME + "(" + 
 				"_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
@@ -222,7 +223,8 @@ public class DBInterface {
 				COLUMN_NAME_GROUP_ID + " TEXT NOT NULL, " +
 				COLUMN_NAME_GROUP_TITLE + " TEXT, " +
 				COLUMN_NAME_OPTIONS + " TEXT NOT NULL, " +
-				COLUMN_NAME_TRUSTED_OPTION + " TEXT NOT NULL" +
+				COLUMN_NAME_TRUSTED_OPTION + " TEXT NOT NULL, " +
+				COLUMN_NAME_SORT + " INTEGER " +
 				");";
 		
 		public static final String DROP_SQL = "DROP TABLE IF EXISTS " + TABLE_NAME + ";";
@@ -236,7 +238,8 @@ public class DBInterface {
 		private static final int COLUMN_NUMBER_OFFSET_GROUP_TITLE = 6;
 		private static final int COLUMN_NUMBER_OFFSET_OPTIONS = 7;
 		private static final int COLUMN_NUMBER_OFFSET_TRUSTED_OPTION = 8;
-		private static final int COLUMN_COUNT = 9;
+		private static final int COLUMN_NUMBER_OFFSET_SORT = 9;
+		private static final int COLUMN_COUNT = 10;
 		
 		public static final ContentValues getContentValues(PDroidSetting setting) {
 			ContentValues contentValues = new ContentValues();
@@ -249,6 +252,7 @@ public class DBInterface {
 			//contentValues.put(COLUMN_NAME_GROUP_TITLE, setting.getGroupTitle());
 			contentValues.put(COLUMN_NAME_OPTIONS, TextUtils.join(",",setting.getOptions()));
 			contentValues.put(COLUMN_NAME_TRUSTED_OPTION, setting.getTrustedOption());
+			contentValues.put(COLUMN_NAME_SORT, setting.getSort());
 			
 			return contentValues;
 		}
@@ -469,7 +473,8 @@ public class DBInterface {
 			SettingTable.TABLE_NAME + "." + SettingTable.COLUMN_NAME_GROUP_ID + ", " +
 			SettingTable.TABLE_NAME + "." + SettingTable.COLUMN_NAME_GROUP_TITLE + ", " +
 			SettingTable.TABLE_NAME + "." + SettingTable.COLUMN_NAME_OPTIONS + ", " +
-			SettingTable.TABLE_NAME + "." + SettingTable.COLUMN_NAME_TRUSTED_OPTION +
+			SettingTable.TABLE_NAME + "." + SettingTable.COLUMN_NAME_TRUSTED_OPTION + ", " +
+			SettingTable.TABLE_NAME + "." + SettingTable.COLUMN_NAME_SORT +
 			" FROM " + SettingTable.TABLE_NAME + 
 			" INNER JOIN " + PermissionSettingTable.TABLE_NAME +
 			" ON (" + PermissionSettingTable.TABLE_NAME + "." + PermissionSettingTable.COLUMN_NAME_SETTING +
@@ -479,7 +484,8 @@ public class DBInterface {
 					" IN (SELECT " + PermissionApplicationTable.TABLE_NAME + "." + PermissionApplicationTable.COLUMN_NAME_PERMISSION +
 					" FROM " + PermissionApplicationTable.TABLE_NAME +
 					" WHERE " + PermissionApplicationTable.TABLE_NAME + "." + PermissionApplicationTable.COLUMN_NAME_PACKAGENAME + " = ?" + 
-					");";
+					") " +
+					"ORDER BY " + SettingTable.TABLE_NAME + "." + SettingTable.COLUMN_NAME_SORT + ";";
 
 	public static final String QUERY_GET_SETTINGS_FUNCTION_NAMES = "SELECT " +
 			SettingTable.TABLE_NAME + "." + SettingTable.COLUMN_NAME_SETTINGFUNCTIONNAME + "," + 
@@ -653,7 +659,7 @@ public class DBInterface {
 	
 	public class DBHelper extends SQLiteOpenHelper {
 		public static final String DATABASE_NAME = "pdroidmgr.db";
-		public static final int DATABASE_VERSION = 34;
+		public static final int DATABASE_VERSION = 35;
 		
 		//private SQLiteDatabase db;
 		
@@ -723,6 +729,7 @@ public class DBInterface {
 				settingTableColumnNumbers[SettingTable.COLUMN_NUMBER_OFFSET_GROUP_TITLE] = settingInsertHelper.getColumnIndex(SettingTable.COLUMN_NAME_GROUP_TITLE);
 				settingTableColumnNumbers[SettingTable.COLUMN_NUMBER_OFFSET_OPTIONS] = settingInsertHelper.getColumnIndex(SettingTable.COLUMN_NAME_OPTIONS);
 				settingTableColumnNumbers[SettingTable.COLUMN_NUMBER_OFFSET_TRUSTED_OPTION] = settingInsertHelper.getColumnIndex(SettingTable.COLUMN_NAME_TRUSTED_OPTION);
+				settingTableColumnNumbers[SettingTable.COLUMN_NUMBER_OFFSET_SORT] = settingInsertHelper.getColumnIndex(SettingTable.COLUMN_NAME_SORT);
 				
 				int eventType = xrp.next();
 				while(!(eventType == XmlResourceParser.START_TAG && xrp.getName().equals("setting")) && eventType != XmlResourceParser.END_DOCUMENT) {
@@ -753,7 +760,9 @@ public class DBInterface {
 					settingInsertHelper.bind(settingTableColumnNumbers[SettingTable.COLUMN_NUMBER_OFFSET_GROUP_TITLE],
 							resources.getString(resources.getIdentifier("SETTING_GROUP_LABEL_" + id, "string", packageName))
 						);
-					
+					settingInsertHelper.bind(settingTableColumnNumbers[SettingTable.COLUMN_NUMBER_OFFSET_SORT], 
+							xrp.getAttributeValue(null, "sort")
+						);
 		        	eventType = xrp.next();
 		 			while(eventType == XmlResourceParser.TEXT && xrp.isWhitespace()) {
 		 				eventType = xrp.next();

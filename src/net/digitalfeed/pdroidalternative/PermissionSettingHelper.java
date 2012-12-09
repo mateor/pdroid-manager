@@ -642,6 +642,7 @@ class PermissionSettingHelper {
 				int groupTitleColumn = cursor.getColumnIndex(DBInterface.SettingTable.COLUMN_NAME_GROUP_TITLE);
 				int optionsColumn = cursor.getColumnIndex(DBInterface.SettingTable.COLUMN_NAME_OPTIONS);
 				int trustedOptionColumn = cursor.getColumnIndex(DBInterface.SettingTable.COLUMN_NAME_TRUSTED_OPTION);
+				int sortColumn = cursor.getColumnIndex(DBInterface.SettingTable.COLUMN_NAME_SORT);
 
 
 				do {
@@ -654,13 +655,14 @@ class PermissionSettingHelper {
 					String groupTitle = cursor.getString(groupTitleColumn);
 					String options = cursor.getString(optionsColumn);
 					String trustedOption = cursor.getString(trustedOptionColumn);
+					int sort = cursor.getInt(sortColumn);
 
 					String [] optionsArray = null;
 					if (options != null) {
 						optionsArray = TextUtils.split(options, ",");
 					}
 
-					setting = new PDroidSetting(id, name, settingFunctionName, valueFunctionNameStub, title, group, groupTitle, optionsArray, trustedOption);
+					setting = new PDroidSetting(id, name, settingFunctionName, valueFunctionNameStub, title, group, groupTitle, optionsArray, trustedOption, sort);
 					this.settingMap.put(name, setting);
 					this.settingList.add(setting);
 				} while (cursor.moveToNext());

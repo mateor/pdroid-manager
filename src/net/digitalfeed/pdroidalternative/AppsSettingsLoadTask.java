@@ -26,16 +26,21 @@
  */
 package net.digitalfeed.pdroidalternative;
 
+//import java.lang.reflect.InvocationTargetException;
+//import java.lang.reflect.Method;
 import java.security.InvalidParameterException;
-import java.util.HashSet;
+import java.util.HashMap;
+//import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Set;
+//import java.util.Set;
 
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
+//import android.privacy.PrivacySettings;
+//import android.privacy.PrivacySettingsManager;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -44,7 +49,7 @@ import android.util.Log;
  * @author smorgan
  */
 public class AppsSettingsLoadTask extends AsyncTask<String, Integer, List<PDroidAppSetting>> {
-
+	
 	IAsyncTaskCallback<List<PDroidAppSetting>> listener;
 
 	Context context;
@@ -60,11 +65,14 @@ public class AppsSettingsLoadTask extends AsyncTask<String, Integer, List<PDroid
 			throw new InvalidParameterException("One ore more package names must be provided to the AppsDetailSettingsLoader");
 		}
 
+		//PrivacySettingsManager privacySettingsManager = (PrivacySettingsManager)context.getSystemService("privacy");
+		//PrivacySettings privacySettings;
+		
 		SQLiteDatabase db = DBInterface.getInstance(context).getDBHelper().getReadableDatabase();
 
-		List<PDroidAppSetting> settingSet = new LinkedList<PDroidAppSetting>();
-		Set<String> includedSettingNames = new HashSet<String>(); 
-
+		HashMap<String, PDroidAppSetting> settingMap = new HashMap<String, PDroidAppSetting>();
+		PDroidAppSetting setting;
+		
 		for (String packageName : packageNames) {
 			Log.d(GlobalConstants.LOG_TAG, "Searching database for settings associated with package " + packageName);
 			Cursor cursor = db.rawQuery(DBInterface.QUERY_GET_SETTINGS_BY_PACKAGENAME, new String [] {packageName});
@@ -78,10 +86,39 @@ public class AppsSettingsLoadTask extends AsyncTask<String, Integer, List<PDroid
 				int groupTitleColumn = cursor.getColumnIndex(DBInterface.SettingTable.COLUMN_NAME_GROUP_TITLE);
 				int optionsColumn = cursor.getColumnIndex(DBInterface.SettingTable.COLUMN_NAME_OPTIONS);
 				int trustedOptionColumn = cursor.getColumnIndex(DBInterface.SettingTable.COLUMN_NAME_TRUSTED_OPTION);
+				int sortColumn = cursor.getColumnIndex(DBInterface.SettingTable.COLUMN_NAME_SORT);
 
+				//All the commented out code here provides the ability to check for matching 'settings' across multiple
+				//packages, and then retain the actual setting if they all match.
+				//It has been excluded because it simply takes too long to run
 				do {
 					String id = cursor.getString(idColumn);
-					if (!includedSettingNames.contains(id)) {
+					//int selectedOption = PDroidSetting.OPTION_FLAG_UNSET;
+					int selectedOption = PDroidSetting.OPTION_FLAG_NO_CHANGE;
+					/*if (settingMap.containsKey(id)) {
+						setting = settingMap.get(id);
+						if (setting.getSelectedOptionBit() != PDroidSetting.OPTION_FLAG_NO_CHANGE) {
+							privacySettings = privacySettingsManager.getSettings(packageName);
+							if (privacySettings != null) {
+								Method method = setting.getGetSettingMethod();
+								try {
+									Object coreOptionObject = method.invoke(privacySettings);
+									if (coreOptionObject instanceof Byte) {
+										byte coreOption = (Byte)coreOptionObject;
+										int option = PDroidAppSetting.convertCoreOptionToSettingOption(coreOption, setting.optionsBits);
+										if (option != setting.getSelectedOptionBit()) {
+											setting.setSelectedOptionBit(PDroidSetting.OPTION_FLAG_NO_CHANGE);
+										} 
+									}
+								} catch (IllegalArgumentException e) {
+								} catch (IllegalAccessException e) {
+								} catch (InvocationTargetException e) {
+								}
+							}					
+							setting.setSelectedOptionBit(PDroidSetting.OPTION_FLAG_NO_CHANGE);
+						}
+					} else {*/
+					if (!settingMap.containsKey(id)) {
 						String name = cursor.getString(nameColumn);
 						String settingFunctionName = cursor.getString(settingFunctionNameColumn);
 						String valueFunctionNameStub = cursor.getString(valueFunctionNameStubColumn);
@@ -90,16 +127,35 @@ public class AppsSettingsLoadTask extends AsyncTask<String, Integer, List<PDroid
 						String groupTitle = cursor.getString(groupTitleColumn);
 						String options = cursor.getString(optionsColumn);
 						String trustedOption = cursor.getString(trustedOptionColumn);
-						int selectedOption = PDroidSetting.OPTION_FLAG_NO_CHANGE;
 						String customValue = null;
+						int sort = cursor.getInt(sortColumn);
 
 						String [] optionsArray = null;
 						if (options != null) {
 							optionsArray = TextUtils.split(options, ",");
 						}
-
-						settingSet.add(new PDroidAppSetting(id, name, settingFunctionName, valueFunctionNameStub, title, group, groupTitle, optionsArray, trustedOption, selectedOption, customValue));
-						includedSettingNames.add(id);
+						
+						setting = new PDroidAppSetting(id, name, settingFunctionName, valueFunctionNameStub, title, group, groupTitle, optionsArray, trustedOption, sort, selectedOption, customValue);
+						//More code to do matching of settings
+						/*
+						privacySettings = privacySettingsManager.getSettings(packageName);
+						
+						if (privacySettings == null) {
+							setting.setSelectedOptionBit(PDroidSetting.OPTION_FLAG_UNSET);
+						} else {
+							Method method = setting.getGetSettingMethod();
+							try {
+								Object coreOptionObject = method.invoke(privacySettings);
+								if (coreOptionObject instanceof Byte) {
+									setting.setSelectedCoreOption((Byte)coreOptionObject); 
+								}
+							} catch (IllegalArgumentException e) {
+							} catch (IllegalAccessException e) {
+							} catch (InvocationTargetException e) {
+							}
+						}						
+						*/
+						settingMap.put(id, setting);
 					}
 				} while (cursor.moveToNext());
 				cursor.close();
@@ -108,7 +164,7 @@ public class AppsSettingsLoadTask extends AsyncTask<String, Integer, List<PDroid
 
 			//db.close();
 		}
-		return settingSet;
+		return new LinkedList<PDroidAppSetting>(settingMap.values());
 	}
 
 	@Override

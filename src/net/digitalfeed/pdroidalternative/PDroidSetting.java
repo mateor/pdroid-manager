@@ -52,6 +52,7 @@ class PDroidSetting implements Comparable<PDroidSetting> {
 	protected String [] customFieldNames = null;
 	protected int optionsBits;
 	protected int trustedOptionBit;
+	protected int sort;
 	
 	public static final int OPTION_FLAG_ALLOW = 1;
 	public static final String OPTION_TEXT_ALLOW = "allow";
@@ -68,10 +69,12 @@ class PDroidSetting implements Comparable<PDroidSetting> {
 	public static final int OPTION_FLAG_NO = 64;
 	public static final String OPTION_TEXT_NO = "no";
 	public static final int OPTION_FLAG_NO_CHANGE = 128;
-	public static final String OPTION_TEXT_NO_CHANGE = "nochange";
-	protected static final int OPTION_FLAG_NUMBITS = 8;
+	public static final String OPTION_TEXT_NO_CHANGE = "nochange"; //this shouldn't go into the database. ever.
+	public static final int OPTION_FLAG_UNSET = 256;
+	public static final String OPTION_TEXT_UNSET = "unset"; //this shouldn't go into the database. ever.
+	protected static final int OPTION_FLAG_NUMBITS = 9;
 	
-	public PDroidSetting(String id, String name, String settingFunctionName, String valueFunctionNameStub, String title, String group, String groupTitle, String [] options, String trustedOption) {
+	public PDroidSetting(String id, String name, String settingFunctionName, String valueFunctionNameStub, String title, String group, String groupTitle, String [] options, String trustedOption, int sort) {
 		this.id = id;
 		this.name = name;
 		this.settingFunctionName = settingFunctionName;
@@ -82,6 +85,7 @@ class PDroidSetting implements Comparable<PDroidSetting> {
 		
 		this.optionsBits = optionsToBits(options);
 		this.trustedOptionBit = optionToBit(trustedOption);
+		this.sort = sort;
 		//
 		if (0 != (this.optionsBits & OPTION_FLAG_CUSTOMLOCATION)) {
 			this.customFieldNames = new String[] {"Lat","Lon"};		
@@ -201,6 +205,24 @@ class PDroidSetting implements Comparable<PDroidSetting> {
 		}
 	}
 	
+	public byte optionBitToCoreOption(int optionBit) {
+		switch (optionBit) {
+		case PDroidSetting.OPTION_FLAG_ALLOW:
+		case PDroidSetting.OPTION_FLAG_YES:
+			return PrivacySettings.REAL;
+		case PDroidSetting.OPTION_FLAG_DENY:
+		case PDroidSetting.OPTION_FLAG_NO:
+			return PrivacySettings.EMPTY;
+		case PDroidSetting.OPTION_FLAG_CUSTOM:
+		case PDroidSetting.OPTION_FLAG_CUSTOMLOCATION:
+			return PrivacySettings.CUSTOM;
+		case PDroidSetting.OPTION_FLAG_RANDOM:
+			return PrivacySettings.RANDOM;
+		default:
+			throw new RuntimeException("The Setting option must be a recognised option type");
+		}
+	}
+	
 	public String getId() {
 		return this.id;
 	}
@@ -246,7 +268,11 @@ class PDroidSetting implements Comparable<PDroidSetting> {
 	}
 	
 	public String [] getCustomFieldNames() {
-		return customFieldNames;
+		return this.customFieldNames;
+	}
+	
+	public int getSort() {
+		return this.sort;
 	}
 	
 	public Method getGetSettingMethod() {

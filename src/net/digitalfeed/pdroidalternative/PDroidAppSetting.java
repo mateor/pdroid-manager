@@ -31,6 +31,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.AbstractMap.SimpleImmutableEntry;
 
+import android.privacy.PrivacySettings;
+
 
 /**
  * This class provides a 'Setting' with the actual selected option for the application included.
@@ -48,27 +50,27 @@ public class PDroidAppSetting extends PDroidSetting {
 	protected String customValue;
 	
 	public PDroidAppSetting(String id, String name, String settingFunctionName, String valueFunctionNameStub, String title, String group,
-			String groupTitle, String[] options, String trustedOption) {
-		super(id, name, settingFunctionName, valueFunctionNameStub, title, group, groupTitle, options, trustedOption);
+			String groupTitle, String[] options, String trustedOption, int sort) {
+		super(id, name, settingFunctionName, valueFunctionNameStub, title, group, groupTitle, options, trustedOption, sort);
 		this.selectedOptionBit = OPTION_FLAG_ALLOW; //if something isn't set, it is assumed to be 'allowed'
 	}
 	
 	public PDroidAppSetting(String id, String name, String settingFunctionName, String valueFunctionNameStub, String title, String group,
-			String groupTitle, String[] options, String trustedOption, int selectedOptionBit) {
-		super(id, name, settingFunctionName, valueFunctionNameStub, title, group, groupTitle, options, trustedOption);
+			String groupTitle, String[] options, String trustedOption, int sort, int selectedOptionBit) {
+		super(id, name, settingFunctionName, valueFunctionNameStub, title, group, groupTitle, options, trustedOption, sort);
 		this.setSelectedOptionBit(selectedOptionBit);
 	}
 	
 	public PDroidAppSetting(String id, String name, String settingFunctionName, String valueFunctionNameStub, String title, String group,
-			String groupTitle, String[] options, String trustedOption, int selectedOptionBit, List<SimpleImmutableEntry<String, String>> customValues) {
-		super(id, name, settingFunctionName, valueFunctionNameStub, title, group, groupTitle, options, trustedOption);
+			String groupTitle, String[] options, String trustedOption, int sort, int selectedOptionBit, List<SimpleImmutableEntry<String, String>> customValues) {
+		super(id, name, settingFunctionName, valueFunctionNameStub, title, group, groupTitle, options, trustedOption, sort);
 		this.setSelectedOptionBit(selectedOptionBit);
 		this.customValues = customValues;
 	}
 	
 	public PDroidAppSetting(String id, String name, String settingFunctionName, String valueFunctionNameStub, String title, String group,
-			String groupTitle, String[] options, String trustedOption, int selectedOptionBit, String customValue) {
-		super(id, name, settingFunctionName, valueFunctionNameStub, title, group, groupTitle, options, trustedOption);
+			String groupTitle, String[] options, String trustedOption, int sort, int selectedOptionBit, String customValue) {
+		super(id, name, settingFunctionName, valueFunctionNameStub, title, group, groupTitle, options, trustedOption, sort);
 		this.setSelectedOptionBit(selectedOptionBit);
 		this.customValue = customValue;
 	}
@@ -129,4 +131,50 @@ public class PDroidAppSetting extends PDroidSetting {
 			return this.customValues;
 		}
 	}
+	
+	public void setSelectedCoreOption(byte coreOption) {
+		this.setSelectedOptionBit(convertCoreOptionToSettingOption(coreOption, this.optionsBits));
+	}
+	
+	public byte getSelectedCoreOption() {
+		return optionBitToCoreOption(this.selectedOptionBit);
+	}
+	
+	public static int convertCoreOptionToSettingOption(byte coreOption, int optionsBits) {
+		switch (coreOption) {
+		case PrivacySettings.REAL:
+			if (0 != (optionsBits & PDroidSetting.OPTION_FLAG_ALLOW)) {
+				return PDroidSetting.OPTION_FLAG_ALLOW;
+			} else if (0 != (optionsBits & PDroidSetting.OPTION_FLAG_YES)) {
+				return PDroidSetting.OPTION_FLAG_YES;
+			} else {
+				throw new InvalidParameterException("The Setting option must be a recognised option type"); 
+			}
+		case PrivacySettings.CUSTOM:
+			if (0 != (optionsBits & PDroidSetting.OPTION_FLAG_CUSTOM)) {
+				return PDroidSetting.OPTION_FLAG_CUSTOM;
+			} else if (0 != (optionsBits & PDroidSetting.OPTION_FLAG_CUSTOMLOCATION)) {
+				return PDroidSetting.OPTION_FLAG_CUSTOMLOCATION;
+			} else {
+				throw new InvalidParameterException("The Setting option must be a recognised option type"); 
+			}
+		case PrivacySettings.RANDOM:
+			if (0 != (optionsBits & PDroidSetting.OPTION_FLAG_RANDOM)) {
+				return PDroidSetting.OPTION_FLAG_RANDOM;
+			} else {
+				throw new InvalidParameterException("The Setting option must be a recognised option type"); 
+			}
+		case PrivacySettings.EMPTY:
+			if (0 != (optionsBits & PDroidSetting.OPTION_FLAG_DENY)) {
+				return PDroidSetting.OPTION_FLAG_DENY;
+			} else if (0 != (optionsBits & PDroidSetting.OPTION_FLAG_NO)) {
+				return PDroidSetting.OPTION_FLAG_NO;
+			} else {
+				throw new InvalidParameterException("The Setting option must be a recognised option type"); 
+			}
+		default:
+			throw new InvalidParameterException("The core setting is not recognised");
+		}
+	}
+	
 }
