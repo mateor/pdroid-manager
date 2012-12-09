@@ -39,6 +39,6 @@
     <item android:id="@+id/detailDeleteButton"
         android:icon="@android:drawable/ic_menu_delete"
 		android:showAsAction="always"
-        android:title="@string/detail_actionbar_deletebutton_title" />    
+        android:title="@string/detail_actionbar_delete_title" />    
 </menu>
 
