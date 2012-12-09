@@ -67,11 +67,13 @@
 	</setting>
 	<setting id="ALLOW_READ_NETWORK_LOCATION" name="locationNetworkSetting" settingfunctionname="LocationNetworkSetting" valuefunctionnamestub="LocationNetwork"  group="LOCATION">
 		<option name="allow" trustedoption="true" />
+		<option name="random" />
         <option name="customlocation" />
         <option name="deny" />
 	</setting>
 	<setting id="ALLOW_READ_GPS_LOCATION" name="locationGpsSetting" settingfunctionname="LocationGpsSetting" valuefunctionnamestub="LocationGps"  group="LOCATION">
 		<option name="allow" trustedoption="true" />
+		<option name="random" />
         <option name="customlocation" />
         <option name="deny" />
 	</setting>

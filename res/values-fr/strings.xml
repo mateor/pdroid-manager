@@ -22,72 +22,184 @@
  * Modified or derivative versions of the pdroid-manager application must use an
  * alternative name, rather than the name pdroid-manager.
  */
- 
+
  /**
  * @author Simeon J. Morgan <smorgan@digitalfeed.net>
  * @translator patrickpr
  */
 -->
 <resources>
-    <string name="app_name">Gestionaire PDroid</string>
-    <string name="app_list_menu_search">Rechercher</string>
-    <string name="app_list_menu_refresh">Recharger la liste des applications</string>
-    <string name="title_activity_main">Gestionnaire PDroid</string>
-    
-    <string name="permission_label_writeprivacysettings">Modifier la configuration PDroid</string>
-    <string name="permission_description_writeprivacysettings">Autoriser la modification de la configuration PDroid associ&#233;e aux applications.</string>
-    <string name="permission_label_readprivacysettings">Lecture configuration PDroid </string>
-    <string name="permission_description_readprivacysettings">Autorise la lecture de la configuration PDroid associ&#233;e aux applications.</string>
-    <string name="permission_label_manageprivacycontrollers">Gestion configuration PDroid</string>
-    <string name="permission_description_manageprivacycontrollers">Permet de configuration l\'acc&#232;s &#224; la configuration PDroid par des applications.</string>
-    
-    <string name="title_activity_app_detail">Application</string>
-    <string name="app_list_app_icon_text">Ic&#244;nes d\'application</string>
-    <string name="app_list_has_internet_indicator">Indicateur d\'acc&#232;s Internet autoris&#233;</string>
-    
-	<string name="applist_setting_filter_spinner_all_option_title">Tous</string>
-    
-	<string name="applist_dialogtext_updating_settings">Enregistrer la configuration</string>
-	<string name="applist_dialogtext_deleting_settings">Supprimer la configuration</string>
-	<string name="applist_dialogtext_generateapplist">G&#233;n&#233;rer la liste des applications</string>
-	
-    <string name="applist_popupmenu_set_untrusted_values">Tout interdire</string>
-    <string name="applist_popupmenu_set_trusted_values">Tout autoriser</string>
-	<string name="applist_popupmenu_set_default_values">R&#233;initialiser</string>
-	<string name="applist_popupmenu_delete_settings">Supprimer la configuration</string>
-	
-    <string name="detail_dialog_saving_title">En cours&#8230;</string>
-    <string name="detail_dialog_saving_message">Mise &#224; jour</string>
-    <string name="detail_dialog_loading_message">Chargement</string>
-    
-    <string name="detail_actionbar_savebutton_title">Sauvegarder la configuration</string>
-    <string name="detail_actionbar_close_title">Fermer sans sauvegarder</string>
-    <string name="detail_actionbar_delete_title">Supprimer la configuration</string>
-    
-    <string name="detail_custom_input_OKtext">OK</string>
-    
-    <string name="detail_notifyonaccess_text">Notifier sur acc&#232;s</string>
-    <string name="detail_logonaccess_text">Traces d\'acc&#232;s</string>
-    
+	<string name="app_name">Gestionaire PDroid</string> <!-- the app name as it appears in the launcher -->
+
+	<!-- Names and descriptions of the permissions defined by this app for the Android operating system -->
+	<string name="permission_label_writeprivacysettings">Modifier la configuration PDroid</string>
+	<string name="permission_description_writeprivacysettings">Autoriser la modification de la configuration PDroid associ&#233;e aux applications.</string>
+	<string name="permission_label_readprivacysettings">Lecture configuration PDroid </string>
+	<string name="permission_description_readprivacysettings">Autorise la lecture de la configuration PDroid associ&#233;e aux applications.</string>
+	<string name="permission_label_manageprivacycontrollers">Gestion configuration PDroid</string>
+	<string name="permission_description_manageprivacycontrollers">Permet de configuration l\'acc&#232;s &#224; la configuration PDroid par des applications.</string>
+
+	<!-- Application list screen -->
+		<!-- action bar options  -->
+		<string name="app_list_menu_search">Rechercher</string> <!--  the caption for a 'search' option, which will appear in the application list action bar -->
+		<string name="app_list_menu_refresh">Recharger la liste des applications</string> <!-- action bar button to reload the list of apps -->
+		<!-- start needs translation -->
+		<string name="app_list_menu_preferences">Preferences</string> <!-- action bar button to open the preferences screen -->
+		<!-- end needs translation -->
+		<string name="title_activity_main">Gestionnaire PDroid</string> <!-- title in the action bar of the app list screen: not visible? -->
+
+		<string name="app_list_app_icon_text">Ic&#244;nes d\'application</string>
+		<string name="app_list_has_internet_indicator">Indicateur d\'acc&#232;s Internet autoris&#233;</string>
+
+		<string name="applist_setting_filter_spinner_all_option_title">Tous</string>
+
+		<string name="applist_dialogtext_updating_settings">Enregistrer la configuration</string>
+		<string name="applist_dialogtext_deleting_settings">Supprimer la configuration</string>
+		<string name="applist_dialogtext_generateapplist">G&#233;n&#233;rer la liste des applications</string>
+
+		<string name="applist_popupmenu_set_untrusted_values">Tout interdire</string>
+		<string name="applist_popupmenu_set_trusted_values">Tout autoriser</string>
+		<string name="applist_popupmenu_set_default_values">R&#233;initialiser</string>
+		<string name="applist_popupmenu_delete_settings">Supprimer la configuration</string>    
+		<!-- start needs translation -->
+		<string name="applist_popupmenu_customise_settings">Custom settings</string>
+		
+		<!-- Heading for the actionbar when in multiple-select mode (i.e. selecting apps for a batch change) -->
+		<string name="applist_actionbar_batchselect_none">Select apps</string> <!-- Shown in the header when no apps selected -->
+		<string name="applist_actionbar_batchselect_singular">One app selected</string> <!-- Shown in header when single app selected -->
+		<string name="applist_actionbar_batchselect_plural">apps selected</string> <!-- Shown in header when >1 app selected (i.e. shows as "5 apps selected") -->
+		<!-- end needs translation -->
+	<!-- end Application list screen -->
+
+	<!-- start Preferences list screen -->
+		<!-- entries in the preferences text list -->
+		<!--  start needs translation -->
+		<string name="title_activity_preferences_list">Preferences</string>
+		<string name="preferences_heading_about">About</string>
+		<string name="preferences_about_title">About this app</string>
+		<string name="preferences_about_summary">App information and license</string>
+		<string name="preferences_credits_title">Credits</string>
+		<string name="preferences_credits_summary">Creators and contributors</string>
+		<string name="preferences_openxdathread_title">View on XDA</string>
+		<string name="preferences_openxdathread_summary">Open the thread on xda-developers.com in your browser</string>
+
+		<string name="preferences_heading_language">Language</string>
+		<string name="preferences_switchlanguage_title">Change language</string>
+		<string name="preferences_switchlanguage_summary">Choose your preferred language</string>
+		<string name="preferences_usephonelocale_title">Remove language preference</string>
+		<string name="preferences_usephonelocale_summary">Use the device locale to determine the interface language</string>
+
+		<string name="preferences_heading_backuprestore">Backup &amp; Restore</string>
+		<string name="preferences_backup_title">Backup</string>
+		<string name="preferences_backup_summary">Create a backup of current settings</string>
+		<string name="preferences_restore_title">Restore</string>
+		<string name="preferences_restore_summary">Restore settings from a backup</string>
+		<!-- end entries in the preferences text list -->
+
+		<string name="preferences_chooselangage_alerttitle">Choose language</string> <!-- text for language selection dialog box (when you select 'change language' option)  -->
+
+		<string name="restore_dialog_title">Restore settings</string><!-- Title for the 'restore backup' dialog box -->
+		<!-- restoring backups error messages -->
+		<string name="restore_no_backups">No backups are available to restore</string>
+		<string name="restore_signature_invalid">The digital signature for the selected backup file does not match the backup. The backup may have been modified by another program. Uninstalling and re-installed PDroid Manager since you created the backup will also cause this message.</string>
+		<string name="restore_signature_missing">No digital signature can be found for the selected backup file. There is no way to verify that the backup file has not been modified by another program since it was created.</string>
+		<string name="restore_dialog_continue_prompt">Continue to restore settings from the file?</string> <!-- Prompt displayed after error message in restore from backup dialog box -->
+
+		<!-- restoring from backup messages -->
+		<string name="restore_failed_dialog_title">Restore failed</string> <!-- title of 'backup failed' notification dialog box -->
+		<string name="restore_invalid_backup">The selected file is missing, corrupted, or not a valid backup file.</string>
+		<string name="restore_complete_success">Restore complete</string> <!-- This message is displayed in a 'toast' rather than a dialog box -->
+		<string name="restore_complete_fail_invalid">Restore failed: The selected file is not a valid backup file.</string>
+		<string name="restore_complete_fail_reading">Restore failed: The selected file could not be read.</string>
+		<string name="restore_complete_fail_other">Restore failed: An error prevented restoration.</string>
+
+		<!-- content of the progress dialog box while restoring from backup -->
+		<string name="restore_progress_dialog_title">Restoring from backup</string>
+		<string name="restore_progress_dialog_message">Please wait while your backup is restored</string>
+
+		<!-- general error for when the storage is not working - i.e. no SD card, etc -->
+		<string name="storage_error_body">The external storage cannot be accessed. If you device uses an external SD Card or Micro SD Card please ensure it is inserted and properly formatted.</string>
+
+		<!-- dialog for preparing for backup: entering filename -->    
+		<string name="backup_dialog_title">Backup settings</string> <!-- dialog title -->
+		<string name="backup_path_text">Your backup will be stored in: </string> <!-- text shown before destination directory -->
+		<string name="backup_filename">Filename for backup</string> <!-- shown beside filename box -->
+		<string name="backup_filename_hint">Filename</string> <!-- Hint text in the 'filename' field -->
+
+		<!-- warning and error messages for creating backup -->
+		<string name="backup_message_file_exists">A file with the speficied filename already exists. The new backup will replace the existing file.</string>
+		<string name="backup_dialog_continue_prompt">Continue to backup to the file?</string>
+		<string name="backup_failed_dialog_title">Backup failed</string> <!-- title for dialog shown if the backup fails -->
+		<string name="backup_complete_success">Backup complete</string>
+		<string name="backup_complete_fail_signing">Backup failed: Signing of the backup failed</string>
+		<string name="backup_complete_fail_writing">Backup failed: The backup file could not be written</string>
+		<string name="backup_complete_fail_other">Backup failed: The backup file could not be generated</string>
+		<!-- end needs translation -->
+	<!-- end Preferences list screen -->
+
+	<!-- application details (i.e. settings) screen;
+	this includes the screen to choose settings for batch updates
+	and will include the screen to choose settings for a 'profile' -->
+		<string name="title_activity_app_detail">Application</string>
+		<string name="detail_dialog_saving_title">En cours&#8230;</string> <!-- title for dialog box while loading or saving -->
+		<string name="detail_dialog_saving_message">Mise &#224; jour</string> <!-- content for dialog box while saving -->
+		<string name="detail_dialog_loading_message">Chargement</string> <!-- content for dialog box while loading -->
+
+		<!-- start needs translation -->
+		<string name="detail_actionbar_heading_batch">Settings to apply</string> <!-- the action bar heading displayed when in 'batch' mode -->
+		<!-- end needs translation -->
+		<string name="detail_actionbar_savebutton_title">Sauvegarder la configuration</string>
+		<string name="detail_actionbar_close_title">Fermer sans sauvegarder</string>
+		<string name="detail_actionbar_delete_title">Supprimer la configuration</string>
+
+		<string name="detail_custom_input_OKtext">OK</string>
+
+		<string name="detail_notifyonaccess_text">Notifier sur acc&#232;s</string>
+		<string name="detail_logonaccess_text">Traces d\'acc&#232;s</string>
+		<!-- start needs translation -->
+		<string name="detail_customvalue_pretext">Custom:</string>
+
+		<string name="detail_setting_option_nochange_contentdescription">No change</string>
+		<string name="detail_setting_option_allow_contentdescription">Set to allow</string>
+		<string name="detail_setting_option_deny_contentdescription">Set to deny</string>
+		<string name="detail_setting_option_random_contentdescription">Set to random</string>
+		<string name="detail_setting_option_custom_contentdescription">Set to custom</string>
+		<string name="detail_setting_option_yes_contentdescription">Set to yes</string>
+		<string name="detail_setting_option_no_contentdescription">Set to no</string>
+	<!-- end needs translation -->
+
 	<string name="help_dialog_OKtext">OK</string>
 	<string name="button_help_text">Aide</string>
-    
-    <string name="notification_toast_text1">Acc&#232;s &#224;</string>
-    <string name="notification_toast_text2">a &#233;t&#233;</string>
-    <string name="notification_toast_image_content_description">Icon indicator of event type</string>
-    <string name="notification_toast_allowed_text">autoris&#233;</string>
-    <string name="notification_toast_denied_text">interdit</string>
-    <string name="notification_toast_random_text">al&#233;atoire</string>
-    <string name="notification_toast_custom_text">sp&#233;cifique</string>
 
-	<string name="notification_newinstall_title">est install&#233;</string>
-    <string name="notification_newinstall_text">Cliquer pour configurer les param&#232;tres PDroid</string>
+	<!-- general-purpose text for buttons which can be shown on dialog boxes -->
+		<!-- start needs translation -->
+		<string name="alert_dialog_ok">OK</string>
+		<string name="alert_dialog_yes">Yes</string>
+		<string name="alert_dialog_no">No</string>
+		<string name="alert_dialog_continue">Continue</string>
+		<string name="alert_dialog_cancel">Cancel</string>
+		<string name="alert_dialog_close">Close</string>
+		<!--  end needs translation -->
 
-    <string name="notification_update_title">a modifi&#233; ses permissions</string>
-    <string name="notification_update_text">Cliquer pour configurer les param&#232;tres PDroid</string>
-    
-    <string name="setting_option_allow">autoris&#233;</string>
-    <string name="setting_option_random">al&#233;atoire</string>
-    <string name="setting_option_custom">sp&#233;cifique</string>
-    <string name="setting_option_deny">interdit</string>
+	<!-- text for the 'access notifications' displayed on-screen -->
+		<string name="notification_toast_text1">Acc&#232;s &#224;</string>
+		<string name="notification_toast_text2">a &#233;t&#233;</string>
+		<string name="notification_toast_image_content_description">Icon indicator of event type</string> <!-- text alternative for the notification type for accessibility  -->
+		<string name="notification_toast_allowed_text">autoris&#233;</string>
+		<string name="notification_toast_denied_text">interdit</string>
+		<string name="notification_toast_random_text">al&#233;atoire</string>
+		<string name="notification_toast_custom_text">sp&#233;cifique</string>
+
+	<!-- Text for notification used in the notification bar (top of the screen)
+	when a new app in installed, or one is updated -->
+		<string name="notification_newinstall_title">est install&#233;</string>
+		<string name="notification_newinstall_text">Cliquer pour configurer les param&#232;tres PDroid</string>
+		<string name="notification_update_title">a modifi&#233; ses permissions</string>
+		<string name="notification_update_text">Cliquer pour configurer les param&#232;tres PDroid</string>
+
+	<!-- Not currently used: essentially replaced by detail_setting_option_*_contentdescription -->
+		<string name="setting_option_allow">autoris&#233;</string>
+		<string name="setting_option_random">al&#233;atoire</string>
+		<string name="setting_option_custom">sp&#233;cifique</string>
+		<string name="setting_option_deny">interdit</string>
 </resources>

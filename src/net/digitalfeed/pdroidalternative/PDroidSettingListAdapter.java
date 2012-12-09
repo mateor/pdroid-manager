@@ -106,6 +106,7 @@ public class PDroidSettingListAdapter extends ArrayAdapter<PDroidAppSetting>{
 			holder.customValue = (TextView)row.findViewById(R.id.option_custom_value);
 			holder.radioGroup = (RadioGroup)row.findViewById(R.id.setting_choice);
 			holder.helpButton = (ImageButton)row.findViewById(R.id.help_button);
+			holder.noChangeOption = row.findViewById(R.id.option_nochange);
 			holder.allowOption = row.findViewById(R.id.option_allow);
 			holder.yesOption = row.findViewById(R.id.option_yes);
 			holder.customOption = row.findViewById(R.id.option_custom);
@@ -131,6 +132,9 @@ public class PDroidSettingListAdapter extends ArrayAdapter<PDroidAppSetting>{
 		
 		String customValueText = null;
 		switch (setting.getSelectedOptionBit()){
+		case PDroidSetting.OPTION_FLAG_NO_CHANGE:
+			holder.radioGroup.check(R.id.option_nochange);
+			break;
 		case PDroidSetting.OPTION_FLAG_ALLOW:
 			holder.radioGroup.check(R.id.option_allow);
 			break;
@@ -216,6 +220,7 @@ public class PDroidSettingListAdapter extends ArrayAdapter<PDroidAppSetting>{
 		TextView customValuePretext;
 		ImageButton helpButton;
 		RadioGroup radioGroup;
+		View noChangeOption;
 		View allowOption;
 		View yesOption;
 		View customOption;
@@ -232,6 +237,10 @@ public class PDroidSettingListAdapter extends ArrayAdapter<PDroidAppSetting>{
 			
 			int position = (Integer)group.getTag();
 			switch (checkedId){
+			case R.id.option_nochange:
+				rowActionListener.onCheckboxChange(group, checkedId, position,
+						PDroidSettingListFragment.OnDetailRowActionListener.CheckedOption.NO_CHANGE);
+				break;
 			case R.id.option_allow:
 				rowActionListener.onCheckboxChange(group, checkedId, position,
 						PDroidSettingListFragment.OnDetailRowActionListener.CheckedOption.ALLOW);

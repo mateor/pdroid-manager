@@ -39,61 +39,68 @@
 		    android:orientation="horizontal"
 		    >
 		    
+			<RadioButton
+		        android:id="@+id/option_nochange"
+		        style="@style/SettingOptionNoChange"
+		        android:layout_width="32dp"
+		        android:layout_height="32dp"
+		        android:contentDescription="@string/detail_setting_option_nochange_contentdescription" />
+
 		    <RadioButton
 		        android:id="@+id/option_allow"
 		        style="@style/SettingOptionAllow"
-		        android:layout_width="40dp"
-		        android:layout_height="40dp"
+		        android:layout_width="32dp"
+		        android:layout_height="32dp"
 		        android:contentDescription="@string/detail_setting_option_allow_contentdescription" />
 		
 		    <RadioButton
 		        android:id="@+id/option_yes"
 		        style="@style/SettingOptionAllow"
-		        android:layout_width="40dp"
-		        android:layout_height="40dp"
+		        android:layout_width="32dp"
+		        android:layout_height="32dp"
 		        android:contentDescription="@string/detail_setting_option_yes_contentdescription" />
 		
 		    <RadioButton
 		        android:id="@+id/option_random"
 		        style="@style/SettingOptionRandom"
-		        android:layout_width="40dp"
-		        android:layout_height="40dp"
+		        android:layout_width="32dp"
+		        android:layout_height="32dp"
 		        android:contentDescription="@string/detail_setting_option_random_contentdescription" />
 		
 		    <RadioButton
 		        android:id="@+id/option_custom"
 		        style="@style/SettingOptionCustom"
-		        android:layout_width="40dp"
-		        android:layout_height="40dp"
+		        android:layout_width="32dp"
+		        android:layout_height="32dp"
 				android:contentDescription="@string/detail_setting_option_custom_contentdescription" />
 		
 		    <RadioButton
 		        android:id="@+id/option_customlocation"
 		        style="@style/SettingOptionCustom"
-		        android:layout_width="40dp"
-		        android:layout_height="40dp"
+		        android:layout_width="32dp"
+		        android:layout_height="32dp"
 		        android:contentDescription="@string/detail_setting_option_custom_contentdescription" />
 		
 		    <RadioButton
 		        android:id="@+id/option_deny"
 		        style="@style/SettingOptionDeny"
-		        android:layout_width="40dp"
-		        android:layout_height="40dp"
+		        android:layout_width="32dp"
+		        android:layout_height="32dp"
 		        android:contentDescription="@string/detail_setting_option_deny_contentdescription" />
 		
 		    <RadioButton
 		        android:id="@+id/option_no"
 		        style="@style/SettingOptionNo"
-		        android:layout_width="40dp"
-		        android:layout_height="40dp"
+		        android:layout_width="32dp"
+		        android:layout_height="32dp"
 		        android:contentDescription="@string/detail_setting_option_no_contentdescription" />
 
 		</RadioGroup>
 		
 		<ImageButton 
 	        android:id="@+id/help_button"
-	        android:layout_width="40dp"
-	        android:layout_height="40dp"
+	        android:layout_width="32dp"
+	        android:layout_height="32dp"
 	        android:padding="0dp"
 	        android:gravity="center_vertical"
 			android:src="@drawable/button_help"
@@ -105,7 +112,7 @@
 	        android:layout_height="fill_parent"
 	        android:gravity="center_vertical"
 	        android:layout_marginLeft="4dp"
-			android:layout_toRightOf="@+id/help_button">
+			android:layout_toRightOf="@+id/help_button" >
 		    <TextView
 		        android:id="@+id/option_title"
 		        android:layout_width="wrap_content"

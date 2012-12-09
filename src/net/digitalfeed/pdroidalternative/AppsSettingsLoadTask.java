@@ -99,6 +99,7 @@ public class AppsSettingsLoadTask extends AsyncTask<String, Integer, List<PDroid
 						}
 
 						settingSet.add(new PDroidAppSetting(id, name, settingFunctionName, valueFunctionNameStub, title, group, groupTitle, optionsArray, trustedOption, selectedOption, customValue));
+						includedSettingNames.add(id);
 					}
 				} while (cursor.moveToNext());
 				cursor.close();

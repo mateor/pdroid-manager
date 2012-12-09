@@ -34,8 +34,8 @@
         <item >Пользователь</item>
     </string-array>
     <string-array name="app_status_labels">
-        <item >Ненадежный</item>
-        <item >Надежный</item>
+        <item >Доверять</item>
+        <item >Не доверять</item>
         <item >Без Профиля</item>
     </string-array>
     <!-- Note that if you change the order of these items, you also need to change the 

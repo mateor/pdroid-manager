@@ -10,118 +10,172 @@
 -->
 
 <resources>
-    <string name="app_list_menu_search">Suchen</string>
-    <string name="app_list_menu_refresh">App-Liste neu laden</string>
-    <string name="app_list_menu_preferences">Einstellungen</string>
+    <!-- Names and descriptions of the permissions defined by this app for the Android operating system -->
+	<string name="permission_label_writeprivacysettings">PDroid Einstellungen &#228;ndern</string>
+	<string name="permission_description_writeprivacysettings">&#196;nderung von mit Apps verbundenen PDroid Einstellungen</string>
+	<string name="permission_label_readprivacysettings">PDroid Einstellungen lesen</string>
+	<string name="permission_description_readprivacysettings">Lesen von mit Apps verbundenen PDroid Einstellungen.</string>
+	<string name="permission_label_manageprivacycontrollers">PDroid Verwaltungs Apps konfigurieren</string>
+	<string name="permission_description_manageprivacycontrollers">Konfigurieren, welche Apps PDroid Einstellungen &#228;ndern k&#246;nnen.</string>
 
-    <string name="permission_label_writeprivacysettings">PDroid Einstellungen &#228;ndern</string>
-    <string name="permission_description_writeprivacysettings">&#196;nderung von mit Apps verbundenen PDroid Einstellungen</string>
-    <string name="permission_label_readprivacysettings">PDroid Einstellungen lesen</string>
-    <string name="permission_description_readprivacysettings">Lesen von mit Apps verbundenen PDroid Einstellungen.</string>
-    <string name="permission_label_manageprivacycontrollers">PDroid Verwaltungs Apps konfigurieren</string>
-    <string name="permission_description_manageprivacycontrollers">Konfigurieren, welche Apps PDroid Einstellungen &#228;ndern k&#246;nnen.</string>
+	<!-- Application list screen -->
+		<!-- action bar options  -->
+		<string name="app_list_menu_search">Suchen</string> <!--  the caption for a 'search' option, which will appear in the application list action bar -->
+		<string name="app_list_menu_refresh">App-Liste neu laden</string> <!-- action bar button to reload the list of apps -->
+		<string name="app_list_menu_preferences">Einstellungen</string> <!-- action bar button to open the preferences screen -->
 
-    <string name="title_activity_preferences_list">Einstellungen</string>
-    <string name="preferences_heading_about">&#220;ber</string>
-    <string name="preferences_about_title">&#220;ber diese App</string>
-    <string name="preferences_about_summary">Appinformationen und Lizenz</string>
-    <string name="preferences_openxdathread_title">Thread auf XDA</string>
-    <string name="preferences_openxdathread_summary">&#214;ffne den Thread auf XDA-Developers in deinem Browser</string>
-    <string name="preferences_heading_language">Sprache</string>
-    <string name="preferences_switchlanguage_title">Sprache &#228;ndern</string>
-    <string name="preferences_switchlanguage_summary">W&#228;hle deine bevorzugte Sprache</string>
-    <string name="preferences_chooselangage_alerttitle">Sprache ausw&#228;hlen</string>
-    <string name="preferences_usephonelocale_title">Spracheinstellung entfernen</string>
-    <string name="preferences_usephonelocale_summary">Benutze die Systemsprache um die Appsprache zu bestimmen</string>
+		<string name="app_list_app_icon_text">App Icon</string>
+		<string name="app_list_has_internet_indicator">Indikator der Internetzugangsberechtigung</string>
 
-    <string name="preferences_heading_backuprestore">Sichern &amp; Wiederherstellen</string>
-    <string name="preferences_backup_title">Sicherung</string>
-    <string name="preferences_backup_summary">Erstelle eine Sicherung der aktuellen Einstellungen</string>    
-    <string name="preferences_restore_title">Wiederherstellen</string>
-    <string name="preferences_restore_summary">Einstellungen aus einer Sicherung wiederherstellen</string>
-    <string name="restore_dialog_title">Einstellungen wiederherstellen</string>
-    <string name="restore_no_backups">Keine Sicherungen zum Wiederherstellen verf&#252;gbar</string>
-    <string name="restore_invalid_signature">Die digitale Signatur des ausgew&#228;hlten Backups passt nicht zum Backup. M&#246;glicherweise wurde es von einem anderen Programm ver&#228;ndert. Die Neuinstallation von PDroid Manager k&#246;nnte diese Meldung auch hervorrufen.</string>
-    <string name="restore_missing_invalid">F&#252;r die ausgew&#228;hlte Sicherung wurde keine digitale Signatur gefunden. Daher ist es nicht m&#246;glich zu garantieren, dass die Sicherung seit ihrer Erstellung nicht von einem externen Programm modifiziert wurde.</string>
-    <string name="restore_dialog_continue_prompt">Fortfahren mit der Wiederherstellung?</string>
-    <string name="restore_failed_dialog_title">Wiederherstellung fehlgeschlagen</string>
-    <string name="restore_invalid_backup">Die ausgew&#228;hlte Datei fehlt, ist besch&#228;digt oder keine g&#252;ltige Sicherungsdatei.</string>
-    <string name="restore_complete_success">Wiederherstellung komplett</string>
-    <string name="restore_complete_fail_invalid">Wiederherstellung fehlgeschlagen: Die ausgew&#228;hlte Datei ist keine g&#252;ltige Sicherungsdatei.</string>
-    <string name="restore_complete_fail_reading">Wiederherstellung fehlgeschlagen: Die ausgew&#228;hlte Datei konnte nicht gelesen werden.</string>
-    <string name="restore_complete_fail_other">Wiederherstellung fehlgeschlagen</string>
-    <string name="restore_progress_dialog_title">Wiederherstellen von Sicherung</string>
-    <string name="restore_progress_dialog_message">Bitte warten, w&#228;hrend die Sicherung wiederhergestellt wird</string>
+		<string name="applist_setting_filter_spinner_all_option_title">Alle</string>
 
-    <string name="storage_error_body">Der externe Speicher ist nicht erreichbar. Wenn dein Ger&#228;t eine externe Speicherkarte verwendet, stelle bitte sicher, das sie richtig eingeschoben und formatiert ist.</string>
-    <string name="backup_dialog_title">Sicherungseinstellungen</string>
-    <string name="backup_path_text">Deine Sicherung wird gespeichert in: </string>
-    <string name="backup_filename">Dateiname f&#252;r Sicherung</string>
-    <string name="backup_filename_hint">Dateiname</string>
-    <string name="backup_message_file_exists">Eine Datei mit dem Namen existiert bereits. Das neue Backup wird die existierende Datei ersetzen.</string>
-    <string name="backup_dialog_continue_prompt">Fortfahren mit der Sicherung in die Datei?</string>
-    <string name="backup_failed_dialog_title">Sicherung fehlgeschlagen</string>
+		<string name="applist_dialogtext_updating_settings">Aktualisiere Einstellungen</string>
+		<string name="applist_dialogtext_deleting_settings">L&#246;sche Einstellungen</string>
+		<string name="applist_dialogtext_generateapplist">Generiere App-liste</string>
 
-    <string name="backup_complete_success">Sicherung komplett</string>
-    <string name="backup_complete_fail_signing">Signieren der Sicherung fehlgeschlagen</string>
-    <string name="backup_complete_fail_writing">Erstellung der Sicherungsdatei fehlgeschlagen</string>
-    <string name="backup_complete_fail_other">Die Sicherung konnte nicht erstellt werden</string>
+		<string name="applist_popupmenu_set_untrusted_values">Alle verweigern</string>
+		<string name="applist_popupmenu_set_trusted_values">Alle erlauben</string>
+		<string name="applist_popupmenu_set_default_values">Auf Standard zur&#252;cksetzen</string>
+		<string name="applist_popupmenu_delete_settings">Einstellungen l&#246;schen</string>
+		<!-- start needs translation -->
+		<string name="applist_popupmenu_customise_settings">Custom settings</string>
+		
+		<!-- Heading for the actionbar when in multiple-select mode (i.e. selecting apps for a batch change) -->
+		<string name="applist_actionbar_batchselect_none">Select apps</string> <!-- Shown in the header when no apps selected -->
+		<string name="applist_actionbar_batchselect_singular">One app selected</string> <!-- Shown in header when single app selected -->
+		<string name="applist_actionbar_batchselect_plural">apps selected</string> <!-- Shown in header when >1 app selected (i.e. shows as "5 apps selected") -->
+		<!-- end needs translation -->
+	<!-- end Application list screen -->
 
-    <string name="title_activity_app_detail">App</string>
-    <string name="app_list_app_icon_text">App Icon</string>
-    <string name="app_list_has_internet_indicator">Indikator der Internetzugangsberechtigung</string>
+	<!-- start Preferences list screen -->
+		<!-- entries in the preferences text list -->
+		<string name="title_activity_preferences_list">Einstellungen</string>
+		<string name="preferences_heading_about">&#220;ber</string>
+		<string name="preferences_about_title">&#220;ber diese App</string>
+		<string name="preferences_about_summary">Appinformationen und Lizenz</string>
+		<!--  start needs translation -->
+		<string name="preferences_credits_title">Credits</string>
+		<string name="preferences_credits_summary">Creators and contributors</string>
+		<!-- end needs translation -->
+		<string name="preferences_openxdathread_title">Thread auf XDA</string>
+		<string name="preferences_openxdathread_summary">&#214;ffne den Thread auf XDA-Developers in deinem Browser</string>
 
-	<string name="applist_setting_filter_spinner_all_option_title">Alle</string>
+		<string name="preferences_heading_language">Sprache</string>
+		<string name="preferences_switchlanguage_title">Sprache &#228;ndern</string>
+		<string name="preferences_switchlanguage_summary">W&#228;hle deine bevorzugte Sprache</string>
+		<string name="preferences_usephonelocale_title">Spracheinstellung entfernen</string>
+		<string name="preferences_usephonelocale_summary">Benutze die Systemsprache um die Appsprache zu bestimmen</string>
 
-	<string name="applist_dialogtext_updating_settings">Aktualisiere Einstellungen</string>
-	<string name="applist_dialogtext_deleting_settings">L&#246;sche Einstellungen</string>
-	<string name="applist_dialogtext_generateapplist">Generiere App-liste</string>
+		<string name="preferences_heading_backuprestore">Sichern &amp; Wiederherstellen</string>
+		<string name="preferences_backup_title">Sicherung</string>
+		<string name="preferences_backup_summary">Erstelle eine Sicherung der aktuellen Einstellungen</string>
+		<string name="preferences_restore_title">Wiederherstellen</string>
+		<string name="preferences_restore_summary">Einstellungen aus einer Sicherung wiederherstellen</string>
+		<!-- end entries in the preferences text list -->
 
-    <string name="applist_popupmenu_set_untrusted_values">Alle verweigern</string>
-    <string name="applist_popupmenu_set_trusted_values">Alle erlauben</string>
-	<string name="applist_popupmenu_set_default_values">Auf Standard zur&#252;cksetzen</string>
-	<string name="applist_popupmenu_delete_settings">Einstellungen l&#246;schen</string>
+		<string name="preferences_chooselangage_alerttitle">Sprache ausw&#228;hlen</string> <!-- text for language selection dialog box (when you select 'change language' option)  -->
+	
+		<string name="restore_dialog_title">Einstellungen wiederherstellen</string> <!-- Title for the 'restore backup' dialog box -->
+		<!-- restoring backups error messages -->
+		<string name="restore_no_backups">Keine Sicherungen zum Wiederherstellen verf&#252;gbar</string>
+		<string name="restore_invalid_signature">Die digitale Signatur des ausgew&#228;hlten Backups passt nicht zum Backup. M&#246;glicherweise wurde es von einem anderen Programm ver&#228;ndert. Die Neuinstallation von PDroid Manager k&#246;nnte diese Meldung auch hervorrufen.</string>
+		<string name="restore_missing_invalid">F&#252;r die ausgew&#228;hlte Sicherung wurde keine digitale Signatur gefunden. Daher ist es nicht m&#246;glich zu garantieren, dass die Sicherung seit ihrer Erstellung nicht von einem externen Programm modifiziert wurde.</string>
+		<string name="restore_dialog_continue_prompt">Fortfahren mit der Wiederherstellung?</string> <!-- Prompt displayed after error message in restore from backup dialog box -->
 
-    <string name="detail_dialog_saving_title">Bitte warten</string>
-    <string name="detail_dialog_saving_message">Aktualisiere&#8230;</string>
-    <string name="detail_dialog_loading_message">Einstellungen geladen</string>
+		<!-- restoring from backup messages -->
+		<string name="restore_failed_dialog_title">Wiederherstellung fehlgeschlagen</string> <!-- title of 'backup failed' notification dialog box -->
+		<string name="restore_invalid_backup">Die ausgew&#228;hlte Datei fehlt, ist besch&#228;digt oder keine g&#252;ltige Sicherungsdatei.</string>
+		<string name="restore_complete_success">Wiederherstellung komplett</string> <!-- This message is displayed in a 'toast' rather than a dialog box -->
+		<string name="restore_complete_fail_invalid">Wiederherstellung fehlgeschlagen: Die ausgew&#228;hlte Datei ist keine g&#252;ltige Sicherungsdatei.</string>
+		<string name="restore_complete_fail_reading">Wiederherstellung fehlgeschlagen: Die ausgew&#228;hlte Datei konnte nicht gelesen werden.</string>
+		<string name="restore_complete_fail_other">Wiederherstellung fehlgeschlagen</string>
 
-    <string name="detail_actionbar_savebutton_title">Einstellungen speichern</string>
-    <string name="detail_actionbar_close_title">Schlie&#223;en ohne speichern</string>
-    <string name="detail_actionbar_delete_title">Einstellungen l&#246;schen</string>
+		<!-- content of the progress dialog box while restoring from backup -->
+		<string name="restore_progress_dialog_title">Wiederherstellen von Sicherung</string>
+		<string name="restore_progress_dialog_message">Bitte warten, w&#228;hrend die Sicherung wiederhergestellt wird</string>
 
-    <string name="detail_custom_input_OKtext">OK</string>
+		<!-- general error for when the storage is not working - i.e. no SD card, etc -->
+		<string name="storage_error_body">Der externe Speicher ist nicht erreichbar. Wenn dein Ger&#228;t eine externe Speicherkarte verwendet, stelle bitte sicher, das sie richtig eingeschoben und formatiert ist.</string>
 
-    <string name="detail_notifyonaccess_text">Bei Zugriff benachrichtigen</string>
-    <string name="detail_logonaccess_text">Zugriff protokollieren</string>
-    <string name="detail_customvalue_pretext">Benutzerdefiniert:</string>
+		<!-- dialog for preparing for backup: entering filename -->    
+		<string name="backup_dialog_title">Sicherungseinstellungen</string> <!-- dialog title -->
+		<string name="backup_path_text">Deine Sicherung wird gespeichert in: </string> <!-- text shown before destination directory -->
+		<string name="backup_filename">Dateiname f&#252;r Sicherung</string> <!-- shown beside filename box -->
+		<string name="backup_filename_hint">Dateiname</string> <!-- Hint text in the 'filename' field -->
 
-	<string name="help_dialog_OKtext">OK</string>
-	<string name="button_help_text">Hilfe</string>
+		<!-- warning and error messages for creating backup -->
+		<string name="backup_message_file_exists">Eine Datei mit dem Namen existiert bereits. Das neue Backup wird die existierende Datei ersetzen.</string>
+		<string name="backup_dialog_continue_prompt">Fortfahren mit der Sicherung in die Datei?</string> <!-- prompt shown after warning -->
+		<string name="backup_failed_dialog_title">Sicherung fehlgeschlagen</string> <!-- title for dialog shown if the backup fails -->
+		<string name="backup_complete_success">Sicherung komplett</string>
+		<string name="backup_complete_fail_signing">Signieren der Sicherung fehlgeschlagen</string>
+		<string name="backup_complete_fail_writing">Erstellung der Sicherungsdatei fehlgeschlagen</string>
+		<string name="backup_complete_fail_other">Die Sicherung konnte nicht erstellt werden</string>
+	<!-- end Preferences list screen -->
 
-    <string name="alert_dialog_ok">OK</string>
-    <string name="alert_dialog_yes">Ja</string>
-    <string name="alert_dialog_no">Nein</string>
-    <string name="alert_dialog_continue">Fortsetzen</string>
-    <string name="alert_dialog_cancel">Abbrechen</string>
-    <string name="alert_dialog_close">Schlie&#223;en</string>
+	<!-- application details (i.e. settings) screen;
+	this includes the screen to choose settings for batch updates
+	and will include the screen to choose settings for a 'profile' -->
+		<string name="title_activity_app_detail">App</string>
+		<string name="detail_dialog_saving_title">Bitte warten</string> <!-- title for dialog box while loading or saving -->
+		<string name="detail_dialog_saving_message">Aktualisiere&#8230;</string> <!-- content for dialog box while saving -->
+		<string name="detail_dialog_loading_message">Einstellungen geladen</string> <!-- content for dialog box while loading -->
 
-    <string name="notification_toast_text1">Zugriff auf</string>
-    <string name="notification_toast_text2">wurde</string>
-    <string name="notification_toast_image_content_description">Indikator des Event-Typs</string>
-    <string name="notification_toast_allowed_text">erlaubt</string>
-    <string name="notification_toast_denied_text">verweigert</string>
-    <string name="notification_toast_random_text">zuf&#228;llig</string>
-    <string name="notification_toast_custom_text">benutzerdefiniert</string>
+		<!-- start needs translation -->
+		<string name="detail_actionbar_heading_batch">Settings to apply</string> <!-- the action bar heading displayed when in 'batch' mode -->
+		<!-- end needs translation -->		
+		<string name="detail_actionbar_savebutton_title">Einstellungen speichern</string>
+		<string name="detail_actionbar_close_title">Schlie&#223;en ohne speichern</string>
+		<string name="detail_actionbar_delete_title">Einstellungen l&#246;schen</string>
 
-	<string name="notification_newinstall_title"> installiert</string>
-    <string name="notification_newinstall_text">Ber&#252;hren um PDroid zu konfigurieren</string>
+		<string name="detail_custom_input_OKtext">OK</string>
 
-    <string name="notification_update_title">hat ver&#228;nderte Berechtigungen</string>
-    <string name="notification_update_text">Ber&#252;hren um PDroid zu konfigurieren</string>
+		<string name="detail_notifyonaccess_text">Bei Zugriff benachrichtigen</string>
+		<string name="detail_logonaccess_text">Zugriff protokollieren</string>
+		<string name="detail_customvalue_pretext">Benutzerdefiniert:</string>
 
-    <string name="setting_option_allow">Erlauben</string>
-    <string name="setting_option_random">Zuf&#228;llig</string>
-    <string name="setting_option_custom">Benutzerdefiniert</string>
-    <string name="setting_option_deny">Verweigern</string>
+		<!-- start needs translation -->
+		<string name="detail_setting_option_nochange_contentdescription">No change</string>
+		<string name="detail_setting_option_allow_contentdescription">Set to allow</string>
+		<string name="detail_setting_option_deny_contentdescription">Set to deny</string>
+		<string name="detail_setting_option_random_contentdescription">Set to random</string>
+		<string name="detail_setting_option_custom_contentdescription">Set to custom</string>
+		<string name="detail_setting_option_yes_contentdescription">Set to yes</string>
+		<string name="detail_setting_option_no_contentdescription">Set to no</string>
+		<!-- end needs translation -->
+	<!-- end application details screen -->
+
+	<string name="help_dialog_OKtext">OK</string> <!-- help screen OK button - will be replaced by 'alert_dialog_ok' at some point -->
+	<string name="button_help_text">Hilfe</string> <!-- Help button caption -->
+
+	<!-- general-purpose text for buttons which can be shown on dialog boxes -->
+		<string name="alert_dialog_ok">OK</string>
+		<string name="alert_dialog_yes">Ja</string>
+		<string name="alert_dialog_no">Nein</string>
+		<string name="alert_dialog_continue">Fortsetzen</string>
+		<string name="alert_dialog_cancel">Abbrechen</string>
+		<string name="alert_dialog_close">Schlie&#223;en</string>
+	
+	<!-- text for the 'access notifications' displayed on-screen -->
+		<string name="notification_toast_text1">Zugriff auf</string>
+		<string name="notification_toast_text2">wurde</string>
+		<string name="notification_toast_image_content_description">Indikator des Event-Typs</string> <!-- text alternative for the notification type for accessibility  -->
+		<string name="notification_toast_allowed_text">erlaubt</string>
+		<string name="notification_toast_denied_text">verweigert</string>
+		<string name="notification_toast_random_text">zuf&#228;llig</string>
+		<string name="notification_toast_custom_text">benutzerdefiniert</string>
+
+	<!-- Text for notification used in the notification bar (top of the screen)
+	when a new app in installed, or one is updated -->
+		<string name="notification_newinstall_title"> installiert</string>
+		<string name="notification_newinstall_text">Ber&#252;hren um PDroid zu konfigurieren</string>
+		<string name="notification_update_title">hat ver&#228;nderte Berechtigungen</string>
+		<string name="notification_update_text">Ber&#252;hren um PDroid zu konfigurieren</string>
+
+	<!-- Not currently used: essentially replaced by detail_setting_option_*_contentdescription -->
+		<string name="setting_option_allow">Erlauben</string>
+		<string name="setting_option_random">Zuf&#228;llig</string>
+		<string name="setting_option_custom">Benutzerdefiniert</string>
+		<string name="setting_option_deny">Verweigern</string>
+
 </resources>

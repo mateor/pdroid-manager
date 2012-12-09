@@ -19,7 +19,6 @@ import java.util.Locale;
 import javax.crypto.Mac;
 import javax.crypto.SecretKey;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;

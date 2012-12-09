@@ -140,8 +140,25 @@ public class ApplicationsDatabaseFillerTask extends AsyncTask<Void, Integer, Has
 		
 		PermissionSettingHelper psh = new PermissionSettingHelper();
 		
-		int iconSizePx = context.getResources().getDisplayMetrics().densityDpi / DisplayMetrics.DENSITY_MEDIUM * Application.TARGET_ICON_SIZE;
-
+		DisplayMetrics metrics = context.getResources().getDisplayMetrics(); 
+		 
+		switch(metrics.densityDpi){ 
+		     case DisplayMetrics.DENSITY_LOW: 
+		                break; 
+		     case DisplayMetrics.DENSITY_MEDIUM: 
+		                 break; 
+		     case DisplayMetrics.DENSITY_HIGH: 
+		                 break;
+		     case DisplayMetrics.DENSITY_XHIGH: 
+                 break;
+		} 
+		
+		//This doesn't work properly at the moment, because unlike what the documentation says, 'density' returns the *exact*
+		//density, and not the 'quantized' density - at least for my Nexus 7
+		//int iconSizePx = (int)(context.getResources().getDisplayMetrics().density * (float)Application.TARGET_ICON_SIZE);
+		//this makes sure the images are larger than needed, but it is a pretty rubbish temporary solution. It uses more ram than necessary, and the icons may not scale well
+		int iconSizePx = Application.TARGET_ICON_SIZE * 2;
+		
 		for (ApplicationInfo appInfo : installedApps) {
 			try {
 				PackageInfo pkgInfo = pkgMgr.getPackageInfo(appInfo.packageName, PackageManager.GET_PERMISSIONS);

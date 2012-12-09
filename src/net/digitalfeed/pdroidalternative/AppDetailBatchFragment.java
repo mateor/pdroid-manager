@@ -46,13 +46,13 @@ import android.view.ViewGroup;
  *
  */
 public class AppDetailBatchFragment extends PDroidSettingListFragment {
-
+	
 	private List<String> packageNames = null; //list of package names for the apps being handled
 	
 	@Override
 	public void onAttach (Activity activity) {
 		super.onAttach(activity);
-		
+		rowLayout = R.layout.setting_list_row_batch;
 		//TODO: Move this to the activity, and make a function call to the fragment to load the app?
         Bundle bundle = activity.getIntent().getExtras();
         //if we have a bundle, we can load the package. Otherwise, we do no such thing
@@ -154,8 +154,7 @@ public class AppDetailBatchFragment extends PDroidSettingListFragment {
 
 	@Override
 	public String getTitle() {
-		// TODO Auto-generated method stub
-		return null;
+		return getString(R.string.detail_actionbar_heading_batch);
 	}
     
     /**

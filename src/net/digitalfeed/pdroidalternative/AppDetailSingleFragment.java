@@ -149,7 +149,11 @@ public class AppDetailSingleFragment extends PDroidSettingListFragment {
 	@Override
 	public String getTitle() {
 		// TODO Auto-generated method stub
-		return null;
+		if (this.application != null) {
+			return this.application.getLabel();
+		} else {
+			return null;
+		}
 	}
 	
     class AppLoadCompleteHandler implements IAsyncTaskCallback<Application>

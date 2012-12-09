@@ -40,6 +40,8 @@ import android.util.Log;
 
 /**
  * Loads the settings list for a single application from the database.
+ *
+ * TODO: Replace this function entirely with the 'AppsSettingsSaveTask' which does the same thing but for multiple apps
  * @author smorgan
  */
 public class AppSettingsSaveTask extends AsyncTask<PDroidAppSetting, Integer, Void> {

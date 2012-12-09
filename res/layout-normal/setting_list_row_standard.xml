@@ -38,13 +38,6 @@
 		    android:layout_alignParentRight="true"
 		    android:orientation="horizontal"
 		    >
-		    
-		    <RadioButton
-		        android:id="@+id/option_nochange"
-		        style="@style/SettingOptionNochange"
-		        android:layout_width="32dp"
-		        android:layout_height="32dp"
-		        android:contentDescription="@string/detail_setting_option_nochange_contentdescription" />
 
 		    <RadioButton
 		        android:id="@+id/option_allow"

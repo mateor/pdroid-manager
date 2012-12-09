@@ -22,138 +22,184 @@
  * Modified or derivative versions of the pdroid-manager application must use an
  * alternative name, rather than the name pdroid-manager.
  */
- 
+
  /**
  * @author Simeon J. Morgan <smorgan@digitalfeed.net>
  */
 -->
 <resources>
-    <string name="app_name">PDroid Менеджер</string>
-    <string name="app_list_menu_search">Поиск</string>
-    <string name="app_list_menu_refresh">Обновить Список Приложений</string>
-    <string name="app_list_menu_preferences">Настройки</string>
-    <string name="title_activity_main">PDroid Менеджер</string>
-    
-    <string name="permission_label_writeprivacysettings">Изменить настройки PDroid</string>
-    <string name="permission_description_writeprivacysettings">Разрешить изменение настроек PDroid связанных с приложениями.</string>
-    <string name="permission_label_readprivacysettings">Читать настройки PDroid</string>
-    <string name="permission_description_readprivacysettings">Разрешить чтение настроек PDroid связанных с приложениями.</string>
-    <string name="permission_label_manageprivacycontrollers">Настроить приложения управлением PDroid</string>
-    <string name="permission_description_manageprivacycontrollers">Позволяет управлять списком приложений который могут изменять настройки PDroid</string>
-    
-    <string name="title_activity_preferences_list">Настройки</string>
-    <string name="preferences_heading_about">О программе</string>
-    <string name="preferences_about_title">Об этом приложении</string>
-    <string name="preferences_about_summary">Информация о приложении и лицензиях</string>
-    <string name="preferences_credits_title">Права</string>
-    <string name="preferences_credits_summary">Создатели</string>
-    <string name="preferences_openxdathread_title">Смотреть на XDA</string>
-    <string name="preferences_openxdathread_summary">Открыть ветку обсуждения на xda-developers.com в брузере</string>
-    
-    <string name="preferences_heading_language">Язык</string>
-    <string name="preferences_switchlanguage_title">Изменить язык</string>
-    <string name="preferences_switchlanguage_summary">Выберите язык</string>
-    <!-- This (immediately below) appears when you select the 'change language' option, at the top of the list of languages -->
-    <string name="preferences_chooselangage_alerttitle">Выбор языка</string>
-    <string name="preferences_usephonelocale_title">Удалить языковые настройки</string>
-    <string name="preferences_usephonelocale_summary">Использовать кодовую страницу устройства для определения языка интерфейса</string>
+	<string name="app_name">PDroid Менеджер</string> <!-- the app name as it appears in the launcher -->
 
-    <string name="preferences_heading_backuprestore">Резервное Копирование и Восстановление</string>
-	<string name="preferences_backup_title">Резервное Копирование</string>
-    <string name="preferences_backup_summary">Создать резервную копию текущих настроек</string>
-    
-    <string name="preferences_restore_title">Восстановление</string>
-    <string name="preferences_restore_summary">Восстановить настройки из резервной копии</string>
-    <string name="restore_dialog_title">Восстановить настройки</string>
-    <string name="restore_no_backups">Не обнаружено резервных копий</string>
-    <string name="restore_signature_invalid">Цифровая подпись для этой резервной копии не действительна. Резервная копия возможно модифицирована другой программой. Создание резервной копии с последующей переустановкой PDroid Менеджер может спровоцировать данное сообщение.</string>
-    <string name="restore_signature_missing">Отсутствует цифровая подпись для выбранного файла резервной копии. Невозможно проверить былли модифицирован файл резервной копии другим приложением.</string>
-    <string name="restore_dialog_continue_prompt">Продолжить процедуру восстановления?</string>
-    <string name="restore_failed_dialog_title">Ошибка восстановления</string>
-    <string name="restore_invalid_backup">Выбранный файл отсутствует, испорчен либо не является файлом резервной копии.</string>
-    <string name="restore_complete_success">Восстановление завершено</string>
-    <string name="restore_complete_fail_invalid">Ошибка восстановления: Выбранный файл не является файлом резервной копии.</string>
-    <string name="restore_complete_fail_reading">Ошибка восстановления: Выбранный файл не может быть прочитан.</string>
-    <string name="restore_complete_fail_other">Ошибка восстановления: Восстановление прекращено из-за ошибки.</string>
-    
-    <string name="restore_progress_dialog_title">Восстановление из резервной копии</string>
-    <string name="restore_progress_dialog_message">Ожидайте пока идет восстановление из резервной копии</string>
-    
-    <string name="storage_error_body">Ошибка доступа к внешнему хранилищу. Если ваше устройство использует внешнюю SD карту или Micro SD карту, пожалуйста, убедитесь что она вставлена и правильно отформатирована.</string>
+	<!-- Names and descriptions of the permissions defined by this app for the Android operating system -->
+	<string name="permission_label_writeprivacysettings">Изменить настройки PDroid</string>
+	<string name="permission_description_writeprivacysettings">Разрешить изменение настроек PDroid связанных с приложениями.</string>
+	<string name="permission_label_readprivacysettings">Читать настройки PDroid</string>
+	<string name="permission_description_readprivacysettings">Разрешить чтение настроек PDroid связанных с приложениями.</string>
+	<string name="permission_label_manageprivacycontrollers">Настроить приложения управлением PDroid</string>
+	<string name="permission_description_manageprivacycontrollers">Позволяет управлять списком приложений который могут изменять настройки PDroid</string>
 
-    <string name="backup_dialog_title">Настройки резервной копии</string>
-    <string name="backup_path_text">Резерная копия будет сохранена: </string>
-    <string name="backup_filename">Имя файла резервной копии</string>
-    <string name="backup_filename_prefix">pdroidmanager_backup_</string> <!-- Default prefix for the 'suggested' backup filename -->
-    <string name="backup_filename_hint">Имя файла</string> <!-- Hint text in the 'filename' field -->
-    <string name="backup_message_file_exists">Файл с таким именем уже существует. Новая резервная копия перезапишет файл</string>
-    <string name="backup_dialog_continue_prompt">Продолжить резервное копирование?</string>
+	<!-- Application list screen -->
+		<!-- action bar options  -->
+		<string name="app_list_menu_search">Поиск</string> <!--  the caption for a 'search' option, which will appear in the application list action bar -->
+		<string name="app_list_menu_refresh">Обновить Список Приложений</string> <!-- action bar button to reload the list of apps -->
+		<string name="app_list_menu_preferences">Настройки</string> <!-- action bar button to open the preferences screen -->
+		<string name="title_activity_main">PDroid Менеджер</string> <!-- title in the action bar of the app list screen: not visible? -->
 
-    <string name="backup_failed_dialog_title">Ошибка резервного копирования</string>
-    <string name="backup_complete_success">Резервное копирование завершено</string>
-    <string name="backup_complete_fail_signing">Ошибка резервного копирования: проблема цифровой подписи</string>
-    <string name="backup_complete_fail_writing">Ошибка резервного копирования: не возможно записать в файл</string>
-    <string name="backup_complete_fail_other">Ошибка резервного копирования: не возможно создать файл</string>
-    
-    <string name="title_activity_app_detail">Приложение</string>
-    <string name="app_list_app_icon_text">Иконка приложения</string>
-    <string name="app_list_has_internet_indicator">Индикатор возможности Интернет доступа</string>
-    
-	<string name="applist_setting_filter_spinner_all_option_title">Все</string>
-    
-	<string name="applist_dialogtext_updating_settings">Обновление настроек</string>
-	<string name="applist_dialogtext_deleting_settings">Удаление настроек</string>
-	<string name="applist_dialogtext_generateapplist">Обновление списка приложений</string>
-	
-    <string name="applist_popupmenu_set_untrusted_values">Запретить все</string>
-    <string name="applist_popupmenu_set_trusted_values">Разрешить все</string>
-	<string name="applist_popupmenu_set_default_values">Восстановить по-умолчанию</string>
-	<string name="applist_popupmenu_delete_settings">Удалить настройки</string>
-	
-    <string name="detail_dialog_saving_title">Пожалуйста, ожидайте</string>
-    <string name="detail_dialog_saving_message">Обновление&#8230;</string>
-    <string name="detail_dialog_loading_message">Загрузка настроек</string>
-    
-    <string name="detail_actionbar_savebutton_title">Сохранить настройки</string>
-    <string name="detail_actionbar_close_title">Закрыть без сохранения</string>
-    <string name="detail_actionbar_delete_title">Удалить настройки</string>
-    
-    <string name="detail_custom_input_OKtext">OK</string>
-    
-    <string name="detail_notifyonaccess_text">Уведомлять при доступе</string>
-    <string name="detail_logonaccess_text">Вести журнал</string>
-    <string name="detail_customvalue_pretext">Индивидуально:</string>
-    
-	<string name="help_dialog_OKtext">OK</string>
-	<string name="button_help_text">Помощь</string>
-	
-	<string name="alert_dialog_ok">OK</string>
-	<string name="alert_dialog_yes">Да</string>
-	<string name="alert_dialog_no">Нет</string>
-	<string name="alert_dialog_continue">Продолжить</string>
-	<string name="alert_dialog_cancel">Отменить</string>
-	<string name="alert_dialog_close">Закрыть</string>
-    
-    <string name="notification_toast_text1">доступ к</string>
-    <string name="notification_toast_text2">был</string>
-    <string name="notification_toast_image_content_description">Иконка индикатор типа события</string>
-    <string name="notification_toast_allowed_text">позволено</string>
-    <string name="notification_toast_denied_text">отклонено</string>
-    <string name="notification_toast_random_text">случайно</string>
-    <string name="notification_toast_custom_text">индивидуально</string>
+		<string name="app_list_app_icon_text">Иконка приложения</string>
+		<string name="app_list_has_internet_indicator">Индикатор возможности Интернет доступа</string>
 
-	<string name="notification_newinstall_title"> установлено</string>
-    <string name="notification_newinstall_text">Нажмите чтобы изменить настройки PDriod</string>
+		<string name="applist_setting_filter_spinner_all_option_title">Все</string>
 
-    <string name="notification_update_title"> изменил права доступа</string>
-    <string name="notification_update_text">Нажмите чтобы изменить настройки PDriod</string>
-    
-    <string name="setting_option_allow">Разрешить</string>
-    <string name="setting_option_random">Случайно</string>
-    <string name="setting_option_custom">Индивидуально</string>
-    <string name="setting_option_deny">Запретить</string>
+		<string name="applist_dialogtext_updating_settings">Обновление настроек</string>
+		<string name="applist_dialogtext_deleting_settings">Удаление настроек</string>
+		<string name="applist_dialogtext_generateapplist">Обновление списка приложений</string>
 
-    
+		<string name="applist_popupmenu_set_untrusted_values">Запретить все</string>
+		<string name="applist_popupmenu_set_trusted_values">Разрешить все</string>
+		<string name="applist_popupmenu_set_default_values">Восстановить по-умолчанию</string>
+		<string name="applist_popupmenu_delete_settings">Удалить настройки</string>
+		<!-- start needs translation -->
+		<string name="applist_popupmenu_customise_settings">Custom settings</string>
+		
+		<!-- Heading for the actionbar when in multiple-select mode (i.e. selecting apps for a batch change) -->
+		<string name="applist_actionbar_batchselect_none">Select apps</string> <!-- Shown in the header when no apps selected -->
+		<string name="applist_actionbar_batchselect_singular">One app selected</string> <!-- Shown in header when single app selected -->
+		<string name="applist_actionbar_batchselect_plural">apps selected</string> <!-- Shown in header when >1 app selected (i.e. shows as "5 apps selected") -->
+		<!-- end needs translation -->
+	<!-- end Application list screen -->
+
+	<!-- start Preferences list screen -->
+		<!-- entries in the preferences text list -->
+		<string name="title_activity_preferences_list">Настройки</string>
+		<string name="preferences_heading_about">О программе</string>
+		<string name="preferences_about_title">Об этом приложении</string>
+		<string name="preferences_about_summary">Информация о приложении и лицензиях</string>
+		<string name="preferences_credits_title">Права</string>
+		<string name="preferences_credits_summary">Создатели</string>
+		<string name="preferences_openxdathread_title">Обсуждение на XDA</string>
+		<string name="preferences_openxdathread_summary">Открыть ветку обсуждения на xda-developers.com в брузере</string>
+
+		<string name="preferences_heading_language">Язык</string>
+		<string name="preferences_switchlanguage_title">Изменить язык</string>
+		<string name="preferences_switchlanguage_summary">Выберите язык</string>
+		<string name="preferences_usephonelocale_title">Удалить языковые настройки</string>
+		<string name="preferences_usephonelocale_summary">Использовать кодовую страницу устройства для определения языка интерфейса</string>
+
+		<string name="preferences_heading_backuprestore">Резервное Копирование и Восстановление</string>
+		<string name="preferences_backup_title">Резервное Копирование</string>
+		<string name="preferences_backup_summary">Создать резервную копию текущих настроек</string>
+		<string name="preferences_restore_title">Восстановление</string>
+		<string name="preferences_restore_summary">Восстановить настройки из резервной копии</string>
+		<!-- end entries in the preferences text list -->
+
+		<string name="preferences_chooselangage_alerttitle">Выбор языка</string> <!-- text for language selection dialog box (when you select 'change language' option)  -->
+
+		<string name="restore_dialog_title">Восстановить настройки</string><!-- Title for the 'restore backup' dialog box -->
+		<!-- restoring backups error messages -->
+		<string name="restore_no_backups">Не обнаружено резервных копий</string> <!-- title of 'backup failed' notification dialog box -->
+		<string name="restore_signature_invalid">Цифровая подпись для этой резервной копии не действительна. Резервная копия возможно модифицирована другой программой. Создание резервной копии с последующей переустановкой PDroid Менеджер может спровоцировать данное сообщение.</string>
+		<string name="restore_signature_missing">Отсутствует цифровая подпись для выбранного файла резервной копии. Невозможно проверить былли модифицирован файл резервной копии другим приложением.</string>
+		<string name="restore_dialog_continue_prompt">Продолжить процедуру восстановления?</string> <!-- Prompt displayed after error message in restore from backup dialog box -->
+
+		<!-- restoring from backup messages -->
+		<string name="restore_failed_dialog_title">Ошибка восстановления</string> <!-- title of 'backup failed' notification dialog box -->
+		<string name="restore_invalid_backup">Выбранный файл отсутствует, испорчен либо не является файлом резервной копии.</string>
+		<string name="restore_complete_success">Восстановление завершено</string> <!-- This message is displayed in a 'toast' rather than a dialog box -->
+		<string name="restore_complete_fail_invalid">Ошибка восстановления: Выбранный файл не является файлом резервной копии.</string>
+		<string name="restore_complete_fail_reading">Ошибка восстановления: Выбранный файл не может быть прочитан.</string>
+		<string name="restore_complete_fail_other">Ошибка восстановления: Восстановление прекращено из-за ошибки.</string>
+
+		<!-- content of the progress dialog box while restoring from backup -->
+		<string name="restore_progress_dialog_title">Восстановление из резервной копии</string>
+		<string name="restore_progress_dialog_message">Ожидайте пока идет восстановление из резервной копии</string>
+
+		<!-- general error for when the storage is not working - i.e. no SD card, etc -->
+		<string name="storage_error_body">Ошибка доступа к внешнему хранилищу. Если ваше устройство использует внешнюю SD карту или Micro SD карту, пожалуйста, убедитесь что она вставлена и правильно отформатирована.</string>
+
+		<!-- dialog for preparing for backup: entering filename -->
+		<string name="backup_dialog_title">Настройки резервной копии</string> <!-- dialog title -->
+		<string name="backup_path_text">Резерная копия будет сохранена в: </string> <!-- text shown before destination directory -->
+		<string name="backup_filename">Имя файла резервной копии</string>
+		<string name="backup_filename_hint">Имя файла</string> <!-- Hint text in the 'filename' field -->
+
+		<!-- warning and error messages for creating backup -->
+		<string name="backup_message_file_exists">Файл с таким именем уже существует. Новая резервная копия перезапишет файл</string>
+		<string name="backup_dialog_continue_prompt">Продолжить резервное копирование?</string> <!-- prompt shown after warning -->
+		<string name="backup_failed_dialog_title">Ошибка резервного копирования</string> <!-- title for dialog shown if the backup fails -->
+		<string name="backup_complete_success">Резервное копирование завершено</string>
+		<string name="backup_complete_fail_signing">Ошибка резервного копирования: проблема цифровой подписи</string>
+		<string name="backup_complete_fail_writing">Ошибка резервного копирования: не возможно записать в файл</string>
+		<string name="backup_complete_fail_other">Ошибка резервного копирования: не возможно создать файл</string>
+	<!-- end Preferences list screen -->
+
+	<!-- application details (i.e. settings) screen;
+	this includes the screen to choose settings for batch updates
+	and will include the screen to choose settings for a 'profile' -->
+		<string name="title_activity_app_detail">Приложение</string>
+
+		<string name="detail_dialog_saving_title">Пожалуйста, ожидайте</string> <!-- title for dialog box while loading or saving -->
+		<string name="detail_dialog_saving_message">Обновление&#8230;</string> <!-- content for dialog box while saving -->
+		<string name="detail_dialog_loading_message">Загрузка настроек</string> <!-- content for dialog box while loading -->
+
+		<!-- start needs translation -->
+		<string name="detail_actionbar_heading_batch">Settings to apply</string> <!-- the action bar heading displayed when in 'batch' mode -->
+		<!-- end needs translation -->
+		<string name="detail_actionbar_savebutton_title">Сохранить настройки</string>
+		<string name="detail_actionbar_close_title">Закрыть без сохранения</string>
+		<string name="detail_actionbar_delete_title">Удалить настройки</string>
+
+		<string name="detail_custom_input_OKtext">OK</string>
+
+		<string name="detail_notifyonaccess_text">Уведомлять при доступе</string>
+		<string name="detail_logonaccess_text">Вести журнал</string>
+		<string name="detail_customvalue_pretext">Индивидуально:</string>
+
+		<!-- start needs translation -->
+		<string name="detail_setting_option_nochange_contentdescription">No change</string>
+		<string name="detail_setting_option_allow_contentdescription">Set to allow</string>
+		<string name="detail_setting_option_deny_contentdescription">Set to deny</string>
+		<string name="detail_setting_option_random_contentdescription">Set to random</string>
+		<string name="detail_setting_option_custom_contentdescription">Set to custom</string>
+		<string name="detail_setting_option_yes_contentdescription">Set to yes</string>
+		<string name="detail_setting_option_no_contentdescription">Set to no</string>
+		<!-- end needs translation -->
+	<!-- end application details screen -->
+
+	<string name="help_dialog_OKtext">OK</string> <!-- help screen OK button - will be replaced by 'alert_dialog_ok' at some point -->
+	<string name="button_help_text">Помощь</string> <!-- Help button caption -->
+
+	<!-- general-purpose text for buttons which can be shown on dialog boxes -->
+		<string name="alert_dialog_ok">OK</string>
+		<string name="alert_dialog_yes">Да</string>
+		<string name="alert_dialog_no">Нет</string>
+		<string name="alert_dialog_continue">Продолжить</string>
+		<string name="alert_dialog_cancel">Отменить</string>
+		<string name="alert_dialog_close">Закрыть</string>
+
+	<!-- text for the 'access notifications' displayed on-screen -->
+		<string name="notification_toast_text1">доступ к</string>
+		<string name="notification_toast_text2">был</string>
+		<string name="notification_toast_image_content_description">Иконка индикатор типа события</string> <!-- text alternative for the notification type for accessibility  -->
+		<string name="notification_toast_allowed_text">позволено</string>
+		<string name="notification_toast_denied_text">отклонено</string>
+		<string name="notification_toast_random_text">случайно</string>
+		<string name="notification_toast_custom_text">индивидуально</string>
+
+	<!-- Text for notification used in the notification bar (top of the screen)
+	when a new app in installed, or one is updated -->
+		<string name="notification_newinstall_title"> установлено</string>
+		<string name="notification_newinstall_text">Нажмите чтобы изменить настройки PDriod</string>
+
+		<string name="notification_update_title"> изменил права доступа</string>
+		<string name="notification_update_text">Нажмите чтобы изменить настройки PDriod</string>
+
+	<!-- Not currently used: essentially replaced by detail_setting_option_*_contentdescription -->
+		<string name="setting_option_allow">Разрешить</string>
+		<string name="setting_option_random">Случайно</string>
+		<string name="setting_option_custom">Индивидуально</string>
+		<string name="setting_option_deny">Запретить</string>
+
+	<!-- dialog boxes for credits/about info which can be opened from the preferences list -->
 	<string name="credits_dialog_title">Информация о программе PDroid Менеджер</string>
-	<string name="about_dialog_title">About PDroid Manager</string>
+	<string name="about_dialog_title">О программе PDroid Менеджер</string>
 </resources>

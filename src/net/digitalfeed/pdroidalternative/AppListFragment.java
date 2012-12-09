@@ -636,13 +636,13 @@ public class AppListFragment extends Fragment {
             
             switch (checkedCount) {
                 case 0:
-                    mode.setSubtitle(null);
+                    mode.setSubtitle(getString(R.string.applist_actionbar_batchselect_none));
                     break;
                 case 1:
-                    mode.setSubtitle("One app selected");
+                    mode.setSubtitle(getString(R.string.applist_actionbar_batchselect_singular));
                     break;
                 default:
-                    mode.setSubtitle("" + checkedCount + " apps selected");
+                    mode.setSubtitle(Integer.toString(checkedCount) + " " + getString(R.string.applist_actionbar_batchselect_plural));
                     break;
             }
         }
