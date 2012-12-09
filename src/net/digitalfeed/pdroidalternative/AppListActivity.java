@@ -48,7 +48,7 @@ public class AppListActivity extends Activity implements AppListFragment.OnAppli
 	@Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG, "AppListActivity:onCreate");
+        if(GlobalConstants.LOG_FUNCTION_TRACE) Log.d(GlobalConstants.LOG_TAG, "AppListActivity:onCreate");
 
         LanguageHelper.updateLanguageIfRequired(this);
         
@@ -66,7 +66,7 @@ public class AppListActivity extends Activity implements AppListFragment.OnAppli
 	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
-		if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG, "AppListActivity:onCreateOptionsMenu");
+		if(GlobalConstants.LOG_FUNCTION_TRACE) Log.d(GlobalConstants.LOG_TAG, "AppListActivity:onCreateOptionsMenu");
 		getMenuInflater().inflate(R.menu.app_list_activity, menu);
 		return true;
     }
@@ -74,7 +74,7 @@ public class AppListActivity extends Activity implements AppListFragment.OnAppli
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		super.onOptionsItemSelected(item);
-		if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG, "AppListActivity:onOptionsItemSelected");
+		if(GlobalConstants.LOG_FUNCTION_TRACE) Log.d(GlobalConstants.LOG_TAG, "AppListActivity:onOptionsItemSelected");
 		switch (item.getItemId()) {
 		case R.id.app_list_menu_preferences:
 			openPreferenceInterface();
@@ -86,25 +86,25 @@ public class AppListActivity extends Activity implements AppListFragment.OnAppli
 	
 	@Override
 	public void onDetailUp() {
-		if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG, "AppListActivity:onDetailUp");
+		if(GlobalConstants.LOG_FUNCTION_TRACE) Log.d(GlobalConstants.LOG_TAG, "AppListActivity:onDetailUp");
 		hideDetailInterface();
 	}
 	
 	@Override
 	public void onDetailSave() {
-		if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG, "AppListActivity:onDetailSave");
+		if(GlobalConstants.LOG_FUNCTION_TRACE) Log.d(GlobalConstants.LOG_TAG, "AppListActivity:onDetailSave");
 		hideDetailInterface();
 	}
 	
 	@Override
 	public void onDetailClose() {
-		if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG, "AppListActivity:onDetailClose");
+		if(GlobalConstants.LOG_FUNCTION_TRACE) Log.d(GlobalConstants.LOG_TAG, "AppListActivity:onDetailClose");
 		hideDetailInterface();
 	}
 	
 	@Override
 	public void onDetailDelete() {
-		if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG, "AppListActivity:onDetailHide");
+		if(GlobalConstants.LOG_FUNCTION_TRACE) Log.d(GlobalConstants.LOG_TAG, "AppListActivity:onDetailHide");
 		hideDetailInterface();
 	}
 		
@@ -118,7 +118,7 @@ public class AppListActivity extends Activity implements AppListFragment.OnAppli
 	 */
 	@Override
 	public void onApplicationSelected(Application application) {
-		if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG, "AppListActivity:onApplicationSelected");
+		if(GlobalConstants.LOG_FUNCTION_TRACE) Log.d(GlobalConstants.LOG_TAG, "AppListActivity:onApplicationSelected");
 		if (detailFragment != null) {
             // If the detailFragment is available, running in dual-pane
         	if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG,"Telling the detail fragment to load package " + application.getPackageName());
@@ -139,7 +139,7 @@ public class AppListActivity extends Activity implements AppListFragment.OnAppli
      * @param application  Application for which the detail interface should be opened
      */
     private void openDetailInterface(Application application) {
-    	if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG, "AppListActivity:openDetailInterface");
+    	if(GlobalConstants.LOG_FUNCTION_TRACE) Log.d(GlobalConstants.LOG_TAG, "AppListActivity:openDetailInterface");
     	Intent intent = new Intent(this, AppDetailActivity.class);
 		intent.putExtra(AppDetailActivity.BUNDLE_PACKAGE_NAME, application.getPackageName());
 		intent.putExtra(AppDetailActivity.BUNDLE_IN_APP, true);
@@ -147,7 +147,7 @@ public class AppListActivity extends Activity implements AppListFragment.OnAppli
     }
     
     private void hideDetailInterface() {
-    	if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG, "AppListActivity:hideDetailInterface");
+    	if(GlobalConstants.LOG_FUNCTION_TRACE) Log.d(GlobalConstants.LOG_TAG, "AppListActivity:hideDetailInterface");
 		if (detailFragment != null) {
 			FragmentTransaction ft = getFragmentManager().beginTransaction();
 			ft.hide(detailFragment);
@@ -160,7 +160,7 @@ public class AppListActivity extends Activity implements AppListFragment.OnAppli
      * Starts the 'preference' interface
      */
     private void openPreferenceInterface() {
-    	if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG, "AppListActivity:openPreferenceInterface");
+    	if(GlobalConstants.LOG_FUNCTION_TRACE) Log.d(GlobalConstants.LOG_TAG, "AppListActivity:openPreferenceInterface");
     	Intent intent = new Intent(this, PreferencesListActivity.class);
 		startActivity(intent);
     }
@@ -168,7 +168,7 @@ public class AppListActivity extends Activity implements AppListFragment.OnAppli
 
 	@Override
 	public void onBatchCommence(String[] packageNames) {
-    	if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG, "AppListActivity:onBatchCommence");
+    	if(GlobalConstants.LOG_FUNCTION_TRACE) Log.d(GlobalConstants.LOG_TAG, "AppListActivity:onBatchCommence");
     	Intent intent = new Intent(this, AppDetailActivity.class);
 		intent.putExtra(AppDetailActivity.BUNDLE_PACKAGE_NAMES, packageNames);
 		intent.putExtra(AppDetailActivity.BUNDLE_IN_APP, true);

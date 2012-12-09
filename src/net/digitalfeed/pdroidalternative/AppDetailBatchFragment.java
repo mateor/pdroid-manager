@@ -181,7 +181,7 @@ public class AppDetailBatchFragment extends PDroidSettingListFragment {
 		@Override
 		public void onRadioButtonClick(RadioGroup group, int checkedId,
 				int position, CheckedOption checkedOption) {
-			if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG,"AppDetailBatchFragment:DetailRowActionHandler:onCheckboxChange");
+			if(GlobalConstants.LOG_FUNCTION_TRACE) Log.d(GlobalConstants.LOG_TAG,"AppDetailBatchFragment:DetailRowActionHandler:onCheckboxChange");
 			if (settingList == null || settingList.size() <= position || position < 0) {
 				return;
 			}

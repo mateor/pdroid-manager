@@ -59,7 +59,7 @@ public class AppListAdapter extends ArrayAdapter<Application>{
 	
 	public AppListAdapter(Context context, int standardResourceId, List<Application> appList) {
 		super(context, standardResourceId, appList);
-		if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG, "AppListAdapter:AppListAdapter");
+		if(GlobalConstants.LOG_FUNCTION_TRACE) Log.d(GlobalConstants.LOG_TAG, "AppListAdapter:AppListAdapter");
 		
 		this.context = context;
 		this.standardResourceId = standardResourceId;
@@ -71,7 +71,7 @@ public class AppListAdapter extends ArrayAdapter<Application>{
 	
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
-		if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG, "AppListAdapter:getView");
+		if(GlobalConstants.LOG_FUNCTION_TRACE) Log.d(GlobalConstants.LOG_TAG, "AppListAdapter:getView");
 		View row = convertView;
 		AppHolder holder = null;
 		

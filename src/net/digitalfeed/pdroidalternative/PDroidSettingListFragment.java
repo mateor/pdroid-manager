@@ -135,6 +135,8 @@ abstract class PDroidSettingListFragment extends Fragment {
 	@Override
 	public void onAttach (Activity activity) {
 		super.onAttach(activity);
+		if(GlobalConstants.LOG_FUNCTION_TRACE) Log.d(GlobalConstants.LOG_TAG,"PDroidSettingListFragment:onAttach");
+		
 		this.context = activity;
 
         // Check the container activity implements the callback interface
@@ -151,6 +153,7 @@ abstract class PDroidSettingListFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if(GlobalConstants.LOG_FUNCTION_TRACE) Log.d(GlobalConstants.LOG_TAG,"PDroidSettingListFragment:onCreate");
         
         // need to notify do this to notify the activity that
         // this fragment will contribute to the action menu
@@ -160,6 +163,8 @@ abstract class PDroidSettingListFragment extends Fragment {
 	@Override
 	public View onCreateView (LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		super.onCreateView(inflater, container, savedInstanceState);
+		if(GlobalConstants.LOG_FUNCTION_TRACE) Log.d(GlobalConstants.LOG_TAG,"PDroidSettingListFragment:onCreateView");
+		
 		this.rootView = inflater.inflate(this.mainLayout, container);
 		this.listView = (ListView)this.rootView.findViewById(R.id.detail_setting_list);
 
@@ -176,13 +181,16 @@ abstract class PDroidSettingListFragment extends Fragment {
     @Override
     public void onStart() {
     	super.onStart();
-    	if (!showDialogOnStart) {
+    	if(GlobalConstants.LOG_FUNCTION_TRACE) Log.d(GlobalConstants.LOG_TAG,"PDroidSettingListFragment:onStart");
+    	
+    	if (showDialogOnStart) {
     		DialogHelper.showProgressDialog(getActivity(), null, getString(R.string.detail_dialog_loading_message));
     	}
     }
         
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+    	if(GlobalConstants.LOG_FUNCTION_TRACE) Log.d(GlobalConstants.LOG_TAG,"PDroidSettingListFragment:onOptionsItemSelected");
         switch (item.getItemId()) {
             case R.id.detailCloseButton:
             	return doClose();
@@ -199,10 +207,12 @@ abstract class PDroidSettingListFragment extends Fragment {
     
     @Override
     public void onCreateOptionsMenu (Menu menu, MenuInflater inflater) {
+    	if(GlobalConstants.LOG_FUNCTION_TRACE) Log.d(GlobalConstants.LOG_TAG,"PDroidSettingListFragment:onCreateOptionsMenu");
         inflater.inflate(R.menu.activity_app_detail, menu);
     }
 
     public void setOnDetailActionListener(OnDetailActionListener callback) {
+    	if(GlobalConstants.LOG_FUNCTION_TRACE) Log.d(GlobalConstants.LOG_TAG,"PDroidSettingListFragment:setOnDetailActionListener");
         try {
             this.callback = (OnDetailActionListener) callback;
         } catch (ClassCastException e) {
@@ -211,12 +221,14 @@ abstract class PDroidSettingListFragment extends Fragment {
     }
 
     void applyAdapter() {
+    	if(GlobalConstants.LOG_FUNCTION_TRACE) Log.d(GlobalConstants.LOG_TAG,"PDroidSettingListFragment:applyAdapter");
     	if (listView != null) {
     		listView.setAdapter(new PDroidSettingListAdapter(context, this.rowLayout, settingList, rowCallback));
     	}
     }
 
     void onDeleteComplete() {
+    	if(GlobalConstants.LOG_FUNCTION_TRACE) Log.d(GlobalConstants.LOG_TAG,"PDroidSettingListFragment:onDeleteComplete");
 		DialogHelper.dismissProgressDialog();
 		callback.onDetailDelete();
     }
@@ -225,12 +237,14 @@ abstract class PDroidSettingListFragment extends Fragment {
     {	
 		@Override
 		public void asyncTaskComplete(Void param) {
+			if(GlobalConstants.LOG_FUNCTION_TRACE) Log.d(GlobalConstants.LOG_TAG,"PDroidSettingListFragment:DeleteCompleteHandler:asyncTaskComplete");
 			onDeleteComplete();
 		}
     }
    
     
     void onSaveComplete() {
+    	if(GlobalConstants.LOG_FUNCTION_TRACE) Log.d(GlobalConstants.LOG_TAG,"PDroidSettingListFragment:onSaveComplete");
 		DialogHelper.dismissProgressDialog();
 		callback.onDetailSave();
     }
@@ -239,18 +253,20 @@ abstract class PDroidSettingListFragment extends Fragment {
     {	
 		@Override
 		public void asyncTaskComplete(Void param) {
+			if(GlobalConstants.LOG_FUNCTION_TRACE) Log.d(GlobalConstants.LOG_TAG,"PDroidSettingListFragment:SaveCompleteHandler:asyncTaskComplete");
 			onSaveComplete();
 		}
     }
     
     void onLoadComplete(List<PDroidAppSetting> inSettingList) {
     	//Load has completed, so the 'loading' dialog need not show
+    	if(GlobalConstants.LOG_FUNCTION_TRACE) Log.d(GlobalConstants.LOG_TAG,"PDroidSettingListFragment:onLoadComplete");
     	this.showDialogOnStart = false;
     	
 		if (inSettingList == null) {
-			if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG,"PDroidSettingListFragment:onLoadComplete:inSettingList is null");
+			if(GlobalConstants.LOG_FUNCTION_TRACE) Log.d(GlobalConstants.LOG_TAG,"PDroidSettingListFragment:onLoadComplete:inSettingList is null");
 		} else if (inSettingList.size() == 0) {
-			if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG,"PDroidSettingListFragment:onLoadComplete:inSettingList is of size 0");
+			if(GlobalConstants.LOG_FUNCTION_TRACE) Log.d(GlobalConstants.LOG_TAG,"PDroidSettingListFragment:onLoadComplete:inSettingList is of size 0");
 		} else {
 			this.settingList = inSettingList;
 			this.applyAdapter();
@@ -264,6 +280,7 @@ abstract class PDroidSettingListFragment extends Fragment {
     {
 		@Override
 		public void asyncTaskComplete(List<PDroidAppSetting> inSettingList) {
+			if(GlobalConstants.LOG_FUNCTION_TRACE) Log.d(GlobalConstants.LOG_TAG,"PDroidSettingListFragment:LoadCompleteHandler:onAsyncTaskComplete");
 			onLoadComplete(inSettingList);
 		}
     }
@@ -273,6 +290,7 @@ abstract class PDroidSettingListFragment extends Fragment {
 		@Override
 		public void onRadioButtonClick(RadioGroup group, int checkedId,
 				int position, CheckedOption checkedOption) {
+			if(GlobalConstants.LOG_FUNCTION_TRACE) Log.d(GlobalConstants.LOG_TAG,"PDroidSettingListFragment:DetailRowActionHandler:onRadioButtonClick");
 			if (settingList == null || settingList.size() <= position || position < 0) {
 				return;
 			}
@@ -310,6 +328,7 @@ abstract class PDroidSettingListFragment extends Fragment {
 
 		@Override
 		public void onInfoButtonPressed(int position) {
+			if(GlobalConstants.LOG_FUNCTION_TRACE) Log.d(GlobalConstants.LOG_TAG,"PDroidSettingListFragment:DetailRowActionHandler:onInfoButtonPressed");
 			if (settingList == null || settingList.size() <= position || position < 0) {
 				return;
 			}
@@ -324,6 +343,7 @@ abstract class PDroidSettingListFragment extends Fragment {
      * @param setting  Setting for which to show info (a.k.a. help)
      */
 	void showInfo(PDroidSetting setting) {
+		if(GlobalConstants.LOG_FUNCTION_TRACE) Log.d(GlobalConstants.LOG_TAG,"PDroidSettingListFragment:showInfo");
 		AlertDialog.Builder builder = new AlertDialog.Builder(context);
 		builder.setTitle(setting.getTitle());
 		Resources res = context.getResources();
@@ -345,6 +365,7 @@ abstract class PDroidSettingListFragment extends Fragment {
 	//TODO: Convert this to a DialogFragment?
 	//TODO: Handle when the user presses cancel by returning to the previous setting?
 	void showCustomValueBox(PDroidAppSetting appSetting) {
+		if(GlobalConstants.LOG_FUNCTION_TRACE) Log.d(GlobalConstants.LOG_TAG,"PDroidSettingListFragment:showCustomValueBox");
 		List<SimpleImmutableEntry<String,String>> customValues = appSetting.getCustomValues();
 		if (customValues == null) {
 			customValues = new LinkedList<SimpleImmutableEntry<String,String>>();

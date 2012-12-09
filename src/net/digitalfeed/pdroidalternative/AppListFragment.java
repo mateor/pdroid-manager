@@ -85,7 +85,7 @@ public class AppListFragment extends Fragment {
 	@Override
 	public void onAttach (Activity activity) {
 		super.onAttach(activity);
-		if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG, "AppListFragment:OnAttach");
+		if(GlobalConstants.LOG_FUNCTION_TRACE) Log.d(GlobalConstants.LOG_TAG, "AppListFragment:OnAttach");
 		this.context = activity;
 		
         // Check the container activity implements the callback interface
@@ -101,7 +101,7 @@ public class AppListFragment extends Fragment {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG, "AppListFragment:OnCreate");
+		if(GlobalConstants.LOG_FUNCTION_TRACE) Log.d(GlobalConstants.LOG_TAG, "AppListFragment:OnCreate");
 		
         //get handle to the application preferences
         prefs = new Preferences(context);
@@ -138,7 +138,7 @@ public class AppListFragment extends Fragment {
 	@Override
 	public View onCreateView (LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		super.onCreateView(inflater, container, savedInstanceState);
-		if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG, "AppListFragment:OnCreateView");
+		if(GlobalConstants.LOG_FUNCTION_TRACE) Log.d(GlobalConstants.LOG_TAG, "AppListFragment:OnCreateView");
 		this.rootView = inflater.inflate(R.layout.activity_main, container);
 		this.listView = (ListView)this.rootView.findViewById(R.id.application_list);
 		return this.rootView;
@@ -147,13 +147,13 @@ public class AppListFragment extends Fragment {
 	@Override
 	public void onActivityCreated (Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
-		if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG, "AppListFragment:OnActivityCreated");
+		if(GlobalConstants.LOG_FUNCTION_TRACE) Log.d(GlobalConstants.LOG_TAG, "AppListFragment:OnActivityCreated");
 	}
 	
 	@Override
 	public void onViewCreated (View view, Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
-		if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG, "AppListFragment:OnViewCreated");
+		if(GlobalConstants.LOG_FUNCTION_TRACE) Log.d(GlobalConstants.LOG_TAG, "AppListFragment:OnViewCreated");
         listView.setOnItemClickListener(new OnItemClickListener() {
 
 			@Override
@@ -171,7 +171,7 @@ public class AppListFragment extends Fragment {
 	@Override
 	public void onStart () {
 		super.onStart();
-		if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG, "AppListFragment:OnStart");
+		if(GlobalConstants.LOG_FUNCTION_TRACE) Log.d(GlobalConstants.LOG_TAG, "AppListFragment:OnStart");
 
 		switch (showDialogOnStart) {
 		case DIALOG_LINEAR:
@@ -192,43 +192,43 @@ public class AppListFragment extends Fragment {
 	@Override
 	public void onResume() {
 		super.onResume();
-		if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG, "AppListFragment:OnResume");
+		if(GlobalConstants.LOG_FUNCTION_TRACE) Log.d(GlobalConstants.LOG_TAG, "AppListFragment:OnResume");
 	}
 	
 	@Override
 	public void onPause () {
 		super.onPause();
-		if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG, "AppListFragment:OnPause");
+		if(GlobalConstants.LOG_FUNCTION_TRACE) Log.d(GlobalConstants.LOG_TAG, "AppListFragment:OnPause");
 	}
 
 	@Override
 	public void onStop () {
 		super.onStop();
-		if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG, "AppListFragment:OnStop");
+		if(GlobalConstants.LOG_FUNCTION_TRACE) Log.d(GlobalConstants.LOG_TAG, "AppListFragment:OnStop");
 	}
 	
 	@Override
 	public void onDestroyView () {
 		super.onDestroyView();
-		if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG,"onDestroyView called");
+		if(GlobalConstants.LOG_FUNCTION_TRACE) Log.d(GlobalConstants.LOG_TAG,"onDestroyView called");
 	}
 	
 	@Override
 	public void onDestroy () {
 		super.onDestroy();
-		if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG, "AppListFragment:OnDestroy");
+		if(GlobalConstants.LOG_FUNCTION_TRACE) Log.d(GlobalConstants.LOG_TAG, "AppListFragment:OnDestroy");
 	}
 	
 	@Override
 	public void onDetach () {
 		super.onDetach();
-		if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG, "AppListFragment:OnDetach");
+		if(GlobalConstants.LOG_FUNCTION_TRACE) Log.d(GlobalConstants.LOG_TAG, "AppListFragment:OnDetach");
 	}
 	
 	
 	@Override
 	public void onCreateOptionsMenu (Menu menu, MenuInflater inflater) {
-		if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG, "AppListFragment:onCreateOptionsMenu");
+		if(GlobalConstants.LOG_FUNCTION_TRACE) Log.d(GlobalConstants.LOG_TAG, "AppListFragment:onCreateOptionsMenu");
         inflater.inflate(R.menu.activity_main, menu);
         
         /*
@@ -302,7 +302,7 @@ public class AppListFragment extends Fragment {
 	
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-		if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG, "AppListFragment:onOptionsItemSelected");
+		if(GlobalConstants.LOG_FUNCTION_TRACE) Log.d(GlobalConstants.LOG_TAG, "AppListFragment:onOptionsItemSelected");
     	super.onOptionsItemSelected(item);
     	if (readyForInput) {
 	    	switch (item.getItemId()) {
@@ -323,7 +323,7 @@ public class AppListFragment extends Fragment {
     class UpdateAllSettingsCallback implements IAsyncTaskCallback<Void>{
     	@Override
     	public void asyncTaskComplete(Void result) {
-    		if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG, "AppListFragment:AppListUpdateAllSettingsCallback:asyncTaskComplete");
+    		if(GlobalConstants.LOG_FUNCTION_TRACE) Log.d(GlobalConstants.LOG_TAG, "AppListFragment:AppListUpdateAllSettingsCallback:asyncTaskComplete");
     		//TODO: might be worth adding a toast here to notify the settings have been updated?
     		DialogHelper.dismissProgressDialog();
     		appListAdapter.notifyDataSetChanged(); //notify adapter that the data has changed, so app will update the trusted state in the listview
@@ -338,7 +338,7 @@ public class AppListFragment extends Fragment {
      * representing specific applications in subsequent searches
      */
     private void loadApplicationObjects() {
-    	if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG, "AppListFragment:loadApplicationObjects");
+    	if(GlobalConstants.LOG_FUNCTION_TRACE) Log.d(GlobalConstants.LOG_TAG, "AppListFragment:loadApplicationObjects");
     	ApplicationsObjectLoaderTask appListGeneratorTask = new ApplicationsObjectLoaderTask(context, new AppListAppGeneratorCallback());
     	appListGeneratorTask.execute();
     }
@@ -358,7 +358,7 @@ public class AppListFragment extends Fragment {
     	 */
     	@Override
     	public void asyncTaskComplete(HashMap<String, Application> result) {
-    		if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG, "AppListAppGeneratorCallback:asyncTaskComplete");
+    		if(GlobalConstants.LOG_FUNCTION_TRACE) Log.d(GlobalConstants.LOG_TAG, "AppListAppGeneratorCallback:asyncTaskComplete");
     		applicationObjects = result;
     		loadApplicationList();
     	}
@@ -370,7 +370,7 @@ public class AppListFragment extends Fragment {
      * which match the current filtering criteria set on the spinners 
      */
     private void loadApplicationList() {
-    	if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG, "AppListFragment:loadApplicationList");
+    	if(GlobalConstants.LOG_FUNCTION_TRACE) Log.d(GlobalConstants.LOG_TAG, "AppListFragment:loadApplicationList");
     	//Create query builder to pass the the AsyncTask with the relevant filtering settings
     	AppQueryBuilder queryBuilder = new AppQueryBuilder();
 		queryBuilder.addColumns(AppQueryBuilder.COLUMN_TYPE_PACKAGENAME); //only need the package names to look up in the hashmap
@@ -410,7 +410,7 @@ public class AppListFragment extends Fragment {
     	 */
     	@Override
     	public void asyncTaskComplete(List<String> result) {
-    		if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG, "AppListFragment:AppListLoaderCallback:asyncTaskComplete");
+    		if(GlobalConstants.LOG_FUNCTION_TRACE) Log.d(GlobalConstants.LOG_TAG, "AppListFragment:AppListLoaderCallback:asyncTaskComplete");
     		if (result != null) {
 	    		//Clear the current list of applications
 	    		if (appList == null) {
@@ -449,7 +449,7 @@ public class AppListFragment extends Fragment {
      * Commence the regeneration of the application list held in the database from the OS
      */
     private void rebuildApplicationList() {
-    	if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG, "AppListFragment:rebuildApplicationList");
+    	if(GlobalConstants.LOG_FUNCTION_TRACE) Log.d(GlobalConstants.LOG_TAG, "AppListFragment:rebuildApplicationList");
     	showDialogOnStart = DIALOG_LINEAR;
 
         // Start the AsyncTask to build the list of apps and write them to the database
@@ -465,7 +465,7 @@ public class AppListFragment extends Fragment {
     class AppListGeneratorCallback implements IAsyncTaskCallbackWithProgress<HashMap<String, Application>>{
     	@Override
     	public void asyncTaskComplete(HashMap<String, Application> returnedAppList) {
-    		if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG, "AppListFragment:AppListGeneratorCallback:asyncTaskComplete");
+    		if(GlobalConstants.LOG_FUNCTION_TRACE) Log.d(GlobalConstants.LOG_TAG, "AppListFragment:AppListGeneratorCallback:asyncTaskComplete");
                 DialogHelper.dismissProgressDialog();
     		applicationObjects = returnedAppList; 
     		//set the application cache as valid, so the application data will not be regenerated
@@ -554,7 +554,7 @@ public class AppListFragment extends Fragment {
         }
 
         public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-			if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG, "AppListFragment:ModeCallback:onActionItemClicked");
+			if(GlobalConstants.LOG_FUNCTION_TRACE) Log.d(GlobalConstants.LOG_TAG, "AppListFragment:ModeCallback:onActionItemClicked");
 			TrustState newTrustState = null;
 			int action = 0;
 			

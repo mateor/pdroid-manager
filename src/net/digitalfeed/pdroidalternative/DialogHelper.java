@@ -79,7 +79,7 @@ public class DialogHelper {
 	}
 	
 	static void updateProgressDialog(int currentValue, int maxValue) {
-	    if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG, "DialogHelper:updateProgressDialog");
+	    if(GlobalConstants.LOG_FUNCTION_TRACE) Log.d(GlobalConstants.LOG_TAG, "DialogHelper:updateProgressDialog");
 	    if (progDialog != null) {
 	    	if (progDialog.isShowing()) {
 	    		progDialog.setProgress(currentValue);
