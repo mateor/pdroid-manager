@@ -44,7 +44,8 @@
 		        style="@style/SettingOptionNoChange"
 		        android:layout_width="wrap_content"
 		        android:layout_height="wrap_content"
-		        android:contentDescription="@string/detail_setting_option_nochange_contentdescription" />
+		        android:contentDescription="@string/detail_setting_option_nochange_contentdescription"
+		        android:visibility="gone" />
 		    
 		    <RadioButton
 		        android:id="@+id/option_allow"

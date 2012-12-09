@@ -31,11 +31,13 @@ import java.util.List;
 
 import android.os.Bundle;
 import android.app.Activity;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RadioGroup;
 
 /**
  * Fragment for viewing and modifying the settings of an application.
@@ -156,6 +158,11 @@ public class AppDetailBatchFragment extends PDroidSettingListFragment {
 	public String getTitle() {
 		return getString(R.string.detail_actionbar_heading_batch);
 	}
+	
+	@Override
+	OnDetailRowActionListener getRowCallback() {
+		return new DetailRowActionHandler();
+	}
     
     /**
      * Triggers the load of details for the incoming application, totally ignoring
@@ -172,4 +179,90 @@ public class AppDetailBatchFragment extends PDroidSettingListFragment {
     	}
     }
 
+	class DetailRowActionHandler implements OnDetailRowActionListener {
+		
+		@Override
+		public void onRadioButtonClick(RadioGroup group, int checkedId,
+				int position, CheckedOption checkedOption) {
+			if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG,"AppDetailBatchFragment:DetailRowActionHandler:onCheckboxChange");
+			if (settingList == null || settingList.size() <= position || position < 0) {
+				return;
+			}
+			
+			PDroidAppSetting setting = settingList.get(position); 
+			switch (checkedOption) {
+			case ALLOW:
+				if (setting.getSelectedOptionBit() == PDroidSetting.OPTION_FLAG_ALLOW) {
+					group.check(R.id.option_nochange);
+					setting.setSelectedOptionBit(PDroidSetting.OPTION_FLAG_NO_CHANGE);
+				} else {
+					setting.setSelectedOptionBit(PDroidSetting.OPTION_FLAG_ALLOW);
+				}
+				break;
+			case YES:
+				if (setting.getSelectedOptionBit() == PDroidSetting.OPTION_FLAG_YES) {
+					group.check(R.id.option_nochange);
+					setting.setSelectedOptionBit(PDroidSetting.OPTION_FLAG_NO_CHANGE);
+				} else {
+					setting.setSelectedOptionBit(PDroidSetting.OPTION_FLAG_YES);
+				}
+				break;
+			case CUSTOM:
+				if (setting.getSelectedOptionBit() == PDroidSetting.OPTION_FLAG_CUSTOM) {
+					group.check(R.id.option_nochange);
+					setting.setSelectedOptionBit(PDroidSetting.OPTION_FLAG_NO_CHANGE);
+				} else {
+					group.check(R.id.option_nochange);
+					setting.setSelectedOptionBit(PDroidSetting.OPTION_FLAG_CUSTOM);
+				}
+				break;
+			case CUSTOMLOCATION:
+				if (setting.getSelectedOptionBit() == PDroidSetting.OPTION_FLAG_CUSTOMLOCATION) {
+					group.check(R.id.option_nochange);
+					setting.setSelectedOptionBit(PDroidSetting.OPTION_FLAG_NO_CHANGE);
+				} else {
+					group.check(R.id.option_nochange);
+					setting.setSelectedOptionBit(PDroidSetting.OPTION_FLAG_CUSTOMLOCATION);
+				}
+				break;
+			case RANDOM:
+				if (setting.getSelectedOptionBit() == PDroidSetting.OPTION_FLAG_RANDOM) {
+					group.check(R.id.option_nochange);
+					setting.setSelectedOptionBit(PDroidSetting.OPTION_FLAG_NO_CHANGE);
+				} else {
+					setting.setSelectedOptionBit(PDroidSetting.OPTION_FLAG_RANDOM);
+				}
+				break;
+			case DENY:
+				if (setting.getSelectedOptionBit() == PDroidSetting.OPTION_FLAG_DENY) {
+					group.check(R.id.option_nochange);
+					setting.setSelectedOptionBit(PDroidSetting.OPTION_FLAG_NO_CHANGE);
+				} else {
+					setting.setSelectedOptionBit(PDroidSetting.OPTION_FLAG_DENY);
+				}
+				break;
+			case NO:
+				if (setting.getSelectedOptionBit() == PDroidSetting.OPTION_FLAG_NO) {
+					group.check(R.id.option_nochange);
+					setting.setSelectedOptionBit(PDroidSetting.OPTION_FLAG_NO_CHANGE);
+				} else {
+					setting.setSelectedOptionBit(PDroidSetting.OPTION_FLAG_NO);
+				}
+				break;
+			case NO_CHANGE:
+				setting.setSelectedOptionBit(PDroidSetting.OPTION_FLAG_NO_CHANGE);
+				break;
+			}	
+		}
+
+		@Override
+		public void onInfoButtonPressed(int position) {
+			if (settingList == null || settingList.size() <= position || position < 0) {
+				return;
+			}
+			showInfo(settingList.get(position));
+			
+		}
+    };
+    
 }

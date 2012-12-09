@@ -36,12 +36,15 @@ import android.graphics.Typeface;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.text.style.StyleSpan;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.view.ViewParent;
 import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.TextView;
@@ -67,6 +70,7 @@ public class PDroidSettingListAdapter extends ArrayAdapter<PDroidAppSetting>{
 	private final int standardResourceId;
 	private final List<PDroidAppSetting> settingList;
 	private OnCheckedChangeListener checkbuttonChangeListener;
+	private OnClickListener radioButtonClickListener;
 	private OnClickListener helpButtonClickListener;
 	private PDroidSettingListFragment.OnDetailRowActionListener rowActionListener;
 	
@@ -76,8 +80,8 @@ public class PDroidSettingListAdapter extends ArrayAdapter<PDroidAppSetting>{
 		this.context = context;
 		this.standardResourceId = standardResourceId;
 		this.settingList = settingList;
-		this.checkbuttonChangeListener = new CheckbuttonChangeListener();
 		this.helpButtonClickListener = new HelpButtonClickListener();
+		this.radioButtonClickListener = new RadioButtonClickListener();
 		this.rowActionListener = rowActionListener;
 	}
 	
@@ -106,15 +110,24 @@ public class PDroidSettingListAdapter extends ArrayAdapter<PDroidAppSetting>{
 			holder.customValue = (TextView)row.findViewById(R.id.option_custom_value);
 			holder.radioGroup = (RadioGroup)row.findViewById(R.id.setting_choice);
 			holder.helpButton = (ImageButton)row.findViewById(R.id.help_button);
-			holder.noChangeOption = row.findViewById(R.id.option_nochange);
-			holder.allowOption = row.findViewById(R.id.option_allow);
-			holder.yesOption = row.findViewById(R.id.option_yes);
-			holder.customOption = row.findViewById(R.id.option_custom);
-			holder.customLocationOption = row.findViewById(R.id.option_customlocation);
-			holder.randomOption = row.findViewById(R.id.option_random);
-			holder.denyOption = row.findViewById(R.id.option_deny);
-			holder.noOption = row.findViewById(R.id.option_no);
 			holder.helpButton.setOnClickListener(this.helpButtonClickListener);
+			
+			holder.noChangeOption = row.findViewById(R.id.option_nochange);
+			
+			holder.allowOption = row.findViewById(R.id.option_allow);
+			holder.allowOption.setOnClickListener(radioButtonClickListener);
+			holder.yesOption = row.findViewById(R.id.option_yes);
+			holder.yesOption.setOnClickListener(radioButtonClickListener);
+			holder.customOption = row.findViewById(R.id.option_custom);
+			holder.customOption.setOnClickListener(radioButtonClickListener);
+			holder.customLocationOption = row.findViewById(R.id.option_customlocation);
+			holder.customLocationOption.setOnClickListener(radioButtonClickListener);
+			holder.randomOption = row.findViewById(R.id.option_random);
+			holder.randomOption.setOnClickListener(radioButtonClickListener);
+			holder.denyOption = row.findViewById(R.id.option_deny);
+			holder.denyOption.setOnClickListener(radioButtonClickListener);
+			holder.noOption = row.findViewById(R.id.option_no);
+			holder.noOption.setOnClickListener(radioButtonClickListener);
 			row.setTag(holder);
 		} else {
 			holder = (SettingHolder)row.getTag();
@@ -230,49 +243,64 @@ public class PDroidSettingListAdapter extends ArrayAdapter<PDroidAppSetting>{
 		View noOption;
 	}
 
-	private class CheckbuttonChangeListener implements OnCheckedChangeListener {
+	private class RadioButtonClickListener implements OnClickListener {
+
 		@Override
-		public void onCheckedChanged(RadioGroup group, int checkedId) {
-			if (rowActionListener == null) return;
-			
-			int position = (Integer)group.getTag();
-			switch (checkedId){
-			case R.id.option_nochange:
-				rowActionListener.onCheckboxChange(group, checkedId, position,
-						PDroidSettingListFragment.OnDetailRowActionListener.CheckedOption.NO_CHANGE);
-				break;
-			case R.id.option_allow:
-				rowActionListener.onCheckboxChange(group, checkedId, position,
-						PDroidSettingListFragment.OnDetailRowActionListener.CheckedOption.ALLOW);
-				break;
-			case R.id.option_yes:
-				rowActionListener.onCheckboxChange(group, checkedId, position,
-						PDroidSettingListFragment.OnDetailRowActionListener.CheckedOption.YES);
-				break;
-			case R.id.option_custom:
-				rowActionListener.onCheckboxChange(group, checkedId, position,
-						PDroidSettingListFragment.OnDetailRowActionListener.CheckedOption.CUSTOM);
-				break;
-			case R.id.option_customlocation:
-				rowActionListener.onCheckboxChange(group, checkedId, position,
-						PDroidSettingListFragment.OnDetailRowActionListener.CheckedOption.CUSTOMLOCATION);
-				break;
-			case R.id.option_random:
-				rowActionListener.onCheckboxChange(group, checkedId, position,
-						PDroidSettingListFragment.OnDetailRowActionListener.CheckedOption.RANDOM);
-				break;
-			case R.id.option_deny:
-				rowActionListener.onCheckboxChange(group, checkedId, position,
-						PDroidSettingListFragment.OnDetailRowActionListener.CheckedOption.DENY);
-				break;
-			case R.id.option_no:
-				rowActionListener.onCheckboxChange(group, checkedId, position,
-						PDroidSettingListFragment.OnDetailRowActionListener.CheckedOption.NO);
-				break;
+		public void onClick(View v) {
+			if (v instanceof RadioButton) {
+				
+				if (rowActionListener == null) return;
+
+				ViewParent parent = v.getParent();
+				if (!(parent instanceof RadioGroup)) return;
+				RadioGroup group = (RadioGroup)parent;
+
+				Object tag = group.getTag();
+				if (!(tag instanceof Integer)) return;
+				
+				int position = (Integer)tag;
+				if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG,"RadioButton clicked " + Boolean.toString(((RadioButton)v).isChecked()));
+				int checkedId = v.getId();
+				
+				switch (checkedId){
+				case R.id.option_nochange:
+					rowActionListener.onRadioButtonClick(group, checkedId, position,
+							PDroidSettingListFragment.OnDetailRowActionListener.CheckedOption.NO_CHANGE);
+					break;
+				case R.id.option_allow:
+					rowActionListener.onRadioButtonClick(group, checkedId, position,
+							PDroidSettingListFragment.OnDetailRowActionListener.CheckedOption.ALLOW);
+					break;
+				case R.id.option_yes:
+					rowActionListener.onRadioButtonClick(group, checkedId, position,
+							PDroidSettingListFragment.OnDetailRowActionListener.CheckedOption.YES);
+					break;
+				case R.id.option_custom:
+					rowActionListener.onRadioButtonClick(group, checkedId, position,
+							PDroidSettingListFragment.OnDetailRowActionListener.CheckedOption.CUSTOM);
+					break;
+				case R.id.option_customlocation:
+					rowActionListener.onRadioButtonClick(group, checkedId, position,
+							PDroidSettingListFragment.OnDetailRowActionListener.CheckedOption.CUSTOMLOCATION);
+					break;
+				case R.id.option_random:
+					rowActionListener.onRadioButtonClick(group, checkedId, position,
+							PDroidSettingListFragment.OnDetailRowActionListener.CheckedOption.RANDOM);
+					break;
+				case R.id.option_deny:
+					rowActionListener.onRadioButtonClick(group, checkedId, position,
+							PDroidSettingListFragment.OnDetailRowActionListener.CheckedOption.DENY);
+					break;
+				case R.id.option_no:
+					rowActionListener.onRadioButtonClick(group, checkedId, position,
+							PDroidSettingListFragment.OnDetailRowActionListener.CheckedOption.NO);
+					break;
+				}
+				notifyDataSetChanged();
 			}
-			notifyDataSetChanged();
 		}
 	};
+	
 	
 	private class HelpButtonClickListener implements OnClickListener {
 		@Override

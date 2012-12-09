@@ -91,7 +91,7 @@ abstract class PDroidSettingListFragment extends Fragment {
 	
 	public interface OnDetailRowActionListener {
 		enum CheckedOption {NO_CHANGE, ALLOW, DENY, YES, NO, CUSTOM, CUSTOMLOCATION, RANDOM};
-		public void onCheckboxChange(RadioGroup group, int checkedId, int position, CheckedOption checkedOption);
+		public void onRadioButtonClick(RadioGroup group, int checkedId, int position, CheckedOption checkedOption);
 		public void onInfoButtonPressed(int position);
 	}
 	
@@ -126,6 +126,10 @@ abstract class PDroidSettingListFragment extends Fragment {
 	 */
 	public abstract String getTitle();
 	
+	OnDetailRowActionListener getRowCallback() {
+		return new DetailRowActionHandler();
+	}
+	
 	boolean doUp() { return doClose(); }
 	
 	@Override
@@ -141,8 +145,7 @@ abstract class PDroidSettingListFragment extends Fragment {
         	callback = null;
         }
         
-        this.rowCallback = new DetailRowActionHandler();
-
+        this.rowCallback = getRowCallback();
 	}
 	
     @Override
@@ -268,7 +271,7 @@ abstract class PDroidSettingListFragment extends Fragment {
 	class DetailRowActionHandler implements OnDetailRowActionListener {
 		
 		@Override
-		public void onCheckboxChange(RadioGroup group, int checkedId,
+		public void onRadioButtonClick(RadioGroup group, int checkedId,
 				int position, CheckedOption checkedOption) {
 			if (settingList == null || settingList.size() <= position || position < 0) {
 				return;
