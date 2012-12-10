@@ -68,11 +68,9 @@
 		<string name="preferences_restore_title">Wiederherstellen</string>
 		<string name="preferences_restore_summary">Einstellungen aus einer Sicherung wiederherstellen</string>
 
-		<!-- start needs translation -->
-		<string name="preferences_heading_global_operations">Global operations</string> <!-- heading for things like 'delete all settings' -->
-		<string name="preferences_global_delete_title">Purge settings</string>
-		<string name="preferences_global_delete_summary">Remove all PDroid settings for all apps</string>
-		<!-- start needs translation -->
+		<string name="preferences_heading_global_operations">Allgemeine Aktionen</string> <!-- heading for things like 'delete all settings' -->
+		<string name="preferences_global_delete_title">Einstellungen l&#246;schen</string>
+		<string name="preferences_global_delete_summary">Alle PDroid Einstelungen von allen Apps l&#246;schen</string>
 	<!-- end entries in the preferences text list -->
 
 		<string name="preferences_chooselangage_alerttitle">Sprache ausw&#228;hlen</string> <!-- text for language selection dialog box (when you select 'change language' option)  -->
@@ -114,13 +112,11 @@
 		<string name="backup_complete_fail_writing">Erstellung der Sicherungsdatei fehlgeschlagen</string>
 		<string name="backup_complete_fail_other">Die Sicherung konnte nicht erstellt werden</string>
 		
-		<!-- start needs translation -->
-		<string name="global_delete_confirm_title">Delete all settings</string>
-		<string name="global_delete_confirm_message">Are you sure you want to remove all current PDroid settings for all apps on this device? (Note that this does not remove backup files)</string>
-		<string name="global_delete_progress_dialog_title">Deleting&#8230;</string>
-		<string name="global_delete_progress_dialog_message">Deleting all PDroid settings</string>
-		<string name="global_delete_complete_message">All PDroid settings have been deleted</string>
-		<!-- end needs translation -->
+		<string name="global_delete_confirm_title">Alle Einstellungen l&#246;schen</string>
+		<string name="global_delete_confirm_message">Bist du sicher, dass du alle PDroid Einstellungn von allen Apps l&#246;schen m&#246;chtest? (Backups werden dadurch nicht gel&#246;scht)</string>
+		<string name="global_delete_progress_dialog_title">L&#246;sche&#8230;</string>
+		<string name="global_delete_progress_dialog_message">L&#246;sche alle PDroid Einstellungen</string>
+		<string name="global_delete_complete_message">Alle PDroid Einstellungen wurden gel&#246;scht</string>
 	<!-- end Preferences list screen -->
 
 	<!-- application details (i.e. settings) screen;
