@@ -34,6 +34,8 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.privacy.PrivacySettings;
+import android.privacy.PrivacySettingsManager;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -312,6 +314,36 @@ public class PreferencesListFragment extends ListFragment {
 							}
 						})
 				);
+
+		preferences.add(
+				new PreferenceHeader(getString(R.string.preferences_heading_global_operations))
+				);
+		preferences.add(
+				new Preference(
+						getString(R.string.preferences_global_delete_title),
+						getString(R.string.preferences_global_delete_summary),
+						null,
+						new ListItemClickListener() {
+							@Override
+							public void onListItemClick (ListView l, View v, int position, long id) {
+								deleteAllSettings();
+							}
+						})
+				);
+		/*
+		preferences.add(
+				new Preference(
+						getString(R.string.preferences_global_apply_to_all_title),
+						getString(R.string.preferences_global_apply_to_all),
+						null,
+						new ListItemClickListener() {
+							@Override
+							public void onListItemClick (ListView l, View v, int position, long id) {
+								applySettingsToAll();
+							}
+						})
+				);
+				*/
 	}
 	
     @Override
@@ -989,4 +1021,38 @@ public class PreferencesListFragment extends ListFragment {
 		fileIn.close();
 		return bytes;
     }
+    
+    private void deleteAllSettingsConfirm() {
+		final Context thisContext = context;
+		showConfirmationDialog(
+				getString(R.string.global_delete_confirm_title),
+				getString(R.string.global_delete_confirm_message),
+				new DialogHelper.DialogCallback() {
+					@Override
+					public void onDialogSuccess() {
+						deleteAllSettings();	
+					}
+    			}
+			);
+    }
+    
+    private void deleteAllSettings() {
+		DialogHelper.showProgressDialog(
+				context,
+				context.getString(R.string.global_delete_progress_dialog_title),
+				context.getString(R.string.global_delete_progress_dialog_message));
+
+		ApplicationsDeleteSettingsTask deleteAllSettingsTask =
+				new ApplicationsDeleteSettingsTask(context,
+						new IAsyncTaskCallback<Void>() {
+							@Override
+							public void asyncTaskComplete(Void param) {
+								DialogHelper.dismissProgressDialog();
+								Toast.makeText(context, R.string.global_delete_complete_message, Toast.LENGTH_SHORT).show();
+							}
+						});
+		deleteAllSettingsTask.execute((Application [])null);
+    }
+    
+    private void updateAllSettings() {}
 }

@@ -485,7 +485,7 @@ public class DBInterface {
 					" FROM " + PermissionApplicationTable.TABLE_NAME +
 					" WHERE " + PermissionApplicationTable.TABLE_NAME + "." + PermissionApplicationTable.COLUMN_NAME_PACKAGENAME + " = ?" + 
 					") " +
-					"ORDER BY " + SettingTable.TABLE_NAME + "." + SettingTable.COLUMN_NAME_SORT + ";";
+					"ORDER BY " + SettingTable.TABLE_NAME + "." + SettingTable.COLUMN_NAME_SORT + " ASC;";
 
 	public static final String QUERY_GET_SETTINGS_FUNCTION_NAMES = "SELECT " +
 			SettingTable.TABLE_NAME + "." + SettingTable.COLUMN_NAME_SETTINGFUNCTIONNAME + "," + 
@@ -501,7 +501,8 @@ public class DBInterface {
 			SettingTable.TABLE_NAME + "." + SettingTable.COLUMN_NAME_GROUP_ID + ", " +
 			SettingTable.TABLE_NAME + "." + SettingTable.COLUMN_NAME_GROUP_TITLE + ", " +
 			SettingTable.TABLE_NAME + "." + SettingTable.COLUMN_NAME_OPTIONS + ", " +
-			SettingTable.TABLE_NAME + "." + SettingTable.COLUMN_NAME_TRUSTED_OPTION +
+			SettingTable.TABLE_NAME + "." + SettingTable.COLUMN_NAME_TRUSTED_OPTION + ", " +
+			SettingTable.TABLE_NAME + "." + SettingTable.COLUMN_NAME_SORT +
 			" FROM " + SettingTable.TABLE_NAME;
 
 	
@@ -629,19 +630,24 @@ public class DBInterface {
 			write_db.update(ApplicationStatusTable.TABLE_NAME, ApplicationStatusTable.getContentValues(app), ApplicationStatusTable.TABLE_NAME + "." + ApplicationStatusTable.COLUMN_NAME_PACKAGENAME + " = ?", new String [] {app.getPackageName()});
 			
 			write_db.delete(PermissionApplicationTable.TABLE_NAME, PermissionApplicationTable.TABLE_NAME + "." + PermissionApplicationTable.COLUMN_NAME_PACKAGENAME + " = ?", new String [] {app.getPackageName()});
-			InsertHelper permissionsInsertHelper = new InsertHelper(write_db, DBInterface.PermissionApplicationTable.TABLE_NAME);
-			int [] permissionsTableColumnNumbers = new int[2];
-			//I was thinking about using enums instead of static finals here, but apparently the performance in android for enums is not so good??
-			permissionsTableColumnNumbers[PermissionApplicationTable.OFFSET_PACKAGENAME] = permissionsInsertHelper.getColumnIndex(DBInterface.PermissionApplicationTable.COLUMN_NAME_PACKAGENAME);
-			permissionsTableColumnNumbers[PermissionApplicationTable.OFFSET_PERMISSION] = permissionsInsertHelper.getColumnIndex(DBInterface.PermissionApplicationTable.COLUMN_NAME_PERMISSION);
+			if (app.getPermissions() != null) {
+				if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG, "DBInterface.updateApplicationRecord: " + app.getPackageName() + " has permissions");
+				InsertHelper permissionsInsertHelper = new InsertHelper(write_db, DBInterface.PermissionApplicationTable.TABLE_NAME);
+				int [] permissionsTableColumnNumbers = new int[2];
+				//I was thinking about using enums instead of static finals here, but apparently the performance in android for enums is not so good??
+				permissionsTableColumnNumbers[PermissionApplicationTable.OFFSET_PACKAGENAME] = permissionsInsertHelper.getColumnIndex(DBInterface.PermissionApplicationTable.COLUMN_NAME_PACKAGENAME);
+				permissionsTableColumnNumbers[PermissionApplicationTable.OFFSET_PERMISSION] = permissionsInsertHelper.getColumnIndex(DBInterface.PermissionApplicationTable.COLUMN_NAME_PERMISSION);
 			
-			for (String permission : app.getPermissions()) {
-				permissionsInsertHelper.prepareForInsert();
-				permissionsInsertHelper.bind(permissionsTableColumnNumbers[PermissionApplicationTable.OFFSET_PACKAGENAME], app.getPackageName());
-				permissionsInsertHelper.bind(permissionsTableColumnNumbers[PermissionApplicationTable.OFFSET_PERMISSION], permission);
-				permissionsInsertHelper.execute();
+				for (String permission : app.getPermissions()) {
+					permissionsInsertHelper.prepareForInsert();
+					permissionsInsertHelper.bind(permissionsTableColumnNumbers[PermissionApplicationTable.OFFSET_PACKAGENAME], app.getPackageName());
+					permissionsInsertHelper.bind(permissionsTableColumnNumbers[PermissionApplicationTable.OFFSET_PERMISSION], permission);
+					permissionsInsertHelper.execute();
+				}
+				permissionsInsertHelper.close();
+			} else {
+				if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG, "DBInterface.updateApplicationRecord: " + app.getPackageName() + " has no permissions");
 			}
-			permissionsInsertHelper.close();
 			
 			write_db.setTransactionSuccessful();
 		} catch (Exception e) {

@@ -26,6 +26,8 @@
  */
 package net.digitalfeed.pdroidalternative;
 
+import java.util.Map;
+
 import android.content.Context;
 import android.os.AsyncTask;
 import android.privacy.PrivacySettingsManager;
@@ -60,9 +62,21 @@ public class ApplicationsDeleteSettingsTask extends AsyncTask<Application, Void,
 	
 	@Override
 	protected Void doInBackground(Application... inApps) {
+		//this is here just to trigger a purge when completing removal of *all* settings
+		boolean purgeOnComplete = false;
 		if (inApps == null) {
-			throw new NullPointerException("No apps were provided");
+			//throw new NullPointerException("No apps were provided");
+			//if no apps provided, then wipe settings for ALL apps.
+			//to do this, we use the ApplicationsDatabaseFiller task to get all the apps,
+			//but run the function directly rather than using .execute because we want to block while
+			//waiting for a response.
+			//TODO: Move the code for these many AsyncTasks out of the tasks so they are easier to use
+			ApplicationsObjectLoaderTask filler = new ApplicationsObjectLoaderTask(context, null);
+			Map<String, Application> appMap = filler.doInBackground((Void)null);
+			inApps = appMap.values().toArray(new Application [appMap.size()]);
+			purgeOnComplete = true;
 		}
+		
 		
 		PrivacySettingsManager privacySettingsManager = (PrivacySettingsManager)context.getSystemService("privacy");
 		DBInterface dbinterface = DBInterface.getInstance(context);
@@ -72,6 +86,11 @@ public class ApplicationsDeleteSettingsTask extends AsyncTask<Application, Void,
 			app.setHasSettings(false);
 			app.setIsUntrusted(false); //An app with no settings is not untrusted
 			dbinterface.updateApplicationRecord(app);
+		}
+		
+		if (purgeOnComplete) {
+			//If the input list of applications was null (i.e. delete ALL settings) then we should also purge unused settings from the core 
+			privacySettingsManager.purgeSettings();
 		}
 		return null;
 	}
