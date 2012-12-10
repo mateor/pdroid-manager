@@ -37,14 +37,12 @@
 		<string name="applist_popupmenu_set_trusted_values">Alle erlauben</string>
 		<string name="applist_popupmenu_set_default_values">Auf Standard zur&#252;cksetzen</string>
 		<string name="applist_popupmenu_delete_settings">Einstellungen l&#246;schen</string>
-		<!-- start needs translation -->
-		<string name="applist_popupmenu_customise_settings">Custom settings</string>
+		<string name="applist_popupmenu_customise_settings">Eigene Einstellungen</string>
 		
 		<!-- Heading for the actionbar when in multiple-select mode (i.e. selecting apps for a batch change) -->
-		<string name="applist_actionbar_batchselect_none">Select apps</string> <!-- Shown in the header when no apps selected -->
-		<string name="applist_actionbar_batchselect_singular">One app selected</string> <!-- Shown in header when single app selected -->
-		<string name="applist_actionbar_batchselect_plural">apps selected</string> <!-- Shown in header when >1 app selected (i.e. shows as "5 apps selected") -->
-		<!-- end needs translation -->
+		<string name="applist_actionbar_batchselect_none">Apps ausw&#228;hlen</string> <!-- Shown in the header when no apps selected -->
+		<string name="applist_actionbar_batchselect_singular">Eine App ausgew&#228;hlt</string> <!-- Shown in header when single app selected -->
+		<string name="applist_actionbar_batchselect_plural">Apps ausgew&#228;hlt</string> <!-- Shown in header when >1 app selected (i.e. shows as "5 apps selected") -->
 	<!-- end Application list screen -->
 
 	<!-- start Preferences list screen -->
@@ -53,10 +51,8 @@
 		<string name="preferences_heading_about">&#220;ber</string>
 		<string name="preferences_about_title">&#220;ber diese App</string>
 		<string name="preferences_about_summary">Appinformationen und Lizenz</string>
-		<!--  start needs translation -->
-		<string name="preferences_credits_title">Credits</string>
-		<string name="preferences_credits_summary">Creators and contributors</string>
-		<!-- end needs translation -->
+		<string name="preferences_credits_title">Danksagungen</string>
+		<string name="preferences_credits_summary">Entwickler und Mitwirkende</string>
 		<string name="preferences_openxdathread_title">Thread auf XDA</string>
 		<string name="preferences_openxdathread_summary">&#214;ffne den Thread auf XDA-Developers in deinem Browser</string>
 
@@ -121,9 +117,7 @@
 		<string name="detail_dialog_saving_message">Aktualisiere&#8230;</string> <!-- content for dialog box while saving -->
 		<string name="detail_dialog_loading_message">Einstellungen geladen</string> <!-- content for dialog box while loading -->
 
-		<!-- start needs translation -->
-		<string name="detail_actionbar_heading_batch">Settings to apply</string> <!-- the action bar heading displayed when in 'batch' mode -->
-		<!-- end needs translation -->		
+		<string name="detail_actionbar_heading_batch">Anzuwendende Einstellungen</string> <!-- the action bar heading displayed when in 'batch' mode -->
 		<string name="detail_actionbar_savebutton_title">Einstellungen speichern</string>
 		<string name="detail_actionbar_close_title">Schlie&#223;en ohne speichern</string>
 		<string name="detail_actionbar_delete_title">Einstellungen l&#246;schen</string>
@@ -134,15 +128,13 @@
 		<string name="detail_logonaccess_text">Zugriff protokollieren</string>
 		<string name="detail_customvalue_pretext">Benutzerdefiniert:</string>
 
-		<!-- start needs translation -->
-		<string name="detail_setting_option_nochange_contentdescription">No change</string>
-		<string name="detail_setting_option_allow_contentdescription">Set to allow</string>
-		<string name="detail_setting_option_deny_contentdescription">Set to deny</string>
-		<string name="detail_setting_option_random_contentdescription">Set to random</string>
-		<string name="detail_setting_option_custom_contentdescription">Set to custom</string>
-		<string name="detail_setting_option_yes_contentdescription">Set to yes</string>
-		<string name="detail_setting_option_no_contentdescription">Set to no</string>
-		<!-- end needs translation -->
+		<string name="detail_setting_option_nochange_contentdescription">Keine &#196;nderung</string>
+		<string name="detail_setting_option_allow_contentdescription">Setzen auf 'Erlauben'</string>
+		<string name="detail_setting_option_deny_contentdescription">Setzen auf 'Verweigern'</string>
+		<string name="detail_setting_option_random_contentdescription">Setzen auf 'Zuf&#228;llig'</string>
+		<string name="detail_setting_option_custom_contentdescription">Setzen auf 'Benutzerdefiniert'</string>
+		<string name="detail_setting_option_yes_contentdescription">Setzen auf 'Ja'</string>
+		<string name="detail_setting_option_no_contentdescription">Setzen auf 'Nein'</string>
 	<!-- end application details screen -->
 
 	<string name="help_dialog_OKtext">OK</string> <!-- help screen OK button - will be replaced by 'alert_dialog_ok' at some point -->
