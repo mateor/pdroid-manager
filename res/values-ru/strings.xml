@@ -169,8 +169,8 @@
 		<string name="detail_setting_option_deny_contentdescription">Запретить</string>
 		<string name="detail_setting_option_random_contentdescription">Случайно</string>
 		<string name="detail_setting_option_custom_contentdescription">Индивидуальные настройки</string>
-		<string name="detail_setting_option_yes_contentdescription">Установить 'Да'</string>
-		<string name="detail_setting_option_no_contentdescription">Установить 'Нет'</string>
+		<string name="detail_setting_option_yes_contentdescription">Установить \'Да\'</string>
+		<string name="detail_setting_option_no_contentdescription">Установить \'Нет\'</string>
 	<!-- end application details screen -->
 
 	<string name="help_dialog_OKtext">OK</string> <!-- help screen OK button - will be replaced by 'alert_dialog_ok' at some point -->
