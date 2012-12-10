@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	android:orientation="vertical" >
+	<TableRow
+	    android:layout_width="match_parent"
+		android:layout_height="wrap_content" >
+	<TextView
+	    android:id="@+id/appListMenu_appTypeSpinner_label"
+	    android:layout_width="100sp"
+	    android:layout_height="wrap_content"
+	    android:gravity="center_vertical"
+	    android:text="@string/applist_filter_apptype_label"
+	    />
+	<Spinner
+		android:id="@+id/appListMenu_appTypeSpinner"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content"
+		android:gravity="center_vertical"/>
+	</TableRow>
+	<TableRow
+	    android:layout_width="match_parent"
+		android:layout_height="wrap_content" >
+	<TextView
+	    android:id="@+id/appListMenu_filterByGroupSpinner_label"
+	    android:layout_width="100sp"
+	    android:layout_height="wrap_content"
+	    android:text="@string/applist_filter_settinggroup_label"
+	    />
+	<Spinner
+		android:id="@+id/appListMenu_filterByGroupSpinner"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content" />
+	</TableRow> 
+	<!-- <TableRow
+	    android:layout_width="match_parent"
+		android:layout_height="wrap_content" >
+	<TextView
+	    android:id="@+id/appListMenu_filterByStatusSpinner_label"
+	    android:layout_width="100sp"
+	    android:layout_height="wrap_content"
+	    android:text="@string/applist_filter_status_label"
+	    />
+	<Spinner
+		android:id="@+id/appListMenu_filterByStatusSpinner"
+		android:layout_width="wrap_content"
+		android:layout_height="wrap_content" />
+	</TableRow>
+-->
+</TableLayout>

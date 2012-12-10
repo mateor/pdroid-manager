@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/application_list_filter_summary"
+	android:layout_width="match_parent"
+	android:layout_height="wrap_content"
+	android:visibility="gone"
+	android:padding="10dp"
+	android:background="@drawable/application_list_filter_summary_border"
+	>
+<TextView
+    android:id="@+id/application_list_filter_summary_prefix"
+	android:layout_width="wrap_content"
+	android:layout_height="wrap_content"
+	android:text="@string/applist_filter_summary_prefix" />
+<TextView
+    android:id="@+id/application_list_filter_summary_text"
+	android:layout_width="wrap_content"
+	android:layout_height="wrap_content"
+	android:layout_toRightOf="@+id/application_list_filter_summary_prefix" />
+<ImageButton
+    android:id="@+id/application_list_filter_clear"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:src="@drawable/filter_clear"
+    android:layout_alignParentRight="true"
+    android:background="@android:color/transparent"
+    android:contentDescription="@string/applist_filter_clearfilters"
+    />
+</RelativeLayout>

@@ -24,30 +24,22 @@
  */
  
  /**
+ * Credit for the info on how to do this goes to: http://blog.webagesolutions.com/archives/161
  * @author Simeon J. Morgan <smorgan@digitalfeed.net>
  */
 -->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical" >
-			<include
-			    layout="@layout/application_list_filters_summary" 
-           	    android:layout_weight="2"
-           	    />
-			<include
-			    layout="@layout/application_list_filters" 
-			    android:id="@+id/application_list_filter"
-           	    android:layout_weight="2"
-           	    android:visibility="gone" />
-            <ListView
-                android:id="@+id/application_list"
-                android:layout_width="fill_parent"
-                android:layout_height="0dip"
-                android:fastScrollEnabled="true"
-                android:paddingLeft="2dp"
-                android:paddingRight="4dp"
-                android:layout_weight="1"
-                />
-</LinearLayout>
+<shape xmlns:android="http://schemas.android.com/apk/res/android" >
+    <stroke android:width="2dp" android:color="@color/toast_border" />
+    
+    <!--
+    I would like to be using the android theme, but it doesn't work for some reason I haven't puzzled out (causes java.lang.UnsupportedOperationException: Can't convert to color: type=0x2)  
+    <stroke android:width="1dp" android:color="?android:attr/colorForeground" />-->
+    <gradient
+        	android:startColor="@color/toast_background_gradientstart"
+        	android:endColor="@color/toast_background_gradientend"
+        	android:type="linear"
+        	android:angle="45"
+        	/>
+    <corners android:radius="6dp" />
+    <!-- <solid android:color="@color/toast_background_gradientend" /> -->
+</shape>

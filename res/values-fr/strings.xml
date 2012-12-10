@@ -68,6 +68,12 @@
 		<string name="applist_actionbar_batchselect_none">Select apps</string> <!-- Shown in the header when no apps selected -->
 		<string name="applist_actionbar_batchselect_singular">One app selected</string> <!-- Shown in header when single app selected -->
 		<string name="applist_actionbar_batchselect_plural">apps selected</string> <!-- Shown in header when >1 app selected (i.e. shows as "5 apps selected") -->
+
+		<!-- Text for the 'filtering' options -->
+		<string name="applist_filter_summary_prefix">Filtering by&#160;</string> <!-- prefix before the brief 'filter helper' to let you know what filters you have selected -->
+		<string name="applist_filter_apptype_label">Application type:</string> <!-- label for the 'app type' filter spinner -->
+		<string name="applist_filter_settinggroup_label">Includes settings:</string> <!-- label for the 'setting group' filter spinner. I can't think of better text for this, even though what I have put in is bad -->
+		<string name="applist_filter_status_label">Status:</string> <!-- label for the 'status' filter spinner, which will contain 'No settings', 'Trusted' and 'Untrusted' -->
 		<!-- end needs translation -->
 	<!-- end Application list screen -->
 

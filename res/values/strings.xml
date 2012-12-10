@@ -43,6 +43,7 @@
 		<string name="app_list_menu_search">Search</string> <!--  the caption for a 'search' option, which will appear in the application list action bar -->
 		<string name="app_list_menu_refresh">Regenerate Application List</string> <!-- action bar button to reload the list of apps -->
 		<string name="app_list_menu_preferences">Preferences</string> <!-- action bar button to open the preferences screen -->
+		<string name="app_list_menu_filter">Filter</string> <!-- action bar button to open the filtering interface -->
 		<string name="title_activity_main">PDroid Manager</string> <!-- title in the action bar of the app list screen: not visible? -->
 
 		<string name="app_list_app_icon_text">Application icon</string>
@@ -63,7 +64,15 @@
 		<!-- Heading for the actionbar when in multiple-select mode (i.e. selecting apps for a batch change) -->
 		<string name="applist_actionbar_batchselect_none">Select apps</string> <!-- Shown in the header when no apps selected -->
 		<string name="applist_actionbar_batchselect_singular">One app selected</string> <!-- Shown in header when single app selected -->
-		<string name="applist_actionbar_batchselect_plural">apps selected</string> <!-- Shown in header when >1 app selected (i.e. shows as "5 apps selected") -->		
+		<string name="applist_actionbar_batchselect_plural">apps selected</string> <!-- Shown in header when >1 app selected (i.e. shows as "5 apps selected") -->
+		
+		<!-- Text for the 'filtering' options -->
+		<string name="applist_filter_summary_prefix">Filtering by&#160;</string> <!-- prefix before the brief 'filter helper' to let you know what filters you have selected -->
+		<string name="applist_filter_apptype_label">Application type:</string> <!-- label for the 'app type' filter spinner -->
+		<string name="applist_filter_settinggroup_label">Includes settings:</string> <!-- label for the 'setting group' filter spinner. I can't think of better text for this, even though what I have put in is bad -->
+		<string name="applist_filter_status_label">Status:</string> <!-- label for the 'status' filter spinner, which will contain 'No settings', 'Trusted' and 'Untrusted' -->
+		
+		<string name="applist_filter_clearfilters">Clear filters</string> <!-- alternate text for the 'clear filters' button -->
 	<!-- end Application list screen -->
 
 	<!-- start Preferences list screen -->

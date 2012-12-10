@@ -28,23 +28,19 @@
  */
 -->
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-	<item
-          android:id="@+id/appListMenu_appTypeSpinner"
-          android:actionViewClass="android.widget.Spinner"
-          android:showAsAction="always"/>
-	<item
-          android:id="@+id/appListMenu_filterByGroupSpinner"
-          android:actionViewClass="android.widget.Spinner"
-          android:showAsAction="always"/>
 	<!-- <item android:id="@+id/appListMenuSearch"
           android:title="@string/app_list_menu_search"
           android:icon="@android:drawable/ic_menu_search"
-          android:showAsAction="collapseActionView|ifRoom"
-          android:actionViewClass="android.widget.SearchView" /> -->
+          android:showAsAction="always"
+          android:actionViewClass="android.widget.SearchView" />-->
+	<item android:id="@+id/appListMenuFilter"
+          android:title="@string/app_list_menu_filter"
+          android:icon="@drawable/actionbar_filter"
+          android:showAsAction="always" />
 	<item android:id="@+id/appListMenuRefresh"
           android:title="@string/app_list_menu_refresh"
           android:icon="@drawable/ic_menu_refresh"
-          android:showAsAction="collapseActionView|ifRoom" />
+          android:showAsAction="always" />
 	<!-- 
 	<item android:id="@+id/app_list_menu_preferences"
           android:title="@string/app_list_menu_preferences"

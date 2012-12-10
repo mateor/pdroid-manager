@@ -49,7 +49,8 @@ public class AppListActivity extends Activity implements AppListFragment.OnAppli
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if(GlobalConstants.LOG_FUNCTION_TRACE) Log.d(GlobalConstants.LOG_TAG, "AppListActivity:onCreate");
-
+        getActionBar().setDisplayShowTitleEnabled(false);
+        getActionBar().setTitle(null);
         LanguageHelper.updateLanguageIfRequired(this);
         
         setContentView(R.layout.application_list_frame_layout);

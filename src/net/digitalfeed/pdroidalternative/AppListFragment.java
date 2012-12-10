@@ -1,9 +1,16 @@
 package net.digitalfeed.pdroidalternative;
 
+import java.lang.reflect.Array;
+import java.security.InvalidParameterException;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+
+import org.w3c.dom.Text;
 
 import net.digitalfeed.pdroidalternative.PermissionSettingHelper.TrustState;
 
@@ -14,6 +21,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.ActionMode;
@@ -22,14 +30,17 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.SpinnerAdapter;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemSelectedListener;
+import android.widget.TextView;
 
 public class AppListFragment extends Fragment {
 
@@ -45,6 +56,10 @@ public class AppListFragment extends Fragment {
 	private static final int LONGPRESS_MENU_DELETE_SETTINGS = 2;
 	private static final int LONGPRESS_MENU_MODIFY_ALLSETTINGS = 3;
 	
+	private static final int FILTER_APPTYPE = 1;
+	private static final int FILTER_GROUP = 2;
+	private static final int FILTER_STATUS = 4;
+	
 	// Used to specify which, if any, type of progress dialog should appear on start
 	private static final int DIALOG_NONE = 0;
 	private static final int DIALOG_LINEAR = 1;
@@ -58,6 +73,13 @@ public class AppListFragment extends Fragment {
 	
 	View rootView; // view for the root view element of this listing 
 	ListView listView; // view for the list of applications
+	View filterView; // view for the layout containing the filters
+	View filterSummaryView; // view for the 'filters in use' text layout
+	TextView filterSummaryText; // text in the 'filter summary' pane
+	
+	Spinner appTypeSpinner;
+	Spinner groupSpinner;
+	
 	AppListAdapter appListAdapter; // array adapter for listView
 	//ActionBar actionBar;
 	
@@ -77,10 +99,13 @@ public class AppListFragment extends Fragment {
 	
 	int showDialogOnStart = DIALOG_NONE;
 	
-	String currentAppType; // stores the currently displayed app type: Preferences.APPLIST_LAST_APP_TYPE_[USER|SYSTEM|ALL]
+	String currentAppTypeFilter; // stores the currently displayed app type: Preferences.APPLIST_LAST_APP_TYPE_[USER|SYSTEM|ALL]
 	String currentSettingGroup; // title of the current setting group filter
+	String currentStatusFilter; // not used yet
 	String settingGroupAllOption; // string of the 'all' option for the setting groups
 	List<String> settingGroups; // list of all the setting group titles, used for the setting group spinner
+	List<String> appTypeOptions; // list of all the app type options, for the app type spinner
+	int currentFilterBits;
 	
 	@Override
 	public void onAttach (Activity activity) {
@@ -107,7 +132,10 @@ public class AppListFragment extends Fragment {
         prefs = new Preferences(context);
         
       //get the most recently selected option from the 'App Type' list, and set as current
-        currentAppType = prefs.getLastAppListType();
+        currentAppTypeFilter = prefs.getLastAppListType();
+        if (!currentAppTypeFilter.equals(Preferences.APPLIST_LAST_APP_TYPE_ALL)) {
+        	currentFilterBits |= FILTER_APPTYPE;
+        }
         
         /*
          * If the database version has changed, we will need to rebuild the application cache 
@@ -141,6 +169,18 @@ public class AppListFragment extends Fragment {
 		if(GlobalConstants.LOG_FUNCTION_TRACE) Log.d(GlobalConstants.LOG_TAG, "AppListFragment:OnCreateView");
 		this.rootView = inflater.inflate(R.layout.activity_main, container);
 		this.listView = (ListView)this.rootView.findViewById(R.id.application_list);
+		this.filterView = this.rootView.findViewById(R.id.application_list_filter);
+		this.filterSummaryView = this.rootView.findViewById(R.id.application_list_filter_summary);
+		this.filterSummaryText = (TextView)this.filterSummaryView.findViewById(R.id.application_list_filter_summary_text);
+		ImageButton clearFilterButton = (ImageButton)this.filterSummaryView.findViewById(R.id.application_list_filter_clear);
+		clearFilterButton.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				clearFilters();
+				updateFilterSummary();
+			}
+		});		
 		return this.rootView;
 	}
 	
@@ -154,6 +194,8 @@ public class AppListFragment extends Fragment {
 	public void onViewCreated (View view, Bundle savedInstanceState) {
 		super.onViewCreated(view, savedInstanceState);
 		if(GlobalConstants.LOG_FUNCTION_TRACE) Log.d(GlobalConstants.LOG_TAG, "AppListFragment:OnViewCreated");
+		loadSpinners();
+		updateFilterSummary();
         listView.setOnItemClickListener(new OnItemClickListener() {
 
 			@Override
@@ -173,12 +215,12 @@ public class AppListFragment extends Fragment {
 		super.onStart();
 		if(GlobalConstants.LOG_FUNCTION_TRACE) Log.d(GlobalConstants.LOG_TAG, "AppListFragment:OnStart");
 
-		switch (showDialogOnStart) {
+		/*
 		case DIALOG_LINEAR:
 			DialogHelper.showProgressDialog(context, null, getString(R.string.applist_dialogtext_generateapplist), ProgressDialog.STYLE_HORIZONTAL);
 		case DIALOG_NONE:
 			DialogHelper.dismissProgressDialog();
-		}
+		}*/
 		
 		// if the application list is loaded, and the listView has been build (which it should have)
 		// but the adapter has not been set, we should set it now.
@@ -230,75 +272,7 @@ public class AppListFragment extends Fragment {
 	public void onCreateOptionsMenu (Menu menu, MenuInflater inflater) {
 		if(GlobalConstants.LOG_FUNCTION_TRACE) Log.d(GlobalConstants.LOG_TAG, "AppListFragment:onCreateOptionsMenu");
         inflater.inflate(R.menu.activity_main, menu);
-        
-        /*
-         * Get a handle to the application type list spinner, and load the list of options
-         * from a resource file. The order of items in this resource file must match the constants
-         * (e.g. APP_TYPE_USER_OPTION_POSITION) in this java file.
-         */
-        MenuItem mSpinner = menu.findItem(R.id.appListMenu_appTypeSpinner);
-        final Spinner appTypeSpinner = (Spinner)mSpinner.getActionView();
-        final SpinnerAdapter spinnerAdapter = (SpinnerAdapter) ArrayAdapter.createFromResource(context,
-				R.array.app_type_selection_options,
-				android.R.layout.simple_spinner_dropdown_item);
-        appTypeSpinner.setAdapter(spinnerAdapter);
-        /*
-         * Set the app spinner to be the 'current' option
-         */
-        if (currentAppType.equals(Preferences.APPLIST_LAST_APP_TYPE_USER)) {
-        	appTypeSpinner.setSelection(APP_TYPE_USER_OPTION_POSITION);
-        } else if (currentAppType.equals(Preferences.APPLIST_LAST_APP_TYPE_SYSTEM)) {
-        	appTypeSpinner.setSelection(APP_TYPE_SYSTEM_OPTION_POSITION);
-        } else if (currentAppType.equals(Preferences.APPLIST_LAST_APP_TYPE_ALL)) {
-        	appTypeSpinner.setSelection(APP_TYPE_ALL_OPTION_POSITION);
-        }
-        // Add the handler for the spinner option being changed
-        appTypeSpinner.setOnItemSelectedListener(new AppTypeSpinnerListener());
-		
-        
-        /*
-         * Load the setting group titles and present them in a spinner for filtering
-         */
-        //TODO: move the query parts of this off into the DBInterface, where they really belong
-        // It may be better to create a specific adapter for this, since we are relying on searching by the group titles
-        mSpinner = menu.findItem(R.id.appListMenu_filterByGroupSpinner);
-        final Spinner groupSpinner = (Spinner)mSpinner.getActionView();
-        
-        //get a list of all the setting groups from the database
-        SQLiteDatabase db = DBInterface.getInstance(context).getDBHelper().getReadableDatabase();
-        Cursor groupNamesCursor = db.rawQuery("SELECT DISTINCT " + DBInterface.SettingTable.COLUMN_NAME_GROUP_TITLE + " FROM " + DBInterface.SettingTable.TABLE_NAME + " ORDER BY " + DBInterface.SettingTable.COLUMN_NAME_GROUP_TITLE, null);
-        if (groupNamesCursor == null || groupNamesCursor.getCount() < 1) {
-        	throw new DatabaseUninitialisedException("AppListActivity: No settings groups found.");
-        }
-        
-        //if there is already a list of settings groups (although will this ever happen??)
-        //clear it; otherwise initialise an arraylist for it
-        if (this.settingGroups == null) {
-        	this.settingGroups = new ArrayList<String>(groupNamesCursor.getCount() + 1);
-        } else {
-        	this.settingGroups.clear();
-        }
-        this.settingGroupAllOption = context.getResources().getString(R.string.applist_setting_filter_spinner_all_option_title);
-        this.settingGroups.add(this.settingGroupAllOption);
-        if (groupNamesCursor.moveToFirst()) {
-	    	int groupTitleColumnNum = groupNamesCursor.getColumnIndex(DBInterface.SettingTable.COLUMN_NAME_GROUP_TITLE);
-	    	do {
-	    		settingGroups.add(groupNamesCursor.getString(groupTitleColumnNum));
-	    	} while (groupNamesCursor.moveToNext());
-    	}
-        
-        groupNamesCursor.close();
-        //db.close();
-        //Create an array adapter for the spinner from the values loaded from the database, and assign to the spinner
-        final SpinnerAdapter groupSpinnerAdapter = (SpinnerAdapter) new ArrayAdapter<String>(context, android.R.layout.simple_spinner_dropdown_item, settingGroups);
-        groupSpinner.setAdapter(groupSpinnerAdapter);
-
-        //Add handler for when the selected option changes
-        groupSpinner.setOnItemSelectedListener(new GroupSpinnerListener());
     }
-	
-	
-	
 	
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -308,6 +282,9 @@ public class AppListFragment extends Fragment {
 	    	switch (item.getItemId()) {
 	    	case R.id.appListMenuRefresh:
 	    		rebuildApplicationList();
+	    		return true;
+	    	case R.id.appListMenuFilter:
+	    		toggleFilterVisibility();
 	    		return true;
 	    	}
     	}
@@ -376,15 +353,15 @@ public class AppListFragment extends Fragment {
 		queryBuilder.addColumns(AppQueryBuilder.COLUMN_TYPE_PACKAGENAME); //only need the package names to look up in the hashmap
 		
 		//if the current setting group == the all option, then don't add a filter by group title
-		if (this.currentSettingGroup != null && this.currentSettingGroup != this.settingGroupAllOption) {
+		if (this.currentSettingGroup != null && !this.currentSettingGroup.equals(this.settingGroupAllOption)) {
 			queryBuilder.addFilter(AppQueryBuilder.FILTER_BY_SETTING_GROUP_TITLE, currentSettingGroup);
 		}
 		
-		if (currentAppType.equals(Preferences.APPLIST_LAST_APP_TYPE_SYSTEM)) {
+		if (currentAppTypeFilter.equals(Preferences.APPLIST_LAST_APP_TYPE_SYSTEM)) {
 			queryBuilder.addFilter(AppQueryBuilder.FILTER_BY_TYPE, AppQueryBuilder.APP_TYPE_SYSTEM);
-		} else if (currentAppType.equals(Preferences.APPLIST_LAST_APP_TYPE_USER)) {
+		} else if (currentAppTypeFilter.equals(Preferences.APPLIST_LAST_APP_TYPE_USER)) {
 			queryBuilder.addFilter(AppQueryBuilder.FILTER_BY_TYPE, AppQueryBuilder.APP_TYPE_USER);
-		} else if (currentAppType.equals(Preferences.APPLIST_LAST_APP_TYPE_ALL)) {
+		} else if (currentAppTypeFilter.equals(Preferences.APPLIST_LAST_APP_TYPE_ALL)) {
 			//This is just here for the moment for exclusion purposes
 		} else {
 			if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG,"You shouldn't be here!");
@@ -450,7 +427,8 @@ public class AppListFragment extends Fragment {
      */
     private void rebuildApplicationList() {
     	if(GlobalConstants.LOG_FUNCTION_TRACE) Log.d(GlobalConstants.LOG_TAG, "AppListFragment:rebuildApplicationList");
-    	showDialogOnStart = DIALOG_LINEAR;
+    	DialogHelper.showProgressDialog(context, null, getString(R.string.applist_dialogtext_generateapplist), ProgressDialog.STYLE_HORIZONTAL);
+    	//showDialogOnStart = DIALOG_LINEAR;
 
         // Start the AsyncTask to build the list of apps and write them to the database
     	ApplicationsDatabaseFillerTask appListGenerator = new ApplicationsDatabaseFillerTask(context, new AppListGeneratorCallback());
@@ -492,23 +470,26 @@ public class AppListFragment extends Fragment {
 				
 	 			switch (itemPosition) {
 				case APP_TYPE_USER_OPTION_POSITION:
-					if (!currentAppType.equals(Preferences.APPLIST_LAST_APP_TYPE_USER)) {
+					if (!currentAppTypeFilter.equals(Preferences.APPLIST_LAST_APP_TYPE_USER)) {
 	        			prefs.setLastAppListType(Preferences.APPLIST_LAST_APP_TYPE_USER);
-						currentAppType = Preferences.APPLIST_LAST_APP_TYPE_USER;
+						currentAppTypeFilter = Preferences.APPLIST_LAST_APP_TYPE_USER;
+						currentFilterBits |= FILTER_APPTYPE;
 						loadApplicationList();
 					}
 					break;
 				case APP_TYPE_SYSTEM_OPTION_POSITION:
-					if (!currentAppType.equals(Preferences.APPLIST_LAST_APP_TYPE_SYSTEM)) {
+					if (!currentAppTypeFilter.equals(Preferences.APPLIST_LAST_APP_TYPE_SYSTEM)) {
 						prefs.setLastAppListType(Preferences.APPLIST_LAST_APP_TYPE_SYSTEM);
-						currentAppType = Preferences.APPLIST_LAST_APP_TYPE_SYSTEM;
+						currentAppTypeFilter = Preferences.APPLIST_LAST_APP_TYPE_SYSTEM;
+						currentFilterBits |= FILTER_APPTYPE;
 						loadApplicationList();
 					}
 					break;
 				case APP_TYPE_ALL_OPTION_POSITION:
-					if (!currentAppType.equals(Preferences.APPLIST_LAST_APP_TYPE_ALL)) {
+					if (!currentAppTypeFilter.equals(Preferences.APPLIST_LAST_APP_TYPE_ALL)) {
 						prefs.setLastAppListType(Preferences.APPLIST_LAST_APP_TYPE_ALL);
-						currentAppType = Preferences.APPLIST_LAST_APP_TYPE_ALL;
+						currentAppTypeFilter = Preferences.APPLIST_LAST_APP_TYPE_ALL;
+						currentFilterBits &= ~FILTER_APPTYPE;
 						loadApplicationList();
 					}
 					break;
@@ -528,8 +509,13 @@ public class AppListFragment extends Fragment {
 		@Override
 		public void onItemSelected(AdapterView<?> parent, View view, int itemPosition,
 				long id) {
-			if (readyForInput) {        		
+			if (readyForInput) {
 				currentSettingGroup = settingGroups.get(itemPosition);
+				if (currentSettingGroup == settingGroupAllOption) {
+					currentFilterBits &= ~FILTER_GROUP;
+				} else {
+					currentFilterBits |= FILTER_GROUP;
+				}
 				loadApplicationList();
 			}
 		}
@@ -647,6 +633,143 @@ public class AppListFragment extends Fragment {
                     break;
             }
         }
+    }
+    
+    private void setFilterVisibility(int newVisibilityState) {
+    	if (this.filterView != null) {
+    		switch (newVisibilityState) {
+    		case View.GONE:
+    			this.filterView.setVisibility(View.GONE);
+    			break;
+    		case View.VISIBLE:
+    			this.filterView.setVisibility(View.VISIBLE);
+    			break;
+    		default:
+    			throw new InvalidParameterException("Invalid visibility state");
+    		}
+    	}
+    }
+    
+    private void toggleFilterVisibility() {
+    	if (this.filterView != null) {
+			if (this.filterView.getVisibility() == View.GONE) {
+				this.filterView.setVisibility(View.VISIBLE);
+			} else {
+				this.filterView.setVisibility(View.GONE);
+			}
+			updateFilterSummary();
+    	}
+    }
+    
+    private void loadSpinners() {
+        /*
+         * Get a handle to the application type list spinner, and load the list of options
+         * from a resource file. The order of items in this resource file must match the constants
+         * (e.g. APP_TYPE_USER_OPTION_POSITION) in this java file.
+         */
+        appTypeSpinner = (Spinner)rootView.findViewById(R.id.appListMenu_appTypeSpinner);
+        appTypeOptions = Arrays.asList(getResources().getStringArray(R.array.app_type_selection_options));
         
+        final SpinnerAdapter spinnerAdapter = (SpinnerAdapter) new ArrayAdapter<String>(context,
+        		android.R.layout.simple_spinner_dropdown_item,
+        		appTypeOptions);
+
+        //final SpinnerAdapter spinnerAdapter = (SpinnerAdapter) ArrayAdapter.createFromResource(context,
+//				getResources().getStringArray(R.array.app_type_selection_options),
+//				android.R.layout.simple_spinner_dropdown_item);
+        appTypeSpinner.setAdapter(spinnerAdapter);
+        /*
+         * Set the app spinner to be the 'current' option
+         */
+        if (currentAppTypeFilter.equals(Preferences.APPLIST_LAST_APP_TYPE_USER)) {
+        	appTypeSpinner.setSelection(APP_TYPE_USER_OPTION_POSITION);
+        } else if (currentAppTypeFilter.equals(Preferences.APPLIST_LAST_APP_TYPE_SYSTEM)) {
+        	appTypeSpinner.setSelection(APP_TYPE_SYSTEM_OPTION_POSITION);
+        } else if (currentAppTypeFilter.equals(Preferences.APPLIST_LAST_APP_TYPE_ALL)) {
+        	appTypeSpinner.setSelection(APP_TYPE_ALL_OPTION_POSITION);
+        }
+        // Add the handler for the spinner option being changed
+        appTypeSpinner.setOnItemSelectedListener(new AppTypeSpinnerListener());
+		
+        
+        /*
+         * Load the setting group titles and present them in a spinner for filtering
+         */
+        //TODO: move the query parts of this off into the DBInterface, where they really belong
+        // It may be better to create a specific adapter for this, since we are relying on searching by the group titles
+        groupSpinner = (Spinner)rootView.findViewById(R.id.appListMenu_filterByGroupSpinner);
+        
+        //get a list of all the setting groups from the database
+        SQLiteDatabase db = DBInterface.getInstance(context).getDBHelper().getReadableDatabase();
+        Cursor groupNamesCursor = db.rawQuery("SELECT DISTINCT " + DBInterface.SettingTable.COLUMN_NAME_GROUP_TITLE + " FROM " + DBInterface.SettingTable.TABLE_NAME + " ORDER BY " + DBInterface.SettingTable.COLUMN_NAME_GROUP_TITLE, null);
+        if (groupNamesCursor == null || groupNamesCursor.getCount() < 1) {
+        	throw new DatabaseUninitialisedException("AppListActivity: No settings groups found.");
+        }
+        
+        //if there is already a list of settings groups (although will this ever happen??)
+        //clear it; otherwise initialise an arraylist for it
+        if (this.settingGroups == null) {
+        	this.settingGroups = new ArrayList<String>(groupNamesCursor.getCount() + 1);
+        } else {
+        	this.settingGroups.clear();
+        }
+        
+        this.settingGroupAllOption = context.getResources().getString(R.string.applist_setting_filter_spinner_all_option_title);
+        this.settingGroups.add(this.settingGroupAllOption);
+        if (groupNamesCursor.moveToFirst()) {
+	    	int groupTitleColumnNum = groupNamesCursor.getColumnIndex(DBInterface.SettingTable.COLUMN_NAME_GROUP_TITLE);
+	    	do {
+	    		settingGroups.add(groupNamesCursor.getString(groupTitleColumnNum));
+	    	} while (groupNamesCursor.moveToNext());
+    	}
+        
+        groupNamesCursor.close();
+        //db.close();
+        //Create an array adapter for the spinner from the values loaded from the database, and assign to the spinner
+        final SpinnerAdapter groupSpinnerAdapter = (SpinnerAdapter) new ArrayAdapter<String>(context, android.R.layout.simple_spinner_dropdown_item, settingGroups);
+        groupSpinner.setAdapter(groupSpinnerAdapter);
+
+        //Add handler for when the selected option changes
+        groupSpinner.setOnItemSelectedListener(new GroupSpinnerListener());
+        
+        updateFilterSummary();
+    }
+    
+    private void updateFilterSummary() {
+    	//if the actual filtering options are visible, the filter summary should not be 
+    	if (filterView.getVisibility() == View.VISIBLE) {
+    		filterSummaryView.setVisibility(View.GONE);
+    		return;
+    	}
+    	List<String> filters = new LinkedList<String>();
+    	if (0 != (this.currentFilterBits & FILTER_APPTYPE)) {
+    		filters.add("app type = " + currentAppTypeFilter);
+    	}
+    	if (0 != (this.currentFilterBits & FILTER_GROUP)) {
+    		filters.add("group = " + currentSettingGroup);
+    	}
+    	if (0 != (this.currentFilterBits & FILTER_STATUS)) {
+    		filters.add("status = " + currentStatusFilter);
+    	}
+    	
+    	if (filters.size() > 0) {
+    		this.filterSummaryText.setText(TextUtils.join(getString(R.string.detail_custom_value_spacer), filters));
+    	}
+    	
+    	if (this.currentFilterBits != 0) {
+    		filterSummaryView.setVisibility(View.VISIBLE);
+    	} else {
+    		filterSummaryView.setVisibility(View.GONE);
+    	}
+    }
+    
+    private void clearFilters() {
+    	currentFilterBits = 0;
+    	currentSettingGroup = settingGroupAllOption;
+    	groupSpinner.setSelection(settingGroups.indexOf(settingGroupAllOption));
+    	appTypeSpinner.setSelection(APP_TYPE_ALL_OPTION_POSITION);
+    	currentAppTypeFilter = Preferences.APPLIST_LAST_APP_TYPE_ALL;
+    	prefs.setLastAppListType(Preferences.APPLIST_LAST_APP_TYPE_ALL);
+    	loadApplicationList();
     }
 }
