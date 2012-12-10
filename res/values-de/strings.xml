@@ -129,12 +129,12 @@
 		<string name="detail_customvalue_pretext">Benutzerdefiniert:</string>
 
 		<string name="detail_setting_option_nochange_contentdescription">Keine &#196;nderung</string>
-		<string name="detail_setting_option_allow_contentdescription">Setzen auf 'Erlauben'</string>
-		<string name="detail_setting_option_deny_contentdescription">Setzen auf 'Verweigern'</string>
-		<string name="detail_setting_option_random_contentdescription">Setzen auf 'Zuf&#228;llig'</string>
-		<string name="detail_setting_option_custom_contentdescription">Setzen auf 'Benutzerdefiniert'</string>
-		<string name="detail_setting_option_yes_contentdescription">Setzen auf 'Ja'</string>
-		<string name="detail_setting_option_no_contentdescription">Setzen auf 'Nein'</string>
+		<string name="detail_setting_option_allow_contentdescription">Setzen auf \'Erlauben\'</string>
+		<string name="detail_setting_option_deny_contentdescription">Setzen auf \'Verweigern\'</string>
+		<string name="detail_setting_option_random_contentdescription">Setzen auf \'Zuf&#228;llig\'</string>
+		<string name="detail_setting_option_custom_contentdescription">Setzen auf \'Benutzerdefiniert\'</string>
+		<string name="detail_setting_option_yes_contentdescription">Setzen auf \'Ja\'</string>
+		<string name="detail_setting_option_no_contentdescription">Setzen auf \'Nein\'</string>
 	<!-- end application details screen -->
 
 	<string name="help_dialog_OKtext">OK</string> <!-- help screen OK button - will be replaced by 'alert_dialog_ok' at some point -->
