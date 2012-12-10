@@ -94,7 +94,13 @@
 		<string name="preferences_backup_summary">Create a backup of current settings</string>
 		<string name="preferences_restore_title">Restore</string>
 		<string name="preferences_restore_summary">Restore settings from a backup</string>
-		<!-- end entries in the preferences text list -->
+
+		<!-- start needs translation -->
+		<string name="preferences_heading_global_operations">Global operations</string> <!-- heading for things like 'delete all settings' -->
+		<string name="preferences_global_delete_title">Purge settings</string>
+		<string name="preferences_global_delete_summary">Remove all PDroid settings for all apps</string>
+		<!-- end needs translation -->
+	<!-- end entries in the preferences text list -->
 
 		<string name="preferences_chooselangage_alerttitle">Choose language</string> <!-- text for language selection dialog box (when you select 'change language' option)  -->
 
@@ -134,6 +140,14 @@
 		<string name="backup_complete_fail_signing">Backup failed: Signing of the backup failed</string>
 		<string name="backup_complete_fail_writing">Backup failed: The backup file could not be written</string>
 		<string name="backup_complete_fail_other">Backup failed: The backup file could not be generated</string>
+		<!-- end needs translation -->
+
+		<!-- start needs translation -->
+		<string name="global_delete_confirm_title">Delete all settings</string>
+		<string name="global_delete_confirm_message">Are you sure you want to remove all current PDroid settings for all apps on this device? (Note that this does not remove backup files)</string>
+		<string name="global_delete_progress_dialog_title">Deleting&#8230;</string>
+		<string name="global_delete_progress_dialog_message">Deleting all PDroid settings</string>
+		<string name="global_delete_complete_message">All PDroid settings have been deleted</string>
 		<!-- end needs translation -->
 	<!-- end Preferences list screen -->
 

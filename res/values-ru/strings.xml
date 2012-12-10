@@ -59,12 +59,12 @@
 		<string name="applist_popupmenu_set_default_values">Восстановить по-умолчанию</string>
 		<string name="applist_popupmenu_delete_settings">Удалить настройки</string>
 		<!-- start needs translation -->
-		<string name="applist_popupmenu_customise_settings">Custom settings</string>
+		<string name="applist_popupmenu_customise_settings">Пользовательские настройки</string>
 		
 		<!-- Heading for the actionbar when in multiple-select mode (i.e. selecting apps for a batch change) -->
-		<string name="applist_actionbar_batchselect_none">Select apps</string> <!-- Shown in the header when no apps selected -->
-		<string name="applist_actionbar_batchselect_singular">One app selected</string> <!-- Shown in header when single app selected -->
-		<string name="applist_actionbar_batchselect_plural">apps selected</string> <!-- Shown in header when >1 app selected (i.e. shows as "5 apps selected") -->
+		<string name="applist_actionbar_batchselect_none">Выберите приложения</string> <!-- Shown in the header when no apps selected -->
+		<string name="applist_actionbar_batchselect_singular">Выбрано одно приложение</string> <!-- Shown in header when single app selected -->
+		<string name="applist_actionbar_batchselect_plural">приложений выбрано</string> <!-- Shown in header when >1 app selected (i.e. shows as "5 apps selected") -->
 		<!-- end needs translation -->
 	<!-- end Application list screen -->
 
@@ -90,7 +90,13 @@
 		<string name="preferences_backup_summary">Создать резервную копию текущих настроек</string>
 		<string name="preferences_restore_title">Восстановление</string>
 		<string name="preferences_restore_summary">Восстановить настройки из резервной копии</string>
-		<!-- end entries in the preferences text list -->
+
+		<!-- start needs translation -->
+		<string name="preferences_heading_global_operations">Global operations</string> <!-- heading for things like 'delete all settings' -->
+		<string name="preferences_global_delete_title">Purge settings</string>
+		<string name="preferences_global_delete_summary">Remove all PDroid settings for all apps</string>
+		<!-- start needs translation -->
+	<!-- end entries in the preferences text list -->
 
 		<string name="preferences_chooselangage_alerttitle">Выбор языка</string> <!-- text for language selection dialog box (when you select 'change language' option)  -->
 
@@ -130,6 +136,14 @@
 		<string name="backup_complete_fail_signing">Ошибка резервного копирования: проблема цифровой подписи</string>
 		<string name="backup_complete_fail_writing">Ошибка резервного копирования: не возможно записать в файл</string>
 		<string name="backup_complete_fail_other">Ошибка резервного копирования: не возможно создать файл</string>
+		
+		<!-- start needs translation -->
+		<string name="global_delete_confirm_title">Delete all settings</string>
+		<string name="global_delete_confirm_message">Are you sure you want to remove all current PDroid settings for all apps on this device? (Note that this does not remove backup files)</string>
+		<string name="global_delete_progress_dialog_title">Deleting&#8230;</string>
+		<string name="global_delete_progress_dialog_message">Deleting all PDroid settings</string>
+		<string name="global_delete_complete_message">All PDroid settings have been deleted</string>
+		<!-- end needs translation -->
 	<!-- end Preferences list screen -->
 
 	<!-- application details (i.e. settings) screen;
@@ -142,7 +156,7 @@
 		<string name="detail_dialog_loading_message">Загрузка настроек</string> <!-- content for dialog box while loading -->
 
 		<!-- start needs translation -->
-		<string name="detail_actionbar_heading_batch">Settings to apply</string> <!-- the action bar heading displayed when in 'batch' mode -->
+		<string name="detail_actionbar_heading_batch">Настройки для применения</string> <!-- the action bar heading displayed when in 'batch' mode -->
 		<!-- end needs translation -->
 		<string name="detail_actionbar_savebutton_title">Сохранить настройки</string>
 		<string name="detail_actionbar_close_title">Закрыть без сохранения</string>
@@ -155,13 +169,13 @@
 		<string name="detail_customvalue_pretext">Индивидуально:</string>
 
 		<!-- start needs translation -->
-		<string name="detail_setting_option_nochange_contentdescription">No change</string>
-		<string name="detail_setting_option_allow_contentdescription">Set to allow</string>
-		<string name="detail_setting_option_deny_contentdescription">Set to deny</string>
-		<string name="detail_setting_option_random_contentdescription">Set to random</string>
-		<string name="detail_setting_option_custom_contentdescription">Set to custom</string>
-		<string name="detail_setting_option_yes_contentdescription">Set to yes</string>
-		<string name="detail_setting_option_no_contentdescription">Set to no</string>
+		<string name="detail_setting_option_nochange_contentdescription">Без изменений</string>
+		<string name="detail_setting_option_allow_contentdescription">Разрешить</string>
+		<string name="detail_setting_option_deny_contentdescription">Запретить</string>
+		<string name="detail_setting_option_random_contentdescription">Случайно</string>
+		<string name="detail_setting_option_custom_contentdescription">Индивидуальные настройки</string>
+		<string name="detail_setting_option_yes_contentdescription">Установить 'Да'</string>
+		<string name="detail_setting_option_no_contentdescription">Установить 'Нет'</string>
 		<!-- end needs translation -->
 	<!-- end application details screen -->
 

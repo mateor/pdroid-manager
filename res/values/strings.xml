@@ -88,11 +88,10 @@
 		<string name="preferences_backup_summary">Create a backup of current settings</string>
 		<string name="preferences_restore_title">Restore</string>
 		<string name="preferences_restore_summary">Restore settings from a backup</string>
-		
+
 		<string name="preferences_heading_global_operations">Global operations</string> <!-- heading for things like 'delete all settings' -->
-		<string name="preferences_global_delete_title">Delete all</string>
-		<string name="preferences_global_delete_summary">Removes all PDroid settings from all apps</string>
-		
+		<string name="preferences_global_delete_title">Purge settings</string>
+		<string name="preferences_global_delete_summary">Remove all PDroid settings for all apps</string>
 		<!-- end entries in the preferences text list -->
 
 		<string name="preferences_chooselangage_alerttitle">Choose language</string> <!-- text for language selection dialog box (when you select 'change language' option)  -->
@@ -142,7 +141,7 @@
 		<string name="global_delete_progress_dialog_message">Deleting all PDroid settings</string>
 		<string name="global_delete_complete_message">All PDroid settings have been deleted</string>
 	<!-- end Preferences list screen -->
-
+	
 	<!-- application details (i.e. settings) screen;
 	this includes the screen to choose settings for batch updates
 	and will include the screen to choose settings for a 'profile' -->
@@ -204,6 +203,52 @@
 		<string name="setting_option_custom">Custom</string>
 		<string name="setting_option_deny">Deny</string>
 
+	<!-- FUTURE FEATURE STRINGS -->
+	<!-- These strings are included for intended future use, to
+	allow translators to get ahead rather than having to wait for
+	developer(s) to add the actual feature to complete the translations.
+	These relate to specifically planned features. However, not all strings
+	may be used, and other strings may bocem necessary which are not in this section -->
+	
+		<!-- profile features: profiles allow named sets of 'settings' to be created, and then
+		applied to applications as pre-prepared groups of settings -->
+		<!-- profile list screen -->
+			<string name="profile_list_actionbar_title">Profiles</string> <!-- title for the profiles screen in the action bar -->		
+			<string name="profile_list_actionbar_add">Add profile</string> <!-- action bar button to create a new profile -->
+			
+			<!-- action bar for when one or more profiles are selected -->
+			<string name="profile_list_actionbar_batchselect_none">Select profiles</string> <!-- Shown in the header when no profiles selected -->
+			<string name="profile_list_actionbar_batchselect_singular">One profile selected</string> <!-- Shown in header when single profile selected -->
+			<string name="profile_list_actionbar_batchselect_plural">profiles selected</string> <!-- Shown in header when >1 profiles selected (i.e. shows as "5 profiles selected") -->		
+			<string name="profile_list_actionbar_delete">Delete profiles</string> <!-- button to delete the selected profiles -->
+			<string name="profile_list_actionbar_duplicate">Copy profiles</string> <!-- button to duplicate the selected profiles, with a new name ending in 'copy' (or equivalent) -->
+	
+			<!-- dialog boxes for the profile list screen -->
+			<string name="profile_list_delete_confirm_title">Delete profiles</string> <!-- title for confirmation box when deleting one or more profiles -->
+			<string name="profile_list_delete_confirm_message">Are you sure you want to delete the selected profiles</string> <!-- body for confirmation box when deleting one or more profiles -->
+			<string name="profile_list_duplicate_confirm_title">Copy profiles</string> <!-- body for confirmation box when deleting one or more profiles -->
+			<string name="profile_list_duplicate_confirm_message">Are you sure you want to copy the selected profiles</string> <!-- body for confirmation box when deleting one or more profiles -->
+
+			<string name="profile_list_duplicate_profile_postfix">Copy</string> <!-- Text added to the end of the name of a profile when it is duplicated -->
+
+		<!-- stock profiles: these are the names for the 'default' profiles which are automatically created and can not be modified -->
+			<string name="profiles_inbuilt_trusted">Trusted</string> <!-- a pre-generated profile made up of all the 'trusted' settings  -->
+			<string name="profiles_inbuilt_untrusted">Untrusted</string> <!-- a pre-generated profile made up of all the 'trusted' settings  -->
+	
+		<!-- for the other parts of the app -->
+			<!-- for app list: action bar button when doing batch selection -->
+			<string name="applist_actionbar_apply_profile">Apply profile</string> <!-- button to apply a profile to the selected apps -->
+			<string name="applist_select_profile_dialog_title">Apply profile</string> <!-- title of dialog to select the profile to apply -->
+			<string name="applist_select_profile_dialog_message">Choose the profile to apply to the selected apps</string> <!-- Text above a spinner listing the available profiles to apply -->
+
+			<!-- for preferences list: selecting a 'default' profile -->
+			<string name="preferences_heading_defaults">Defaults</string>
+			<string name="preferences_default_profile_title">Set default profile</string>
+			<string name="preferences_default_profile_summary">Default profile to be applied to new apps</string>
+			<string name="preferences_default_profile_summary_none">None selected</string>
+			<string name="preferences_default_profile_summary_selected">Current profile: </string>
+
+	<!-- END FUTURE FEATURE STRINGS -->
 	<!-- dialog boxes for credits/about info which can be opened from the preferences list -->
 	<string name="credits_dialog_title">PDroid Manager Credits</string>
 	<string name="credits_dialog_body"><![CDATA[
