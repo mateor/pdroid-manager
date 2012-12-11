@@ -19,10 +19,12 @@
           android:title="@string/applist_actionbar_selectall"
           android:icon="@drawable/actionbar_selectall"
           android:showAsAction="collapseActionView|ifRoom" />
-	<item android:id="@+id/application_list_multiselect_deselect_all"
+	<!-- Deselect all is useless because when you deselect all, then you exist select mode -->
+	<!-- <item android:id="@+id/application_list_multiselect_deselect_all"
           android:title="@string/applist_actionbar_deselectall"
           android:icon="@drawable/actionbar_deselectall"
           android:showAsAction="collapseActionView|ifRoom" />
+          -->
 	<item android:id="@+id/application_list_multiselect_set_all_settings"
           android:title="@string/applist_popupmenu_customise_settings"
           android:icon="@drawable/actionbar_allsettings"

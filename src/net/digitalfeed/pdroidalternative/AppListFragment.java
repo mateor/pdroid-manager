@@ -563,12 +563,12 @@ public class AppListFragment extends Fragment {
             	for ( int i=0; i< appListAdapter.getCount(); i++ ) {
             	        listView.setItemChecked(i, true);
             	}
-            	break;
-            case R.id.application_list_multiselect_deselect_all:
+            	return true;
+            /*case R.id.application_list_multiselect_deselect_all:
             	for ( int i=0; i< appListAdapter.getCount(); i++ ) {
         	        listView.setItemChecked(i, false);
         	}
-            	break;
+            	break;*/
             default:
                 return false;
             }

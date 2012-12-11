@@ -485,7 +485,7 @@ public class DBInterface {
 					" FROM " + PermissionApplicationTable.TABLE_NAME +
 					" WHERE " + PermissionApplicationTable.TABLE_NAME + "." + PermissionApplicationTable.COLUMN_NAME_PACKAGENAME + " = ?" + 
 					") " +
-					"ORDER BY " + SettingTable.TABLE_NAME + "." + SettingTable.COLUMN_NAME_SORT + " ASC;";
+					" ORDER BY " + SettingTable.TABLE_NAME + "." + SettingTable.COLUMN_NAME_SORT + " ASC;";
 
 	public static final String QUERY_GET_SETTINGS_FUNCTION_NAMES = "SELECT " +
 			SettingTable.TABLE_NAME + "." + SettingTable.COLUMN_NAME_SETTINGFUNCTIONNAME + "," + 
@@ -503,7 +503,8 @@ public class DBInterface {
 			SettingTable.TABLE_NAME + "." + SettingTable.COLUMN_NAME_OPTIONS + ", " +
 			SettingTable.TABLE_NAME + "." + SettingTable.COLUMN_NAME_TRUSTED_OPTION + ", " +
 			SettingTable.TABLE_NAME + "." + SettingTable.COLUMN_NAME_SORT +
-			" FROM " + SettingTable.TABLE_NAME;
+			" FROM " + SettingTable.TABLE_NAME + 
+			" ORDER BY " + SettingTable.TABLE_NAME + "." + SettingTable.COLUMN_NAME_SORT + " ASC;";
 
 	
 	public Context context;
