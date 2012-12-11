@@ -106,11 +106,20 @@ public class PDroidSettingListAdapter extends ArrayAdapter<PDroidAppSetting>{
 
 			holder = new SettingHolder();
 			holder.settingName = (TextView)row.findViewById(R.id.option_title);
+			
+			//there may or may not be a help button - try to get it, and if
+			//it fails, assuming it isn't present
+			holder.helpButton = null;
+			holder.helpButton = (ImageButton)row.findViewById(R.id.help_button);
+			if (holder.helpButton != null) {
+				holder.helpButton.setOnClickListener(this.helpButtonClickListener);
+			} else {
+				row.setOnClickListener(this.helpButtonClickListener);
+			}
+			
 			holder.customValuePretext = (TextView)row.findViewById(R.id.option_custom_value_pretext);
 			holder.customValue = (TextView)row.findViewById(R.id.option_custom_value);
 			holder.radioGroup = (RadioGroup)row.findViewById(R.id.setting_choice);
-			holder.helpButton = (ImageButton)row.findViewById(R.id.help_button);
-			holder.helpButton.setOnClickListener(this.helpButtonClickListener);
 			
 			holder.noChangeOption = row.findViewById(R.id.option_nochange);
 			
@@ -137,7 +146,12 @@ public class PDroidSettingListAdapter extends ArrayAdapter<PDroidAppSetting>{
 		//I am not entirely comfortable with always resetting this tag, but I'm not sure creating a class
 		//to hold stuff in there and updating it would be better
 		holder.radioGroup.setTag(Integer.valueOf(position));
-		holder.helpButton.setTag(Integer.valueOf(position));
+		if (holder.helpButton == null) {
+			holder.position = position;
+		} else {
+			holder.helpButton.setTag(Integer.valueOf(position));
+		}
+		
 		holder.radioGroup.setOnCheckedChangeListener(null); //temporarily disable on-click listener in the hope that it will not trigger unnecessarily
 		PDroidAppSetting setting = settingList.get(position);
 		
@@ -228,6 +242,7 @@ public class PDroidSettingListAdapter extends ArrayAdapter<PDroidAppSetting>{
 
 	static class SettingHolder
 	{
+		int position;
 		TextView settingName;
 		TextView customValue;
 		TextView customValuePretext;
@@ -306,7 +321,12 @@ public class PDroidSettingListAdapter extends ArrayAdapter<PDroidAppSetting>{
 		@Override
 		public void onClick(View v) {
 			if (rowActionListener == null) return;
-			int position = (Integer)v.getTag();
+			int position;
+			if (v instanceof ImageButton) {
+				position = (Integer)v.getTag();
+			} else {
+				position = ((SettingHolder)v.getTag()).position;
+			}
 			rowActionListener.onInfoButtonPressed(position);
 		}
 	}

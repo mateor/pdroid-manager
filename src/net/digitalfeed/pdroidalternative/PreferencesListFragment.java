@@ -72,8 +72,6 @@ public class PreferencesListFragment extends ListFragment {
 	private static final int BACKUP_VALIDATION_EXISTS = 1;
 	private static final int BACKUP_VALIDATION_CANT_WRITE = 2;
 	
-	private static final String PDROIDMANAGER_XDA_THREAD_URL = "http://forum.xda-developers.com/showthread.php?p=34190204";
-	
 	//Should we be trying to handle localisation here? Seems risky!
 	private static final String DEFAULT_BACKUP_PATH = "pdroidmanager/backups";
 	private static final String DEFAULT_BACKUP_DATEFORMAT = "yyyyMMdd_kkmm";
@@ -372,7 +370,7 @@ public class PreferencesListFragment extends ListFragment {
      * Open the PDroid Manager thread in XDA-developers
      */
     private void openXDA() {
-    	final Intent intent = new Intent(Intent.ACTION_VIEW).setData(Uri.parse(PDROIDMANAGER_XDA_THREAD_URL));
+    	final Intent intent = new Intent(Intent.ACTION_VIEW).setData(Uri.parse(GlobalConstants.PDROIDMANAGER_XDA_THREAD_URL));
     	context.startActivity(intent);
     }
     

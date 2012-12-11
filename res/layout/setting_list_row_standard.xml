@@ -27,18 +27,52 @@
  * @author Simeon J. Morgan <smorgan@digitalfeed.net>
  */
 -->
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent" >
-    
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/option_mainlayout"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal" >
+		
+		<RelativeLayout
+		    android:layout_width="0dip"
+	        android:layout_height="wrap_content"
+	        android:gravity="center_vertical"
+	        android:layout_marginLeft="4dp"
+	        android:layout_weight="1" >
+		    <TextView
+		        android:id="@+id/option_title"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:textSize="16sp"
+		         />
+			<TextView
+		        android:id="@+id/option_custom_value_pretext"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_below="@+id/option_title"
+		        android:textSize="12sp"
+		        android:text="@string/detail_customvalue_pretext"
+		        android:visibility="gone"
+		         />
+		    <TextView
+		        android:id="@+id/option_custom_value"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:layout_below="@+id/option_title"
+		        android:layout_toRightOf="@+id/option_custom_value_pretext"
+		        android:textSize="12sp"
+		        android:visibility="gone"
+		         />
+	    </RelativeLayout>
+	    
 		<RadioGroup 
 		    android:id="@+id/setting_choice"
-		    android:layout_width="wrap_content"
-		    android:layout_height="fill_parent"
-		    android:layout_alignParentRight="true"
+		    android:layout_width="0dip"
+		    android:layout_height="wrap_content"
 		    android:orientation="horizontal"
+		    android:layout_weight="1"
+		    android:gravity="right|center_vertical"
 		    >
-
 
 		    <RadioButton
 		        android:id="@+id/option_allow"
@@ -46,6 +80,7 @@
 		        android:layout_width="wrap_content"
 		        android:layout_height="wrap_content"
 		        android:contentDescription="@string/detail_setting_option_allow_contentdescription" />
+		    
 		
 		    <RadioButton
 		        android:id="@+id/option_yes"
@@ -88,48 +123,5 @@
 		        android:layout_width="wrap_content"
 		        android:layout_height="wrap_content"
 		        android:contentDescription="@string/detail_setting_option_no_contentdescription" />
-
 		</RadioGroup>
-		
-		<ImageButton 
-	        android:id="@+id/help_button"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:padding="0dp"
-	        android:gravity="center_vertical"
-			android:src="@drawable/button_help"
-			android:contentDescription="@string/button_help_text"
-			android:layout_alignParentLeft="true"
-	        />
-		<RelativeLayout
-		    android:layout_width="wrap_content"
-	        android:layout_height="fill_parent"
-	        android:gravity="center_vertical"
-			android:layout_marginLeft="4dp"
-			android:layout_toRightOf="@+id/help_button" >
-		    <TextView
-		        android:id="@+id/option_title"
-		        android:layout_width="wrap_content"
-		        android:layout_height="fill_parent"
-		        android:textSize="16sp"
-		         />
-			<TextView
-		        android:id="@+id/option_custom_value_pretext"
-		        android:layout_width="wrap_content"
-		        android:layout_height="fill_parent"
-		        android:layout_below="@+id/option_title"
-		        android:textSize="12sp"
-		        android:text="@string/detail_customvalue_pretext"
-		        android:visibility="gone"
-		         />
-		    <TextView
-		        android:id="@+id/option_custom_value"
-		        android:layout_width="wrap_content"
-		        android:layout_height="fill_parent"
-		        android:layout_below="@+id/option_title"
-		        android:layout_toRightOf="@+id/option_custom_value_pretext"
-		        android:textSize="12sp"
-		        android:visibility="gone"
-		         />
-	    </RelativeLayout>
-</RelativeLayout>
+</LinearLayout>

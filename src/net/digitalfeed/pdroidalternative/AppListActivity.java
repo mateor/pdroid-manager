@@ -26,13 +26,24 @@
  */
 package net.digitalfeed.pdroidalternative;
 
+import java.util.Locale;
+
 import android.app.Activity;
 import android.app.FragmentTransaction;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.privacy.PrivacySettingsManager;
+import android.text.Html;
+import android.text.SpannableStringBuilder;
+import android.text.format.Formatter;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
+import android.widget.TextView;
 
 /**
  * The main activity for the application - loads and presents a list of applications to
@@ -45,31 +56,80 @@ public class AppListActivity extends Activity implements AppListFragment.OnAppli
 
 	AppDetailSingleFragment detailFragment = null;
 	
+	public static final int PDROID_OK = 0;
+	public static final int PDROID_NOT_INSTALLED = 1;
+	public static final int PDROID_TOO_OLD = 2;
+	
+	int pdroidState;
+	double pdroidVersion;
+	
 	@Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if(GlobalConstants.LOG_FUNCTION_TRACE) Log.d(GlobalConstants.LOG_TAG, "AppListActivity:onCreate");
-        getActionBar().setDisplayShowTitleEnabled(false);
-        getActionBar().setTitle(null);
         LanguageHelper.updateLanguageIfRequired(this);
-        
-        setContentView(R.layout.application_list_frame_layout);
-		//detailFragment = (AppDetailFragment)
-		//		getFragmentManager().findFragmentById(R.id.application_detail_fragment);
-		
-		if (detailFragment != null) {
-			FragmentTransaction ft = getFragmentManager().beginTransaction();
-			ft.hide(detailFragment);
-			ft.commit();
+
+        //check if PDroid is installed
+        PrivacySettingsManager privacySettingsManager = (PrivacySettingsManager)this.getSystemService("privacy");
+        if (privacySettingsManager == null) {
+        	pdroidState = PDROID_NOT_INSTALLED;
+        	setContentView(R.layout.no_pdroid_layout);
+        } else if (privacySettingsManager.getVersion() < GlobalConstants.MINIMUM_PDROID_VERSION) {
+        	pdroidVersion = privacySettingsManager.getVersion();
+        	pdroidState = PDROID_TOO_OLD;
+        	setContentView(R.layout.no_pdroid_layout);
+        } else {
+        	pdroidState = PDROID_OK;
+	        getActionBar().setDisplayShowTitleEnabled(false);
+	        setContentView(R.layout.application_list_frame_layout);
+			//detailFragment = (AppDetailFragment)
+			//		getFragmentManager().findFragmentById(R.id.application_detail_fragment);
+			
+			if (detailFragment != null) {
+				FragmentTransaction ft = getFragmentManager().beginTransaction();
+				ft.hide(detailFragment);
+				ft.commit();
+			}
+        }
+	}
+	
+	@Override
+	public void onStart() {
+		super.onStart();
+		if (pdroidState != PDROID_OK) {
+			TextView msgDisplay = (TextView)findViewById(R.id.no_pdroid_message);
+			Button button = (Button)findViewById(R.id.no_pdroid_button);
+			StringBuilder message = new StringBuilder(getString(R.string.pdroid_error_intro));
+			switch (pdroidState) {
+			case PDROID_NOT_INSTALLED:
+				message.append(getString(R.string.pdroid_error_not_installed));
+				break;
+			case PDROID_TOO_OLD:
+				message.append(String.format(getString(R.string.pdroid_error_wrong_version), Double.toString(pdroidVersion)));
+				break;
+			}
+			message.append(getString(R.string.pdroid_error_conclusion));
+			msgDisplay.setText(Html.fromHtml(message.toString()));
+			button.setOnClickListener(new OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					Intent browse = new Intent(Intent.ACTION_VIEW, Uri.parse(GlobalConstants.PDROIDMANAGER_XDA_THREAD_URL));
+				    startActivity(browse);
+				}
+			});
 		}
 	}
-
 	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		if(GlobalConstants.LOG_FUNCTION_TRACE) Log.d(GlobalConstants.LOG_TAG, "AppListActivity:onCreateOptionsMenu");
-		getMenuInflater().inflate(R.menu.app_list_activity, menu);
-		return true;
+		if (pdroidState == PDROID_OK) {
+			getMenuInflater().inflate(R.menu.app_list_activity, menu);
+			return true;
+		} else {
+			return false;
+		}
     }
 	
 	@Override

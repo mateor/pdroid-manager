@@ -559,6 +559,16 @@ public class AppListFragment extends Fragment {
             case R.id.application_list_multiselect_set_all_settings:
             	action = LONGPRESS_MENU_MODIFY_ALLSETTINGS;
             	break;
+            case R.id.application_list_multiselect_select_all:
+            	for ( int i=0; i< appListAdapter.getCount(); i++ ) {
+            	        listView.setItemChecked(i, true);
+            	}
+            	break;
+            case R.id.application_list_multiselect_deselect_all:
+            	for ( int i=0; i< appListAdapter.getCount(); i++ ) {
+        	        listView.setItemChecked(i, false);
+        	}
+            	break;
             default:
                 return false;
             }
