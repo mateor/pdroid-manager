@@ -60,6 +60,9 @@
 		<string name="applist_popupmenu_set_default_values">Reset to default</string>
 		<string name="applist_popupmenu_delete_settings">Delete settings</string>
 		<string name="applist_popupmenu_customise_settings">Custom settings</string>
+
+		<string name="applist_actionbar_selectall">Select all</string>
+		<string name="applist_actionbar_deselectall">Deselect all</string>
 		
 		<!-- Heading for the actionbar when in multiple-select mode (i.e. selecting apps for a batch change) -->
 		<string name="applist_actionbar_batchselect_none">Select apps</string> <!-- Shown in the header when no apps selected -->
@@ -102,6 +105,9 @@
 		<string name="preferences_global_delete_title">Purge settings</string>
 		<string name="preferences_global_delete_summary">Remove all PDroid settings for all apps</string>
 		<!-- end entries in the preferences text list -->
+
+		<string name="preferences_apprestart_title">Application restart</string>
+		<string name="preferences_apprestart_message">PDroid Manager will now restart to apply the configuration change</string>
 
 		<string name="preferences_chooselangage_alerttitle">Choose language</string> <!-- text for language selection dialog box (when you select 'change language' option)  -->
 
@@ -258,6 +264,7 @@
 			<string name="preferences_default_profile_summary_selected">Current profile: </string>
 
 	<!-- END FUTURE FEATURE STRINGS -->
+	
 	<!-- dialog boxes for credits/about info which can be opened from the preferences list -->
 	<string name="credits_dialog_title">PDroid Manager Credits</string>
 	<string name="credits_dialog_body"><![CDATA[

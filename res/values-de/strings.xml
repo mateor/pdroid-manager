@@ -39,6 +39,11 @@
 		<string name="applist_popupmenu_delete_settings">Einstellungen l&#246;schen</string>
 		<string name="applist_popupmenu_customise_settings">Eigene Einstellungen</string>
 		
+		<!-- start needs translation -->
+		<string name="applist_actionbar_selectall">W&#228;hlen Sie alle</string>
+		<string name="applist_actionbar_deselectall">Alle abw&#228;hlen</string>
+		<!-- end needs translation -->
+		
 		<!-- Heading for the actionbar when in multiple-select mode (i.e. selecting apps for a batch change) -->
 		<string name="applist_actionbar_batchselect_none">Apps ausw&#228;hlen</string> <!-- Shown in the header when no apps selected -->
 		<string name="applist_actionbar_batchselect_singular">Eine App ausgew&#228;hlt</string> <!-- Shown in header when single app selected -->
@@ -46,12 +51,12 @@
 		
 		<!-- Text for the 'filtering' options -->
 		<!-- start needs translation -->
-		<string name="applist_filter_summary_prefix">Filtering by&#160;</string> <!-- prefix before the brief 'filter helper' to let you know what filters you have selected -->
-		<string name="applist_filter_apptype_label">Application type:</string> <!-- label for the 'app type' filter spinner -->
-		<string name="applist_filter_settinggroup_label">Includes settings:</string> <!-- label for the 'setting group' filter spinner. I can't think of better text for this, even though what I have put in is bad -->
-		<string name="applist_filter_status_label">Status:</string> <!-- label for the 'status' filter spinner, which will contain 'No settings', 'Trusted' and 'Untrusted' -->
+		<string name="applist_filter_summary_prefix">Filtern nach&#160;</string> <!-- prefix before the brief 'filter helper' to let you know what filters you have selected -->
+		<string name="applist_filter_apptype_label">Art der anwendung:</string> <!-- label for the 'app type' filter spinner -->
+		<string name="applist_filter_settinggroup_label">Enthält einstellungen:</string> <!-- label for the 'setting group' filter spinner. I can't think of better text for this, even though what I have put in is bad -->
+		<string name="applist_filter_status_label">Der Status:</string> <!-- label for the 'status' filter spinner, which will contain 'No settings', 'Trusted' and 'Untrusted' -->
 		
-		<string name="applist_filter_clearfilters">Clear filters</string> <!-- alternate text for the 'clear filters' button -->
+		<string name="applist_filter_clearfilters">Klare filter</string> <!-- alternate text for the 'clear filters' button -->
 		<!-- end needs translation -->
 	<!-- end Application list screen -->
 
@@ -82,6 +87,11 @@
 		<string name="preferences_global_delete_title">Einstellungen l&#246;schen</string>
 		<string name="preferences_global_delete_summary">Alle PDroid Einstelungen von allen Apps l&#246;schen</string>
 	<!-- end entries in the preferences text list -->
+
+		<!-- start needs translation -->
+			<string name="preferences_apprestart_title">Neustart der Anwendung</string>
+			<string name="preferences_apprestart_message">PDroid Manager wird nun neu starten, um die &#196;nderung der Konfiguration gelten</string>
+		<!-- end needs translation -->
 
 		<string name="preferences_chooselangage_alerttitle">Sprache ausw&#228;hlen</string> <!-- text for language selection dialog box (when you select 'change language' option)  -->
 	

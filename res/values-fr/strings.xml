@@ -64,6 +64,9 @@
 		<!-- start needs translation -->
 		<string name="applist_popupmenu_customise_settings">Custom settings</string>
 		
+		<string name="applist_actionbar_selectall">Select all</string>
+		<string name="applist_actionbar_deselectall">Deselect all</string>
+		
 		<!-- Heading for the actionbar when in multiple-select mode (i.e. selecting apps for a batch change) -->
 		<string name="applist_actionbar_batchselect_none">Select apps</string> <!-- Shown in the header when no apps selected -->
 		<string name="applist_actionbar_batchselect_singular">One app selected</string> <!-- Shown in header when single app selected -->
@@ -101,12 +104,13 @@
 		<string name="preferences_restore_title">Restore</string>
 		<string name="preferences_restore_summary">Restore settings from a backup</string>
 
-		<!-- start needs translation -->
 		<string name="preferences_heading_global_operations">Global operations</string> <!-- heading for things like 'delete all settings' -->
 		<string name="preferences_global_delete_title">Purge settings</string>
 		<string name="preferences_global_delete_summary">Remove all PDroid settings for all apps</string>
-		<!-- end needs translation -->
 	<!-- end entries in the preferences text list -->
+
+		<string name="preferences_apprestart_title">Application restart</string>
+		<string name="preferences_apprestart_message">PDroid Manager will now restart to apply the configuration change</string>
 
 		<string name="preferences_chooselangage_alerttitle">Choose language</string> <!-- text for language selection dialog box (when you select 'change language' option)  -->
 
@@ -222,4 +226,5 @@
 		<string name="setting_option_random">al&#233;atoire</string>
 		<string name="setting_option_custom">sp&#233;cifique</string>
 		<string name="setting_option_deny">interdit</string>
+		
 </resources>

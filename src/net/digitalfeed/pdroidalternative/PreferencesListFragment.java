@@ -19,6 +19,8 @@ import java.util.Locale;
 import javax.crypto.Mac;
 import javax.crypto.SecretKey;
 
+import net.digitalfeed.pdroidalternative.DialogHelper.DialogCallback;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -279,7 +281,8 @@ public class PreferencesListFragment extends ListFragment {
 								@Override
 								public void onListItemClick (ListView l, View v, int position, long id) {
 									prefs.clearForcedLanguage();
-									LanguageHelper.updateLanguageIfRequired(context);
+									confirmAndRestart();									
+									//LanguageHelper.updateLanguageIfRequired(context);
 									// TODO: The option to 'clear forced language' should be removed
 									// when this is selected, or at least disabled
 								}
@@ -377,6 +380,22 @@ public class PreferencesListFragment extends ListFragment {
     /**
      * Displays a generic 'information' dialog
      */
+    private void showInformationDialog(String title, String body, DialogCallback callback, boolean cancelable) {
+        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        Fragment prev = getFragmentManager().findFragmentByTag("dialog");
+        if (prev != null) {
+            ft.remove(prev);
+        }
+
+        // Create and show the dialog.
+        DialogFragment newFragment = DialogHelper.InformationDialog.newInstance(title, body, callback);
+        newFragment.setCancelable(cancelable); 
+        newFragment.show(ft, "dialog");
+    }
+
+    /**
+     * Displays a generic 'information' dialog
+     */
     private void showInformationDialog(String title, String body) {
         FragmentTransaction ft = getFragmentManager().beginTransaction();
         Fragment prev = getFragmentManager().findFragmentByTag("dialog");
@@ -389,7 +408,6 @@ public class PreferencesListFragment extends ListFragment {
         newFragment.show(ft, "dialog");
     }
     
-    
     /**
      * Shows the language selector dialog
      */
@@ -401,7 +419,12 @@ public class PreferencesListFragment extends ListFragment {
         }
 
         // Create and show the dialog.
-        SelectLanguageDialogFragment newFragment = SelectLanguageDialogFragment.newInstance();        
+        SelectLanguageDialogFragment newFragment = SelectLanguageDialogFragment.newInstance(
+        		new DialogCallback() {
+					@Override
+					public void onDialogSuccess() {
+						confirmAndRestart();
+					}});
         newFragment.show(ft, "dialog");
     }
     
@@ -520,8 +543,10 @@ public class PreferencesListFragment extends ListFragment {
      */
     
     public static class SelectLanguageDialogFragment extends DialogFragment {
-
-        public static SelectLanguageDialogFragment newInstance() {
+    	static DialogCallback dialogCallback;
+    	
+        public static SelectLanguageDialogFragment newInstance(DialogCallback callback) {
+        	dialogCallback = callback;
             return new SelectLanguageDialogFragment();
         }
         
@@ -535,8 +560,11 @@ public class PreferencesListFragment extends ListFragment {
 						@Override
 						public void onClick(DialogInterface dialog, int which) {
 							forceLanguage(which);
-							LanguageHelper.updateLanguageIfRequired(getActivity());
+							//LanguageHelper.updateLanguageIfRequired(getActivity());
 							closeDialog();
+							if (dialogCallback != null) {
+								dialogCallback.onDialogSuccess();
+							}
 						}
             		});
             return builder.create();
@@ -1055,4 +1083,17 @@ public class PreferencesListFragment extends ListFragment {
     }
     
     private void updateAllSettings() {}
+    
+    private void confirmAndRestart() {
+		showInformationDialog(
+				getString(R.string.preferences_apprestart_title),
+				getString(R.string.preferences_apprestart_message),
+				new DialogCallback() {
+					@Override
+					public void onDialogSuccess() {
+						System.runFinalizersOnExit(true);
+						System.exit(0);
+					}
+				}, false);
+    }
 }

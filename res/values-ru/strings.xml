@@ -60,20 +60,23 @@
 		<string name="applist_popupmenu_delete_settings">Удалить настройки</string>
 		<string name="applist_popupmenu_customise_settings">Пользовательские настройки</string>
 		
+		<!-- start needs translation -->
+		<string name="applist_actionbar_selectall">Выбрать все</string>
+		<string name="applist_actionbar_deselectall">Отмените все</string>
+		<!-- end needs translation -->
+		
 		<!-- Heading for the actionbar when in multiple-select mode (i.e. selecting apps for a batch change) -->
 		<string name="applist_actionbar_batchselect_none">Выберите приложения</string> <!-- Shown in the header when no apps selected -->
 		<string name="applist_actionbar_batchselect_singular">Выбрано одно приложение</string> <!-- Shown in header when single app selected -->
 		<string name="applist_actionbar_batchselect_plural">приложений выбрано</string> <!-- Shown in header when >1 app selected (i.e. shows as "5 apps selected") -->
 		
 		<!-- Text for the 'filtering' options -->
-		<!-- start needs translation -->
-		<string name="applist_filter_summary_prefix">Filtering by&#160;</string> <!-- prefix before the brief 'filter helper' to let you know what filters you have selected -->
-		<string name="applist_filter_apptype_label">Application type:</string> <!-- label for the 'app type' filter spinner -->
-		<string name="applist_filter_settinggroup_label">Includes settings:</string> <!-- label for the 'setting group' filter spinner. I can't think of better text for this, even though what I have put in is bad -->
-		<string name="applist_filter_status_label">Status:</string> <!-- label for the 'status' filter spinner, which will contain 'No settings', 'Trusted' and 'Untrusted' -->
+		<string name="applist_filter_summary_prefix">Фильтровать по&#160;</string> <!-- prefix before the brief 'filter helper' to let you know what filters you have selected -->
+		<string name="applist_filter_apptype_label">Тип приложения:</string> <!-- label for the 'app type' filter spinner -->
+		<string name="applist_filter_settinggroup_label">Настройки:</string> <!-- label for the 'setting group' filter spinner. I can't think of better text for this, even though what I have put in is bad -->
+		<string name="applist_filter_status_label">Статус:</string> <!-- label for the 'status' filter spinner, which will contain 'No settings', 'Trusted' and 'Untrusted' -->
 		
-		<string name="applist_filter_clearfilters">Clear filters</string> <!-- alternate text for the 'clear filters' button -->
-		<!-- end needs translation -->
+		<string name="applist_filter_clearfilters">Очистить фильтр</string> <!-- alternate text for the 'clear filters' button -->
 	<!-- end Application list screen -->
 
 	<!-- start Preferences list screen -->
@@ -99,12 +102,15 @@
 		<string name="preferences_restore_title">Восстановление</string>
 		<string name="preferences_restore_summary">Восстановить настройки из резервной копии</string>
 
-		<!-- start needs translation -->
-		<string name="preferences_heading_global_operations">Global operations</string> <!-- heading for things like 'delete all settings' -->
-		<string name="preferences_global_delete_title">Purge settings</string>
-		<string name="preferences_global_delete_summary">Remove all PDroid settings for all apps</string>
-		<!-- start needs translation -->
+		<string name="preferences_heading_global_operations">Глобальные команды</string> <!-- heading for things like 'delete all settings' -->
+		<string name="preferences_global_delete_title">Сброс настроек</string>
+		<string name="preferences_global_delete_summary">Удалить все настроки PDroid для всех приложений</string>
 	<!-- end entries in the preferences text list -->
+
+		<!-- start needs translation -->
+			<string name="preferences_apprestart_title">перезапуска приложения</string>
+			<string name="preferences_apprestart_message">PDroid менеджер теперь будет перезапустить, чтобы применить изменения конфигурации</string>
+		<!-- end needs translation -->
 
 		<string name="preferences_chooselangage_alerttitle">Выбор языка</string> <!-- text for language selection dialog box (when you select 'change language' option)  -->
 
@@ -145,13 +151,11 @@
 		<string name="backup_complete_fail_writing">Ошибка резервного копирования: не возможно записать в файл</string>
 		<string name="backup_complete_fail_other">Ошибка резервного копирования: не возможно создать файл</string>
 		
-		<!-- start needs translation -->
-		<string name="global_delete_confirm_title">Delete all settings</string>
-		<string name="global_delete_confirm_message">Are you sure you want to remove all current PDroid settings for all apps on this device? (Note that this does not remove backup files)</string>
-		<string name="global_delete_progress_dialog_title">Deleting&#8230;</string>
-		<string name="global_delete_progress_dialog_message">Deleting all PDroid settings</string>
-		<string name="global_delete_complete_message">All PDroid settings have been deleted</string>
-		<!-- end needs translation -->
+		<string name="global_delete_confirm_title">Удалить все настройки</string>
+		<string name="global_delete_confirm_message">Действительно удалить все текущие настройки PDroid для всех приложений на этом устройстве? (за исключением файлов резервных копий)</string>
+		<string name="global_delete_progress_dialog_title">Удаление&#8230;</string>
+		<string name="global_delete_progress_dialog_message">Удаление всех настроек PDroid</string>
+		<string name="global_delete_complete_message">Все настройки PDroid удалены</string>
 	<!-- end Preferences list screen -->
 
 	<!-- application details (i.e. settings) screen;
@@ -216,7 +220,7 @@
 		<string name="setting_option_random">Случайно</string>
 		<string name="setting_option_custom">Индивидуально</string>
 		<string name="setting_option_deny">Запретить</string>
-
+		
 	<!-- dialog boxes for credits/about info which can be opened from the preferences list -->
 	<string name="credits_dialog_title">Информация о программе PDroid Менеджер</string>
 	<string name="about_dialog_title">О программе PDroid Менеджер</string>

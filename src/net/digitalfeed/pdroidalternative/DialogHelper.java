@@ -98,8 +98,10 @@ public class DialogHelper {
      *
      */
     public static class InformationDialog extends DialogFragment {
+    	static DialogCallback dialogCallback;
     	
         static InformationDialog newInstance(String title, String body) {
+        	dialogCallback = null;
         	if (title == null || body == null) {
         		throw new InvalidParameterException("Title and body cannot be null");
         	}
@@ -109,6 +111,12 @@ public class DialogHelper {
             args.putString("body", body);
             infoDialog.setArguments(args);
             return infoDialog;
+        }
+
+        static InformationDialog newInstance(String title, String body, DialogCallback callback) {
+        	InformationDialog infoDialog = newInstance(title, body);
+        	dialogCallback = callback;
+        	return infoDialog;
         }
         
         @Override
@@ -123,6 +131,9 @@ public class DialogHelper {
 				
 				@Override
 				public void onClick(View v) {
+					if (dialogCallback != null) {
+						dialogCallback.onDialogSuccess();
+					}
 					closeDialog();
 				}
 			});
