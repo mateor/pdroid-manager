@@ -26,6 +26,9 @@
  */
 package net.digitalfeed.pdroidalternative;
 
+import java.util.LinkedList;
+import java.util.List;
+
 import net.digitalfeed.pdroidalternative.PermissionSettingHelper.TrustState;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
@@ -79,6 +82,7 @@ public class ApplicationsUpdateAllSettingsTask extends AsyncTask<Application, Vo
 		PrivacySettingsManager privacySettingsManager = (PrivacySettingsManager)context.getSystemService("privacy");
 		PrivacySettings privacySettings;
 		
+		List<Application> appsToUpdate = new LinkedList<Application>();
 		PermissionSettingHelper helper = new PermissionSettingHelper();
 		for (Application app : inApps) {
 			privacySettings = privacySettingsManager.getSettings(app.getPackageName());
@@ -91,6 +95,7 @@ public class ApplicationsUpdateAllSettingsTask extends AsyncTask<Application, Vo
 			helper.setPrivacySettingsToTrustState(db, privacySettings, newTrustState);
 			privacySettingsManager.saveSettings(privacySettings);
 
+			appsToUpdate.add(app);
 			app.setHasSettings(true);
 			switch (newTrustState) {
 			case TRUSTED:
@@ -102,9 +107,10 @@ public class ApplicationsUpdateAllSettingsTask extends AsyncTask<Application, Vo
 			default:
 				break;
 			}
-
-			dbinterface.updateApplicationRecord(app);
 		}
+
+		dbinterface.updateApplicationStatus(appsToUpdate);
+
 		//db.close();
 		return null;
 	}

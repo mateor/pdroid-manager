@@ -26,6 +26,8 @@
  */
 package net.digitalfeed.pdroidalternative;
 
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 
 import android.content.Context;
@@ -81,13 +83,16 @@ public class ApplicationsDeleteSettingsTask extends AsyncTask<Application, Void,
 		PrivacySettingsManager privacySettingsManager = (PrivacySettingsManager)context.getSystemService("privacy");
 		DBInterface dbinterface = DBInterface.getInstance(context);
 
+		List<Application> appsToUpdate = new LinkedList<Application>();
+
 		for (Application app : inApps) {
 			privacySettingsManager.deleteSettings(app.getPackageName());
+			appsToUpdate.add(app);
 			app.setHasSettings(false);
 			app.setIsUntrusted(false); //An app with no settings is not untrusted
-			dbinterface.updateApplicationRecord(app);
 		}
 		
+		dbinterface.updateApplicationStatus(appsToUpdate);
 		if (purgeOnComplete) {
 			//If the input list of applications was null (i.e. delete ALL settings) then we should also purge unused settings from the core 
 			privacySettingsManager.purgeSettings();

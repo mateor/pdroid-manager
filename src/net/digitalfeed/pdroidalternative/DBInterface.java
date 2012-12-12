@@ -28,6 +28,7 @@ package net.digitalfeed.pdroidalternative;
 
 import java.io.IOException;
 import java.util.LinkedList;
+import java.util.List;
 
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -616,6 +617,56 @@ public class DBInterface {
 		write_db.endTransaction();
 		//write_db.close();
 		
+	}
+	
+	/**
+	 * Update the status of an application. The application must already have
+	 * been saved in the database.
+	 * @param app  Application for which to rewrite the status
+	 */
+	public void updateApplicationStatus(Application app) {
+		if (dbhelper == null) {
+			getDBHelper();
+		}
+
+		SQLiteDatabase write_db = dbhelper.getWritableDatabase();
+		write_db.beginTransaction();
+
+		ContentValues contentValues = new ContentValues();
+		contentValues.put(ApplicationStatusTable.COLUMN_NAME_FLAGS, app.getStatusFlags());
+		
+		try {
+			write_db.update(ApplicationStatusTable.TABLE_NAME, contentValues, ApplicationStatusTable.TABLE_NAME + "." + ApplicationStatusTable.COLUMN_NAME_PACKAGENAME + " = ?", new String [] {app.getPackageName()});			
+			write_db.setTransactionSuccessful();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		write_db.endTransaction();
+		//write_db.close();	
+	}
+	
+	public void updateApplicationStatus(List<Application> apps) {
+		if (dbhelper == null) {
+			getDBHelper();
+		}
+
+		SQLiteDatabase write_db = dbhelper.getWritableDatabase();
+		write_db.beginTransaction();
+
+		ContentValues contentValues = new ContentValues();
+
+		try {
+			for (Application app : apps) {
+				contentValues.put(ApplicationStatusTable.COLUMN_NAME_FLAGS, app.getStatusFlags());
+				
+					write_db.update(ApplicationStatusTable.TABLE_NAME, contentValues, ApplicationStatusTable.TABLE_NAME + "." + ApplicationStatusTable.COLUMN_NAME_PACKAGENAME + " = ?", new String [] {app.getPackageName()});
+			}
+			write_db.setTransactionSuccessful();
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			write_db.endTransaction();
+		}
 	}
 	
 	public void updateApplicationRecord(Application app) {
