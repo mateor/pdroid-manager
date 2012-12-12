@@ -1,16 +1,11 @@
 package net.digitalfeed.pdroidalternative;
 
-import java.lang.reflect.Array;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-
-import org.w3c.dom.Text;
 
 import net.digitalfeed.pdroidalternative.PermissionSettingHelper.TrustState;
 

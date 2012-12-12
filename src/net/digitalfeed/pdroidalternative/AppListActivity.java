@@ -26,8 +26,6 @@
  */
 package net.digitalfeed.pdroidalternative;
 
-import java.util.Locale;
-
 import android.app.Activity;
 import android.app.FragmentTransaction;
 import android.content.Intent;
@@ -35,8 +33,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.privacy.PrivacySettingsManager;
 import android.text.Html;
-import android.text.SpannableStringBuilder;
-import android.text.format.Formatter;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
