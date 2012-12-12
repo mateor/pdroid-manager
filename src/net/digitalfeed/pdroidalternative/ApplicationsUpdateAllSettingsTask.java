@@ -26,6 +26,11 @@
  */
 package net.digitalfeed.pdroidalternative;
 
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
 import net.digitalfeed.pdroidalternative.PermissionSettingHelper.TrustState;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
@@ -73,24 +78,21 @@ public class ApplicationsUpdateAllSettingsTask extends AsyncTask<Application, Vo
 			throw new NullPointerException("No apps were provided to the AppListUpdateAllSettingsTask");
 		}
 		
-		//TODO: Update the application_status record with the new trusted/untrusted status when updating the privacy settings
+		PrivacySettingsManager privacySettingsManager = (PrivacySettingsManager)context.getSystemService("privacy");
+		if (privacySettingsManager == null) {
+			return null;
+		}
+		
 		DBInterface dbinterface = DBInterface.getInstance(context);
 		SQLiteDatabase db = dbinterface.getDBHelper().getWritableDatabase();
-		PrivacySettingsManager privacySettingsManager = (PrivacySettingsManager)context.getSystemService("privacy");
-		PrivacySettings privacySettings;
+		//List<String> packagesToUpdate = new LinkedList<String>();
+		Map<String, Integer> packagesToUpdate = new HashMap<String, Integer>();
+		List<Application> appsToUpdate = new LinkedList<Application>();
 		
-		PermissionSettingHelper helper = new PermissionSettingHelper();
 		for (Application app : inApps) {
-			privacySettings = privacySettingsManager.getSettings(app.getPackageName());
+			packagesToUpdate.put(app.getPackageName(), app.getUid());
+			appsToUpdate.add(app);
 			
-			//There are no existing privacy settings for this app - we need to create them
-			if (privacySettings == null) {
-				privacySettings = new PrivacySettings(null, app.getPackageName(), app.getUid());
-			}
-			
-			helper.setPrivacySettingsToTrustState(db, privacySettings, newTrustState);
-			privacySettingsManager.saveSettings(privacySettings);
-
 			app.setHasSettings(true);
 			switch (newTrustState) {
 			case TRUSTED:
@@ -102,9 +104,29 @@ public class ApplicationsUpdateAllSettingsTask extends AsyncTask<Application, Vo
 			default:
 				break;
 			}
-
-			dbinterface.updateApplicationRecord(app);
 		}
+		
+		dbinterface.updateApplicationStatus(appsToUpdate);
+		
+		PermissionSettingHelper helper = new PermissionSettingHelper();
+		List<PrivacySettings> privacySettingsList = privacySettingsManager.getSettingsMany(new LinkedList<String>(packagesToUpdate.keySet()));		 
+		if (privacySettingsList != null) {
+			for (PrivacySettings privacySettings : privacySettingsList) {
+				helper.setPrivacySettingsToTrustState(db, privacySettings, newTrustState);
+				packagesToUpdate.remove(privacySettings.getPackageName());
+			}
+		}
+		
+		
+		PrivacySettings privacySettings;
+		for (String packageName : packagesToUpdate.keySet()) {
+			privacySettings = new PrivacySettings(null, packageName, packagesToUpdate.get(packageName));
+			helper.setPrivacySettingsToTrustState(db, privacySettings, newTrustState);
+			privacySettingsList.add(privacySettings);
+		}
+
+		
+		privacySettingsManager.saveSettingsMany(privacySettingsList);
 		//db.close();
 		return null;
 	}

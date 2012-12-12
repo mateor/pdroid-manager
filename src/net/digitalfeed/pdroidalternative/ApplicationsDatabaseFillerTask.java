@@ -90,6 +90,12 @@ public class ApplicationsDatabaseFillerTask extends AsyncTask<Void, Integer, Has
 	@Override
 	protected HashMap<String, Application> doInBackground(Void... params) {
 		PrivacySettingsManager privacySettingsManager = (PrivacySettingsManager)context.getSystemService("privacy");
+		List<PrivacySettings> privacySettingsList = privacySettingsManager.getSettingsAll();
+
+		HashMap<String, PrivacySettings> privacySettingsMap = new HashMap<String, PrivacySettings>();
+		for (PrivacySettings privacySettings : privacySettingsList) {
+			privacySettingsMap.put(privacySettings.getPackageName(), privacySettings);
+		}
 		
 		HashMap<String, Application> appList = new HashMap<String, Application>();
 		PackageManager pkgMgr = context.getPackageManager();
@@ -159,6 +165,8 @@ public class ApplicationsDatabaseFillerTask extends AsyncTask<Void, Integer, Has
 		//this makes sure the images are larger than needed, but it is a pretty rubbish temporary solution. It uses more ram than necessary, and the icons may not scale well
 		int iconSizePx = Application.TARGET_ICON_SIZE * 2;
 		
+		PrivacySettings privacySettings;
+		
 		for (ApplicationInfo appInfo : installedApps) {
 			try {
 				PackageInfo pkgInfo = pkgMgr.getPackageInfo(appInfo.packageName, PackageManager.GET_PERMISSIONS);
@@ -174,7 +182,12 @@ public class ApplicationsDatabaseFillerTask extends AsyncTask<Void, Integer, Has
 
 				int statusFlags = 0;
 				
-				PrivacySettings privacySettings = privacySettingsManager.getSettings(appInfo.packageName);
+				//PrivacySettings privacySettings = privacySettingsManager.getSettings(appInfo.packageName);
+				if (privacySettingsMap.containsKey(appInfo.packageName)) {
+					privacySettings = privacySettingsMap.get(appInfo.packageName);
+				} else { 
+					privacySettings = null;
+				}
 				if (privacySettings != null) {
 					//I would prefer to be getting a new readable database handle for this, but
 					//if I do that, then call close on it, it closes my writable handle too.

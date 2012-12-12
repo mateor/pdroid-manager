@@ -26,9 +26,10 @@
  */
 package net.digitalfeed.pdroidalternative;
 
-import java.util.Map;
-
+import java.util.LinkedList;
+import java.util.List;
 import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.privacy.PrivacySettingsManager;
 
@@ -63,35 +64,38 @@ public class ApplicationsDeleteSettingsTask extends AsyncTask<Application, Void,
 	@Override
 	protected Void doInBackground(Application... inApps) {
 		//this is here just to trigger a purge when completing removal of *all* settings
-		boolean purgeOnComplete = false;
+		PrivacySettingsManager privacySettingsManager = (PrivacySettingsManager)context.getSystemService("privacy");
+
 		if (inApps == null) {
 			//throw new NullPointerException("No apps were provided");
 			//if no apps provided, then wipe settings for ALL apps.
-			//to do this, we use the ApplicationsDatabaseFiller task to get all the apps,
-			//but run the function directly rather than using .execute because we want to block while
-			//waiting for a response.
-			//TODO: Move the code for these many AsyncTasks out of the tasks so they are easier to use
-			ApplicationsObjectLoaderTask filler = new ApplicationsObjectLoaderTask(context, null);
-			Map<String, Application> appMap = filler.doInBackground((Void)null);
-			inApps = appMap.values().toArray(new Application [appMap.size()]);
-			purgeOnComplete = true;
-		}
-		
-		
-		PrivacySettingsManager privacySettingsManager = (PrivacySettingsManager)context.getSystemService("privacy");
-		DBInterface dbinterface = DBInterface.getInstance(context);
-
-		for (Application app : inApps) {
-			privacySettingsManager.deleteSettings(app.getPackageName());
-			app.setHasSettings(false);
-			app.setIsUntrusted(false); //An app with no settings is not untrusted
-			dbinterface.updateApplicationRecord(app);
-		}
-		
-		if (purgeOnComplete) {
-			//If the input list of applications was null (i.e. delete ALL settings) then we should also purge unused settings from the core 
+			// the convenient new function 'deleteSettingsAll' makes this particularly quick and easy, don't you think?
+			//dbinterface.updateAllApplicationStatus()
+			privacySettingsManager.deleteSettingsAll();
+			// TODO: need to add an easy way to update the status for all apps somehow,
+			// without directly attacking the database
+			SQLiteDatabase write_db = DBInterface.getInstance(context).getDBHelper().getWritableDatabase();
+			write_db.rawQuery(
+					"UPDATE " + DBInterface.ApplicationStatusTable.TABLE_NAME +
+					" SET " + DBInterface.ApplicationStatusTable.COLUMN_NAME_FLAGS + 
+					" = " + DBInterface.ApplicationStatusTable.COLUMN_NAME_FLAGS +
+					" & ?", new String [] { Integer.toString(~(Application.STATUS_FLAG_HAS_PRIVACYSETTINGS | Application.STATUS_FLAG_IS_UNTRUSTED))});
+			
 			privacySettingsManager.purgeSettings();
+		} else {
+			DBInterface dbinterface = DBInterface.getInstance(context);
+			List<String> packagesForDeletion = new LinkedList<String>();
+			List<Application> appsToUpdate = new LinkedList<Application>();
+			for (Application app : inApps) {
+				packagesForDeletion.add(app.getPackageName());
+				appsToUpdate.add(app);
+				app.setHasSettings(false);
+				app.setIsUntrusted(false); //An app with no settings is not untrusted
+			}
+			dbinterface.updateApplicationStatus(appsToUpdate);
+			privacySettingsManager.deleteSettingsMany(packagesForDeletion);
 		}
+		
 		return null;
 	}
 	
