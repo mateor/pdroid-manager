@@ -70,7 +70,7 @@ public class PrivacyNotificationHandler extends BroadcastReceiver {
 		final String dataType = bundle.getString("dataType");
         //String output = bundle.getString("output");
         
-		if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG,"NotificationHandler: Notification for: " + packageName + ":" + dataType);
+		if(GlobalConstants.LOG_DEBUG) Log.v(GlobalConstants.LOG_TAG,"NotificationHandler: Notification for: " + packageName + ":" + dataType);
 		
         final Preferences prefs = new Preferences(context);
         
@@ -81,12 +81,12 @@ public class PrivacyNotificationHandler extends BroadcastReceiver {
         	DBInterface dbInterface = DBInterface.getInstance(context);
         	
 	        if (logEvent) {
-	        	if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG,"NotificationHandler: Log setting on for " + packageName);
+	        	if(GlobalConstants.LOG_DEBUG) Log.v(GlobalConstants.LOG_TAG,"NotificationHandler: Log setting on for " + packageName);
 		        dbInterface.addLogEntry(packageName, uid, accessMode, dataType);
 	        }
 	        
 	        if (notifyEvent) {
-	        	if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG,"NotificationHandler: Notify setting on for " + packageName);
+	        	if(GlobalConstants.LOG_DEBUG) Log.v(GlobalConstants.LOG_TAG,"NotificationHandler: Notify setting on for " + packageName);
 	        	//get the last time that this particular notification was presented
 	        	long lastNotificationTime = prefs.getLastNotificationTime(packageName, dataType);
 	        	int notificationDuration = prefs.getNotificationDuration();
