@@ -37,6 +37,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.privacy.PrivacySettings;
 import android.privacy.PrivacySettingsManager;
+import android.util.Log;
 
 /**
  * Updates all settings of a one or more applications to match the trusted or 
@@ -83,16 +84,43 @@ public class ApplicationsUpdateAllSettingsTask extends AsyncTask<Application, Vo
 			return null;
 		}
 		
+		boolean coreBatchSupport = false;
+		
+		try {
+			PrivacySettingsManager.class.getMethod(GlobalConstants.CORE_SUPPORTS_EXTENSION_FUNCTION);
+			coreBatchSupport = privacySettingsManager.supportsExtension("batch");
+		} catch (NoSuchMethodException e) {
+			if (GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG, "No extension support in this version of PDroid");
+		}
+		
 		DBInterface dbinterface = DBInterface.getInstance(context);
 		SQLiteDatabase db = dbinterface.getDBHelper().getWritableDatabase();
 		//List<String> packagesToUpdate = new LinkedList<String>();
-		Map<String, Integer> packagesToUpdate = new HashMap<String, Integer>();
+		Map<String, Integer> packagesToUpdate = null;
+		PermissionSettingHelper helper = new PermissionSettingHelper();
+		
+		if (coreBatchSupport) {
+			packagesToUpdate = new HashMap<String, Integer>();
+		}
 		List<Application> appsToUpdate = new LinkedList<Application>();
+		PrivacySettings privacySettings;
 		
 		for (Application app : inApps) {
-			packagesToUpdate.put(app.getPackageName(), app.getUid());
-			appsToUpdate.add(app);
+			if (coreBatchSupport) {
+				// We have core batch support, we stash the package details for mass handling,
+				packagesToUpdate.put(app.getPackageName(), app.getUid());
+			} else {
+				// No core batch support: have to process the apps one at a time
+				privacySettings = privacySettingsManager.getSettings(app.getPackageName());
+				//There are no existing privacy settings for this app - we need to create them
+				if (privacySettings == null) {
+					privacySettings = new PrivacySettings(null, app.getPackageName(), app.getUid());
+				}
+				helper.setPrivacySettingsToTrustState(db, privacySettings, newTrustState);
+				privacySettingsManager.saveSettings(privacySettings);
+			}
 			
+			appsToUpdate.add(app);
 			app.setHasSettings(true);
 			switch (newTrustState) {
 			case TRUSTED:
@@ -107,26 +135,28 @@ public class ApplicationsUpdateAllSettingsTask extends AsyncTask<Application, Vo
 		}
 		
 		dbinterface.updateApplicationStatus(appsToUpdate);
-		
-		PermissionSettingHelper helper = new PermissionSettingHelper();
-		List<PrivacySettings> privacySettingsList = privacySettingsManager.getSettingsMany(new LinkedList<String>(packagesToUpdate.keySet()));		 
-		if (privacySettingsList != null) {
-			for (PrivacySettings privacySettings : privacySettingsList) {
-				helper.setPrivacySettingsToTrustState(db, privacySettings, newTrustState);
-				packagesToUpdate.remove(privacySettings.getPackageName());
-			}
-		}
-		
-		
-		PrivacySettings privacySettings;
-		for (String packageName : packagesToUpdate.keySet()) {
-			privacySettings = new PrivacySettings(null, packageName, packagesToUpdate.get(packageName));
-			helper.setPrivacySettingsToTrustState(db, privacySettings, newTrustState);
-			privacySettingsList.add(privacySettings);
-		}
 
-		
-		privacySettingsManager.saveSettingsMany(privacySettingsList);
+		if (coreBatchSupport) {
+			// with core batch support, we can now get settings for all the packages
+			// for which there are settings, create them where necessary,
+			// and save them all very efficiently - i.e. only two calls to the privacy
+			// service for any number of package updates
+			List<PrivacySettings> privacySettingsList = privacySettingsManager.getSettingsMany(new LinkedList<String>(packagesToUpdate.keySet()));		 
+			if (privacySettingsList != null) {
+				for (PrivacySettings privacySettingsBatch : privacySettingsList) {
+					helper.setPrivacySettingsToTrustState(db, privacySettingsBatch, newTrustState);
+					packagesToUpdate.remove(privacySettingsBatch.getPackageName());
+				}
+			}
+			
+			for (String packageName : packagesToUpdate.keySet()) {
+				privacySettings = new PrivacySettings(null, packageName, packagesToUpdate.get(packageName));
+				helper.setPrivacySettingsToTrustState(db, privacySettings, newTrustState);
+				privacySettingsList.add(privacySettings);
+			}
+
+			privacySettingsManager.saveSettingsMany(privacySettingsList);
+		}
 		//db.close();
 		return null;
 	}

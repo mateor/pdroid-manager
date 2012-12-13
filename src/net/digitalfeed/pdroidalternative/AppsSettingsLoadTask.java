@@ -75,7 +75,7 @@ public class AppsSettingsLoadTask extends AsyncTask<String, Integer, List<PDroid
 		List<PDroidAppSetting> resultList = new LinkedList<PDroidAppSetting>();
 
 		//If >5 packages, then don't try to work out the settings to display: just show them all
-		if (packageNames.length < 6) {
+		if (packageNames.length < 25) {
 			HashMap<String, PDroidAppSetting> settingMap = new HashMap<String, PDroidAppSetting>();
 			PDroidAppSetting setting;
 

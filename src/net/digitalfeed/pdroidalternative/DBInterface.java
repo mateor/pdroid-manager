@@ -27,6 +27,7 @@
 package net.digitalfeed.pdroidalternative;
 
 import java.io.IOException;
+import java.security.InvalidParameterException;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -66,6 +67,7 @@ public class DBInterface {
 		public static final int COMPRESS_ICON_QUALITY = 100;
 		
 		public static final String TABLE_NAME = "application";
+		public static final String COLUMN_NAME_ROWID = "_id";
 		public static final String COLUMN_NAME_LABEL = "label";
 		public static final String COLUMN_NAME_PACKAGENAME = "packageName";
 		public static final String COLUMN_NAME_UID = "uid";
@@ -118,6 +120,33 @@ public class DBInterface {
 			if (permissions != null) {
 				contentValues.put(COLUMN_NAME_PERMISSIONS, TextUtils.join(",", application.getPermissions()));
 			}
+			return contentValues;
+		}
+		
+		public static final ContentValues getUpdateContentValues(Application application) {
+			ContentValues contentValues = new ContentValues();
+			
+			int updatedFlags = application.getUpdatedFlags();
+			
+			if (0 != (updatedFlags & Application.FLAG_APPLICATION_VALUES_CHANGED)) {
+				contentValues.put(COLUMN_NAME_LABEL, application.getLabel());
+				contentValues.put(COLUMN_NAME_PACKAGENAME, application.getPackageName());
+				contentValues.put(COLUMN_NAME_UID, application.getUid());
+				contentValues.put(COLUMN_NAME_VERSIONCODE, application.getVersionCode());
+				contentValues.put(COLUMN_NAME_FLAGS, application.getAppFlags());
+			}
+			
+			if (0 != (updatedFlags & Application.FLAG_ICON_CHANGED)) {
+				contentValues.put(COLUMN_NAME_ICON, application.getIconByteArray());
+			}
+			
+			if (0 != (updatedFlags & Application.FLAG_PERMISSIONS_CHANGED)) {
+				String[] permissions = application.getPermissions();
+				if (permissions != null) {
+					contentValues.put(COLUMN_NAME_PERMISSIONS, TextUtils.join(",", application.getPermissions()));
+				}
+			}
+			
 			return contentValues;
 		}
 	}
@@ -352,7 +381,8 @@ public class DBInterface {
 	protected static final String QUERYPART_SELECTPART_COLUMNS_LABEL = 
 			ApplicationTable.TABLE_NAME + "." + ApplicationTable.COLUMN_NAME_LABEL;
 	
-	protected static final String QUERYPART_SELECTPART_COLUMNS_APP = 
+	protected static final String QUERYPART_SELECTPART_COLUMNS_APP =
+			ApplicationTable.TABLE_NAME + "." + ApplicationTable.COLUMN_NAME_ROWID + ", " +
 			ApplicationTable.TABLE_NAME + "." + ApplicationTable.COLUMN_NAME_LABEL + ", " +  
 			ApplicationTable.TABLE_NAME + "." + ApplicationTable.COLUMN_NAME_PACKAGENAME + ", " + 
 			ApplicationTable.TABLE_NAME + "." + ApplicationTable.COLUMN_NAME_UID + ", " +
@@ -625,6 +655,16 @@ public class DBInterface {
 	 * @param app  Application for which to rewrite the status
 	 */
 	public void updateApplicationStatus(Application app) {
+		if (app == null) {
+			Log.e(GlobalConstants.LOG_TAG, "DBInterface:updateApplicationStatus: app must be provided");
+			return;
+		}
+		
+		if (app.isNew()) {
+			Log.e(GlobalConstants.LOG_TAG, "DBInterface:updateApplicationStatus: status can only be updated for already-saved application objects");
+			return;
+		}
+
 		if (dbhelper == null) {
 			getDBHelper();
 		}
@@ -646,6 +686,16 @@ public class DBInterface {
 	}
 	
 	public void updateApplicationStatus(List<Application> apps) {
+
+		if (apps == null || apps.size() == 0) {
+			if (GlobalConstants.CRASH_HAPPY) {
+				throw new InvalidParameterException("DBInterface:updateApplicationStatus: apps must be provided");
+			} else { 
+				Log.e(GlobalConstants.LOG_TAG, "DBInterface:updateApplicationStatus: apps must be provided");
+				return;
+			}
+		}
+
 		if (dbhelper == null) {
 			getDBHelper();
 		}
@@ -678,27 +728,39 @@ public class DBInterface {
 		write_db.beginTransaction();
 
 		try {
-			write_db.update(ApplicationTable.TABLE_NAME, ApplicationTable.getContentValues(app), ApplicationTable.TABLE_NAME + "." + ApplicationTable.COLUMN_NAME_PACKAGENAME + " = ?", new String [] {app.getPackageName()});
-			write_db.update(ApplicationStatusTable.TABLE_NAME, ApplicationStatusTable.getContentValues(app), ApplicationStatusTable.TABLE_NAME + "." + ApplicationStatusTable.COLUMN_NAME_PACKAGENAME + " = ?", new String [] {app.getPackageName()});
+			int updatedFlags = app.getUpdatedFlags();
 			
-			write_db.delete(PermissionApplicationTable.TABLE_NAME, PermissionApplicationTable.TABLE_NAME + "." + PermissionApplicationTable.COLUMN_NAME_PACKAGENAME + " = ?", new String [] {app.getPackageName()});
-			if (app.getPermissions() != null) {
-				if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG, "DBInterface.updateApplicationRecord: " + app.getPackageName() + " has permissions");
-				InsertHelper permissionsInsertHelper = new InsertHelper(write_db, DBInterface.PermissionApplicationTable.TABLE_NAME);
-				int [] permissionsTableColumnNumbers = new int[2];
-				//I was thinking about using enums instead of static finals here, but apparently the performance in android for enums is not so good??
-				permissionsTableColumnNumbers[PermissionApplicationTable.OFFSET_PACKAGENAME] = permissionsInsertHelper.getColumnIndex(DBInterface.PermissionApplicationTable.COLUMN_NAME_PACKAGENAME);
-				permissionsTableColumnNumbers[PermissionApplicationTable.OFFSET_PERMISSION] = permissionsInsertHelper.getColumnIndex(DBInterface.PermissionApplicationTable.COLUMN_NAME_PERMISSION);
+			if (0 != (updatedFlags & (
+					Application.FLAG_APPLICATION_VALUES_CHANGED |
+					Application.FLAG_ICON_CHANGED |
+					Application.FLAG_PERMISSIONS_CHANGED))) {
+				write_db.update(ApplicationTable.TABLE_NAME, ApplicationTable.getUpdateContentValues(app), ApplicationTable.TABLE_NAME + "." + ApplicationTable.COLUMN_NAME_PACKAGENAME + " = ?", new String [] {app.getPackageName()});
+			}
 			
-				for (String permission : app.getPermissions()) {
-					permissionsInsertHelper.prepareForInsert();
-					permissionsInsertHelper.bind(permissionsTableColumnNumbers[PermissionApplicationTable.OFFSET_PACKAGENAME], app.getPackageName());
-					permissionsInsertHelper.bind(permissionsTableColumnNumbers[PermissionApplicationTable.OFFSET_PERMISSION], permission);
-					permissionsInsertHelper.execute();
+			if (0 != (updatedFlags & Application.FLAG_STATUSFLAGS_CHANGED)) {
+				write_db.update(ApplicationStatusTable.TABLE_NAME, ApplicationStatusTable.getContentValues(app), ApplicationStatusTable.TABLE_NAME + "." + ApplicationStatusTable.COLUMN_NAME_PACKAGENAME + " = ?", new String [] {app.getPackageName()});
+			}
+			
+			if (0 != (updatedFlags & Application.FLAG_PERMISSIONS_CHANGED)) {
+				write_db.delete(PermissionApplicationTable.TABLE_NAME, PermissionApplicationTable.TABLE_NAME + "." + PermissionApplicationTable.COLUMN_NAME_PACKAGENAME + " = ?", new String [] {app.getPackageName()});
+				if (app.getPermissions() != null) {
+					if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG, "DBInterface.updateApplicationRecord: " + app.getPackageName() + " has permissions");
+					InsertHelper permissionsInsertHelper = new InsertHelper(write_db, DBInterface.PermissionApplicationTable.TABLE_NAME);
+					int [] permissionsTableColumnNumbers = new int[2];
+					//I was thinking about using enums instead of static finals here, but apparently the performance in android for enums is not so good??
+					permissionsTableColumnNumbers[PermissionApplicationTable.OFFSET_PACKAGENAME] = permissionsInsertHelper.getColumnIndex(DBInterface.PermissionApplicationTable.COLUMN_NAME_PACKAGENAME);
+					permissionsTableColumnNumbers[PermissionApplicationTable.OFFSET_PERMISSION] = permissionsInsertHelper.getColumnIndex(DBInterface.PermissionApplicationTable.COLUMN_NAME_PERMISSION);
+				
+					for (String permission : app.getPermissions()) {
+						permissionsInsertHelper.prepareForInsert();
+						permissionsInsertHelper.bind(permissionsTableColumnNumbers[PermissionApplicationTable.OFFSET_PACKAGENAME], app.getPackageName());
+						permissionsInsertHelper.bind(permissionsTableColumnNumbers[PermissionApplicationTable.OFFSET_PERMISSION], permission);
+						permissionsInsertHelper.execute();
+					}
+					permissionsInsertHelper.close();
+				} else {
+					if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG, "DBInterface.updateApplicationRecord: " + app.getPackageName() + " has no permissions");
 				}
-				permissionsInsertHelper.close();
-			} else {
-				if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG, "DBInterface.updateApplicationRecord: " + app.getPackageName() + " has no permissions");
 			}
 			
 			write_db.setTransactionSuccessful();

@@ -51,6 +51,7 @@ public class Preferences {
 	private static final String APP_NOTIFICATION_SETTING_PREFIX = "notifyOnAccessFor";
 	private static final String APP_LOG_SETTING_PREFIX = "logOnAccessFor";
 	private static final String APPLIST_LAST_APP_TYPE = "appListLastAppType"; //can be the 'system', 'user', or 'both'
+	private static final String APPLIST_LAST_SETTINGGROUP_FILTER = "appListLastSettingGroup";
 	private static final String APP_LAST_NOTIFICATION_TIME_PREFIX = "appLastNotificationTime";
 	private static final String CURRENT_TOAST_COUNT = "currentToastCount";
 	private static final String LAST_TOAST_TIME = "lastToastTime";
@@ -118,12 +119,13 @@ public class Preferences {
 		editor.commit();
 	}
 	
-	public String getLastAppListType() {
+	public String getLastAppListTypeFilter() {
 		return this.prefs.getString(APPLIST_LAST_APP_TYPE, APPLIST_LAST_APP_TYPE_ALL);
 	}
 	
-	public void setLastAppListType(String appListType) {
-		if (appListType != APPLIST_LAST_APP_TYPE_ALL &&
+	public void setLastAppListTypeFilter(String appListType) {
+		if (appListType != null &&
+				appListType != APPLIST_LAST_APP_TYPE_ALL &&
 				appListType != APPLIST_LAST_APP_TYPE_USER &&
 				appListType != APPLIST_LAST_APP_TYPE_SYSTEM) {
 			throw new InvalidParameterException("AppListType can only be ALL, USER, or SYSTEM (check your Prefs insertion!)");
@@ -132,6 +134,26 @@ public class Preferences {
 		editor.putString(APPLIST_LAST_APP_TYPE, appListType);
 		editor.commit();
 	}
+	
+	/**
+	 * Setting group filter memory will not work if the language is changed, but
+	 * because settings groups are not 'fixed', that is somewhat unavoidable. This is
+	 * particularly the case because there is no 'sorting' of groups -> i.e. no
+	 * set sequence so we can record a fixed cross-language offset at this stage
+	 * 
+	 * This could be achieved by using a pair of arrays (one language, one 'index')
+	 * in the XML files and merging them into a map
+	 */
+	public String getLastSettingGroupFilter() {
+		return this.prefs.getString(APPLIST_LAST_SETTINGGROUP_FILTER, null);
+	}
+	
+	public void setLastSettingGroupFilter(String settingGroupFilter) {
+		Editor editor = this.prefs.edit();
+		editor.putString(APPLIST_LAST_SETTINGGROUP_FILTER, settingGroupFilter);
+		editor.commit();
+	}
+	
 	
 	public long getLastNotificationTime(String packageName, String dataType) {
 		//using '-' because they are not valid in a package name

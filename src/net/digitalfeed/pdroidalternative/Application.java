@@ -65,23 +65,35 @@ public class Application {
 	//indicates whether this has a full data complement, or just the minimum data set
 	//private boolean isStub;
 	
-	protected volatile String packageName;
-	protected volatile String label;
-	protected volatile int versionCode;
-	protected volatile int appFlags;
-	protected volatile int statusFlags;
-	protected volatile int uid;
-	protected volatile Drawable icon;
+	private volatile Integer _id; //right now, the sole reason that there is an_id at all is to differentiate new 'Application' objects from ones retrieved from the database
+	private volatile String packageName;
+	private volatile String label;
+	private volatile int versionCode;
+	private volatile int appFlags;
+	private volatile int statusFlags;
+	private volatile int uid;
+	private volatile Drawable icon;
+	
+	static final int FLAG_APPLICATION_VALUES_CHANGED = 1; //this is packageName, label, versionCode, appFlags, uid
+	static final int FLAG_ICON_CHANGED = 2;
+	static final int FLAG_PERMISSIONS_CHANGED = 4;
+	static final int FLAG_STATUSFLAGS_CHANGED = 8;
+	// keeps track of what has changed, so that when it is time to perform an update
+	// only the necessary parts of the database need to change
+	private volatile int updatedFlags; 
 	
 	//The value in permissions is only valid if the Application entry is not a stub
-	protected String[] permissions;
+	private String[] permissions;
 
 	public String getLabel() {
 		return this.label;
 	}
 	
 	public void setLabel(String label) {
-		this.label = label;
+		if (!label.equals(this.label)) {
+			this.updatedFlags  |= FLAG_APPLICATION_VALUES_CHANGED;
+			this.label = label;
+		}
 	}
 
 	public int getVersionCode() {
@@ -89,7 +101,10 @@ public class Application {
 	}
 
 	public void setVersionCode(int versionCode) {
-		this.versionCode = versionCode;
+		if (versionCode == this.versionCode) {
+			this.updatedFlags  |= FLAG_APPLICATION_VALUES_CHANGED;
+			this.versionCode = versionCode;
+		}
 	}
 
 	public int getAppFlags() {
@@ -97,7 +112,10 @@ public class Application {
 	}
 
 	public void setAppFlags(int appFlags) {
-		this.appFlags = appFlags;
+		if (appFlags != this.appFlags) {
+			this.updatedFlags  |= FLAG_APPLICATION_VALUES_CHANGED;
+			this.appFlags = appFlags;
+		}
 	}
 
 	public boolean getIsSystemApp() {
@@ -106,9 +124,15 @@ public class Application {
 	
 	public void setIsSystemApp(boolean newValue) {
 		if (newValue) {
-			this.appFlags |= APP_FLAG_IS_SYSTEM_APP;
+			if (0 == (this.appFlags & APP_FLAG_IS_SYSTEM_APP)) {
+				this.updatedFlags  |= FLAG_APPLICATION_VALUES_CHANGED;
+				this.appFlags |= APP_FLAG_IS_SYSTEM_APP;
+			}
 		} else { 
-			this.appFlags &= ~APP_FLAG_IS_SYSTEM_APP;
+			if (0 != (this.appFlags & APP_FLAG_IS_SYSTEM_APP)) {
+				this.updatedFlags  |= FLAG_APPLICATION_VALUES_CHANGED;
+				this.appFlags &= ~APP_FLAG_IS_SYSTEM_APP;
+			}
 		}
 	}
 
@@ -116,16 +140,25 @@ public class Application {
 		return (0 != (this.appFlags & APP_FLAG_HAS_INTERNET));
 	}
 
-	public void setHasInternet(boolean hasInternet) {
-		if (hasInternet) {
-			this.appFlags |= APP_FLAG_HAS_INTERNET;
+	public void setHasInternet(boolean newValue) {
+		if (newValue) {
+			if (0 == (this.appFlags & APP_FLAG_HAS_INTERNET)) {
+				this.updatedFlags  |= FLAG_APPLICATION_VALUES_CHANGED;
+				this.appFlags |= APP_FLAG_HAS_INTERNET;
+			}
 		} else { 
-			this.appFlags &= ~APP_FLAG_HAS_INTERNET;
+			if (0 != (this.appFlags & APP_FLAG_HAS_INTERNET)) {
+				this.updatedFlags  |= FLAG_APPLICATION_VALUES_CHANGED;
+				this.appFlags &= ~APP_FLAG_HAS_INTERNET;
+			}
 		}
-	} 
+	}
 	
 	public void setStatusFlags(int statusFlags) {
-		this.statusFlags = statusFlags; 
+		if (statusFlags != this.statusFlags) {
+			this.updatedFlags  |= FLAG_STATUSFLAGS_CHANGED;
+			this.statusFlags = statusFlags; 
+		}
 	}
 
 	public int getStatusFlags() {
@@ -138,9 +171,15 @@ public class Application {
 	
 	public void setIsUntrusted(boolean newValue) {
 		if (newValue) {
-			this.statusFlags |= STATUS_FLAG_IS_UNTRUSTED;
+			if (0 == (this.statusFlags & STATUS_FLAG_IS_UNTRUSTED)) {
+				this.updatedFlags  |= FLAG_STATUSFLAGS_CHANGED;
+				this.statusFlags |= STATUS_FLAG_IS_UNTRUSTED;
+			}
 		} else { 
-			this.statusFlags &= ~STATUS_FLAG_IS_UNTRUSTED;
+			if (0 != (this.statusFlags & STATUS_FLAG_IS_UNTRUSTED)) {
+				this.updatedFlags  |= FLAG_STATUSFLAGS_CHANGED;
+				this.statusFlags &= ~STATUS_FLAG_IS_UNTRUSTED;
+			}
 		}
 	} 
 
@@ -150,9 +189,15 @@ public class Application {
 	
 	public void setHasSettings(boolean newValue) {
 		if (newValue) {
-			this.statusFlags |= STATUS_FLAG_HAS_PRIVACYSETTINGS;
+			if (0 == (this.statusFlags & STATUS_FLAG_HAS_PRIVACYSETTINGS)) {
+				this.updatedFlags  |= FLAG_STATUSFLAGS_CHANGED;
+				this.statusFlags |= STATUS_FLAG_HAS_PRIVACYSETTINGS;
+			}
 		} else { 
-			this.statusFlags &= ~STATUS_FLAG_HAS_PRIVACYSETTINGS;
+			if (0 != (this.statusFlags & STATUS_FLAG_HAS_PRIVACYSETTINGS)) {
+				this.updatedFlags  |= FLAG_STATUSFLAGS_CHANGED;
+				this.statusFlags &= ~STATUS_FLAG_HAS_PRIVACYSETTINGS;
+			}
 		}
 	}
 	
@@ -163,9 +208,15 @@ public class Application {
 	
 	public void setNotifyOnAccess(boolean newValue) {
 		if (newValue) {
-			this.statusFlags |= STATUS_FLAG_NOTIFY_ON_ACCESS;
+			if (0 == (this.statusFlags & STATUS_FLAG_NOTIFY_ON_ACCESS)) {
+				this.updatedFlags  |= FLAG_STATUSFLAGS_CHANGED;
+				this.statusFlags |= STATUS_FLAG_NOTIFY_ON_ACCESS;
+			}
 		} else { 
-			this.statusFlags &= ~STATUS_FLAG_NOTIFY_ON_ACCESS;
+			if (0 != (this.statusFlags & STATUS_FLAG_NOTIFY_ON_ACCESS)) {
+				this.updatedFlags  |= FLAG_STATUSFLAGS_CHANGED;
+				this.statusFlags &= ~STATUS_FLAG_NOTIFY_ON_ACCESS;
+			}
 		}
 	}
 
@@ -175,9 +226,15 @@ public class Application {
 	
 	public void setLogOnAccess(boolean newValue) {
 		if (newValue) {
-			this.statusFlags |= STATUS_FLAG_LOG_ON_ACCESS;
+			if (0 == (this.statusFlags & STATUS_FLAG_LOG_ON_ACCESS)) {
+				this.updatedFlags  |= FLAG_STATUSFLAGS_CHANGED;
+				this.statusFlags |= STATUS_FLAG_LOG_ON_ACCESS;
+			}
 		} else { 
-			this.statusFlags &= ~STATUS_FLAG_LOG_ON_ACCESS;
+			if (0 != (this.statusFlags & STATUS_FLAG_LOG_ON_ACCESS)) {
+				this.updatedFlags  |= FLAG_STATUSFLAGS_CHANGED;
+				this.statusFlags &= ~STATUS_FLAG_LOG_ON_ACCESS;
+			}
 		}
 	}
 
@@ -187,9 +244,15 @@ public class Application {
 	
 	public void setIsNew(boolean newValue) {
 		if (newValue) {
-			this.statusFlags |= STATUS_FLAG_NEW;
+			if (0 == (this.statusFlags & STATUS_FLAG_NEW)) {
+				this.updatedFlags  |= FLAG_STATUSFLAGS_CHANGED;
+				this.statusFlags |= STATUS_FLAG_NEW;
+			}
 		} else { 
-			this.statusFlags &= ~STATUS_FLAG_NEW;
+			if (0 != (this.statusFlags & STATUS_FLAG_NEW)) {
+				this.updatedFlags  |= FLAG_STATUSFLAGS_CHANGED;
+				this.statusFlags &= ~STATUS_FLAG_NEW;
+			}
 		}
 	}
 
@@ -199,9 +262,15 @@ public class Application {
 	
 	public void setIsUpdated(boolean newValue) {
 		if (newValue) {
-			this.statusFlags |= STATUS_FLAG_UPDATED;
+			if (0 == (this.statusFlags & STATUS_FLAG_UPDATED)) {
+				this.updatedFlags  |= FLAG_STATUSFLAGS_CHANGED;
+				this.statusFlags |= STATUS_FLAG_UPDATED;
+			}
 		} else { 
-			this.statusFlags &= ~STATUS_FLAG_UPDATED;
+			if (0 != (this.statusFlags & STATUS_FLAG_UPDATED)) {
+				this.updatedFlags  |= FLAG_STATUSFLAGS_CHANGED;
+				this.statusFlags &= ~STATUS_FLAG_UPDATED;
+			}
 		}
 	}
 	
@@ -210,7 +279,10 @@ public class Application {
 	}
 
 	public void setUid(int uid) {
-		this.uid = uid;
+		if (uid != this.uid) {
+			this.updatedFlags |= FLAG_APPLICATION_VALUES_CHANGED;
+			this.uid = uid;
+		}
 	}
 
 	public Drawable getIcon() {
@@ -235,6 +307,7 @@ public class Application {
 
 	
 	public void setIcon(Drawable icon) {
+		this.updatedFlags |= FLAG_ICON_CHANGED;
 		this.icon = icon;
 	}
 
@@ -243,6 +316,7 @@ public class Application {
 	}
 
 	public void setPermissions(String[] permissions) {
+		this.updatedFlags |= FLAG_PERMISSIONS_CHANGED;
 		this.permissions = permissions;
 	}
 
@@ -251,7 +325,14 @@ public class Application {
 	}
 	
 	public void setPackageName(String packageName) {
-		this.packageName = packageName;
+		if (!packageName.equals(this.packageName)) {
+			this.updatedFlags |= FLAG_APPLICATION_VALUES_CHANGED;
+			this.packageName = packageName;
+		}
+	}
+	
+	int getUpdatedFlags() {
+		return this.updatedFlags;
 	}
 	
 /*	public Application(String packageName, String label, int versionCode, int appFlags, int statusFlags, int uid, Drawable icon) {
@@ -267,6 +348,8 @@ public class Application {
 	
 	public Application(String packageName, String label, int versionCode, int appFlags, int statusFlags, int uid, Drawable icon, String[] permissions) {
 		//this.isStub = false;
+		// if this constructor is being used, this must be a whole new application. In that case, everything needs to be saved.
+		this.updatedFlags = FLAG_APPLICATION_VALUES_CHANGED | FLAG_ICON_CHANGED | FLAG_PERMISSIONS_CHANGED | FLAG_STATUSFLAGS_CHANGED;
 		this.packageName = packageName;
 		this.label = label;
 		this.versionCode = versionCode;
@@ -281,6 +364,27 @@ public class Application {
 		}
 	}
 	
+	Application(Integer _id, String packageName, String label, int versionCode, int appFlags, int statusFlags, int uid, Drawable icon, String[] permissions) {
+		//this.isStub = false;
+		this.updatedFlags = 0;
+		this._id = _id;
+		this.packageName = packageName;
+		this.label = label;
+		this.versionCode = versionCode;
+		this.appFlags = appFlags;
+		this.statusFlags = statusFlags;
+		this.uid = uid;
+		this.icon = icon;
+		if (permissions != null) { 
+			this.permissions = permissions.clone();
+		} else {
+			this.permissions = null;
+		}
+	}
+	
+	boolean isNew() {
+		return _id == null;
+	}
 	/***
 	 * Creates a new Application object for the application with the package name passed.
 	 * Currently assumes the app is new, and so doesn't try to check if it is trusted or not -
@@ -362,6 +466,7 @@ public class Application {
 		    	Drawable icon = new BitmapDrawable(context.getResources(),BitmapFactory.decodeByteArray(iconBlob, 0, iconBlob.length));
 		    	
 		    	app = new Application(
+		    			cursor.getInt(cursor.getColumnIndex(DBInterface.ApplicationTable.COLUMN_NAME_ROWID)),
 		    			cursor.getString(cursor.getColumnIndex(DBInterface.ApplicationTable.COLUMN_NAME_PACKAGENAME)),
 		    			cursor.getString(cursor.getColumnIndex(DBInterface.ApplicationTable.COLUMN_NAME_LABEL)),
 		    			cursor.getInt(cursor.getColumnIndex(DBInterface.ApplicationTable.COLUMN_NAME_VERSIONCODE)),

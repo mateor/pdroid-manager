@@ -29,6 +29,7 @@ package net.digitalfeed.pdroidalternative;
 import android.app.Activity;
 import android.app.FragmentTransaction;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.privacy.PrivacySettingsManager;
@@ -55,6 +56,7 @@ public class AppListActivity extends Activity implements AppListFragment.OnAppli
 	public static final int PDROID_OK = 0;
 	public static final int PDROID_NOT_INSTALLED = 1;
 	public static final int PDROID_TOO_OLD = 2;
+	public static final int PDROID_PERMISSION_ERROR = 3;
 	
 	int pdroidState;
 	double pdroidVersion;
@@ -64,7 +66,7 @@ public class AppListActivity extends Activity implements AppListFragment.OnAppli
         super.onCreate(savedInstanceState);
         if(GlobalConstants.LOG_FUNCTION_TRACE) Log.d(GlobalConstants.LOG_TAG, "AppListActivity:onCreate");
         LanguageHelper.updateLanguageIfRequired(this);
-
+        
         //check if PDroid is installed
         PrivacySettingsManager privacySettingsManager = (PrivacySettingsManager)this.getSystemService("privacy");
         if (privacySettingsManager == null) {
@@ -76,16 +78,25 @@ public class AppListActivity extends Activity implements AppListFragment.OnAppli
         	setContentView(R.layout.no_pdroid_layout);
         } else {
         	pdroidState = PDROID_OK;
-	        getActionBar().setDisplayShowTitleEnabled(false);
-	        setContentView(R.layout.application_list_frame_layout);
-			//detailFragment = (AppDetailFragment)
-			//		getFragmentManager().findFragmentById(R.id.application_detail_fragment);
-			
-			if (detailFragment != null) {
-				FragmentTransaction ft = getFragmentManager().beginTransaction();
-				ft.hide(detailFragment);
-				ft.commit();
-			}
+        	
+            PackageManager pkgMgr = this.getPackageManager();
+            if ((pkgMgr.checkPermission(GlobalConstants.WRITE_SETTINGS_PERMISSION, this.getPackageName())) == PackageManager.PERMISSION_DENIED) {
+            	pdroidVersion = privacySettingsManager.getVersion();
+            	pdroidState = PDROID_PERMISSION_ERROR;
+            	setContentView(R.layout.no_pdroid_layout);        	
+    
+            } else {
+		        getActionBar().setDisplayShowTitleEnabled(false);
+		        setContentView(R.layout.application_list_frame_layout);
+				//detailFragment = (AppDetailFragment)
+				//		getFragmentManager().findFragmentById(R.id.application_detail_fragment);
+				
+				if (detailFragment != null) {
+					FragmentTransaction ft = getFragmentManager().beginTransaction();
+					ft.hide(detailFragment);
+					ft.commit();
+				}
+            }
         }
 	}
 	
@@ -95,16 +106,23 @@ public class AppListActivity extends Activity implements AppListFragment.OnAppli
 		if (pdroidState != PDROID_OK) {
 			TextView msgDisplay = (TextView)findViewById(R.id.no_pdroid_message);
 			Button button = (Button)findViewById(R.id.no_pdroid_button);
-			StringBuilder message = new StringBuilder(getString(R.string.pdroid_error_intro));
+			StringBuilder message = new StringBuilder();
 			switch (pdroidState) {
 			case PDROID_NOT_INSTALLED:
-				message.append(getString(R.string.pdroid_error_not_installed));
+				message.append(getString(R.string.pdroid_error_intro))
+				.append(getString(R.string.pdroid_error_not_installed))
+				.append(getString(R.string.pdroid_error_conclusion));
 				break;
 			case PDROID_TOO_OLD:
-				message.append(String.format(getString(R.string.pdroid_error_wrong_version), Double.toString(pdroidVersion)));
+				message.append(getString(R.string.pdroid_error_intro))
+				.append(String.format(getString(R.string.pdroid_error_wrong_version), Double.toString(pdroidVersion)))
+				.append(getString(R.string.pdroid_error_conclusion));
+				break;
+			case PDROID_PERMISSION_ERROR:
+				message.append(getString(R.string.pdroid_error_permission));
 				break;
 			}
-			message.append(getString(R.string.pdroid_error_conclusion));
+			
 			msgDisplay.setText(Html.fromHtml(message.toString()));
 			button.setOnClickListener(new OnClickListener() {
 				
