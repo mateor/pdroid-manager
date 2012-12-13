@@ -346,6 +346,15 @@ alternative name, rather than the name pdroid-manager.</p>
 	<string name="pdroid_error_not_installed"><![CDATA[
 <h2>The PDroid core has not been detected on your device.<br /><i>PDroid Manager</i> requires PDroid 2.0 v.1.48 or higher to be included in the device ROM.</h2>
 ]]></string>
+
+	<string name="pdroid_error_permission"><![CDATA[
+<h4>Welcome to <i>PDroid Manager</i>, an alternative setting management application for PDroid 2.0</h4>
+<p>A problem has been detected which prevents PDroid Manager from operating.</p> 
+<h2>PDroid Manager and CollegeDev\'s PDroid 2.0 App cannot be installed on the same device without additional steps</h2>
+<p>Due to the way Android permissions are used in PDroid, PDroid Manager and CollegeDev\'s PDroid 2.0 App cannot both be installed at the same time and function correctly. This can be overcome by re-signing both packages with a new key, as described in the support thread on XDA-developers.</p><p><b>Note:</b> uninstalling CollegeDev\'s PDroid 2.0 App <i>will not</i> clear your PDroid settings: you can uninstall it and install PDroid Manager and your settings will remain intact.</p>
+<p><i>To resolve this issue, you need to uninstall CollegeDev\'s PDroid 2.0 App, <b>then uninstall and reinstall PDroid Manager</b>.</i></p>
+]]></string>
+
 	<string name="pdroid_get_support">Open the PDroid Manager thread on XDA developers</string>
 	
 	<string name="application_list_app_spacer" translatable="false">&#160;|&#160;</string>
