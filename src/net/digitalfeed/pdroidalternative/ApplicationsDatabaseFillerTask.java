@@ -109,6 +109,7 @@ public class ApplicationsDatabaseFillerTask extends AsyncTask<Void, Integer, Has
 		//Clear the application list before putting in a new list.
 		write_db.delete(DBInterface.ApplicationTable.TABLE_NAME, null, null);
 		write_db.delete(DBInterface.ApplicationStatusTable.TABLE_NAME, null, null);
+		write_db.delete(DBInterface.PermissionApplicationTable.TABLE_NAME, null, null);
 
 		InsertHelper applicationsInsertHelper = new InsertHelper(write_db, DBInterface.ApplicationTable.TABLE_NAME);
 		int [] applicationTableColumnNumbers = new int[7];

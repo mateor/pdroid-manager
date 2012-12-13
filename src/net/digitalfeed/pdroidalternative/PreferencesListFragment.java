@@ -1089,6 +1089,12 @@ public class PreferencesListFragment extends ListFragment {
 				new DialogCallback() {
 					@Override
 					public void onDialogSuccess() {
+						// need to clear these selectors for language change to work correctly
+						// (actually, only need to clear the setting group filter because it stores
+						// a language specific string, but clear both for consistency
+						prefs.setLastAppListTypeFilter(null);
+						prefs.setLastSettingGroupFilter(null);
+
 						System.runFinalizersOnExit(true);
 						System.exit(0);
 					}

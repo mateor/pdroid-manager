@@ -41,6 +41,9 @@ import android.util.DisplayMetrics;
  *
  */
 public class ApplicationsDatabaseRewriterTask extends AsyncTask<Application, Void, Void> {
+	protected static final int APPLICATION_STATUS_TABLE_COLUMN_NUMBER_OFFSET_PACKAGENAME = 0;
+	protected static final int APPLICATION_STATUS_TABLE_COLUMN_NUMBER_OFFSET_FLAGS = 1;
+	
 	protected static final int PERMISSIONS_TABLE_COLUMN_NUMBER_OFFSET_PACKAGENAME = 0;
 	protected static final int PERMISSIONS_TABLE_COLUMN_NUMBER_OFFSET_PERMISSION = 1;
 	
@@ -56,12 +59,15 @@ public class ApplicationsDatabaseRewriterTask extends AsyncTask<Application, Voi
 		int iconSizePx = context.getResources().getDisplayMetrics().densityDpi / DisplayMetrics.DENSITY_MEDIUM * Application.TARGET_ICON_SIZE;
 		
 		SQLiteDatabase write_db = DBInterface.getInstance(context).getDBHelper().getWritableDatabase();
-		//Clear the application list before putting in a new list.
-		write_db.delete(DBInterface.ApplicationTable.TABLE_NAME, null, null);
 		//Being inside a transaction speeds things up (see http://www.outofwhatbox.com/blog/2010/12/android-using-databaseutils-inserthelper-for-faster-insertions-into-sqlite-database/)
 		//I haven't personally checked this
 		write_db.beginTransaction();
 
+		//Clear the existing data before putting in the new
+		write_db.delete(DBInterface.ApplicationTable.TABLE_NAME, null, null);
+		write_db.delete(DBInterface.ApplicationStatusTable.TABLE_NAME, null, null);
+		write_db.delete(DBInterface.PermissionApplicationTable.TABLE_NAME, null, null);
+		
 		InsertHelper applicationsInsertHelper = new InsertHelper(write_db, DBInterface.ApplicationTable.TABLE_NAME);
 		int [] applicationTableColumnNumbers = new int[7];
 		applicationTableColumnNumbers[DBInterface.ApplicationTable.COLUMN_NUMBER_OFFSET_LABEL] = applicationsInsertHelper.getColumnIndex(DBInterface.ApplicationTable.COLUMN_NAME_LABEL);
@@ -72,6 +78,11 @@ public class ApplicationsDatabaseRewriterTask extends AsyncTask<Application, Voi
 		applicationTableColumnNumbers[DBInterface.ApplicationTable.COLUMN_NUMBER_OFFSET_ICON] = applicationsInsertHelper.getColumnIndex(DBInterface.ApplicationTable.COLUMN_NAME_ICON);
 		applicationTableColumnNumbers[DBInterface.ApplicationTable.COLUMN_NUMBER_OFFSET_APPFLAGS] = applicationsInsertHelper.getColumnIndex(DBInterface.ApplicationTable.COLUMN_NAME_FLAGS);
 
+		InsertHelper applicationStatusInsertHelper = new InsertHelper(write_db, DBInterface.ApplicationStatusTable.TABLE_NAME);
+		int [] applicationStatusTableColumnNumbers = new int[2];
+		applicationStatusTableColumnNumbers[APPLICATION_STATUS_TABLE_COLUMN_NUMBER_OFFSET_PACKAGENAME] = applicationStatusInsertHelper.getColumnIndex(DBInterface.ApplicationStatusTable.COLUMN_NAME_PACKAGENAME);
+		applicationStatusTableColumnNumbers[APPLICATION_STATUS_TABLE_COLUMN_NUMBER_OFFSET_FLAGS] = applicationStatusInsertHelper.getColumnIndex(DBInterface.ApplicationStatusTable.COLUMN_NAME_FLAGS);
+				
 		InsertHelper permissionsInsertHelper = new InsertHelper(write_db, DBInterface.PermissionApplicationTable.TABLE_NAME);
 		int [] permissionsTableColumnNumbers = new int[2];
 		//I was thinking about using enums instead of static finals here, but apparently the performance in android for enums is not so good??
@@ -99,6 +110,11 @@ public class ApplicationsDatabaseRewriterTask extends AsyncTask<Application, Voi
 			applicationsInsertHelper.bind(applicationTableColumnNumbers[DBInterface.ApplicationTable.COLUMN_NUMBER_OFFSET_ICON], app.getIconByteArray(iconSizePx));
 			applicationsInsertHelper.bind(applicationTableColumnNumbers[DBInterface.ApplicationTable.COLUMN_NUMBER_OFFSET_APPFLAGS], app.getAppFlags());
 			applicationsInsertHelper.execute();
+			
+			applicationStatusInsertHelper.prepareForInsert();
+			applicationStatusInsertHelper.bind(applicationStatusTableColumnNumbers[APPLICATION_STATUS_TABLE_COLUMN_NUMBER_OFFSET_PACKAGENAME], app.getPackageName());
+			applicationStatusInsertHelper.bind(applicationStatusTableColumnNumbers[APPLICATION_STATUS_TABLE_COLUMN_NUMBER_OFFSET_FLAGS], app.getStatusFlags());
+			applicationStatusInsertHelper.execute();
 		}
 		
 		write_db.rawQuery(DBInterface.QUERY_DELETE_APPS_WITHOUT_STATUS, null);

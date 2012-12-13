@@ -41,13 +41,13 @@ import android.privacy.PrivacySettings;
  *
  */
 public class PDroidAppSetting extends PDroidSetting {
-	protected int selectedOptionBit;
+	int selectedOptionBit;
 	//if there is only one value, then we use 'customValue' to hold it (this applies to almost all
 	//of the currently available settings).
 	//For multiple-value settings (e.g. lat, long) set the list to have entries name->value such that
 	//when we use reflection to write values, we can use setting postfixed with the key.
-	protected List<SimpleImmutableEntry<String, String>> customValues;
-	protected String customValue;
+	List<SimpleImmutableEntry<String, String>> customValues;
+	String customValue;
 	
 	public PDroidAppSetting(String id, String name, String settingFunctionName, String valueFunctionNameStub, String title, String group,
 			String groupTitle, String[] options, String trustedOption, int sort) {

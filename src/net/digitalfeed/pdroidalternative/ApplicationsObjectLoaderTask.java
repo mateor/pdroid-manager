@@ -81,6 +81,7 @@ public class ApplicationsObjectLoaderTask extends AsyncTask<Void, Integer, HashM
     	}
     	
 		cursor.moveToFirst();
+		int rowIdColumn = cursor.getColumnIndex(DBInterface.ApplicationTable.COLUMN_NAME_ROWID);
 		int packageNameColumn = cursor.getColumnIndex(DBInterface.ApplicationTable.COLUMN_NAME_PACKAGENAME);
     	int labelColumn = cursor.getColumnIndex(DBInterface.ApplicationTable.COLUMN_NAME_LABEL);
     	int versionCodeColumn = cursor.getColumnIndex(DBInterface.ApplicationTable.COLUMN_NAME_VERSIONCODE);
@@ -91,6 +92,7 @@ public class ApplicationsObjectLoaderTask extends AsyncTask<Void, Integer, HashM
     	int permissionsColumn = cursor.getColumnIndex(DBInterface.ApplicationTable.COLUMN_NAME_PERMISSIONS);
 
     	do {
+    		int rowId = cursor.getInt(rowIdColumn);
     		String packageName = cursor.getString(packageNameColumn);
     		String label = cursor.getString(labelColumn);
     		int versionCode = cursor.getInt(versionCodeColumn);
@@ -105,7 +107,7 @@ public class ApplicationsObjectLoaderTask extends AsyncTask<Void, Integer, HashM
     		}
     		
     		Drawable icon = new BitmapDrawable(context.getResources(),BitmapFactory.decodeByteArray(iconBlob, 0, iconBlob.length));
-    		appList.put(packageName, new Application(packageName, label, versionCode, appFlags, statusFlags, uid, icon, permissionsArray));
+    		appList.put(packageName, new Application(rowId, packageName, label, versionCode, appFlags, statusFlags, uid, icon, permissionsArray));
     	} while (cursor.moveToNext());
 
     	cursor.close();

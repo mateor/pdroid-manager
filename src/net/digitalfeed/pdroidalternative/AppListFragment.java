@@ -16,6 +16,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.SparseBooleanArray;
@@ -59,6 +60,8 @@ public class AppListFragment extends Fragment {
 	private static final int DIALOG_NONE = 0;
 	private static final int DIALOG_LINEAR = 1;
 	
+	private static final String PARCEL_LISTPOSITION = "listPosition";
+	
 	OnApplicationSelectedListener callback;
 	
 	public interface OnApplicationSelectedListener {
@@ -68,6 +71,7 @@ public class AppListFragment extends Fragment {
 	
 	View rootView; // view for the root view element of this listing 
 	ListView listView; // view for the list of applications
+	Integer listPosition = null; // first visible position of the list 
 	View filterView; // view for the layout containing the filters
 	View filterSummaryView; // view for the 'filters in use' text layout
 	TextView filterSummaryText; // text in the 'filter summary' pane
@@ -127,9 +131,20 @@ public class AppListFragment extends Fragment {
         prefs = new Preferences(context);
         
       //get the most recently selected option from the 'App Type' list, and set as current
-        currentAppTypeFilter = prefs.getLastAppListType();
-        if (!currentAppTypeFilter.equals(Preferences.APPLIST_LAST_APP_TYPE_ALL)) {
+        currentAppTypeFilter = prefs.getLastAppListTypeFilter();
+        if (currentAppTypeFilter == null) {
+        	currentAppTypeFilter = Preferences.APPLIST_LAST_APP_TYPE_ALL;
+        } else if (!currentAppTypeFilter.equals(Preferences.APPLIST_LAST_APP_TYPE_ALL)) {
         	currentFilterBits |= FILTER_APPTYPE;
+        }
+        
+        // because setting group text varies between languages, it is
+        // harder to detect the 'all' option
+        currentSettingGroup = prefs.getLastSettingGroupFilter();
+        if (currentSettingGroup == null) {
+        	currentSettingGroup = context.getResources().getString(R.string.applist_setting_filter_spinner_all_option_title);
+        } else if (!currentSettingGroup.equals(context.getResources().getString(R.string.applist_setting_filter_spinner_all_option_title))) {
+        	currentFilterBits |= FILTER_GROUP;
         }
         
         /*
@@ -156,6 +171,11 @@ public class AppListFragment extends Fragment {
         		loadApplicationList();
         	}
         }
+        
+        if (savedInstanceState != null) {
+        	listPosition = savedInstanceState.getInt(PARCEL_LISTPOSITION);
+        	if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG, "Saved instance state exists in onCreate");
+        }
 	}
 	
 	@Override
@@ -175,7 +195,8 @@ public class AppListFragment extends Fragment {
 				clearFilters();
 				updateFilterSummary();
 			}
-		});		
+		});
+		
 		return this.rootView;
 	}
 	
@@ -191,6 +212,7 @@ public class AppListFragment extends Fragment {
 		if(GlobalConstants.LOG_FUNCTION_TRACE) Log.d(GlobalConstants.LOG_TAG, "AppListFragment:OnViewCreated");
 		loadSpinners();
 		updateFilterSummary();
+		
         listView.setOnItemClickListener(new OnItemClickListener() {
 
 			@Override
@@ -260,6 +282,14 @@ public class AppListFragment extends Fragment {
 	public void onDetach () {
 		super.onDetach();
 		if(GlobalConstants.LOG_FUNCTION_TRACE) Log.d(GlobalConstants.LOG_TAG, "AppListFragment:OnDetach");
+	}
+	
+	@Override
+	public void onSaveInstanceState(Bundle state) {
+	    super.onSaveInstanceState(state);
+	    if(GlobalConstants.LOG_FUNCTION_TRACE) Log.d(GlobalConstants.LOG_TAG, "AppListFragment:onSaveInstanceState");
+	    listPosition = listView.getFirstVisiblePosition();
+	    state.putInt(PARCEL_LISTPOSITION, listPosition);
 	}
 	
 	
@@ -383,36 +413,63 @@ public class AppListFragment extends Fragment {
     	@Override
     	public void asyncTaskComplete(List<String> result) {
     		if(GlobalConstants.LOG_FUNCTION_TRACE) Log.d(GlobalConstants.LOG_TAG, "AppListFragment:AppListLoaderCallback:asyncTaskComplete");
+
     		if (result != null) {
-	    		//Clear the current list of applications
-	    		if (appList == null) {
-	    			appList = new ArrayList<Application>(result.size()); //if the appList is null, initialise it to be the right size
-	    		} else {
-	    			appList.clear();
-	    		}
+    			//Clear the current list of applications
+    			if (appList == null) {
+    				appList = new ArrayList<Application>(result.size()); //if the appList is null, initialise it to be the right size
+    			} else {
+    				appList.clear();
+    			}
 	    		
 	    		//Grab the application object from the cache of application objects, and add it to the list
 	    		//for display
 	    		for (String packageName : result) {
 	    			appList.add(applicationObjects.get(packageName));
 	    		}
-	    		
-	    		//create an AppListAdapter for displaying apps in the list view if not already present,
-	    		//otherwise tell the adapter the undelying data set has changed (so it will update the listview)	    		
-	    		if (appListAdapter == null) {
-	        		appListAdapter = new AppListAdapter(context, R.layout.application_list_row, appList);
-	        		//if the listView is not null, then we can set the adapter; otherwise, need to delay this
-		    		if (listView != null) {
-		    			listView.setAdapter(appListAdapter);
-		    		}
-	    		} else {
-	    			appListAdapter.notifyDataSetChanged();
-	    		}
+
     		} else {
     			//TODO: Handle the case of no matching apps better: maybe clear the list, or display a
     			//'no matching entries' message of some sort over the top?
     			if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG,"No results from app list load");
+    			if (appList == null) {
+    				appList = new ArrayList<Application>(0);
+    			} else {
+    				appList.clear();
+    			}
     		}
+    		if (listPosition != null) {
+    			if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG, "List position is: " + listPosition.toString());
+    		} else {
+    			if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG, "List position is null");
+    		}
+    		//create an AppListAdapter for displaying apps in the list view if not already present,
+    		//otherwise tell the adapter the undelying data set has changed (so it will update the listview)	    		
+    		if (appListAdapter == null) {
+    			if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG, "AppListAdapter == null");
+        		appListAdapter = new AppListAdapter(context, R.layout.application_list_row, appList);
+        		//if the listView is not null, then we can set the adapter; otherwise, need to delay this
+	    		if (listView != null) {
+	    			listView.setAdapter(appListAdapter);
+	    			if (listPosition != null) {
+	    				if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG, "listPosition != null");
+	    				if (listPosition < appList.size()) {
+	    					if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG, "listPosition < appList.size()");
+	    					listView.setSelection(listPosition);
+	    					listPosition = null;
+	    				}
+	    			}
+	    		}
+    		} else {
+    			appListAdapter.notifyDataSetChanged();
+    			if (listPosition != null) {
+    				if (listPosition < appList.size()) {
+    					listView.setSelection(listPosition);
+    					listPosition = null;
+    				}
+    			}
+    		}
+    		
     		readyForInput = true;
     	}
     }
@@ -466,7 +523,7 @@ public class AppListFragment extends Fragment {
 	 			switch (itemPosition) {
 				case APP_TYPE_USER_OPTION_POSITION:
 					if (!currentAppTypeFilter.equals(Preferences.APPLIST_LAST_APP_TYPE_USER)) {
-	        			prefs.setLastAppListType(Preferences.APPLIST_LAST_APP_TYPE_USER);
+	        			prefs.setLastAppListTypeFilter(Preferences.APPLIST_LAST_APP_TYPE_USER);
 						currentAppTypeFilter = Preferences.APPLIST_LAST_APP_TYPE_USER;
 						currentFilterBits |= FILTER_APPTYPE;
 						loadApplicationList();
@@ -474,7 +531,7 @@ public class AppListFragment extends Fragment {
 					break;
 				case APP_TYPE_SYSTEM_OPTION_POSITION:
 					if (!currentAppTypeFilter.equals(Preferences.APPLIST_LAST_APP_TYPE_SYSTEM)) {
-						prefs.setLastAppListType(Preferences.APPLIST_LAST_APP_TYPE_SYSTEM);
+						prefs.setLastAppListTypeFilter(Preferences.APPLIST_LAST_APP_TYPE_SYSTEM);
 						currentAppTypeFilter = Preferences.APPLIST_LAST_APP_TYPE_SYSTEM;
 						currentFilterBits |= FILTER_APPTYPE;
 						loadApplicationList();
@@ -482,7 +539,7 @@ public class AppListFragment extends Fragment {
 					break;
 				case APP_TYPE_ALL_OPTION_POSITION:
 					if (!currentAppTypeFilter.equals(Preferences.APPLIST_LAST_APP_TYPE_ALL)) {
-						prefs.setLastAppListType(Preferences.APPLIST_LAST_APP_TYPE_ALL);
+						prefs.setLastAppListTypeFilter(Preferences.APPLIST_LAST_APP_TYPE_ALL);
 						currentAppTypeFilter = Preferences.APPLIST_LAST_APP_TYPE_ALL;
 						currentFilterBits &= ~FILTER_APPTYPE;
 						loadApplicationList();
@@ -506,6 +563,7 @@ public class AppListFragment extends Fragment {
 				long id) {
 			if (readyForInput) {
 				currentSettingGroup = settingGroups.get(itemPosition);
+				prefs.setLastSettingGroupFilter(currentSettingGroup);
 				if (currentSettingGroup == settingGroupAllOption) {
 					currentFilterBits &= ~FILTER_GROUP;
 				} else {
@@ -721,10 +779,14 @@ public class AppListFragment extends Fragment {
         
         this.settingGroupAllOption = context.getResources().getString(R.string.applist_setting_filter_spinner_all_option_title);
         this.settingGroups.add(this.settingGroupAllOption);
+        int selectedOptionPosition = 0;
         if (groupNamesCursor.moveToFirst()) {
 	    	int groupTitleColumnNum = groupNamesCursor.getColumnIndex(DBInterface.SettingTable.COLUMN_NAME_GROUP_TITLE);
 	    	do {
 	    		settingGroups.add(groupNamesCursor.getString(groupTitleColumnNum));
+	    		if (groupNamesCursor.getString(groupTitleColumnNum).equals(currentSettingGroup)) {
+	    			selectedOptionPosition = groupNamesCursor.getPosition();
+	    		}
 	    	} while (groupNamesCursor.moveToNext());
     	}
         
@@ -733,11 +795,10 @@ public class AppListFragment extends Fragment {
         //Create an array adapter for the spinner from the values loaded from the database, and assign to the spinner
         final SpinnerAdapter groupSpinnerAdapter = (SpinnerAdapter) new ArrayAdapter<String>(context, android.R.layout.simple_spinner_dropdown_item, settingGroups);
         groupSpinner.setAdapter(groupSpinnerAdapter);
+        groupSpinner.setSelection(selectedOptionPosition);
 
         //Add handler for when the selected option changes
         groupSpinner.setOnItemSelectedListener(new GroupSpinnerListener());
-        
-        updateFilterSummary();
     }
     
     private void updateFilterSummary() {
@@ -771,10 +832,11 @@ public class AppListFragment extends Fragment {
     private void clearFilters() {
     	currentFilterBits = 0;
     	currentSettingGroup = settingGroupAllOption;
+    	prefs.setLastSettingGroupFilter(currentSettingGroup);
     	groupSpinner.setSelection(settingGroups.indexOf(settingGroupAllOption));
     	appTypeSpinner.setSelection(APP_TYPE_ALL_OPTION_POSITION);
     	currentAppTypeFilter = Preferences.APPLIST_LAST_APP_TYPE_ALL;
-    	prefs.setLastAppListType(Preferences.APPLIST_LAST_APP_TYPE_ALL);
+    	prefs.setLastAppListTypeFilter(Preferences.APPLIST_LAST_APP_TYPE_ALL);
     	loadApplicationList();
     }
 }

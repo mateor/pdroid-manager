@@ -223,7 +223,8 @@ public class AppQueryBuilder {
 	protected static final String SELECTPART_COLUMNS_LABEL = 
 			ApplicationTable.TABLE_NAME + "." + ApplicationTable.COLUMN_NAME_LABEL;
 	
-	protected static final String SELECTPART_COLUMNS_APP = 
+	protected static final String SELECTPART_COLUMNS_APP =
+			ApplicationTable.TABLE_NAME + "." + ApplicationTable.COLUMN_NAME_ROWID + ", " +
 			ApplicationTable.TABLE_NAME + "." + ApplicationTable.COLUMN_NAME_LABEL + ", " +  
 			ApplicationTable.TABLE_NAME + "." + ApplicationTable.COLUMN_NAME_PACKAGENAME + ", " + 
 			ApplicationTable.TABLE_NAME + "." + ApplicationTable.COLUMN_NAME_UID + ", " +
