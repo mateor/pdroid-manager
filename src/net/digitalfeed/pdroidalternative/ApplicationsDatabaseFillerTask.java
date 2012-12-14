@@ -90,11 +90,27 @@ public class ApplicationsDatabaseFillerTask extends AsyncTask<Void, Integer, Has
 	@Override
 	protected HashMap<String, Application> doInBackground(Void... params) {
 		PrivacySettingsManager privacySettingsManager = (PrivacySettingsManager)context.getSystemService("privacy");
-		List<PrivacySettings> privacySettingsList = privacySettingsManager.getSettingsAll();
 
-		HashMap<String, PrivacySettings> privacySettingsMap = new HashMap<String, PrivacySettings>();
-		for (PrivacySettings privacySettings : privacySettingsList) {
-			privacySettingsMap.put(privacySettings.getPackageName(), privacySettings);
+		boolean coreBatchSupport = false;
+		
+		try {
+			PrivacySettingsManager.class.getMethod(GlobalConstants.CORE_SUPPORTS_EXTENSION_FUNCTION);
+			coreBatchSupport = privacySettingsManager.supportsExtension("batch");
+		} catch (NoSuchMethodException e) {
+			if (GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG, "No extension support in this version of PDroid");
+		}
+		
+		HashMap<String, PrivacySettings> privacySettingsMap = null;
+		
+		if (coreBatchSupport) {
+			List<PrivacySettings> privacySettingsList = privacySettingsManager.getSettingsAll();
+			if (privacySettingsList == null) {
+				if (GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG, "ApplicationsDatabaseFillerTask:doInBackground:GetSettingsAll returned null");
+			}
+			privacySettingsMap = new HashMap<String, PrivacySettings>();
+			for (PrivacySettings privacySettings : privacySettingsList) {
+				privacySettingsMap.put(privacySettings.getPackageName(), privacySettings);
+			}
 		}
 		
 		HashMap<String, Application> appList = new HashMap<String, Application>();
@@ -183,12 +199,17 @@ public class ApplicationsDatabaseFillerTask extends AsyncTask<Void, Integer, Has
 
 				int statusFlags = 0;
 				
-				//PrivacySettings privacySettings = privacySettingsManager.getSettings(appInfo.packageName);
-				if (privacySettingsMap.containsKey(appInfo.packageName)) {
-					privacySettings = privacySettingsMap.get(appInfo.packageName);
-				} else { 
-					privacySettings = null;
+				//privacySettingsMap will always be null if the core doesn't support batch processing
+				if (privacySettingsMap != null) {
+					if (privacySettingsMap.containsKey(appInfo.packageName)) {
+						privacySettings = privacySettingsMap.get(appInfo.packageName);
+					} else { 
+						privacySettings = null;
+					}
+				} else {
+					privacySettings = privacySettingsManager.getSettings(appInfo.packageName);
 				}
+				
 				if (privacySettings != null) {
 					//I would prefer to be getting a new readable database handle for this, but
 					//if I do that, then call close on it, it closes my writable handle too.

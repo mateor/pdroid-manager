@@ -47,7 +47,9 @@ import android.text.TextUtils;
 import android.util.Log;
 
 /**
- * Loads the settings list for a single application from the database.
+ * Loads the settings list for one or more application from the database.
+ * TODO: Optimise or scrap the code to try to get the actual settings 
+ * of the app: switch them to use the "batch" extension of my mauled PDroid core
  * @author smorgan
  */
 public class AppsSettingsLoadTask extends AsyncTask<String, Integer, List<PDroidAppSetting>> {

@@ -35,7 +35,8 @@ import android.privacy.PrivacySettingsManager;
 
 
 /**
- * Loads the settings list for a single application from the database.
+ * Saves a set of PDroidAppSettings to one or more packages
+ * TODO: Optimise to use the "batch" extension of my mauled PDroid core
  * @author smorgan
  */
 public class AppsSettingsSaveTask extends AsyncTask<PDroidAppSetting, Integer, Void> {
