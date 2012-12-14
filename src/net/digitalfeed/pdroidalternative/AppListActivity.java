@@ -70,11 +70,15 @@ public class AppListActivity extends Activity implements AppListFragment.OnAppli
         LanguageHelper.updateLanguageIfRequired(this);
         
         //check if PDroid is installed
-        PrivacySettingsManager privacySettingsManager = (PrivacySettingsManager)this.getSystemService("privacy");
-        if (privacySettingsManager == null) {
+        Object psmObject = this.getSystemService("privacy");
+        if (psmObject == null) {
         	pdroidState = PDROID_NOT_INSTALLED;
         	setContentView(R.layout.no_pdroid_layout);
-        } else if (privacySettingsManager.getVersion() < GlobalConstants.MINIMUM_PDROID_VERSION) {
+        	return;
+        }
+        
+        PrivacySettingsManager privacySettingsManager = (PrivacySettingsManager)psmObject;        
+        if (privacySettingsManager.getVersion() < GlobalConstants.MINIMUM_PDROID_VERSION) {
         	pdroidVersion = privacySettingsManager.getVersion();
         	pdroidState = PDROID_TOO_OLD;
         	setContentView(R.layout.no_pdroid_layout);
