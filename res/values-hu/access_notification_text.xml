@@ -9,7 +9,7 @@
     <string name="access_notification_simSerial">SIM sorozatszám</string>
     <string name="access_notification_subscriberID">Előfizető ID</string>
     <string name="access_notification_accountsList">Fióklista</string>
-    <string name="access_notification_authTokens">Fiók jogosultságok</string>
+    <string name="access_notification_authTokens">Fiók hozzáférések</string>
     <string name="access_notification_outgoingCall">Kimenő hívószám</string>
     <string name="access_notification_incomingCall">Bejövő hívószám</string>
     <string name="access_notification_contacts">Kapcsolatok</string>
@@ -28,7 +28,7 @@
 	<string name="access_notification_android_id">Android ID</string>
 	<string name="access_notification_iccAccess">ICC hozzáférés</string>
 	<string name="access_notification_wifiInfo">Wifi hálózat információ</string>
-	<string name="access_notification_iptables"></string>
+	<string name="access_notification_iptables">IP táblák</string>
 	<string name="access_notification_switchconnectivity">Mobil kapcsolódás módosítása</string>
 	<string name="access_notification_sendMms">MMS küldése</string>
 	<string name="access_notification_switchWifiState">Wifi kapcsolódás módosítása</string>
