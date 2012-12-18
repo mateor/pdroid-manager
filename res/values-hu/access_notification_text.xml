@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="access_notification_deviceID">Eszköz ID</string>
+    <string name="access_notification_line1Number">Telefonszám</string>
+    <string name="access_notification_locationGPS">GPS pozíció</string>
+    <string name="access_notification_locationNetwork">Hálózati pozíció</string>
+    <string name="access_notification_networkInfoCurrent">Hálózat információ</string>
+    <string name="access_notification_networkInfoSIM">Mobilhálózat információ</string>
+    <string name="access_notification_simSerial">SIM sorozatszám</string>
+    <string name="access_notification_subscriberID">Előfizető ID</string>
+    <string name="access_notification_accountsList">Fióklista</string>
+    <string name="access_notification_authTokens">Fiók jogosultságok</string>
+    <string name="access_notification_outgoingCall">Kimenő hívószám</string>
+    <string name="access_notification_incomingCall">Bejövő hívószám</string>
+    <string name="access_notification_contacts">Kapcsolatok</string>
+	<string name="access_notification_calendar">Naptár</string>
+	<string name="access_notification_mms">MMS olvasása</string>
+	<string name="access_notification_sms">SMS olvasása</string>
+    <string name="access_notification_mmsSms">MMS vagy SMS olvasása</string>
+	<string name="access_notification_callLog">Hívásnapló</string>
+	<string name="access_notification_bookmarks">Böngésző könyvjelők &amp; előzmények</string>
+	<string name="access_notification_systemLogs">Rendszernaplók</string>
+	<string name="access_notification_intentBootCompleted">Induljon bootoláskor</string>
+	<string name="access_notification_camera">Kamera</string>
+	<string name="access_notification_recordAudio">Hang rögzítése</string>
+	<string name="access_notification_SmsSend">SMS küldése</string>
+	<string name="access_notification_phoneCall">Hívás indítása</string>
+	<string name="access_notification_android_id">Android ID</string>
+	<string name="access_notification_iccAccess">ICC hozzáférés</string>
+	<string name="access_notification_wifiInfo">Wifi hálózat információ</string>
+	<string name="access_notification_iptables"></string>
+	<string name="access_notification_switchconnectivity">Mobil kapcsolódás módosítása</string>
+	<string name="access_notification_sendMms">MMS küldése</string>
+	<string name="access_notification_switchWifiState">Wifi kapcsolódás módosítása</string>
+</resources>
