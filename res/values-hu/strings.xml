@@ -197,26 +197,26 @@
 		<string name="alert_dialog_close">Bezárás</string>
 
 	<!-- text for the 'access notifications' displayed on-screen -->
-		<string name="notification_toast_text1">access to</string>
-		<string name="notification_toast_text2">was</string>
-		<string name="notification_toast_image_content_description">Icon indicator of event type</string> <!-- text alternative for the notification type for accessibility  -->
-		<string name="notification_toast_allowed_text">allowed</string>
-		<string name="notification_toast_denied_text">denied</string>
-		<string name="notification_toast_random_text">random</string>
-		<string name="notification_toast_custom_text">custom</string>
+		<string name="notification_toast_text1">a hozzáférés</string>
+		<string name="notification_toast_text2"></string>
+		<string name="notification_toast_image_content_description">Esemény típus ikon jelölője</string> <!-- text alternative for the notification type for accessibility  -->
+		<string name="notification_toast_allowed_text">engedélyezve</string>
+		<string name="notification_toast_denied_text">letiltva</string>
+		<string name="notification_toast_random_text">véletlenszerű</string>
+		<string name="notification_toast_custom_text">egyéni</string>
 
 	<!-- Text for notification used in the notification bar (top of the screen)
 	when a new app in installed, or one is updated -->
-		<string name="notification_newinstall_title"> installed</string>
-		<string name="notification_newinstall_text">Click to configure PDroid settings</string>
-		<string name="notification_update_title">has changed permissions</string>
-		<string name="notification_update_text">Click to configure PDroid settings</string>
+		<string name="notification_newinstall_title"> telepítve</string>
+		<string name="notification_newinstall_text">Kattintson a PDroid beállítások konfigurálásához</string>
+		<string name="notification_update_title">jogosultságok megváltoztak</string>
+		<string name="notification_update_text">Kattintson a PDroid beállítások konfigurálásához</string>
 
 	<!-- Not currently used: essentially replaced by detail_setting_option_*_contentdescription -->
-		<string name="setting_option_allow">Allow</string>
-		<string name="setting_option_random">Random</string>
-		<string name="setting_option_custom">Custom</string>
-		<string name="setting_option_deny">Deny</string>
+		<string name="setting_option_allow">Engedélyez</string>
+		<string name="setting_option_random">Véletlenszerű</string>
+		<string name="setting_option_custom">Egyéni</string>
+		<string name="setting_option_deny">Letilt</string>
 
 	<!-- FUTURE FEATURE STRINGS -->
 	<!-- These strings are included for intended future use, to
@@ -228,40 +228,40 @@
 		<!-- profile features: profiles allow named sets of 'settings' to be created, and then
 		applied to applications as pre-prepared groups of settings -->
 		<!-- profile list screen -->
-			<string name="profile_list_actionbar_title">Profiles</string> <!-- title for the profiles screen in the action bar -->		
-			<string name="profile_list_actionbar_add">Add profile</string> <!-- action bar button to create a new profile -->
+			<string name="profile_list_actionbar_title">Profilok</string> <!-- title for the profiles screen in the action bar -->		
+			<string name="profile_list_actionbar_add">Profil hozzáadása</string> <!-- action bar button to create a new profile -->
 			
 			<!-- action bar for when one or more profiles are selected -->
-			<string name="profile_list_actionbar_batchselect_none">Select profiles</string> <!-- Shown in the header when no profiles selected -->
-			<string name="profile_list_actionbar_batchselect_singular">One profile selected</string> <!-- Shown in header when single profile selected -->
-			<string name="profile_list_actionbar_batchselect_plural">profiles selected</string> <!-- Shown in header when >1 profiles selected (i.e. shows as "5 profiles selected") -->		
-			<string name="profile_list_actionbar_delete">Delete profiles</string> <!-- button to delete the selected profiles -->
-			<string name="profile_list_actionbar_duplicate">Copy profiles</string> <!-- button to duplicate the selected profiles, with a new name ending in 'copy' (or equivalent) -->
+			<string name="profile_list_actionbar_batchselect_none">Profilok kiválasztása</string> <!-- Shown in the header when no profiles selected -->
+			<string name="profile_list_actionbar_batchselect_singular">Egy profil kiválasztva</string> <!-- Shown in header when single profile selected -->
+			<string name="profile_list_actionbar_batchselect_plural">profile kiválasztva</string> <!-- Shown in header when >1 profiles selected (i.e. shows as "5 profiles selected") -->		
+			<string name="profile_list_actionbar_delete">Profilok törlése</string> <!-- button to delete the selected profiles -->
+			<string name="profile_list_actionbar_duplicate">Profilok másolása</string> <!-- button to duplicate the selected profiles, with a new name ending in 'copy' (or equivalent) -->
 	
 			<!-- dialog boxes for the profile list screen -->
-			<string name="profile_list_delete_confirm_title">Delete profiles</string> <!-- title for confirmation box when deleting one or more profiles -->
-			<string name="profile_list_delete_confirm_message">Are you sure you want to delete the selected profiles</string> <!-- body for confirmation box when deleting one or more profiles -->
-			<string name="profile_list_duplicate_confirm_title">Copy profiles</string> <!-- body for confirmation box when deleting one or more profiles -->
-			<string name="profile_list_duplicate_confirm_message">Are you sure you want to copy the selected profiles</string> <!-- body for confirmation box when deleting one or more profiles -->
+			<string name="profile_list_delete_confirm_title">Profilok törlése</string> <!-- title for confirmation box when deleting one or more profiles -->
+			<string name="profile_list_delete_confirm_message">Biztos törli a kiválasztott profilokat?</string> <!-- body for confirmation box when deleting one or more profiles -->
+			<string name="profile_list_duplicate_confirm_title">Profilok másolása</string> <!-- body for confirmation box when deleting one or more profiles -->
+			<string name="profile_list_duplicate_confirm_message">Biztos másolja a kiválasztott profilokat?</string> <!-- body for confirmation box when deleting one or more profiles -->
 
-			<string name="profile_list_duplicate_profile_postfix">Copy</string> <!-- Text added to the end of the name of a profile when it is duplicated -->
+			<string name="profile_list_duplicate_profile_postfix">Másolat</string> <!-- Text added to the end of the name of a profile when it is duplicated -->
 
 		<!-- stock profiles: these are the names for the 'default' profiles which are automatically created and can not be modified -->
-			<string name="profiles_inbuilt_trusted">Trusted</string> <!-- a pre-generated profile made up of all the 'trusted' settings  -->
-			<string name="profiles_inbuilt_untrusted">Untrusted</string> <!-- a pre-generated profile made up of all the 'trusted' settings  -->
+			<string name="profiles_inbuilt_trusted">Megbízható</string> <!-- a pre-generated profile made up of all the 'trusted' settings  -->
+			<string name="profiles_inbuilt_untrusted">Megbízhatatlan</string> <!-- a pre-generated profile made up of all the 'trusted' settings  -->
 	
 		<!-- for the other parts of the app -->
 			<!-- for app list: action bar button when doing batch selection -->
-			<string name="applist_actionbar_apply_profile">Apply profile</string> <!-- button to apply a profile to the selected apps -->
-			<string name="applist_select_profile_dialog_title">Apply profile</string> <!-- title of dialog to select the profile to apply -->
-			<string name="applist_select_profile_dialog_message">Choose the profile to apply to the selected apps</string> <!-- Text above a spinner listing the available profiles to apply -->
+			<string name="applist_actionbar_apply_profile">Profil alkalmazása</string> <!-- button to apply a profile to the selected apps -->
+			<string name="applist_select_profile_dialog_title">Profil alkalmazása</string> <!-- title of dialog to select the profile to apply -->
+			<string name="applist_select_profile_dialog_message">Válassza ki az alkalmazáshoz alkalmazni kívánt profilokat</string> <!-- Text above a spinner listing the available profiles to apply -->
 
 			<!-- for preferences list: selecting a 'default' profile -->
-			<string name="preferences_heading_defaults">Defaults</string>
-			<string name="preferences_default_profile_title">Set default profile</string>
-			<string name="preferences_default_profile_summary">Default profile to be applied to new apps</string>
-			<string name="preferences_default_profile_summary_none">None selected</string>
-			<string name="preferences_default_profile_summary_selected">Current profile: </string>
+			<string name="preferences_heading_defaults">Alapértelmezések</string>
+			<string name="preferences_default_profile_title">Alapértelmezett profil beállítása</string>
+			<string name="preferences_default_profile_summary">Új alkalmazásokhoz használandó alapértelmezett profil</string>
+			<string name="preferences_default_profile_summary_none">Nincs kiválasztva</string>
+			<string name="preferences_default_profile_summary_selected">Jelenlegi profil: </string>
 
 	<!-- END FUTURE FEATURE STRINGS -->
 	
@@ -296,7 +296,7 @@ XDA-developers: <a href="http://forum.xda-developers.com/member.php?u=3602796">F
 Please <i>do not</i> seek help for the PDroid Manager application on their threads.</p>
 ]]></string>
 
-	<string name="about_dialog_title">About PDroid Manager</string>
+	<string name="about_dialog_title">A PDroid Managerről</string>
 	<string name="about_dialog_body"><![CDATA[
 <p><i>PDroid Manager</i> is a setting management application for the Privacy service provided by the PDroid 2.0 Core. It serves as an open-source alternative for the PDroid 2.0 App by CollegeDev.</p>
 <h2>PDroid Manager is currently in alpha</h2>
@@ -355,7 +355,7 @@ alternative name, rather than the name pdroid-manager.</p>
 <p><i>To resolve this issue, you need to uninstall CollegeDev\'s PDroid 2.0 App, <b>then uninstall and reinstall PDroid Manager</b>.</i></p>
 ]]></string>
 
-	<string name="pdroid_get_support">Open the PDroid Manager thread on XDA developers</string>
+	<string name="pdroid_get_support">A PDroid Manager téma megnyitása az XDA developers fórumon</string>
 	
 	<string name="application_list_app_spacer" translatable="false">&#160;|&#160;</string>
 	<string name="detail_custom_value_spacer" translatable="false">&#160;|&#160;</string>
