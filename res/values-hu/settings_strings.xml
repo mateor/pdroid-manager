@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 
+/**
+ * Copyright (C) 2012 Simeon J. Morgan (smorgan@digitalfeed.net)
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 3 of the License, or (at your option) any later version.
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License along with
+ * this program; if not, see <http://www.gnu.org/licenses>.
+ * The software has the following requirements (GNU GPL version 3 section 7):
+ * You must retain in pdroid-manager, any modifications or derivatives of
+ * pdroid-manager, or any code or components taken from pdroid-manager the author
+ * attribution included in the files.
+ * In pdroid-manager, any modifications or derivatives of pdroid-manager, or any
+ * application utilizing code or components taken from pdroid-manager must include
+ * in any display or listing of its creators, authors, contributors or developers
+ * the names or pseudonyms included in the author attributions of pdroid-manager
+ * or pdroid-manager derived code.
+ * Modified or derivative versions of the pdroid-manager application must use an
+ * alternative name, rather than the name pdroid-manager.
+ */
+ 
+ /**
+ * @author Simeon J. Morgan <smorgan@digitalfeed.net>
+ * @author wbedard - contributed the bulk of the text for help entries 
+ */
+-->
+<resources>
+	<string name="SETTING_LABEL_ALLOW_READ_DEVICE_ID">Eszköz azonosító</string>
+	<string name="SETTING_HELP_ALLOW_READ_DEVICE_ID">Szabályozza az egyedi eszköz azonosító olvasásának hozzáférését, akár a GSM International Mobile Equipment Identity-t (IMEI) vagy a Mobile Equipment ID-t (MEID) vagy a CDMA telefonoknál az Electronic Serial Number-t (ESN). Egy eszköz egyedi eszköz azonosítója állandó.</string>
+	<string name="SETTING_LABEL_ALLOW_READ_PHONE_NUMBER">Telefonszám</string>
+	<string name="SETTING_HELP_ALLOW_READ_PHONE_NUMBER">Szabályozza a hozzáférést a telefonszámhoz és/vagy a hangposta számhoz, például GSM telefonnál a Mobile Station Integrated Services Digital Network-öt (MSISDN) vagy CDMA telefonnál a Mobile Device Number-t (MDN). Ez a szám gyakran hiányzik vagy érvénytelen.</string>
+	<string name="SETTING_LABEL_ALLOW_READ_SIM_SERIAL">Sim kártya sorozatszám</string>
+	<string name="SETTING_HELP_ALLOW_READ_SIM_SERIAL">Szabályozza a SIM kártya sorozatszámhoz való hozzáférést (SSN), másnéven Integrated Circuit Card ID (ICCID). Ez minden SIM kártyának egyedi.</string>
+	<string name="SETTING_LABEL_ALLOW_READ_SUBSCRIBER_ID">Előfizető azonosító</string>
+	<string name="SETTING_HELP_ALLOW_READ_SUBSCRIBER_ID">Szabályozza az egyedi előfizető azonosítóhoz való hozzáférést, például GSM telefonoknál az International Mobile Subscriber Identity (IMSI) vagy CDMA telefnonoknál a Mobile Identification Number (MIN).</string>
+	<string name="SETTING_LABEL_ALLOW_READ_INCOMING_CALL_NUMBER">Bejövő hívószám</string>
+	<string name="SETTING_HELP_ALLOW_READ_INCOMING_CALL_NUMBER">Szabályozza a bejövő hívószámhoz való hozzáférést.</string>
+	<string name="SETTING_LABEL_ALLOW_READ_OUTGOING_CALL_NUMBER">Kimenő hívószám</string>
+	<string name="SETTING_HELP_ALLOW_READ_OUTGOING_CALL_NUMBER">Szabályozza a kimenő hívás tárcsázott telefonszámához való hozzáférést.</string>
+	<string name="SETTING_LABEL_ALLOW_INITIATE_PHONE_CALL">Telefonhívás</string>
+	<string name="SETTING_HELP_ALLOW_INITIATE_PHONE_CALL">Szabályozza, hogy egy alkalmazás telefonhívást indítson a tárcsázó képernyő nélkül. A tárcsázó engedélyezi, hogy egy felhasználó jóváhagyja a hívás kezdeményezését.  Ennek engedélyezése megakadályozza, hogy egy alkalmazás akár vészhelyzeti hívásokat indítson (pl. 112).</string>
+	<string name="SETTING_LABEL_ALLOW_READ_NETWORK_LOCATION">Hálózati pozíció</string>
+	<string name="SETTING_HELP_ALLOW_READ_NETWORK_LOCATION">Szabályozza az eszköz pozíciójához való hozzáférést, ami a Wi-Fi és/vagy a hálózati cellainformáció alapján történik.</string>
+	<string name="SETTING_LABEL_ALLOW_READ_GPS_LOCATION">GPS pozíció</string>
+	<string name="SETTING_HELP_ALLOW_READ_GPS_LOCATION">Szabályozza az eszköz GPS vevője által adott értékhez való hozzáférést.</string>
+	<string name="SETTING_LABEL_ALLOW_USE_ACCOUNT_CREDENTIALS">Fiók hozzáférések</string>
+	<string name="SETTING_HELP_ALLOW_USE_ACCOUNT_CREDENTIALS">Szabályozza, hogy egy alkalmazás használja egy alkalmazás szolgáltatás hitelesítéshez társított hitelesítési tokenjét (pl. a Facebook alkalmazás használja a Facebook hozzáférésedet)</string>
+	<string name="SETTING_LABEL_ALLOW_READ_ACCOUNTS_LIST">Fiókok</string>
+	<string name="SETTING_HELP_ALLOW_READ_ACCOUNTS_LIST">Szabályozza az eszközhöz regisztrált fiókjainak listájához való hozzáférést.  A Google fiókod mellet például a Dropbox, Twitter, LinkedIn, Firefox és egyéb fiókok. A fiók részletek tartalmazzák a szolgáltatást és az azonosítót (pl. a Gmail cím).</string>
+	<string name="SETTING_LABEL_ALLOW_READ_CONTACTS">Kapcsolatok</string>
+	<string name="SETTING_HELP_ALLOW_READ_CONTACTS">Szabályozza az Androidos kapcsolatok információihoz való hozzáférést.</string>
+	<string name="SETTING_LABEL_ALLOW_READ_CALL_LOG">Hívásnapló</string>
+	<string name="SETTING_HELP_ALLOW_READ_CALL_LOG">Szabályozza az Android hívásnaplójában lévő információkhoz való hozzáférést.</string>
+	<string name="SETTING_LABEL_ALLOW_READ_CALENDAR">Naptár</string>
+	<string name="SETTING_HELP_ALLOW_READ_CALENDAR">Szabályozza az Android naptár információhoz való hozzáférést.</string>
+	<string name="SETTING_LABEL_ALLOW_READ_SMS">SMS hozzáférés</string>
+	<string name="SETTING_HELP_ALLOW_READ_SMS">Szabályozza az eszközön tárolt SMS üzenetekhez való hozzáférést (de a SIM-en lévőkhöz nem).</string>
+	<string name="SETTING_LABEL_ALLOW_SEND_SMS">SMS küldése</string>
+	<string name="SETTING_HELP_ALLOW_SEND_SMS">Szabályozza, hogy egy alkalmazás küldhet-e SMS üzenetet.</string>
+	<string name="SETTING_LABEL_ALLOW_READ_MMS">MMS hozzáférés</string>
+	<string name="SETTING_HELP_ALLOW_READ_MMS">Szabályozza az eszközön tárolt MMS üzenetekhez való hozzáférést (de a SIM-en lévőkhöz nem).</string>
+	<string name="SETTING_LABEL_ALLOW_SEND_MMS">MMS küldése</string>
+	<string name="SETTING_HELP_ALLOW_SEND_MMS">Szabályozza, hogy egy alkalmazás küldhet-e MMS üzenetet.</string>
+	<string name="SETTING_LABEL_ALLOW_RECORD_AUDIO">Hangrögzítés</string>
+	<string name="SETTING_HELP_ALLOW_RECORD_AUDIO">Szabályozza, hogy egy alkalmazás bármikor rögzíthet hangot a mikrofon használatával (nem hívás közben)</string>
+	<string name="SETTING_LABEL_ALLOW_CAMERA">Kamera</string>
+	<string name="SETTING_HELP_ALLOW_CAMERA">Szabályozza, hogy egy alkalmazás bármikor készíthet állóképet az eszköz kamerájának használatával.</string>
+	<string name="SETTING_LABEL_ALLOW_READ_BOOKMARKS_AND_HISTORY">Könyvjelzők és előzmények</string>
+	<string name="SETTING_HELP_ALLOW_READ_BOOKMARKS_AND_HISTORY">Szabályozza az Android böngészőjének előzményeihez, könyvjelzőihez való hozzáférést.</string>
+	<string name="SETTING_LABEL_ALLOW_READ_SYSTEM_LOGS">Rendszernaplók</string>
+	<string name="SETTING_HELP_ALLOW_READ_SYSTEM_LOGS">Szabályozza az eszköz rendszernaplóinak olvasását, ami személyes adatokat is tartalmazhat. Ez nem véd a root jogosultságú alkalmazások rendszernapló olvasásának hozzáférése ellen.</string>
+	<string name="SETTING_LABEL_ALLOW_RECEIVE_BOOT_COMPLETED_INTENT">Indítás bootoláskor</string>
+	<string name="SETTING_HELP_ALLOW_RECEIVE_BOOT_COMPLETED_INTENT">Szabályozza, hogy egy alkalmazás értesítve legyen a bootloás befejezéséről, ami az eszköz indításakor történő alkalmazás indításhoz, vagy más tevékenységek végrehajtásához használható.</string>
+	<string name="SETTING_LABEL_ALLOW_READ_WIFI_INFO">Wifi információ</string>
+	<string name="SETTING_HELP_ALLOW_READ_WIFI_INFO">Szabályozza, hogy egy alkalmazás lekérdezhesse az eszközön beállított vezeték nélküli hálózatok listáját, mint jelenlegi wifi hálózat, közeli wifi hozzáférési pontok és aktuális IP cím (DHCP által beállított).</string>
+	<string name="SETTING_LABEL_ALLOW_CHANGE_WIFI_STATE">Wifi állapot megváltoztatása</string>
+	<string name="SETTING_HELP_ALLOW_CHANGE_WIFI_STATE">Szabályozza, hogy egy alkalmazás kapcsolódjon vagy leváljon egy Wi-Fi hozzáférési pontra és megváltoztassa a Wi-Fi hálózatok beállításait.</string>
+	<string name="SETTING_LABEL_ALLOW_CHANGE_MOBILE_DATA_STATE">Hálózati állapot megváltoztatása</string>
+	<string name="SETTING_HELP_ALLOW_CHANGE_MOBILE_DATA_STATE">Szabályozza, hogy egy alkalmazás engedélyezhesse vagy letilthassa a mobil adatkapcsolatot.</string>
+	<string name="SETTING_LABEL_ALLOW_READ_NETWORK_INFO">Hálózati információ</string>
+	<string name="SETTING_HELP_ALLOW_READ_NETWORK_INFO">Szabályozza egy alkalmazás hozzáférését a jelenlegi hálózat információkhoz, mint kapcsolat állapota, roaming, DNS szerverek, IP címek, stb.</string>
+	<string name="SETTING_LABEL_ALLOW_READ_ANDROID_ID">Android ID</string>
+	<string name="SETTING_HELP_ALLOW_READ_ANDROID_ID">Szabályozza egy alkalmazás egyedi Android telepítési azonosítójához való hozzáférését, ami örökké állandó az operációs rendszer telepítésénél (OS mentések és visszaállítások esetén is).</string>
+	<string name="SETTING_LABEL_ALLOW_READ_SIM_INFO">SIM információ</string>
+	<string name="SETTING_HELP_ALLOW_READ_SIM_INFO">Szabályozza a SIM kártyán tárolt ország és mobilszolgáltató információihoz való hozzáférést.  Alapesetben ez az információ bármilyen jogosultság nélkül hozzáférhető egy alkalmazás részére.</string>
+	<string name="SETTING_LABEL_ALLOW_ACCESS_IP_TABLES">IP táblák</string>
+	<string name="SETTING_HELP_ALLOW_ACCESS_IP_TABLES">Szabályozza, hogy egy alkalmazás futtathat-e iptables parancsokat tartalmazó szkripteket (pontosabban, tartalmazza az iptables vagy ip6tables szöveget)</string>
+	<string name="SETTING_LABEL_ALLOW_READ_ICC_ID">ICC hozzáférés</string>
+	<string name="SETTING_HELP_ALLOW_READ_ICC_ID">Szabályozza, hogy egy alkalmazás olvashat/írhat SMS üzeneteket az Integrated Circuit Card (ICC), R-UIM, vagy SIM kártyára.</string>
+	<string name="SETTING_LABEL_FAKE_ALWAYS_ONLINE">Online állapot kényszerítése</string>
+	<string name="SETTING_HELP_FAKE_ALWAYS_ONLINE">Ha engedélyezve van, akkor az Android mindig online állapotot jelent az azt kérdező alkalmazás részére (pl, hogy elérhető internet kapcsolat).</string>
+	
+	<string name="SETTING_GROUP_LABEL_GENERAL">Általános</string>
+	<string name="SETTING_GROUP_LABEL_PHONE">Telefon &amp; hívások</string>
+	<string name="SETTING_GROUP_LABEL_MESSAGES">Üzenetek</string>
+	<string name="SETTING_GROUP_LABEL_PERSONAL_DATA">Személyes adatok</string>
+	<string name="SETTING_GROUP_LABEL_MEDIA">Média</string>
+	<string name="SETTING_GROUP_LABEL_NETWORK">Hálózat</string>
+	<string name="SETTING_GROUP_LABEL_LOCATION">Pozíció</string>
+</resources>
