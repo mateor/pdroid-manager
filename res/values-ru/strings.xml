@@ -60,10 +60,8 @@
 		<string name="applist_popupmenu_delete_settings">Удалить настройки</string>
 		<string name="applist_popupmenu_customise_settings">Пользовательские настройки</string>
 		
-		<!-- start needs translation -->
 		<string name="applist_actionbar_selectall">Выбрать все</string>
-		<string name="applist_actionbar_deselectall">Отмените все</string>
-		<!-- end needs translation -->
+		<string name="applist_actionbar_deselectall">Очистить выбор</string>
 		
 		<!-- Heading for the actionbar when in multiple-select mode (i.e. selecting apps for a batch change) -->
 		<string name="applist_actionbar_batchselect_none">Выберите приложения</string> <!-- Shown in the header when no apps selected -->
@@ -107,10 +105,8 @@
 		<string name="preferences_global_delete_summary">Удалить все настроки PDroid для всех приложений</string>
 	<!-- end entries in the preferences text list -->
 
-		<!-- start needs translation -->
-			<string name="preferences_apprestart_title">перезапуска приложения</string>
-			<string name="preferences_apprestart_message">PDroid менеджер теперь будет перезапустить, чтобы применить изменения конфигурации</string>
-		<!-- end needs translation -->
+		<string name="preferences_apprestart_title">Перезапуск Приложения</string>
+		<string name="preferences_apprestart_message">PDroid Менеджер будет перезапущен, чтобы применить изменения конфигурации</string>
 
 		<string name="preferences_chooselangage_alerttitle">Выбор языка</string> <!-- text for language selection dialog box (when you select 'change language' option)  -->
 

@@ -51,11 +51,13 @@
         <item>Fran&#231;ais</item>
         <item>Deutsch</item>
         <item>Русский</item>
+        <item>Magyar</item>
     </string-array>
     <string-array name="language_codes" translatable="false">
         <item>en</item>
         <item>fr</item>
         <item>de</item>
         <item>ru</item>
+        <item>hu</item>
     </string-array>
 </resources>

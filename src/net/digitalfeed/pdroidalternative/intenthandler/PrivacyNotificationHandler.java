@@ -70,7 +70,7 @@ public class PrivacyNotificationHandler extends BroadcastReceiver {
 		final String dataType = bundle.getString("dataType");
         //String output = bundle.getString("output");
         
-		if(GlobalConstants.LOG_DEBUG) Log.v(GlobalConstants.LOG_TAG,"NotificationHandler: Notification for: " + packageName + ":" + dataType);
+		if(GlobalConstants.LOG_DEBUG) Log.v(GlobalConstants.LOG_TAG,"NotificationHandler: Notification for: " + packageName + ":" + dataType + ":" + Byte.toString(accessMode));
 		
         final Preferences prefs = new Preferences(context);
         
