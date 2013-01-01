@@ -30,19 +30,19 @@
 -->
 <resources>
     <string-array name="app_type_labels">
-        <item >Syst&#232;me</item>
+        <item >Système</item>
         <item >Utilisateur</item>
     </string-array>
     <string-array name="app_status_labels">
-        <item >Non autoris&#233;</item>
-        <item >Autoris&#233;</item>
+        <item >Non autorisé</item>
+        <item >Autorisé</item>
         <item >Pas de config</item>
     </string-array>
     <!-- Note that if you change the order of these items, you also need to change the 
     values in AppListActivity to match -->
     <string-array name="app_type_selection_options">
         <item>Utilisateur</item>
-        <item>Syst&#232;me</item>
+        <item>Système</item>
         <item>Tous</item>
     </string-array>
 </resources>
