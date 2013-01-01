@@ -60,7 +60,7 @@
 		<string name="applist_popupmenu_set_default_values">Reset to default</string>
 		<string name="applist_popupmenu_delete_settings">Delete settings</string>
 		<string name="applist_popupmenu_customise_settings">Custom settings</string>
-
+		
 		<string name="applist_actionbar_selectall">Select all</string>
 		<string name="applist_actionbar_deselectall">Deselect all</string>
 		
