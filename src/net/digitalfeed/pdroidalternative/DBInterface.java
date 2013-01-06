@@ -30,12 +30,7 @@ import java.io.IOException;
 import java.security.InvalidParameterException;
 import java.util.LinkedList;
 import java.util.List;
-
 import org.xmlpull.v1.XmlPullParserException;
-
-import dalvik.annotation.TestTarget;
-import dalvik.annotation.TestTargetClass;
-
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.res.Resources;

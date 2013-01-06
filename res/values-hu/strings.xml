@@ -138,7 +138,6 @@
 		<string name="backup_dialog_title">Mentés beállítások</string> <!-- dialog title -->
 		<string name="backup_path_text">A mentés tárolásának helye: </string> <!-- text shown before destination directory -->
 		<string name="backup_filename">Mentés fájlneve</string> <!-- shown beside filename box -->
-		<string name="backup_filename_prefix" translatable="false">pdroidmanager_backup_</string> <!-- Default prefix for the 'suggested' backup filename -->
 		<string name="backup_filename_hint">Fájlnév</string> <!-- Hint text in the 'filename' field -->
 
 		<!-- warning and error messages for creating backup -->
@@ -271,8 +270,4 @@
 	<string name="about_dialog_title">A PDroid Managerről</string>
 	
 	<string name="pdroid_get_support">A PDroid Manager téma megnyitása az XDA developers fórumon</string>
-	
-	<string name="application_list_app_spacer" translatable="false">&#160;|&#160;</string>
-	<string name="detail_custom_value_spacer" translatable="false">&#160;|&#160;</string>
-	<string name="backup_filename_extension" translatable="false">.xml</string>
 </resources>

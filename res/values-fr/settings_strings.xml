@@ -75,12 +75,12 @@
 	<string name="SETTING_LABEL_ALLOW_READ_SYSTEM_LOGS">Journaux système</string>
 	<string name="SETTING_HELP_ALLOW_READ_SYSTEM_LOGS">Contrôle la lecture des journaux du système sur l\'appareil (peut contenir des données personnelles). Ceci ne protège pas des applications disposant des droits root.</string>
 	<string name="SETTING_LABEL_ALLOW_RECEIVE_BOOT_COMPLETED_INTENT">Exécution au démarrage</string>
-	<string name="SETTING_HELP_ALLOW_RECEIVE_BOOT_COMPLETED_INTENT">Contrôle si une application est notifiée du démarrage de l\'appareil. Ceci peut être utilisé pour démarrer l'application automatiquement ou pour executer d\'autres tâches.</string>
+	<string name="SETTING_HELP_ALLOW_RECEIVE_BOOT_COMPLETED_INTENT">Contrôle si une application est notifiée du démarrage de l\'appareil. Ceci peut être utilisé pour démarrer l\'application automatiquement ou pour executer d\'autres tâches.</string>
 	<string name="SETTING_LABEL_ALLOW_READ_WIFI_INFO">Information réseau Wifi</string>
 	<string name="SETTING_HELP_ALLOW_READ_WIFI_INFO">Contrôle si une application peut lister les réseaux wifi environnants ou actuellement utilisés ainsi que l\'adresse IP (si configuré en DHCP).</string>
 	<string name="SETTING_LABEL_ALLOW_CHANGE_WIFI_STATE">Modifier l\'état Wifi</string>
 	<string name="SETTING_HELP_ALLOW_CHANGE_WIFI_STATE">Contrôle si une application peu connecter et déconnecter l\'appareil d\'un réseau Wifi, ainsi que modifier les paramètres des connections Wifi</string>
-	<string name="SETTING_LABEL_ALLOW_CHANGE_MOBILE_DATA_STATE">Modifier l'état données mobile</string>
+	<string name="SETTING_LABEL_ALLOW_CHANGE_MOBILE_DATA_STATE">Modifier l\'état données mobile</string>
 	<string name="SETTING_HELP_ALLOW_CHANGE_MOBILE_DATA_STATE">Contrôle si une application peut modifier l\'état de connexion aux données cellulaire.</string>
 	<string name="SETTING_LABEL_ALLOW_READ_NETWORK_INFO">Information réseau</string>
 	<string name="SETTING_HELP_ALLOW_READ_NETWORK_INFO">Contrôle si une application peut accéder aux informations réseau : état, adresses IP, serveurs DNS, etc.</string>
@@ -89,11 +89,11 @@
 	<string name="SETTING_LABEL_ALLOW_READ_SIM_INFO">Informations SIM</string>
 	<string name="SETTING_HELP_ALLOW_READ_SIM_INFO">Contrôle si une application peut accéder aux informations stockées dans la carte SIM : pays, informations opérateur. Cette information est normalement disponible à toute application sans droits particulier.</string>
 	<string name="SETTING_LABEL_ALLOW_ACCESS_IP_TABLES">Tables de filtrage IP</string>
-	<string name="SETTING_HELP_ALLOW_ACCESS_IP_TABLES">Contrôle si une application peut exécuter des scripts contenant l'instruction iptables (plus précisément, tout script contenant le text iptables ou ip6tables)</string>
+	<string name="SETTING_HELP_ALLOW_ACCESS_IP_TABLES">Contrôle si une application peut exécuter des scripts contenant l\'instruction iptables (plus précisément, tout script contenant le text iptables ou ip6tables)</string>
 	<string name="SETTING_LABEL_ALLOW_READ_ICC_ID">Accès ICC</string>
 	<string name="SETTING_HELP_ALLOW_READ_ICC_ID">Contrôle si une application peut lire et écrire des messages SMS sur la carte SIM, ICC, ou R-IUM.</string>
 	<string name="SETTING_LABEL_FAKE_ALWAYS_ONLINE">Force l\'état connecté</string>
-	<string name="SETTING_HELP_FAKE_ALWAYS_ONLINE">Si activé, Android indiquera toujours à l\'application que l\'appareil est connecté à un réseau (c.à.d. qu'il y a une connexion Internet disponible).</string>
+	<string name="SETTING_HELP_FAKE_ALWAYS_ONLINE">Si activé, Android indiquera toujours à l\'application que l\'appareil est connecté à un réseau (c.à.d. qu\'il y a une connexion Internet disponible).</string>
 	
 	<string name="SETTING_GROUP_LABEL_GENERAL">Général</string>
 	<string name="SETTING_GROUP_LABEL_PHONE">Téléphonie</string>

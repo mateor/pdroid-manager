@@ -58,7 +58,7 @@
 	<string name="access_notification_iccAccess">Accès ICC</string>
 	<string name="access_notification_wifiInfo">Information réseau Wifi </string>
 	<string name="access_notification_iptables"></string>
-	<string name="access_notification_switchconnectivity">Modifier l'état Données mobiles</string>
+	<string name="access_notification_switchconnectivity">Modifier l\'état Données mobiles</string>
 	<string name="access_notification_sendMms">Envoyer des MMS</string>
-	<string name="access_notification_switchWifiState">Modifier l'état Wifi</string>
+	<string name="access_notification_switchWifiState">Modifier l\'état Wifi</string>
 </resources>
