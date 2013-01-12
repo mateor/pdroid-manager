@@ -26,6 +26,7 @@
  */
 package net.digitalfeed.pdroidalternative;
 
+import java.io.ByteArrayOutputStream;
 import java.util.HashMap;
 import java.util.List;
 
@@ -159,6 +160,8 @@ public class ApplicationsDatabaseFillerTask extends AsyncTask<Void, Integer, Has
 		//int iconSizePx = (int)(context.getResources().getDisplayMetrics().density * (float)Application.TARGET_ICON_SIZE);
 		//this makes sure the images are larger than needed, but it is a pretty rubbish temporary solution. It uses more ram than necessary, and the icons may not scale well
 		int iconSizePx = Application.TARGET_ICON_SIZE * 2;
+		byte [] blankIcon = null;
+		
 		
 		for (ApplicationInfo appInfo : installedApps) {
 			try {
@@ -212,7 +215,17 @@ public class ApplicationsDatabaseFillerTask extends AsyncTask<Void, Integer, Has
 				applicationsInsertHelper.bind(applicationTableColumnNumbers[APPLICATION_TABLE_COLUMN_NUMBER_OFFSET_PACKAGENAME], appInfo.packageName);
 				applicationsInsertHelper.bind(applicationTableColumnNumbers[APPLICATION_TABLE_COLUMN_NUMBER_OFFSET_UID], appInfo.uid);
 				applicationsInsertHelper.bind(applicationTableColumnNumbers[APPLICATION_TABLE_COLUMN_NUMBER_OFFSET_VERSIONCODE], pkgInfo.versionCode);
-				applicationsInsertHelper.bind(applicationTableColumnNumbers[APPLICATION_TABLE_COLUMN_NUMBER_OFFSET_ICON], IconHelper.getIconByteArray(pkgMgr.getApplicationIcon(appInfo.packageName), iconSizePx));
+				
+				// Try to get the application icon as a byte array. If it fails (i.e. returns null) then use the provided 'blank' image.
+				byte [] iconByteArray = IconHelper.getIconByteArray(pkgMgr.getApplicationIcon(appInfo.packageName), iconSizePx);
+				if (iconByteArray == null) {
+				    if (blankIcon == null) {
+				        blankIcon = IconHelper.getByteArray(context.getResources().openRawResource(R.raw.blank));
+				    }
+				    iconByteArray = blankIcon;
+				}
+				
+				applicationsInsertHelper.bind(applicationTableColumnNumbers[APPLICATION_TABLE_COLUMN_NUMBER_OFFSET_ICON], iconByteArray);
 				applicationsInsertHelper.bind(applicationTableColumnNumbers[APPLICATION_TABLE_COLUMN_NUMBER_OFFSET_APPFLAGS], appFlags);
 				applicationsInsertHelper.execute();
 
