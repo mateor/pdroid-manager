@@ -216,13 +216,21 @@ public class ApplicationsDatabaseFillerTask extends AsyncTask<Void, Integer, Has
 				applicationsInsertHelper.bind(applicationTableColumnNumbers[APPLICATION_TABLE_COLUMN_NUMBER_OFFSET_UID], appInfo.uid);
 				applicationsInsertHelper.bind(applicationTableColumnNumbers[APPLICATION_TABLE_COLUMN_NUMBER_OFFSET_VERSIONCODE], pkgInfo.versionCode);
 				
+				byte [] iconByteArray = null;				
 				// Try to get the application icon as a byte array. If it fails (i.e. returns null) then use the provided 'blank' image.
-				byte [] iconByteArray = IconHelper.getIconByteArray(pkgMgr.getApplicationIcon(appInfo.packageName), iconSizePx);
-				if (iconByteArray == null) {
-				    if (blankIcon == null) {
-				        blankIcon = IconHelper.getByteArray(context.getResources().openRawResource(R.raw.blank));
-				    }
-				    iconByteArray = blankIcon;
+				try {
+    				iconByteArray = IconHelper.getIconByteArray(pkgMgr.getApplicationIcon(appInfo.packageName), iconSizePx);
+    				if (iconByteArray == null) {
+    				    if (blankIcon == null) {
+    				        blankIcon = IconHelper.getByteArray(context.getResources().openRawResource(R.raw.blank));
+    				    }
+    				    iconByteArray = blankIcon;
+    				}
+				} catch (Exception e) {
+                    if (blankIcon == null) {
+                        blankIcon = IconHelper.getByteArray(context.getResources().openRawResource(R.raw.blank));
+                    }
+                    iconByteArray = blankIcon;				    
 				}
 				
 				applicationsInsertHelper.bind(applicationTableColumnNumbers[APPLICATION_TABLE_COLUMN_NUMBER_OFFSET_ICON], iconByteArray);
