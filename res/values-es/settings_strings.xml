@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 
+/**
+ * Copyright (C) 2012 Simeon J. Morgan (smorgan@digitalfeed.net)
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 3 of the License, or (at your option) any later version.
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License along with
+ * this program; if not, see <http://www.gnu.org/licenses>.
+ * The software has the following requirements (GNU GPL version 3 section 7):
+ * You must retain in pdroid-manager, any modifications or derivatives of
+ * pdroid-manager, or any code or components taken from pdroid-manager the author
+ * attribution included in the files.
+ * In pdroid-manager, any modifications or derivatives of pdroid-manager, or any
+ * application utilizing code or components taken from pdroid-manager must include
+ * in any display or listing of its creators, authors, contributors or developers
+ * the names or pseudonyms included in the author attributions of pdroid-manager
+ * or pdroid-manager derived code.
+ * Modified or derivative versions of the pdroid-manager application must use an
+ * alternative name, rather than the name pdroid-manager.
+ */
+ 
+ /**
+ * @author Simeon J. Morgan <smorgan@digitalfeed.net>
+ * @author wbedard - contributed the bulk of the text for help entries 
+ */
+-->
+<resources>
+	<string name="SETTING_LABEL_ALLOW_READ_DEVICE_ID">Identificador del dispositivo</string>
+	<string name="SETTING_HELP_ALLOW_READ_DEVICE_ID">Controla el valor devuelto para el Identificador de dispositivo único, bien de la Identidad Internacional de Equipo Móvil (IMEI) para GSM, o bien el Identificador de Equipo Móvil (MEID) o el Número de Serie Electrónico (ESN) para teléfonos CDMA.</string>
+	<string name="SETTING_LABEL_ALLOW_READ_PHONE_NUMBER">Número de teléfono</string>
+	<string name="SETTING_HELP_ALLOW_READ_PHONE_NUMBER">Permite el acceso al número de teléfono y/o buzón de voz, por ejemplo, la Estación Móvil de la Red Digital de Servicios Integrados (MSISDN) para un teléfono GSM o el Identificador de Dispositivo Móvil (MDN) para un teléfono CDMA. Este número es frecuentemente ausente o inválido.</string>
+	<string name="SETTING_LABEL_ALLOW_READ_SIM_SERIAL">Identificador de la tarjeta SIM</string>
+	<string name="SETTING_HELP_ALLOW_READ_SIM_SERIAL">Controla el valor devuelto por el Número de Identificación de la SIM (SSN), también llamado Identificador Internacional de la Tarjeta de Circuitos (ICC-ID). Esto es único para la SIM.</string>
+	<string name="SETTING_LABEL_ALLOW_READ_SUBSCRIBER_ID">Identificador del Abonado</string>
+	<string name="SETTING_HELP_ALLOW_READ_SUBSCRIBER_ID">Controla el valor devuelto para el Identificador del Abonado, por ejemplo, la Identidad Internacional del Abonado a un Móvil (IMSI) para un teléfono GSM o el Número de Identificación Móvi (MIN) para un teléfono CDMA.</string>
+	<string name="SETTING_LABEL_ALLOW_READ_INCOMING_CALL_NUMBER">Número de Llamada Entrante</string>
+	<string name="SETTING_HELP_ALLOW_READ_INCOMING_CALL_NUMBER">Controla el acceso al número informado de una llamada entrando.</string>
+	<string name="SETTING_LABEL_ALLOW_READ_OUTGOING_CALL_NUMBER">Outgoing Call Number</string>
+	<string name="SETTING_HELP_ALLOW_READ_OUTGOING_CALL_NUMBER">Controla el acceso al número de teléfono marcado de una llamada saliente.</string>
+	<string name="SETTING_LABEL_ALLOW_INITIATE_PHONE_CALL">Llamadas Telefónicas</string>
+	<string name="SETTING_HELP_ALLOW_INITIATE_PHONE_CALL">Controla si una aplicación puede iniciar una llamada telefónica sin pasar a través de la interfaz de usuario del marcador telefónico. El Marcador Telefónico permite al usuario confirmar que se realice la llamada. Habilitando este control no se permite a una aplicación llamar a número de emergencia (p.e. 091).</string>
+	<string name="SETTING_LABEL_ALLOW_READ_NETWORK_LOCATION">Localización de Red</string>
+	<string name="SETTING_HELP_ALLOW_READ_NETWORK_LOCATION">Controla el valor devuelto por la localización del dispositivo indicada por su red Wifi o la red celular.</string>
+	<string name="SETTING_LABEL_ALLOW_READ_GPS_LOCATION">Localización GPS</string>
+	<string name="SETTING_HELP_ALLOW_READ_GPS_LOCATION">Controla el valor devuelto por la localización del dispositivo indicada por su sensor GPS.</string>
+	<string name="SETTING_LABEL_ALLOW_USE_ACCOUNT_CREDENTIALS">Credenciales de la Cuenta</string>
+	<string name="SETTING_HELP_ALLOW_USE_ACCOUNT_CREDENTIALS">Controla si una aplicación puede usar un token de autenticación asociado con esa aplicación para autenticarse con un servicio (p.e. la aplicación de Facebook usando tus credenciales de Facebook)</string>
+	<string name="SETTING_LABEL_ALLOW_READ_ACCOUNTS_LIST">Cuentas</string>
+	<string name="SETTING_HELP_ALLOW_READ_ACCOUNTS_LIST">Controla el acceso al listado de cuentas actualmente registrado en el dispositivo. Además de tu cuenta de Google, otras cuentas populares que puedes haber registrado son Dropbox, Twitter, LinkedIn, Firefox y otras. Los detalles de la cuenta incluyen tanto el servicio, y tu Identificador en el servicio (p.e. tu dirección de Gmail)</string>
+	<string name="SETTING_LABEL_ALLOW_READ_CONTACTS">Contactos</string>
+	<string name="SETTING_HELP_ALLOW_READ_CONTACTS">Controla el acceso a la información contenida en los contactos de Android.</string>
+	<string name="SETTING_LABEL_ALLOW_READ_CALL_LOG">Registro de Llamadas</string>
+	<string name="SETTING_HELP_ALLOW_READ_CALL_LOG">Controla el acceso a la información contenida en el registro de llamadas de Android.</string>
+	<string name="SETTING_LABEL_ALLOW_READ_CALENDAR">Calendario</string>
+	<string name="SETTING_HELP_ALLOW_READ_CALENDAR">Controla el acceso a la información contenida en el calendario de Android.</string>
+	<string name="SETTING_LABEL_ALLOW_READ_SMS">Acceso a los SMS</string>
+	<string name="SETTING_HELP_ALLOW_READ_SMS">Controla el acceso a los SMS almacenados en el dispositivo (pero no en la SIM, si es aplicable).</string>
+	<string name="SETTING_LABEL_ALLOW_SEND_SMS">Enviar SMS</string>
+	<string name="SETTING_HELP_ALLOW_SEND_SMS">Controla si una aplicación puede enviar mensajes SMS.</string>
+	<string name="SETTING_LABEL_ALLOW_READ_MMS">Acceso a los MMS</string>
+	<string name="SETTING_HELP_ALLOW_READ_MMS">Controla el acceso a los MMS almacenados en el dispositivo (pero no en la SIM, si es aplicable).</string>
+	<string name="SETTING_LABEL_ALLOW_SEND_MMS">Send MMS</string>
+	<string name="SETTING_HELP_ALLOW_SEND_MMS">Controla si una aplicación puede enviar mensajes MMS.</string>
+	<string name="SETTING_LABEL_ALLOW_RECORD_AUDIO">Grabar Audio</string>
+	<string name="SETTING_HELP_ALLOW_RECORD_AUDIO">Controla si una aplicación puede grabar audio en cualquier momento usando el micrófono del dispositivo (no durante las llamadas telefónicas)</string>
+	<string name="SETTING_LABEL_ALLOW_CAMERA">Cámara</string>
+	<string name="SETTING_HELP_ALLOW_CAMERA">Controla si una aplicación puede tomar fotografías fijas usando la cámara del dispositivo en cualquier momento.</string>
+	<string name="SETTING_LABEL_ALLOW_READ_BOOKMARKS_AND_HISTORY">Marcadores e Historial</string>
+	<string name="SETTING_HELP_ALLOW_READ_BOOKMARKS_AND_HISTORY">Controla el acceso al historial y marcadores de navegación web de Android.</string>
+	<string name="SETTING_LABEL_ALLOW_READ_SYSTEM_LOGS">Registros del Sistema</string>
+	<string name="SETTING_HELP_ALLOW_READ_SYSTEM_LOGS">Controla la lectura de logs del sistema desde el dispositivo, que podrían contener datos personales. Esto no protege contra aplicaciones con acceso de nivel superusuario leyendo tus registros del sistema.</string>
+	<string name="SETTING_LABEL_ALLOW_RECEIVE_BOOT_COMPLETED_INTENT">Iniciar al Arrancar</string>
+	<string name="SETTING_HELP_ALLOW_RECEIVE_BOOT_COMPLETED_INTENT">Controla si una aplicación es notificada del fin del arranque del sistema, que puede ser usado para cargar la aplicación al iniciar el dispositivo, o realizar otras actividades.</string>
+	<string name="SETTING_LABEL_ALLOW_READ_WIFI_INFO">Información de Wifi</string>
+	<string name="SETTING_HELP_ALLOW_READ_WIFI_INFO">Controla si la aplicación puede obtener una lista de todas las redes Wifi configuradas en el dispositivo, la red Wifi actual, los puntos de acceso Wifi cercanos, y la dirección IP actual (si está configurado mediante DHCP).</string>
+	<string name="SETTING_LABEL_ALLOW_CHANGE_WIFI_STATE">Cambiar el Estado de Wifi</string>
+	<string name="SETTING_HELP_ALLOW_CHANGE_WIFI_STATE">Controla si una aplicación puede conectarse y desconectarse de puntos de acceso Wifi y hacer cambios en la configuración del dispositivo para redes Wifi.</string>
+	<string name="SETTING_LABEL_ALLOW_CHANGE_MOBILE_DATA_STATE">Cambiar estado de la Red</string>
+	<string name="SETTING_HELP_ALLOW_CHANGE_MOBILE_DATA_STATE">Controla si una aplicación puede habilitar o deshabilitar los datos móviles.</string>
+	<string name="SETTING_LABEL_ALLOW_READ_NETWORK_INFO">Información de la Red</string>
+	<string name="SETTING_HELP_ALLOW_READ_NETWORK_INFO">Controla si una aplicación puede acceder a información detallada de la red actual incluyendo estado, itinerancia, servidores DNS, direcciones IP, etc.</string>
+	<string name="SETTING_LABEL_ALLOW_READ_ANDROID_ID">Identificador de Android</string>
+	<string name="SETTING_HELP_ALLOW_READ_ANDROID_ID">Controla si una aplicación puede acceder al identificador único de instalación de Android del dispositivo, que es constante durante la toda la vida de la instalación del Sistema Operativo (incluso a través de copias de seguridad y restauraciones del Sistema Operativo).</string>
+	<string name="SETTING_LABEL_ALLOW_READ_SIM_INFO">Información de la SIM</string>
+	<string name="SETTING_HELP_ALLOW_READ_SIM_INFO">Controla si una aplicación puede acceder a la información del país y operador móvil almacenada en la tarjeta SIM. Normalmente, esta información es accesible por una aplicación sin ningún permiso de Android.</string>
+	<string name="SETTING_LABEL_ALLOW_ACCESS_IP_TABLES">Acceso a iptables</string>
+	<string name="SETTING_HELP_ALLOW_ACCESS_IP_TABLES">Controla si la aplicación puede ejecutar scripts que incluyan comandos de iptables (o más concretamente, contengan el texto iptables o ip6tables).</string>
+	<string name="SETTING_LABEL_ALLOW_READ_ICC_ID">Acceso al ICC</string>
+	<string name="SETTING_HELP_ALLOW_READ_ICC_ID">Controla si una aplicación puede leer/escribir mensajes SMS en la Tarjeta de Circuitos Integrados (ICC), R-UIM o tarjeta SIM.</string>
+	<string name="SETTING_LABEL_FAKE_ALWAYS_ONLINE">Forzar Estado On-line</string>
+	<string name="SETTING_HELP_FAKE_ALWAYS_ONLINE">Cuando está habilitado, hace que Android siempre informe a una aplicación que lo solicite que el dispositivo está on-line (p.e. qye la conexión a Internet está disponible).</string>
+	
+	<string name="SETTING_GROUP_LABEL_GENERAL">General</string>
+	<string name="SETTING_GROUP_LABEL_PHONE">Llamadas de Teléfono</string>
+	<string name="SETTING_GROUP_LABEL_MESSAGES">Mensajes</string>
+	<string name="SETTING_GROUP_LABEL_PERSONAL_DATA">Datos Personales</string>
+	<string name="SETTING_GROUP_LABEL_MEDIA">Multimedia</string>
+	<string name="SETTING_GROUP_LABEL_NETWORK">Red</string>
+	<string name="SETTING_GROUP_LABEL_LOCATION">Localización</string>
+</resources>

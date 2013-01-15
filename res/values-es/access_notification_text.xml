@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="access_notification_deviceID">Identificador del Dispositivo</string>
+    <string name="access_notification_line1Number">Número de Teléfono</string>
+    <string name="access_notification_locationGPS">Localización GPS</string>
+    <string name="access_notification_locationNetwork">Localización de la Red</string>
+    <string name="access_notification_networkInfoCurrent">Información de la Red</string>
+    <string name="access_notification_networkInfoSIM">Información de la Red Móvil</string>
+    <string name="access_notification_simSerial">Identificador de la SIM</string>
+    <string name="access_notification_subscriberID">Identificador del Abonado</string>
+    <string name="access_notification_accountsList">Lista de cuentas</string>
+    <string name="access_notification_authTokens">Credenciales de la Cuenta</string>
+    <string name="access_notification_outgoingCall">Número de Llamada Saliente</string>
+    <string name="access_notification_incomingCall">Número de Llamada Entrante</string>
+    <string name="access_notification_contacts">Contactos</string>
+	<string name="access_notification_calendar">Calendario</string>
+	<string name="access_notification_mms">Leer MMS</string>
+	<string name="access_notification_sms">Leer SMS</string>
+    <string name="access_notification_mmsSms">Leer MMS or SMS</string>
+	<string name="access_notification_callLog">Registro de Llamadas</string>
+	<string name="access_notification_bookmarks">Historial de Marcadores del Navegador</string>
+	<string name="access_notification_systemLogs">Registro del Sistema</string>
+	<string name="access_notification_intentBootCompleted">Iniciar al Arrancar</string>
+	<string name="access_notification_camera">Cámara</string>
+	<string name="access_notification_recordAudio">Grabar Audio</string>
+	<string name="access_notification_SmsSend">Enviar SMS</string>
+	<string name="access_notification_phoneCall">Hacer Llamadas Telefónicas</string>
+	<string name="access_notification_android_id">Identificador de Android</string>
+	<string name="access_notification_iccAccess">Acceso a la SIM</string>
+	<string name="access_notification_wifiInfo">Información de la Red Wifi</string>
+	<string name="access_notification_iptables"></string>
+	<string name="access_notification_switchconnectivity">Cambiar Conectividad Móvil</string>
+	<string name="access_notification_sendMms">Enviar MMS</string>
+	<string name="access_notification_switchWifiState">Cambiar Conectividad Wifi</string>
+</resources>
