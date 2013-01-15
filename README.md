@@ -29,6 +29,7 @@ Modified or derivative versions of the pdroid-manager application must use an
 alternative name, rather than the name pdroid-manager.  
   
 Contributions:
+alceasan (https://github.com/alceasan): Spanish translation
 appelsson (https://github.com/appelsson): Hungarian Translation    
 Beasty (http://forum.xda-developers.com/member.php?u=276326): Russian translation
 MPage/jpeg729 (https://github.com/jpeg729): Subsequent French transaltion

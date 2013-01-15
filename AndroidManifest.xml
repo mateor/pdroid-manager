@@ -1,12 +1,12 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="net.digitalfeed.pdroidalternative"
-    android:versionCode="18"
-    android:versionName="0.2.9.7" >
+    android:versionCode="21"
+    android:versionName="0.2.9.9" >
 
     <uses-sdk
         android:minSdkVersion="16"
-        android:targetSdkVersion="16"
-        android:maxSdkVersion="16" />
+        android:targetSdkVersion="17"
+        android:maxSdkVersion="17" />
     	<!-- <permission android:label="@string/permission_label_manageprivacycontrollers" android:name="android.privacy.MANAGE_PRIVACY_CONTROLLERS" android:protectionLevel="normal" android:permissionGroup="android.permission-group.PERSONAL_INFO" android:description="@string/permission_description_manageprivacycontrollers" />-->
 		<permission android:label="@string/permission_label_writeprivacysettings" android:name="android.privacy.WRITE_PRIVACY_SETTINGS" android:protectionLevel="signature" android:permissionGroup="android.permission-group.PERSONAL_INFO" android:description="@string/permission_description_writeprivacysettings" />
 		<!-- <permission android:label="@string/permission_label_readprivacysettings" android:name="android.privacy.READ_PRIVACY_SETTINGS" android:protectionLevel="normal" android:permissionGroup="android.permission-group.PERSONAL_INFO" android:description="@string/permission_description_readprivacysettings" />-->

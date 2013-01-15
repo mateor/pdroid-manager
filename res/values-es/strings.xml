@@ -137,7 +137,6 @@
 		<string name="backup_dialog_title">Ajustes de copia de seguridad</string> <!-- dialog title -->
 		<string name="backup_path_text">Tu copia de seguridad se guardará en: </string> <!-- text shown before destination directory -->
 		<string name="backup_filename">Nombre del fichero para la copia de seguridad</string> <!-- shown beside filename box -->
-		<string name="backup_filename_prefix" translatable="false">pdroidmanager_backup_</string> <!-- Default prefix for the 'suggested' backup filename -->
 		<string name="backup_filename_hint">Nombre del fichero</string> <!-- Hint text in the 'filename' field -->
 
 		<!-- warning and error messages for creating backup -->
@@ -275,6 +274,7 @@ XDA-developers: <a href="http://forum.xda-developers.com/member.php?u=3602796">F
 
 <h3>Con contribuciones de:</h3>
 <p>
+<i>alceasan</i>  (<a href="https://github.com/alceasan">github</a>): Traducción al Español<br />
 <i>appelsson</i> (<a href="https://github.com/appelsson">github</a>): Traducción al Húngaro<br />
 <i>beasty</i> (<a href="http://forum.xda-developers.com/member.php?u=276326">xda</a>): Traducción al Ruso<br />
 <i>patrickpr</i> (<a href="https://github.com/patrickpr">github</a>): Traducción inicial al Francés<br />
@@ -345,7 +345,6 @@ un nombre alternativo, diferente al nombre de pdroid-manager.</p>
 		<string name="pdroid_error_conclusion"><![CDATA[<p>Una instalación o actualización del núcleo de PDroid <b>no puede</b> ser realizada automáticamente. Debes aplicar un parche más reciente de PDroid 2.0 a tu ROM para obtener una versión soportada del núcleo de PDroid. Para más soporte, presine el botón debajo para abrir el hilo de PDroid Manager en el foro XDA developers (en inglés).</p>]]></string>
 			
 		<string name="pdroid_error_wrong_version"><![CDATA[
-<h2>Version %s of PDroid 2.0 has been detected on your device.<br /><i>PDroid Manager</i> requires PDroid 2.0 v.1.48 or higher to be included in the device ROM.</h2>]]><![CDATA[
 <h2>La versión %s de PDroid 2.0 ha sido detectada en tu dispositivo.<br /><i>PDroid Manager</i> requiere que la versión PDroid 2.0 v.1.48 o superior esté incluida en la ROM del dispositivo.</h2>]]></string>
 	
 	<string name="pdroid_error_not_installed"><![CDATA[
@@ -362,7 +361,4 @@ un nombre alternativo, diferente al nombre de pdroid-manager.</p>
 
 	<string name="pdroid_get_support">Abrir el hilo de soporte de PDroid Manager en XDA developers (en inglés)</string>
 	
-	<string name="application_list_app_spacer" translatable="false">&#160;|&#160;</string>
-	<string name="detail_custom_value_spacer" translatable="false">&#160;|&#160;</string>
-	<string name="backup_filename_extension" translatable="false">.xml</string>
 </resources>
