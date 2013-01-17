@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="access_notification_deviceID">Apparaat-ID</string>
+    <string name="access_notification_line1Number">Telefoonnummer</string>
+    <string name="access_notification_locationGPS">GPS-Locatie</string>
+    <string name="access_notification_locationNetwork">Netwerklocatie</string>
+    <string name="access_notification_networkInfoCurrent">Netwerkinformatie</string>
+    <string name="access_notification_networkInfoSIM">SIM Info</string>
+    <string name="access_notification_simSerial">SIM Serienummer</string>
+    <string name="access_notification_subscriberID">CSID-reeks</string>
+    <string name="access_notification_accountsList">Lijst van Gebruikersaccounts</string>
+    <string name="access_notification_authTokens">Account Verificatiegegevens</string>
+    <string name="access_notification_outgoingCall">Uitgaand Telefoonnummer</string>
+    <string name="access_notification_incomingCall">Inkomend Telefoonnummer</string>
+    <string name="access_notification_contacts">Contacten</string>
+	<string name="access_notification_calendar">Agenda</string>
+	<string name="access_notification_mms">Lees MMS</string>
+	<string name="access_notification_sms">Lees SMS</string>
+    <string name="access_notification_mmsSms">Lees MMS of SMS</string>
+	<string name="access_notification_callLog">Belhistorie</string>
+	<string name="access_notification_bookmarks">Browser Bladwijzers &amp; Geschiedenis</string>
+	<string name="access_notification_systemLogs">Systeem Logs</string>
+	<string name="access_notification_intentBootCompleted">Start bij Boot</string>
+	<string name="access_notification_camera">Camera</string>
+	<string name="access_notification_recordAudio">Geluidsopname</string>
+	<string name="access_notification_SmsSend">SMS Versturen</string>
+	<string name="access_notification_phoneCall">Telefoongesprek Initieren</string>
+	<string name="access_notification_android_id">Android ID</string>
+	<string name="access_notification_iccAccess">ICC Toegang</string>
+	<string name="access_notification_wifiInfo">Wifi Netwerkinformatie</string>
+	<string name="access_notification_iptables">IP Tables</string>
+	<string name="access_notification_switchconnectivity">Aanpassen Mobiele Connectivieit</string>
+	<string name="access_notification_sendMms">Zend MMS</string>
+	<string name="access_notification_switchWifiState">Aanpassen Wifi Connectiviteit</string>
+</resources>
