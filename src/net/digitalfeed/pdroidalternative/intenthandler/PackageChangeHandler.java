@@ -42,6 +42,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.net.Uri;
+import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
 import android.util.Log;
 
@@ -123,9 +124,11 @@ public class PackageChangeHandler extends BroadcastReceiver {
 		//https://developer.android.com/guide/topics/ui/notifiers/notifications.html
 		Resources res = context.getResources();
 		//TODO: Fix the icon in the notification bar				
-		Notification.Builder builder = new Notification.Builder(context)
-				.setPriority(Notification.PRIORITY_MAX)
-				.setSmallIcon(R.drawable.notification_icon);
+		NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
+				.setSmallIcon(R.drawable.notification_icon)
+				.setAutoCancel(true)
+				.setPriority(0)
+				.setOnlyAlertOnce(true);
 				//.setLargeIcon(res.getDrawable(R.drawable.allow_icon))
 		
 		String appLabel = DBInterface.getInstance(context).getApplicationLabel(packageName);
@@ -153,15 +156,14 @@ public class PackageChangeHandler extends BroadcastReceiver {
 		stackBuilder.addParentStack(AppDetailActivity.class);
 		stackBuilder.addNextIntent(packageDetailIntent);
 		
-		PendingIntent pendingIntent = stackBuilder.getPendingIntent(NotificationId,
-				PendingIntent.FLAG_UPDATE_CURRENT
-				);
+		PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, packageDetailIntent, 
+				PendingIntent.FLAG_UPDATE_CURRENT);
 		builder.setContentIntent(pendingIntent);
+    
+		NotificationManager mNotificationManager =
+		    (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
 		
-		Notification builtNotification = builder.build();
-		builtNotification.flags = builtNotification.flags | Notification.FLAG_AUTO_CANCEL | Notification.FLAG_NO_CLEAR;
-		NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-		notificationManager.notify(NotificationId, builtNotification);
+		mNotificationManager.notify(NotificationId, builder.build());
 	}
 	
 	private boolean havePermissionsChanged(Context context, Application oldApp, Application newApp) {

@@ -83,8 +83,7 @@ public class AppDetailActivity extends Activity implements PDroidSettingListFrag
 	public void onDetailUp() {
         Intent parentActivityIntent = new Intent(this, AppListActivity.class);
         parentActivityIntent.addFlags(
-                Intent.FLAG_ACTIVITY_CLEAR_TOP |
-                Intent.FLAG_ACTIVITY_NEW_TASK); //Not sure if we need the ACTIVITY_NEW_TASK
+        		Intent.FLAG_ACTIVITY_REORDER_TO_FRONT); 
         startActivity(parentActivityIntent);
         finish();
 	}
@@ -109,10 +108,9 @@ public class AppDetailActivity extends Activity implements PDroidSettingListFrag
 			//We should return to the parent activity when finishing
             Intent parentActivityIntent = new Intent(this, AppListActivity.class);
             parentActivityIntent.addFlags(
-                    Intent.FLAG_ACTIVITY_CLEAR_TOP |
-                    Intent.FLAG_ACTIVITY_NEW_TASK); //Not sure if we need the ACTIVITY_NEW_TASK
+            		Intent.FLAG_ACTIVITY_REORDER_TO_FRONT); 
             startActivity(parentActivityIntent);
 		}
-        finish();
+        super.finish();
 	}
 }
