@@ -91,7 +91,8 @@ public class PackageChangeHandler extends BroadcastReceiver {
 					 */
 					newApp.setStatusFlags((newApp.getStatusFlags() | oldApp.getStatusFlags() | Application.STATUS_FLAG_UPDATED) & ~Application.STATUS_FLAG_NEW);
 					DBInterface.getInstance(context).updateApplicationRecord(newApp);
-					displayNotification(context, NotificationType.update, packageName, DBInterface.getInstance(context).getApplicationLabel(packageName));
+					
+					displayNotification(context, NotificationType.update, packageName, DBInterface.getInstance(context).getApplicationLabel(packageName), DBInterface.getInstance(context).getApplicationRowId(packageName));
 				}
 			} else {
 				/*
@@ -109,18 +110,18 @@ public class PackageChangeHandler extends BroadcastReceiver {
 				app.setStatusFlags(app.getStatusFlags() | Application.STATUS_FLAG_NEW);
 				DBInterface.getInstance(context).addApplicationRecord(app);
 				if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG,"PackageChangeHandler: New app record added: " + packageName);
-				displayNotification(context, NotificationType.newinstall, packageName, app.getLabel());
+				displayNotification(context, NotificationType.newinstall, packageName, app.getLabel(), DBInterface.getInstance(context).getApplicationRowId(packageName));
 				if(GlobalConstants.LOG_DEBUG) Log.d(GlobalConstants.LOG_TAG,"PackageChangeHandler: Notification presented: " + packageName);
 			}
 		}
 	}
 	
-	private void displayNotification(Context context, NotificationType notificationType, String packageName, String label) {
+
+	    
+	private void displayNotification(Context context, NotificationType notificationType, String packageName, String label, Integer NotificationId) {
 		//This pattern is essentially taken from
 		//https://developer.android.com/guide/topics/ui/notifiers/notifications.html
-		
 		Resources res = context.getResources();
-
 		//TODO: Fix the icon in the notification bar				
 		Notification.Builder builder = new Notification.Builder(context)
 				.setPriority(Notification.PRIORITY_MAX)
@@ -144,6 +145,7 @@ public class PackageChangeHandler extends BroadcastReceiver {
 		Intent packageDetailIntent = new Intent(context, AppDetailActivity.class);
 		packageDetailIntent.putExtra(AppDetailActivity.BUNDLE_PACKAGE_NAME, packageName);
 		packageDetailIntent.putExtra(AppDetailActivity.BUNDLE_IN_APP, false);
+		packageDetailIntent.setData((Uri.parse("custom://"+System.currentTimeMillis())));
 		packageDetailIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK &
 				Intent.FLAG_ACTIVITY_CLEAR_TASK);
 		
@@ -151,16 +153,15 @@ public class PackageChangeHandler extends BroadcastReceiver {
 		stackBuilder.addParentStack(AppDetailActivity.class);
 		stackBuilder.addNextIntent(packageDetailIntent);
 		
-		PendingIntent pendingIntent = stackBuilder.getPendingIntent(0,
+		PendingIntent pendingIntent = stackBuilder.getPendingIntent(NotificationId,
 				PendingIntent.FLAG_UPDATE_CURRENT
 				);
 		builder.setContentIntent(pendingIntent);
 		
 		Notification builtNotification = builder.build();
 		builtNotification.flags = builtNotification.flags | Notification.FLAG_AUTO_CANCEL | Notification.FLAG_NO_CLEAR;
-		
 		NotificationManager notificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
-		notificationManager.notify(0, builtNotification);
+		notificationManager.notify(NotificationId, builtNotification);
 	}
 	
 	private boolean havePermissionsChanged(Context context, Application oldApp, Application newApp) {

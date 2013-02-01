@@ -467,6 +467,11 @@ public class DBInterface {
 					QUERYPART_SELECTPART_COLUMNS_LABEL +  
 					" FROM " + ApplicationTable.TABLE_NAME + 
 					QUERYPART_FILTER_BY_PACKAGENAME;
+	
+	public static final String QUERY_GET_APPS_BY_PACKAGENAME_ROWID_ONLY = "SELECT " +
+			ApplicationTable.COLUMN_NAME_ROWID +  
+			" FROM " + ApplicationTable.TABLE_NAME + 
+			QUERYPART_FILTER_BY_PACKAGENAME;
 
 	public static final String QUERY_GET_APPS_BY_PERMISSION_WITH_STATUS =
 			QUERYPART_GET_ALL_APPS_WITH_STATUS + QUERYPART_FILTER_BY_PERMISSION + QUERYPART_SORT_BY_LABEL;
@@ -480,7 +485,6 @@ public class DBInterface {
 	public static final String QUERY_GET_APPS_BY_TYPE_PACKAGENAME_ONLY =
 			QUERYPART_GET_ALL_APPS_PACKAGENAME_ONLY + QUERYPART_FILTER_BY_TYPE + QUERYPART_SORT_BY_LABEL;
 
-	
 	public static final String QUERY_DELETE_APPS_WITHOUT_STATUS = "DELETE FROM " + 
 			ApplicationStatusTable.TABLE_NAME + 
 			" WHERE " + ApplicationStatusTable.COLUMN_NAME_PACKAGENAME + 
@@ -593,6 +597,30 @@ public class DBInterface {
 		//db.close();
 		return label;
 	}
+	
+	/**
+	 * Helper to just get the RowID of an application - used for notifications,  
+	 * this allows for unique notifications to be generated based on RowID of application.
+	 * @param packageName
+	 */
+	public Integer getApplicationRowId(String packageName) {
+		if (dbhelper == null) {
+			getDBHelper();
+		}
+		
+		SQLiteDatabase db = dbhelper.getReadableDatabase();
+		Cursor cursor = db.rawQuery(DBInterface.QUERY_GET_APPS_BY_PACKAGENAME_ROWID_ONLY, new String[]{packageName});
+		Integer NotificationId = 0;
+		
+		if (cursor.getCount() > 0) {
+			cursor.moveToFirst();
+			NotificationId = cursor.getInt(cursor.getColumnIndex(DBInterface.ApplicationTable.COLUMN_NAME_ROWID));
+		}
+		cursor.close();
+		//db.close();
+		return NotificationId;
+	}
+	
 	
 	/**
 	 * Helper to delete the details for a single package (used when we receive a notification of
