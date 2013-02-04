@@ -128,7 +128,8 @@ public class PackageChangeHandler extends BroadcastReceiver {
 				.setSmallIcon(R.drawable.notification_icon)
 				.setAutoCancel(true)
 				.setPriority(0)
-				.setOnlyAlertOnce(true);
+				.setOnlyAlertOnce(true)
+				.setOngoing(true);
 				//.setLargeIcon(res.getDrawable(R.drawable.allow_icon))
 		
 		String appLabel = DBInterface.getInstance(context).getApplicationLabel(packageName);

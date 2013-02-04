@@ -251,6 +251,14 @@ public class AppListFragment extends Fragment {
 	public void onResume() {
 		super.onResume();
 		if(GlobalConstants.LOG_FUNCTION_TRACE) Log.d(GlobalConstants.LOG_TAG, "AppListFragment:OnResume");
+		//Is it valid? Testing if this will capture backup restore and force a rebuild
+        if (!prefs.getIsApplicationListCacheValid()) {
+            //Either we don't have an app list, or it isn't valid
+        	if (!prefs.getIsApplicationListCacheValid()) {
+        		//The app list isn't valid, so we need to rebuild it
+	            rebuildApplicationList();
+        	} 
+        }
 	}
 	
 	@Override
@@ -476,15 +484,16 @@ public class AppListFragment extends Fragment {
     /**
      * Commence the regeneration of the application list held in the database from the OS
      */
-    private void rebuildApplicationList() {
+    public void rebuildApplicationList() {
     	if(GlobalConstants.LOG_FUNCTION_TRACE) Log.d(GlobalConstants.LOG_TAG, "AppListFragment:rebuildApplicationList");
     	DialogHelper.showProgressDialog(context, null, getString(R.string.applist_dialogtext_generateapplist), ProgressDialog.STYLE_HORIZONTAL);
     	//showDialogOnStart = DIALOG_LINEAR;
 
-        // Start the AsyncTask to build the list of apps and write them to the database
+    	// Start the AsyncTask to build the list of apps and write them to the database
     	ApplicationsDatabaseFillerTask appListGenerator = new ApplicationsDatabaseFillerTask(context, new AppListGeneratorCallback());
     	appListGenerator.execute();
-    }
+	}
+
     
     /**
      * Handles completion of the app list generator
