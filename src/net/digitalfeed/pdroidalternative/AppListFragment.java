@@ -484,7 +484,7 @@ public class AppListFragment extends Fragment {
     /**
      * Commence the regeneration of the application list held in the database from the OS
      */
-    public void rebuildApplicationList() {
+    private void rebuildApplicationList() {
     	if(GlobalConstants.LOG_FUNCTION_TRACE) Log.d(GlobalConstants.LOG_TAG, "AppListFragment:rebuildApplicationList");
     	DialogHelper.showProgressDialog(context, null, getString(R.string.applist_dialogtext_generateapplist), ProgressDialog.STYLE_HORIZONTAL);
     	//showDialogOnStart = DIALOG_LINEAR;
