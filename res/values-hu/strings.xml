@@ -267,7 +267,106 @@
 	
 	<!-- dialog boxes for credits/about info which can be opened from the preferences list -->
 	<string name="credits_dialog_title">PDroid Manager Credits</string>
+		<string name="credits_dialog_body"><![CDATA[
+<h2>PDroid Manager</h2>
+<p><i>Fejlesztők: Simeon Morgan &lt;<a href="mailto:smorgan@digitalfeed.net">smorgan@digitalfeed.net</a>&gt;</i><br />
+Github: <a href="https://github.com/wsot/">wsot</a><br />
+XDA-developers: <a href="http://forum.xda-developers.com/member.php?u=3602796">FFU5y</a></p>
+
+<h3>Együttműködők:</h3>
+<p>
+<i>alceasan</i> (<a href="https://github.com/alceasan">github</a>): Spanish translation<br />
+<i>appelsson</i> (<a href="https://github.com/appelsson">github</a>): Magyar fordítás<br />
+<i>beasty</i> (<a href="http://forum.xda-developers.com/member.php?u=276326">xda</a>): Russian translation<br />
+<i>patrickpr</i> (<a href="https://github.com/patrickpr">github</a>): Initial french translation<br />
+<i>jpeg729</i> (<a href="https://github.com/jpeg729">github</a>): Ongoing french translation<br />
+<i>TamCore</i> (<a href="https://github.com/TamCore">github</a> | <a href="http://forum.xda-developers.com/member.php?u=2728547">xda</a>): Makefile creation, German translation<br />
+<i>wbedard</i> (<a href="http://forum.xda-developers.com/member.php?u=2769491">xda</a>): Original English descriptions for the settings<br />
+<a href="http://forum.xda-developers.com/showthread.php?p=34190204">PDroid Manager thread at xda-developers.com</a></p>
+</p>
+<h2>A PDroid Manager a többiek PDroid core részletes munkáján alapszik</h2>
+<h3>OpenPDroid Core</h3>
+<p>
+<i>FFU5y (<a href="https://github.com/wsot/">github</a> | <a href="http://forum.xda-developers.com/member.php?u=3602796">xda</a>)</i><br />
+<i>Mateor</i> (<a href="https://github.com/mateor/">github</a> | <a href="http://forum.xda-developers.com/member.php?u=4342828">xda</a>)<br />
+<i>wbedard</i> (<a href="https://github.com/wbedard/">github</a> | <a href="http://forum.xda-developers.com/member.php?u=2769491">xda</a>)<br />
+<a href="http://forum.xda-developers.com/showthread.php?t=2098156">OpenPDroid thread at xda-developers.com</a></p>
+</p>
+<h3>PDroid 2.0 Core</h3>
+<p><i>Fejlesztők: CollegeDev (<a href="http://forum.xda-developers.com/member.php?u=4711230">xda</a>)</i><br />
+<a href="http://forum.xda-developers.com/showthread.php?t=1923576">PDroid 2.0 thread at xda-developers.com</a></p>
+<h3>PDroid portolás ICS/JB-re</h3>
+<p><i>Pastime (<a href="http://forum.xda-developers.com/member.php?u=4005966">xda</a>)</i><br />
+<a href="http://forum.xda-developers.com/showthread.php?t=1554960">PDroid ICS/JB thread at xda-developers.com</a></p>
+<h3>PDroid</h3>
+<p><i>Fejlesztés: Syvat (<a href="http://forum.xda-developers.com/member.php?u=2605967">xda</a>)</i><br />
+<a href="http://forum.xda-developers.com/showthread.php?t=1357056">PDroid thread at xda-developers.com</a></p>
+
+<h2>Figyelem:</h2>
+<p>Ez az alkalmazás <i>nincs jóváhagyva</i> Syvat, Pastime, vagy CollegeDev által.
+Kérlek <i>ne</i> keress segítséget a PDroid Manager alkalmazáshoz az ő fórumtémáikon.</p>
+]]></string>
 	<string name="about_dialog_title">A PDroid Managerről</string>
-	
+		<string name="about_dialog_body"><![CDATA[
+<p><i>A PDroid Manager</i> egy beállítás menedzselő alkalmazás az OpenPDroid és a PDroid 2.0 Core által nyújtott szolgáltatáshoz. Ez CollageDev PDroid 2.0 alkalmazásának egy nyílt forráskódú alternatívájaként szolgál.</p>
+<h2>A PDroid Manager jelenleg alfa állapotú</h2>
+<h3>Ha hibát talál:</h3>
+<b>Először ellenőrizze, hogy az nem egy már ismert hiba, <a href="https://github.com/wsot/pdroid-manager/issues">nézze meg a hibalistát a githubon</a>.</b> Ha már jelezve van, de további információt szeretne hozzátenni, akkor csatolja a githubon. Egyébként posztolhatja itt is, de ha így tesz, kérem világosan hivatkozzon a githubon lévő létező hibára.
+<h4>Ha ez nem egy ismert hiba:</h4>
+Nyithat egy <a href="https://github.com/wsot/pdroid-manager/issues">hibát a githubon</a>, biztosítson logcat-et: lásd <a href="http://forum.xda-developers.com/showthread.php?t=1726238">hogyan készítsen logcat-et</a>.
+Posztolhatja <a href="http://forum.xda-developers.com/showthread.php?p=34190204">az XDA fórumon</a>, logcat itt is szükséges.
+
+<h3>Copyright statement</h3>
+<p>Copyright (C) 2012 Simeon J. Morgan (smorgan@digitalfeed.net)
+This program is free software; you can redistribute it and/or modify it under
+the terms of the GNU General Public License as published by the Free Software
+Foundation; either version 3 of the License, or (at your option) any later version.
+This program is distributed in the hope that it will be useful, but WITHOUT ANY
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+PARTICULAR PURPOSE. See the GNU General Public License for more details.
+You should have received a copy of the GNU General Public License along with
+this program; if not, see <http://www.gnu.org/licenses>.
+The software has the following requirements (GNU GPL version 3 section 7):
+You must retain in pdroid-manager, any modifications or derivatives of
+pdroid-manager, or any code or components taken from pdroid-manager the author
+attribution included in the files.
+In pdroid-manager, any modifications or derivatives of pdroid-manager, or any
+application utilizing code or components taken from pdroid-manager must include
+in any display or listing of its creators, authors, contributors or developers
+the names or pseudonyms included in the author attributions of pdroid-manager
+or pdroid-manager derived code.
+Modified or derivative versions of the pdroid-manager application must use an
+alternative name, rather than the name pdroid-manager.</p>
+]]></string>
+
+<!-- the following sections of text are 'errors' for when a user loads PDroid Manager,
+but doesn't have PDroid installed, or some other problem like that.
+pdroid_error_intro is shown in all cases, and the strings below it only when
+the error fits the problem -->
+<string name="pdroid_error_intro"><![CDATA[
+<h4>Üdvözli a <i>PDroid Manager</i>, a setting management application for OpenPDroid and PDroid 2.0</h4>
+<p>A problem has been detected when interacting with the PDroid core and PDroid Manager cannot continue to load. The PDroid core provides the <i>privacy service</i> on which PDroid Manager depends, so failure of the privacy service renders PDroid Manager non-functional.</p>
+]]></string>
+
+<string name="pdroid_error_conclusion"><![CDATA[<p>Installation or upgrading of the PDroid core <b>cannot</b> be performed automatically. You must apply a more recent PDroid 2.0 patch to your ROM in order to obtain a supported version of the PDroid core. For support, press the button below to open the PDroid Manager thread on the XDA developers forum.</p>]]></string>
+
+<string name="pdroid_error_wrong_version"><![CDATA[
+<h2>Version %s of OpenPDroid or PDroid 2.0 has been detected on your device.<br /><i>PDroid Manager</i> requires OpenPDroid or PDroid 2.0 v.1.48 or higher to be included in the device ROM.</h2>]]></string>
+
+<string name="pdroid_error_not_installed"><![CDATA[
+<h2>The PDroid core has not been detected on your device.<br /><i>PDroid Manager</i> requires OpenPDroid or PDroid 2.0, v.1.48 or higher to be included in the device ROM.</h2>
+]]></string>
+
+<string name="pdroid_error_permission"><![CDATA[
+<h4>Welcome to <i>PDroid Manager</i>, egy beállítás menedzselő alkalmazás az OpenPDroid és a PDroid 2.0-hoz</h4>
+<p>Egy probléma található, ami megakadályozza a PDroid Manager működését.</p>
+<h2>A PDroid Manager és CollegeDev PDroid 2.0 alkalmazása nem telepíthető további lépések nélkül ugyanazon az eszközön.</h2>
+<p>A PDroidban használt Android jogosultságok használata miatt a PDroid Manager és CollegeDev PDroid 2.0 alkalmazása együtt, egyszerre nem működhet megfelelően. Ez megkerülhető a csomagok új kulccsal történő újra-aláírásával, ahogyan le van írva az XDA-developers fórumon.</p><p><b>Megjegyzés:</b> CollegeDev PDroid 2.0 alkalmazásának eltávolítása <i>nem fogja</i> törölni a PDroid beállításokat: eltávolíthatja és telepítheti a PDroid Manager-t és a beállításai megmaradnak.</p>
+<p><i>A hiba megoldásához távolítsa el CollegeDev PDroid 2.0 alkalmazását, <b>azután távolítsa el és telepítse újra a PDroid Managert</b>.</i></p>
+]]></string>
+
 	<string name="pdroid_get_support">A PDroid Manager téma megnyitása az XDA developers fórumon</string>
+	<string name="application_list_app_spacer" translatable="false">&#160;|&#160;</string>
+<string name="detail_custom_value_spacer" translatable="false">&#160;|&#160;</string>
+<string name="backup_filename_extension" translatable="false">.xml</string>
 </resources>
