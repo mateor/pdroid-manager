@@ -52,7 +52,7 @@
 	<string name="access_notification_intentBootCompleted">Exécution au démarrage</string>
 	<string name="access_notification_camera">Appareil photo</string>
 	<string name="access_notification_recordAudio">Enregistrement audio</string>
-	<string name="access_notification_SmsSend">Evoyer des SMS</string>
+	<string name="access_notification_SmsSend">Envoyer des SMS</string>
 	<string name="access_notification_phoneCall">Appel direct</string>
 	<string name="access_notification_android_id">Identifiant Android</string>
 	<string name="access_notification_iccAccess">Accès ICC</string>

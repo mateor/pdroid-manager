@@ -36,8 +36,8 @@
 	<string name="permission_description_writeprivacysettings">Autoriser la modification de la configuration PDroid associée aux applications.</string>
 	<string name="permission_label_readprivacysettings">Lire la configuration PDroid </string>
 	<string name="permission_description_readprivacysettings">Autorise la lecture de la configuration PDroid associée aux applications.</string>
-	<string name="permission_label_manageprivacycontrollers">Gérer la configuration PDroid</string>
-	<string name="permission_description_manageprivacycontrollers">Permet de configurer les applications ayant accès à la configuration PDroid</string>
+	<string name="permission_label_manageprivacycontrollers">Configurer les gestionnaires PDroid</string>
+	<string name="permission_description_manageprivacycontrollers">Permet de configurer les applications pouvant changer la configuration PDroid</string>
 
 	<!-- Application list screen -->
 		<!-- action bar options  -->
@@ -59,7 +59,7 @@
 		<string name="applist_popupmenu_set_untrusted_values">Tout interdire</string>
 		<string name="applist_popupmenu_set_trusted_values">Tout autoriser</string>
 		<string name="applist_popupmenu_set_default_values">Réinitialiser</string>
-		<string name="applist_popupmenu_delete_settings">Supprimer la configuration</string>    
+		<string name="applist_popupmenu_delete_settings">Supprimer la configuration</string>
 		<string name="applist_popupmenu_customise_settings">Configuration personalisé</string>
 		
 		<string name="applist_actionbar_selectall">Tout sélectionner</string>
@@ -135,7 +135,7 @@
 		<string name="storage_error_body">Le stockage externe n\'a pas pu être trouvé. Si votre appareil a une carte SD ou MicroSD externe, vérifier qu\'il soit insérée et formattée correctement.</string>
 
 		<!-- dialog for preparing for backup: entering filename -->
-		<string name="backup_dialog_title">Paramètre de sauvegarde</string> <!-- dialog title -->
+		<string name="backup_dialog_title">Paramètres de sauvegarde</string> <!-- dialog title -->
 		<string name="backup_path_text">Votre sauvegarde sera stockée ici: </string> <!-- text shown before destination directory -->
 		<string name="backup_filename">Nom du fichier de sauvegarde</string> <!-- shown beside filename box -->
 		<string name="backup_filename_hint">Nom_du_fichier</string> <!-- Hint text in the 'filename' field -->
@@ -147,11 +147,11 @@
 		<string name="backup_complete_success">Sauvegarde complète</string>
 		<string name="backup_complete_fail_signing">Sauvegarde échouée: La sauvegarde n\'a pu être signé</string>
 		<string name="backup_complete_fail_writing">Sauvegarde échouée: Le fichier de sauvegarde n\'a pas pu être écrit</string>
-		<string name="backup_complete_fail_other">Sauvegarde échouée: Le fichier de sauvegarde n\'a pas pu être créé</string>
+		<string name="backup_complete_fail_other">Sauvegarde échouée: Le fichier de sauvegarde n\'a pas pu être généré</string>
 		
 		<!-- confirmation and progress dialog for deleting all settings -->
 		<string name="global_delete_confirm_title">Supprimer toute configuration</string>
-		<string name="global_delete_confirm_message">Voulez-vous vraiment supprimer toute la configuration PDroid pour les applis sur cet appareil? (NB. Ceci ne supprime pas les sauvegardes)</string>
+		<string name="global_delete_confirm_message">Voulez-vous vraiment supprimer toute la configuration PDroid pour toutes les applis sur cet appareil? (NB. Ceci ne supprime pas les sauvegardes)</string>
 		<string name="global_delete_progress_dialog_title">Suppression&#8230;</string>
 		<string name="global_delete_progress_dialog_message">Suppression de toute la configuration PDroid</string>
 		<string name="global_delete_complete_message">Toute la configuration PDroid a été supprimée</string>
@@ -169,11 +169,11 @@
 		<string name="detail_actionbar_savebutton_title">Appliquer la configuration</string>
 		<string name="detail_actionbar_close_title">Fermer sans appliquer</string>
 		<string name="detail_actionbar_delete_title">Supprimer la configuration</string>
-
+		
 		<string name="detail_custom_input_OKtext">OK</string>
 
 		<string name="detail_notifyonaccess_text">Notifier tout accès</string>
-		<string name="detail_logonaccess_text">Journaux d\'accès</string>
+		<string name="detail_logonaccess_text">Journal d\'accès</string>
 		<string name="detail_customvalue_pretext">Personalisé:</string>
 
 		<string name="detail_setting_option_nochange_contentdescription">Pas de changement</string>
@@ -183,7 +183,7 @@
 		<string name="detail_setting_option_custom_contentdescription">Personalisé</string>
 		<string name="detail_setting_option_yes_contentdescription">Oui</string>
 		<string name="detail_setting_option_no_contentdescription">Non</string>
-	<!-- end needs translation -->
+	<!-- end application details screen -->
 
 	<string name="help_dialog_OKtext">OK</string>
 	<string name="button_help_text">Aide</string>
@@ -203,7 +203,7 @@
 		<string name="notification_toast_allowed_text">autorisé</string>
 		<string name="notification_toast_denied_text">interdit</string>
 		<string name="notification_toast_random_text">aléatoire</string>
-		<string name="notification_toast_custom_text">spécifique</string>
+		<string name="notification_toast_custom_text">personalisé</string>
 
 	<!-- Text for notification used in the notification bar (top of the screen)
 	when a new app in installed, or one is updated -->
@@ -215,7 +215,7 @@
 	<!-- Not currently used: essentially replaced by detail_setting_option_*_contentdescription -->
 		<string name="setting_option_allow">autorisé</string>
 		<string name="setting_option_random">aléatoire</string>
-		<string name="setting_option_custom">spécifique</string>
+		<string name="setting_option_custom">personalisé</string>
 		<string name="setting_option_deny">interdit</string>
 		
 	<!-- FUTURE FEATURE STRINGS -->
@@ -229,39 +229,146 @@
 		applied to applications as pre-prepared groups of settings -->
 		<!-- profile list screen -->
 			<string name="profile_list_actionbar_title">Profiles</string> <!-- title for the profiles screen in the action bar -->		
-			<string name="profile_list_actionbar_add">Add profile</string> <!-- action bar button to create a new profile -->
+			<string name="profile_list_actionbar_add">Ajouter un profile</string> <!-- action bar button to create a new profile -->
 			
 			<!-- action bar for when one or more profiles are selected -->
-			<string name="profile_list_actionbar_batchselect_none">Select profiles</string> <!-- Shown in the header when no profiles selected -->
-			<string name="profile_list_actionbar_batchselect_singular">One profile selected</string> <!-- Shown in header when single profile selected -->
-			<string name="profile_list_actionbar_batchselect_plural">profiles selected</string> <!-- Shown in header when >1 profiles selected (i.e. shows as "5 profiles selected") -->		
-			<string name="profile_list_actionbar_delete">Delete profiles</string> <!-- button to delete the selected profiles -->
-			<string name="profile_list_actionbar_duplicate">Copy profiles</string> <!-- button to duplicate the selected profiles, with a new name ending in 'copy' (or equivalent) -->
+			<string name="profile_list_actionbar_batchselect_none">Sélectionner profiles</string> <!-- Shown in the header when no profiles selected -->
+			<string name="profile_list_actionbar_batchselect_singular">Un profile sélectionné</string> <!-- Shown in header when single profile selected -->
+			<string name="profile_list_actionbar_batchselect_plural">profiles sélectionnés</string> <!-- Shown in header when >1 profiles selected (i.e. shows as "5 profiles selected") -->		
+			<string name="profile_list_actionbar_delete">Supprimer les profiles</string> <!-- button to delete the selected profiles -->
+			<string name="profile_list_actionbar_duplicate">Copier les profiles</string> <!-- button to duplicate the selected profiles, with a new name ending in 'copy' (or equivalent) -->
 	
 			<!-- dialog boxes for the profile list screen -->
-			<string name="profile_list_delete_confirm_title">Delete profiles</string> <!-- title for confirmation box when deleting one or more profiles -->
-			<string name="profile_list_delete_confirm_message">Are you sure you want to delete the selected profiles</string> <!-- body for confirmation box when deleting one or more profiles -->
-			<string name="profile_list_duplicate_confirm_title">Copy profiles</string> <!-- body for confirmation box when deleting one or more profiles -->
-			<string name="profile_list_duplicate_confirm_message">Are you sure you want to copy the selected profiles</string> <!-- body for confirmation box when deleting one or more profiles -->
+			<string name="profile_list_delete_confirm_title">Supprimer profiles</string> <!-- title for confirmation box when deleting one or more profiles -->
+			<string name="profile_list_delete_confirm_message">Etes-vous sûr de vouloir supprimer les profiles sélectionnés</string> <!-- body for confirmation box when deleting one or more profiles -->
+			<string name="profile_list_duplicate_confirm_title">Copier profiles</string> <!-- body for confirmation box when deleting one or more profiles -->
+			<string name="profile_list_duplicate_confirm_message">Etes-vous sûr de vouloir copier les profiles sélectionnés</string> <!-- body for confirmation box when deleting one or more profiles -->
 
-			<string name="profile_list_duplicate_profile_postfix">Copy</string> <!-- Text added to the end of the name of a profile when it is duplicated -->
+			<string name="profile_list_duplicate_profile_postfix">Copie</string> <!-- Text added to the end of the name of a profile when it is duplicated -->
 
 		<!-- stock profiles: these are the names for the 'default' profiles which are automatically created and can not be modified -->
-			<string name="profiles_inbuilt_trusted">Trusted</string> <!-- a pre-generated profile made up of all the 'trusted' settings  -->
-			<string name="profiles_inbuilt_untrusted">Untrusted</string> <!-- a pre-generated profile made up of all the 'trusted' settings  -->
+			<string name="profiles_inbuilt_trusted">Tout autorisé</string> <!-- a pre-generated profile made up of all the 'trusted' settings  -->
+			<string name="profiles_inbuilt_untrusted">Rien autorisé</string> <!-- a pre-generated profile made up of all the 'trusted' settings  -->
 	
 		<!-- for the other parts of the app -->
 			<!-- for app list: action bar button when doing batch selection -->
-			<string name="applist_actionbar_apply_profile">Apply profile</string> <!-- button to apply a profile to the selected apps -->
-			<string name="applist_select_profile_dialog_title">Apply profile</string> <!-- title of dialog to select the profile to apply -->
-			<string name="applist_select_profile_dialog_message">Choose the profile to apply to the selected apps</string> <!-- Text above a spinner listing the available profiles to apply -->
+			<string name="applist_actionbar_apply_profile">Appliquer profile</string> <!-- button to apply a profile to the selected apps -->
+			<string name="applist_select_profile_dialog_title">Appliquer profile</string> <!-- title of dialog to select the profile to apply -->
+			<string name="applist_select_profile_dialog_message">Choisir le profile à appliquer</string> <!-- Text above a spinner listing the available profiles to apply -->
 
 			<!-- for preferences list: selecting a 'default' profile -->
-			<string name="preferences_heading_defaults">Defaults</string>
-			<string name="preferences_default_profile_title">Set default profile</string>
-			<string name="preferences_default_profile_summary">Default profile to be applied to new apps</string>
-			<string name="preferences_default_profile_summary_none">None selected</string>
-			<string name="preferences_default_profile_summary_selected">Current profile: </string>
+			<string name="preferences_heading_defaults">Profile par défaut</string>
+			<string name="preferences_default_profile_title">Choisir le profile par défaut</string>
+			<string name="preferences_default_profile_summary">Profile appliqué aux nouvelles applis</string>
+			<string name="preferences_default_profile_summary_none">Aucun sélectionné</string>
+			<string name="preferences_default_profile_summary_selected">Profile actuel: </string>
 
 	<!-- END FUTURE FEATURE STRINGS -->
+	
+	<!-- dialog boxes for credits/about info which can be opened from the preferences list -->
+	<string name="credits_dialog_title">PDroid Manager Credits</string>
+	<string name="credits_dialog_body"><![CDATA[
+<h2>PDroid Manager</h2>
+<p><i>Dévelopment: Simeon Morgan &lt;<a href="mailto:smorgan@digitalfeed.net">smorgan@digitalfeed.net</a>&gt;</i><br />
+Github: <a href="https://github.com/wsot/">wsot</a><br />
+XDA-developers: <a href="http://forum.xda-developers.com/member.php?u=3602796">FFU5y</a></p>
+
+<h3>Avec des contributions de:</h3>
+<p>
+<i>alceasan</i>  (<a href="https://github.com/alceasan">github</a>): Traduction espagnol<br />
+<i>appelsson</i> (<a href="https://github.com/appelsson">github</a>): Traduction hongrois<br />
+<i>beasty</i> (<a href="http://forum.xda-developers.com/member.php?u=276326">xda</a>): Traduction russe<br />
+<i>patrickpr</i> (<a href="https://github.com/patrickpr">github</a>): Première traduction française<br />
+<i>jpeg729</i> (<a href="https://github.com/jpeg729">github</a>): Traduction française actuelle<br />
+<i>TamCore</i> (<a href="https://github.com/TamCore">github</a> | <a href="http://forum.xda-developers.com/member.php?u=2728547">xda</a>): Création du Makefile, Traduction allemande<br />
+<i>wbedard</i> (<a href="http://forum.xda-developers.com/member.php?u=2769491">xda</a>): Descriptions originelles en anglais pour les options de configuration<br />
+<a href="http://forum.xda-developers.com/showthread.php?p=34190204">Fil de discussion pour PDroid Manager sur xda-developers.com</a></p>
+</p>
+<h2>PDroid Manager est dépendant du bon travail fournit par d'autres sur le coeur de PDroid</h2>
+<h3>OpenPDroid</h3>
+<p>
+<i>FFU5y (<a href="https://github.com/wsot/">github</a> | <a href="http://forum.xda-developers.com/member.php?u=3602796">xda</a>)</i><br />
+<i>Mateor</i> (<a href="https://github.com/mateor/">github</a> | <a href="http://forum.xda-developers.com/member.php?u=4342828">xda</a>)<br />
+<i>wbedard</i> (<a href="https://github.com/wbedard/">github</a> | <a href="http://forum.xda-developers.com/member.php?u=2769491">xda</a>)<br />
+<a href="http://forum.xda-developers.com/showthread.php?t=2098156">Fil de discussion pour OpenPDroid sur xda-developers.com</a></p>
+</p>
+<h3>PDroid 2.0</h3>
+<p><i>Development: CollegeDev (<a href="http://forum.xda-developers.com/member.php?u=4711230">xda</a>)</i><br />
+<a href="http://forum.xda-developers.com/showthread.php?t=1923576">Fil de discussion pour PDroid 2.0 sur xda-developers.com</a></p>
+<h3>Portage de PDroid vers ICS/JB</h3>
+<p><i>Pastime (<a href="http://forum.xda-developers.com/member.php?u=4005966">xda</a>)</i><br /> 
+<a href="http://forum.xda-developers.com/showthread.php?t=1554960">Fil de discussion pour PDroid ICS/JB sur xda-developers.com</a></p>
+<h3>PDroid</h3>
+<p><i>Development: Syvat (<a href="http://forum.xda-developers.com/member.php?u=2605967">xda</a>)</i><br />
+<a href="http://forum.xda-developers.com/showthread.php?t=1357056">Fil de discussion pour PDroid sur xda-developers.com</a></p>
+
+<h2>Attention:</h2>
+<p>Cette application <i>n'est pas approuvée</i> par Syvat, Pastime, ou CollegeDev.
+S'il vous plait <i>ne demandez pas</i> de l'aide concernant PDroid Manager dans leurs fils de discussion.</p>
+]]></string>
+
+	<string name="about_dialog_title">A propos</string>
+	<string name="about_dialog_body"><![CDATA[
+<p><i>PDroid Manager</i> est une application qui gère la configuration du service de limitation des privilèges rendu par OpenPDroid ou PDroid 2.0 Core. Il sert d'alternative open-source pour l'application PDroid 2.0 App de CollegeDev.</p>
+<h2>PDroid Manager est actuellement en cours de développement (alpha)</h2>
+<h3>Si vous trouvez un problème:</h3>
+<b>Vérifier d'abord qu'il ne s'agissent pas d'un problème connu en <a href="https://github.com/wsot/pdroid-manager/issues">lisant les bugs connus sur mon github</a>.</b> Si ce problème s'y trouve déjà, mais que vous avez de l'information à ajouter, alors le mieux c'est de l'attacher au bug sur github. Sinon, vous pouvez toujours le rapporter dans le fil de discussion, mais ajoutez, s'il vous plait, une référence au bug listé dans github.
+<h4>Si le problème n'est pas listé dans github:</h4>
+Vous pouvez ouvrir un <a href="https://github.com/wsot/pdroid-manager/issues">bug sur mon github</a>, avec un logcat: voir <a href="http://forum.xda-developers.com/showthread.php?t=1726238">comment obtenir un logcat</a>.
+Vous pouvez aussi poster sur <a href="http://forum.xda-developers.com/showthread.php?p=34190204">le fil de discussion</a> en incluant un logcat.
+
+<h3>Copyright statement</h3>
+<p>Copyright (C) 2012 Simeon J. Morgan (smorgan@digitalfeed.net)
+This program is free software; you can redistribute it and/or modify it under
+the terms of the GNU General Public License as published by the Free Software
+Foundation; either version 3 of the License, or (at your option) any later version.
+This program is distributed in the hope that it will be useful, but WITHOUT ANY
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+PARTICULAR PURPOSE. See the GNU General Public License for more details.
+You should have received a copy of the GNU General Public License along with
+this program; if not, see <http://www.gnu.org/licenses>.
+The software has the following requirements (GNU GPL version 3 section 7):
+You must retain in pdroid-manager, any modifications or derivatives of
+pdroid-manager, or any code or components taken from pdroid-manager the author
+attribution included in the files.
+In pdroid-manager, any modifications or derivatives of pdroid-manager, or any
+application utilizing code or components taken from pdroid-manager must include
+in any display or listing of its creators, authors, contributors or developers
+the names or pseudonyms included in the author attributions of pdroid-manager
+or pdroid-manager derived code.
+Modified or derivative versions of the pdroid-manager application must use an
+alternative name, rather than the name pdroid-manager.</p>
+]]></string>
+	
+	<!-- the following sections of text are 'errors' for when a user loads PDroid Manager,
+	but doesn't have PDroid installed, or some other problem like that.
+	pdroid_error_intro is shown in all cases, and the strings below it only when
+	the error fits the problem -->
+		<string name="pdroid_error_intro"><![CDATA[
+<h4>Bienvenue à <i>PDroid Manager</i>, gestionnaire pour OpenPDroid and PDroid 2.0</h4>
+<p>Un problème a été détecté dans la communication avec le coeur de PDroid, PDroid Manager ne peut pas démarrer. Le coeur de PDroid gère la limitation de privilèges nécessaire pour que PDroid Manager soit efficace, si ce service ne fonctionne pas, PDroid Manager ne peut pas fonctionner non plus.</p>
+]]></string>
+
+		<string name="pdroid_error_conclusion"><![CDATA[<p>L'installation ou la mise à jour du coeur de PDroid <b>ne peut pas</b> être éffectué automatiquement. Vous devez patcher votre ROM par une version plus récente des patchs PDroid 2.0 pour avoir une version supportée. Pour avoir de l'aide, appuyez sur le bouton ci-dessous pour ouvrir le fil de discussion de PDroid Manager sur le forum de XDA developers.</p>]]></string>
+			
+		<string name="pdroid_error_wrong_version"><![CDATA[
+<h2>La version %s de OpenPDroid ou de PDroid 2.0 a été détectée sur votre apparail.<br /><i>PDroid Manager</i> requiert que la version 1.48 ou plus de OpenPDroid or PDroid 2.0 soit inclue dans votre ROM.</h2>]]></string>
+	
+	<string name="pdroid_error_not_installed"><![CDATA[
+<h2>Le coeur de PDroid n'a pas été détecté sur votre appareil.<br /><i>PDroid Manager</i> requiert que la version 1.48 ou plus de OpenPDroid or PDroid 2.0 soit inclue dans votre ROM.</h2>
+]]></string>
+
+	<string name="pdroid_error_permission"><![CDATA[
+<h4>Bienvenue à <i>PDroid Manager</i>, gestionnaire de OpenPDroid et de PDroid 2.0</h4>
+<p>Un problème a été détecté qui empêche PDroid Manager de fonctionner.</p> 
+<h2>PDroid Manager et l'appli PDroid 2.0 de CollegeDev ne peuvent être installés sur le même appareil sans effectuer des opérations supplémentaires</h2>
+<p>A cause de la façon dont les permission Android sont utilisées par PDroid, les applis PDroid Manager et PDroid 2.0 App de CollegeDev ne peuvent être installées en même temps et fonctionner correctement. Ceci peut être corrigé en re-signant les deux applis avec une nouvelle clé. Vous trouverez des instructions dans le fil de discussion sur le forum XDA-developers.</p><p><b>NB:</b> la désinstallation de l'appli PDroid 2.0 App de CollegeDev <i>ne supprimera pas</i> votre configuration PDroid: vous pouvez le désinstaller, puis installer PDroid Manager et votre configuration sera intact.</p>
+<p><i>Pour résoudre ce problème vous devrez désinstaller l'appli PDroid 2.0 App de CollegeDev, et ensuite <b>désinstaller et réinstaller PDroid Manager</b>.</i></p>
+]]></string>
+
+	<string name="pdroid_get_support">Ouvrir le fil de discussion de PDroid Manager sur XDA developers</string>
+	
+	<string name="application_list_app_spacer" translatable="false">&#160;|&#160;</string>
+	<string name="detail_custom_value_spacer" translatable="false">&#160;|&#160;</string>
+	<string name="backup_filename_extension" translatable="false">.xml</string>
 </resources>
