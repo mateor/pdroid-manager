@@ -31,7 +31,7 @@
 -->
 <resources>
 	<string name="SETTING_LABEL_ALLOW_READ_DEVICE_ID">Identifiant de l\'appareil</string>
-	<string name="SETTING_HELP_ALLOW_READ_DEVICE_ID">Contrôle la valeur retournée comme identifiant de l\'appareil. Peut être l\'IMEI(International Mobile Equipment Identity) pour les GSM, le MEID (Mobile Equipment ID) ou l\'ESM (Electronic Serial Number) pour les téléphones CDMA. L\'identifiant est unique et permanent pour chaque appareil.</string>
+	<string name="SETTING_HELP_ALLOW_READ_DEVICE_ID">Contrôle la valeur retournée comme identifiant de l\'appareil. Peut être l\'IMEI(International Mobile Equipment Identity) pour les GSM, le MEID (Mobile Equipment ID) ou l\'ESM (Electronic Serial Number) pour les téléphones CDMA. Cet identifiant est unique et permanent pour chaque appareil.</string>
 	<string name="SETTING_LABEL_ALLOW_READ_PHONE_NUMBER">Numéro de téléphone</string>
 	<string name="SETTING_HELP_ALLOW_READ_PHONE_NUMBER">Autorise l\'accès au numéro du téléphone et/ou au numéro de la messagerie. Par exemple, le Mobile Station Integrated Services Digital Network (MSISDN) pour un téléphone GSM ou le Mobile Device Number (MDN) pour un téléphone CDMA. Ce numéro est souvent absent ou erroné.</string>
 	<string name="SETTING_LABEL_ALLOW_READ_SIM_SERIAL">Numéro de série SIM</string>
