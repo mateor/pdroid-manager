@@ -53,6 +53,7 @@
         <item>Fran&#231;ais</item>
         <item>Magyar</item>
         <item>Русский</item>
+        <item>Nederlands</item>
     </string-array>
     <string-array name="language_codes" translatable="false">
         <item>de</item>
@@ -61,5 +62,6 @@
         <item>fr</item>
         <item>hu</item>
         <item>ru</item>
+        <item>nl</item>
     </string-array>
 </resources>
