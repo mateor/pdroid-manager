@@ -368,7 +368,4 @@ the error fits the problem -->
 ]]></string>
 
 	<string name="pdroid_get_support">A PDroid Manager téma megnyitása az XDA developers fórumon</string>
-	<string name="application_list_app_spacer" translatable="false">&#160;|&#160;</string>
-<string name="detail_custom_value_spacer" translatable="false">&#160;|&#160;</string>
-<string name="backup_filename_extension" translatable="false">.xml</string>
 </resources>

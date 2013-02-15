@@ -138,7 +138,6 @@
 		<string name="backup_dialog_title">Backup settings</string> <!-- dialog title -->
 		<string name="backup_path_text">Your backup will be stored in: </string> <!-- text shown before destination directory -->
 		<string name="backup_filename">Filename for backup</string> <!-- shown beside filename box -->
-		<string name="backup_filename_prefix" translatable="false">pdroidmanager_backup_</string> <!-- Default prefix for the 'suggested' backup filename -->
 		<string name="backup_filename_hint">Filename</string> <!-- Hint text in the 'filename' field -->
 
 		<!-- warning and error messages for creating backup -->

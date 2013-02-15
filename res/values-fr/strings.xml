@@ -286,7 +286,7 @@ XDA-developers: <a href="http://forum.xda-developers.com/member.php?u=3602796">F
 <i>xLambChopsx</i> (<a href="https://github.com/xLambChopsx">github</a>): Contributions de code et corrections de bugs
 <a href="http://forum.xda-developers.com/showthread.php?p=34190204">Fil de discussion pour PDroid Manager sur xda-developers.com</a></p>
 </p>
-<h2>PDroid Manager est dépendant du bon travail fournit par d'autres sur le coeur de PDroid</h2>
+<h2>PDroid Manager est dépendant du bon travail fournit par d\'autres sur le coeur de PDroid</h2>
 <h3>OpenPDroid</h3>
 <p>
 <i>FFU5y (<a href="https://github.com/wsot/">github</a> | <a href="http://forum.xda-developers.com/member.php?u=3602796">xda</a>)</i><br />
@@ -305,17 +305,17 @@ XDA-developers: <a href="http://forum.xda-developers.com/member.php?u=3602796">F
 <a href="http://forum.xda-developers.com/showthread.php?t=1357056">Fil de discussion pour PDroid sur xda-developers.com</a></p>
 
 <h2>Attention:</h2>
-<p>Cette application <i>n'est pas approuvée</i> par Syvat, Pastime, ou CollegeDev.
-S'il vous plait <i>ne demandez pas</i> de l'aide concernant PDroid Manager dans leurs fils de discussion.</p>
+<p>Cette application <i>n\'est pas approuvée</i> par Syvat, Pastime, ou CollegeDev.
+S\'il vous plait <i>ne demandez pas</i> de l\'aide concernant PDroid Manager dans leurs fils de discussion.</p>
 ]]></string>
 
 	<string name="about_dialog_title">A propos</string>
 	<string name="about_dialog_body"><![CDATA[
-<p><i>PDroid Manager</i> est une application qui gère la configuration du service de limitation des privilèges rendu par OpenPDroid ou PDroid 2.0 Core. Il sert d'alternative open-source pour l'application PDroid 2.0 App de CollegeDev.</p>
+<p><i>PDroid Manager</i> est une application qui gère la configuration du service de limitation des privilèges rendu par OpenPDroid ou PDroid 2.0 Core. Il sert d\'alternative open-source pour l\'application PDroid 2.0 App de CollegeDev.</p>
 <h2>PDroid Manager est actuellement en cours de développement (alpha)</h2>
 <h3>Si vous trouvez un problème:</h3>
-<b>Vérifier d'abord qu'il ne s'agissent pas d'un problème connu en <a href="https://github.com/wsot/pdroid-manager/issues">lisant les bugs connus sur mon github</a>.</b> Si ce problème s'y trouve déjà, mais que vous avez de l'information à ajouter, alors le mieux c'est de l'attacher au bug sur github. Sinon, vous pouvez toujours le rapporter dans le fil de discussion, mais ajoutez, s'il vous plait, une référence au bug listé dans github.
-<h4>Si le problème n'est pas listé dans github:</h4>
+<b>Vérifier d\'abord qu\'il ne s\'agissent pas d\'un problème connu en <a href="https://github.com/wsot/pdroid-manager/issues">lisant les bugs connus sur mon github</a>.</b> Si ce problème s\'y trouve déjà, mais que vous avez de l\'information à ajouter, alors le mieux c\'est de l\'attacher au bug sur github. Sinon, vous pouvez toujours le rapporter dans le fil de discussion, mais ajoutez, s\'il vous plait, une référence au bug listé dans github.
+<h4>Si le problème n\'est pas listé dans github:</h4>
 Vous pouvez ouvrir un <a href="https://github.com/wsot/pdroid-manager/issues">bug sur mon github</a>, avec un logcat: voir <a href="http://forum.xda-developers.com/showthread.php?t=1726238">comment obtenir un logcat</a>.
 Vous pouvez aussi poster sur <a href="http://forum.xda-developers.com/showthread.php?p=34190204">le fil de discussion</a> en incluant un logcat.
 
@@ -351,26 +351,23 @@ alternative name, rather than the name pdroid-manager.</p>
 <p>Un problème a été détecté dans la communication avec le coeur de PDroid, PDroid Manager ne peut pas démarrer. Le coeur de PDroid gère la limitation de privilèges nécessaire pour que PDroid Manager soit efficace, si ce service ne fonctionne pas, PDroid Manager ne peut pas fonctionner non plus.</p>
 ]]></string>
 
-		<string name="pdroid_error_conclusion"><![CDATA[<p>L'installation ou la mise à jour du coeur de PDroid <b>ne peut pas</b> être éffectué automatiquement. Vous devez patcher votre ROM par une version plus récente des patchs PDroid 2.0 pour avoir une version supportée. Pour avoir de l'aide, appuyez sur le bouton ci-dessous pour ouvrir le fil de discussion de PDroid Manager sur le forum de XDA developers.</p>]]></string>
+		<string name="pdroid_error_conclusion"><![CDATA[<p>L\'installation ou la mise à jour du coeur de PDroid <b>ne peut pas</b> être éffectué automatiquement. Vous devez patcher votre ROM par une version plus récente des patchs PDroid 2.0 pour avoir une version supportée. Pour avoir de l\'aide, appuyez sur le bouton ci-dessous pour ouvrir le fil de discussion de PDroid Manager sur le forum de XDA developers.</p>]]></string>
 			
 		<string name="pdroid_error_wrong_version"><![CDATA[
 <h2>La version %s de OpenPDroid ou de PDroid 2.0 a été détectée sur votre apparail.<br /><i>PDroid Manager</i> requiert que la version 1.48 ou plus de OpenPDroid or PDroid 2.0 soit inclue dans votre ROM.</h2>]]></string>
 	
 	<string name="pdroid_error_not_installed"><![CDATA[
-<h2>Le coeur de PDroid n'a pas été détecté sur votre appareil.<br /><i>PDroid Manager</i> requiert que la version 1.48 ou plus de OpenPDroid or PDroid 2.0 soit inclue dans votre ROM.</h2>
+<h2>Le coeur de PDroid n\'a pas été détecté sur votre appareil.<br /><i>PDroid Manager</i> requiert que la version 1.48 ou plus de OpenPDroid or PDroid 2.0 soit inclue dans votre ROM.</h2>
 ]]></string>
 
 	<string name="pdroid_error_permission"><![CDATA[
 <h4>Bienvenue à <i>PDroid Manager</i>, gestionnaire de OpenPDroid et de PDroid 2.0</h4>
 <p>Un problème a été détecté qui empêche PDroid Manager de fonctionner.</p> 
-<h2>PDroid Manager et l'appli PDroid 2.0 de CollegeDev ne peuvent être installés sur le même appareil sans effectuer des opérations supplémentaires</h2>
-<p>A cause de la façon dont les permission Android sont utilisées par PDroid, les applis PDroid Manager et PDroid 2.0 App de CollegeDev ne peuvent être installées en même temps et fonctionner correctement. Ceci peut être corrigé en re-signant les deux applis avec une nouvelle clé. Vous trouverez des instructions dans le fil de discussion sur le forum XDA-developers.</p><p><b>NB:</b> la désinstallation de l'appli PDroid 2.0 App de CollegeDev <i>ne supprimera pas</i> votre configuration PDroid: vous pouvez le désinstaller, puis installer PDroid Manager et votre configuration sera intact.</p>
-<p><i>Pour résoudre ce problème vous devrez désinstaller l'appli PDroid 2.0 App de CollegeDev, et ensuite <b>désinstaller et réinstaller PDroid Manager</b>.</i></p>
+<h2>PDroid Manager et l\'appli PDroid 2.0 de CollegeDev ne peuvent être installés sur le même appareil sans effectuer des opérations supplémentaires</h2>
+<p>A cause de la façon dont les permission Android sont utilisées par PDroid, les applis PDroid Manager et PDroid 2.0 App de CollegeDev ne peuvent être installées en même temps et fonctionner correctement. Ceci peut être corrigé en re-signant les deux applis avec une nouvelle clé. Vous trouverez des instructions dans le fil de discussion sur le forum XDA-developers.</p><p><b>NB:</b> la désinstallation de l\'appli PDroid 2.0 App de CollegeDev <i>ne supprimera pas</i> votre configuration PDroid: vous pouvez le désinstaller, puis installer PDroid Manager et votre configuration sera intact.</p>
+<p><i>Pour résoudre ce problème vous devrez désinstaller l\'appli PDroid 2.0 App de CollegeDev, et ensuite <b>désinstaller et réinstaller PDroid Manager</b>.</i></p>
 ]]></string>
 
 	<string name="pdroid_get_support">Ouvrir le fil de discussion de PDroid Manager sur XDA developers</string>
-	
-	<string name="application_list_app_spacer" translatable="false">&#160;|&#160;</string>
-	<string name="detail_custom_value_spacer" translatable="false">&#160;|&#160;</string>
-	<string name="backup_filename_extension" translatable="false">.xml</string>
+
 </resources>

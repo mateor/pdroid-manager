@@ -43,7 +43,7 @@
 	<string name="SETTING_LABEL_ALLOW_READ_OUTGOING_CALL_NUMBER">Uitgaand Telefoonnummer</string>
 	<string name="SETTING_HELP_ALLOW_READ_OUTGOING_CALL_NUMBER">Beheerd de toegang tot de waarde van een uitgaand telefoonnummer.</string>
 	<string name="SETTING_LABEL_ALLOW_INITIATE_PHONE_CALL">Telefoongesprek Initieren</string>
-	<string name="SETTING_HELP_ALLOW_INITIATE_PHONE_CALL">Beheerd de mogelijkheid van een applicatie om een telefoonnummer te kiezen via de 'Dialer user interface'. Deze 'Dialer user interface' laat de gebruiker de keuze om uiteindelijk daadwerkelijk het nummer te kiezen. Het activeren van deze instelling geeft de applicatie niet de mogelijkheid om noodnummers te bellen (bijvoorbeeld 911 of 112).</string>
+	<string name="SETTING_HELP_ALLOW_INITIATE_PHONE_CALL">Beheerd de mogelijkheid van een applicatie om een telefoonnummer te kiezen via de \'Dialer user interface\'. Deze \'Dialer user interface\' laat de gebruiker de keuze om uiteindelijk daadwerkelijk het nummer te kiezen. Het activeren van deze instelling geeft de applicatie niet de mogelijkheid om noodnummers te bellen (bijvoorbeeld 911 of 112).</string>
 	<string name="SETTING_LABEL_ALLOW_READ_NETWORK_LOCATION">Netwerklocatie</string>
 	<string name="SETTING_HELP_ALLOW_READ_NETWORK_LOCATION">Beheerd de waarde van de locatie van het apparaat aangegeven door Wi-Fi en/of Telefoonnetwerk.</string>
 	<string name="SETTING_LABEL_ALLOW_READ_GPS_LOCATION">GPS-Locatie</string>
