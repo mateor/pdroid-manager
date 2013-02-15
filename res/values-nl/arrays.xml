@@ -29,39 +29,19 @@
 -->
 <resources>
     <string-array name="app_type_labels">
-        <item >System</item>
-        <item >User</item>
+        <item >Systeem</item>
+        <item >Gebruiker</item>
     </string-array>
     <string-array name="app_status_labels">
-        <item >Untrusted</item>
-        <item >Trusted</item>
-        <item >No settings</item>
+        <item >Onvertrouwd</item>
+        <item >Vertrouwd</item>
+        <item >Geen instellingen</item>
     </string-array>
     <!-- Note that if you change the order of these items, you also need to change the 
     values in AppListActivity to match -->
     <string-array name="app_type_selection_options">
-        <item>User</item>
-        <item>System</item>
-        <item>All</item>
-    </string-array>
-    
-    <!-- The two arrays below are tied together - the order of each needs to be the same -->
-    <string-array name="language_titles" translatable="false">
-        <item>Deutsch</item>
-        <item>English</item>
-        <item>Español</item>
-        <item>Fran&#231;ais</item>
-        <item>Magyar</item>
-        <item>Русский</item>
-        <item>Nederlands</item>
-    </string-array>
-    <string-array name="language_codes" translatable="false">
-        <item>de</item>
-        <item>en</item>
-        <item>es</item>
-        <item>fr</item>
-        <item>hu</item>
-        <item>ru</item>
-        <item>nl</item>
+        <item>Gebruiker</item>
+        <item>Systeem</item>
+        <item>Alles</item>
     </string-array>
 </resources>
