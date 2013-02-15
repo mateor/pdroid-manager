@@ -1,4 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- 
+/**
+ * Copyright (C) 2012 Simeon J. Morgan (smorgan@digitalfeed.net)
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 3 of the License, or (at your option) any later version.
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License along with
+ * this program; if not, see <http://www.gnu.org/licenses>.
+ * The software has the following requirements (GNU GPL version 3 section 7):
+ * You must retain in pdroid-manager, any modifications or derivatives of
+ * pdroid-manager, or any code or components taken from pdroid-manager the author
+ * attribution included in the files.
+ * In pdroid-manager, any modifications or derivatives of pdroid-manager, or any
+ * application utilizing code or components taken from pdroid-manager must include
+ * in any display or listing of its creators, authors, contributors or developers
+ * the names or pseudonyms included in the author attributions of pdroid-manager
+ * or pdroid-manager derived code.
+ * Modified or derivative versions of the pdroid-manager application must use an
+ * alternative name, rather than the name pdroid-manager.
+ */
+ 
+ /**
+ * @author Simeon J. Morgan <smorgan@digitalfeed.net>
+ * @translator TommieNL (https://github.com/TommieNL)
+ */
+-->
 <resources>
     <string name="access_notification_deviceID">Apparaat-ID</string>
     <string name="access_notification_line1Number">Telefoonnummer</string>
@@ -24,12 +53,12 @@
 	<string name="access_notification_camera">Camera</string>
 	<string name="access_notification_recordAudio">Geluidsopname</string>
 	<string name="access_notification_SmsSend">SMS Versturen</string>
-	<string name="access_notification_phoneCall">Telefoongesprek Initieren</string>
+	<string name="access_notification_phoneCall">Telefoongesprek beginnen</string>
 	<string name="access_notification_android_id">Android ID</string>
 	<string name="access_notification_iccAccess">ICC Toegang</string>
 	<string name="access_notification_wifiInfo">Wifi Netwerkinformatie</string>
 	<string name="access_notification_iptables">IP Tables</string>
-	<string name="access_notification_switchconnectivity">Aanpassen Mobiele Connectivieit</string>
-	<string name="access_notification_sendMms">Zend MMS</string>
-	<string name="access_notification_switchWifiState">Aanpassen Wifi Connectiviteit</string>
+	<string name="access_notification_switchconnectivity">Mobiele-verbinding maken en verbreken</string>
+	<string name="access_notification_sendMms">MMS versturen</string>
+	<string name="access_notification_switchWifiState">WiFi-verbinding maken en verbreken</string>
 </resources>

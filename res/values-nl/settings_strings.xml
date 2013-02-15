@@ -25,12 +25,13 @@
  
  /**
  * @author Simeon J. Morgan <smorgan@digitalfeed.net>
- * @author wbedard - contributed the bulk of the text for help entries 
+ * @author wbedard - contributed the bulk of the text for help entries
+ * @translator TommieNL (https://github.com/TommieNL)
  */
 -->
 <resources>
 	<string name="SETTING_LABEL_ALLOW_READ_DEVICE_ID">Apparaat-ID</string>
-	<string name="SETTING_HELP_ALLOW_READ_DEVICE_ID">Beheerd de waarde van het (unieke) Apparaat-ID. Zowel het International Mobile Equipment Identity (IMEI) voor GSM en Mobile Equipment ID (MEID) of Electronic Serial Number (ESN) voor CDMA telefoons. Het unieke Apparaat-ID is permanent voor een apparaat.</string>
+	<string name="SETTING_HELP_ALLOW_READ_DEVICE_ID">Beheer de waarde van het (unieke) Apparaat-ID. Zowel het International Mobile Equipment Identity (IMEI) voor GSM en Mobile Equipment ID (MEID) of Electronic Serial Number (ESN) voor CDMA telefoons. Het unieke Apparaat-ID is permanent voor een apparaat.</string>
 	<string name="SETTING_LABEL_ALLOW_READ_PHONE_NUMBER">Telefoonnummer</string>
 	<string name="SETTING_HELP_ALLOW_READ_PHONE_NUMBER">Staat toegang toe tot het telefoonnumer en/of voicemailnummer. Bijvoorbeeld het Mobile Station Integrated Services Digital Network (MSISDN) voor een GSM telefoon of Mobile Device Number (MDN) voor een CDMA telefoon. Dit nummer is vaak niet aanwezig of heeft een foute waarde.</string>
 	<string name="SETTING_LABEL_ALLOW_READ_SIM_SERIAL">SIM Serienummer</string>
@@ -46,7 +47,7 @@
 	<string name="SETTING_LABEL_ALLOW_READ_NETWORK_LOCATION">Netwerklocatie</string>
 	<string name="SETTING_HELP_ALLOW_READ_NETWORK_LOCATION">Beheerd de waarde van de locatie van het apparaat aangegeven door Wi-Fi en/of Telefoonnetwerk.</string>
 	<string name="SETTING_LABEL_ALLOW_READ_GPS_LOCATION">GPS-Locatie</string>
-	<string name="SETTING_HELP_ALLOW_READ_GPS_LOCATION">Beheerd de waarde van de locatie van het apparaat aangegeven door de GPS sensor.</string>
+	<string name="SETTING_HELP_ALLOW_READ_GPS_LOCATION">Beheer de waarde van de locatie van het apparaat aangegeven door de GPS sensor.</string>
 	<string name="SETTING_LABEL_ALLOW_USE_ACCOUNT_CREDENTIALS">Account Verificatiegegevens</string>
 	<string name="SETTING_HELP_ALLOW_USE_ACCOUNT_CREDENTIALS">Beheerd of een applicatie een applicatietoken kan gebruikken geassocieerd met een service (bijvoorbeeld de Facebook applicatie die je Facebook accountgegevens gebruikt)</string>
 	<string name="SETTING_LABEL_ALLOW_READ_ACCOUNTS_LIST">Lijst van Gebruikersaccounts</string>
