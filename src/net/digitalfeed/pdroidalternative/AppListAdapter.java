@@ -32,6 +32,7 @@ import java.util.List;
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -96,17 +97,22 @@ public class AppListAdapter extends ArrayAdapter<Application>{
 		holder.appLabel.setText(app.getLabel());
 		if (app.getIsSystemApp()) {
 			holder.appType.setText(appTypeLabels[APP_TYPE_LABEL_SYSTEM]);
+			holder.appType.setTextColor(Color.RED);
 		} else {
 			holder.appType.setText(appTypeLabels[APP_TYPE_LABEL_USER]);
+			holder.appType.setTextColor(Color.GREEN);
 		}
 		if (app.getHasSettings()) {
 			if (app.getIsUntrusted()) {
 				holder.appStatus.setText(appStatusLabels[APP_STATUS_LABEL_UNTRUSTED]);
+				holder.appStatus.setTextColor(Color.RED);
 			} else {
 				holder.appStatus.setText(appStatusLabels[APP_STATUS_LABEL_TRUSTED]);
+				holder.appStatus.setTextColor(Color.GREEN);
 			}
 		} else {
 			holder.appStatus.setText(appStatusLabels[APP_STATUS_LABEL_NOSETTINGS]);
+			holder.appStatus.setTextColor(Color.YELLOW);
 		}
 		if (app.getHasInternet()) {
 			holder.hasNetIcon.setVisibility(View.VISIBLE);
