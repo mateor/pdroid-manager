@@ -25,6 +25,7 @@
  
  /**
  * @author Simeon J. Morgan <smorgan@digitalfeed.net>
+ * @translator xiaoxia <i@xiaoxia.de>
  */
 -->
 <resources>
@@ -33,18 +34,18 @@
 	<string name="access_notification_locationGPS">GPS 位置</string>
 	<string name="access_notification_locationNetwork">網路位置</string>
 	<string name="access_notification_networkInfoCurrent">網路信息</string>
-	<string name="access_notification_networkInfoSIM">移動網路信息</string>
+	<string name="access_notification_networkInfoSIM">行動網路信息</string>
 	<string name="access_notification_simSerial">SIM 卡序號</string>
 	<string name="access_notification_subscriberID">用戶 ID</string>
 	<string name="access_notification_accountsList">帳戶列表</string>
 	<string name="access_notification_authTokens">帳戶憑證</string>
 	<string name="access_notification_outgoingCall">撥出電話號碼</string>
 	<string name="access_notification_incomingCall">撥入電話號碼</string>
-	<string name="access_notification_contacts">聯繫人</string>
+	<string name="access_notification_contacts">聯絡人</string>
 	<string name="access_notification_calendar">日曆</string>
-	<string name="access_notification_mms">讀取彩信</string>
+	<string name="access_notification_mms">讀取 MMS</string>
 	<string name="access_notification_sms">讀取簡訊</string>
-	<string name="access_notification_mmsSms">讀取彩信與簡訊</string>
+	<string name="access_notification_mmsSms">讀取 MMS 與簡訊</string>
 	<string name="access_notification_callLog">通話記錄</string>
 	<string name="access_notification_bookmarks">瀏覽歷史與書籤</string>
 	<string name="access_notification_systemLogs">系統日誌</string>
@@ -57,7 +58,7 @@
 	<string name="access_notification_iccAccess">ICC 訪問</string>
 	<string name="access_notification_wifiInfo">Wifi 信息</string>
 	<string name="access_notification_iptables">IPTables</string>
-	<string name="access_notification_switchconnectivity">更改移動網路連接</string>
-	<string name="access_notification_sendMms">發送彩信</string>
+	<string name="access_notification_switchconnectivity">更改行動網路連接</string>
+	<string name="access_notification_sendMms">發送 MMS</string>
 	<string name="access_notification_switchWifiState">更改 Wifi 連接</string>
 </resources>

@@ -26,6 +26,7 @@
  /**
  * @author Simeon J. Morgan <smorgan@digitalfeed.net>
  * @author wbedard - contributed the bulk of the text for help entries 
+ * @translator xiaoxia <i@xiaoxia.de>
  */
 -->
 <resources>
@@ -90,7 +91,7 @@
 	<string name="SETTING_LABEL_ALLOW_ACCESS_IP_TABLES">IPTables</string>
 	<string name="SETTING_HELP_ALLOW_ACCESS_IP_TABLES">控制应用程序是否能执行包含 iptables 命令的脚本。</string>
 	<string name="SETTING_LABEL_ALLOW_READ_ICC_ID">ICC 访问</string>
-	<string name="SETTING_HELP_ALLOW_READ_ICC_ID">控制应用程序是否能访问 SIM 卡中的短信息和联系人。</string>
+	<string name="SETTING_HELP_ALLOW_READ_ICC_ID">控制应用程序是否能访问 SIM 卡中的短信和联系人。</string>
 	<string name="SETTING_LABEL_FAKE_ALWAYS_ONLINE">强制在线</string>
 	<string name="SETTING_HELP_FAKE_ALWAYS_ONLINE">允许时，Android 将总是报告应用程序设备已连接网络。</string>
 	

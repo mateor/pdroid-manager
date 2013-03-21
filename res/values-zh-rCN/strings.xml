@@ -25,6 +25,7 @@
  
  /**
  * @author Simeon J. Morgan <smorgan@digitalfeed.net>
+ * @translator xiaoxia <i@xiaoxia.de>
  */
 -->
 <resources>
@@ -36,7 +37,7 @@
 	<string name="permission_label_readprivacysettings">读取 PDroid 规则</string>
 	<string name="permission_description_readprivacysettings">允许读取 PDroid 相关程序规则。</string>
 	<string name="permission_label_manageprivacycontrollers">设置 PDroid Manager 应用程序</string>
-	<string name="permission_description_manageprivacycontrollers">允许其它应用程序修改 PDroid 设置。</string>
+	<string name="permission_description_manageprivacycontrollers">允许其它应用程序修改 PDroid 规则。</string>
 
 	<!-- Application list screen -->
 		<!-- action bar options  -->
@@ -86,8 +87,8 @@
 		<string name="preferences_about_summary">应用程序信息和许可</string>
 		<string name="preferences_credits_title">参与制作</string>
 		<string name="preferences_credits_summary">作者与贡献者</string>
-		<string name="preferences_openxdathread_title">在 XDA 上查看</string>
-		<string name="preferences_openxdathread_summary">将在浏览器中打开 xda-developer.com 的相关帖子</string>
+		<string name="preferences_openxdathread_title">在 XDA 开发者论坛上查看</string>
+		<string name="preferences_openxdathread_summary">将在浏览器中打开 XDA 开发者论坛的相关帖子</string>
 
 		<string name="preferences_heading_language">语言</string>
 		<string name="preferences_switchlanguage_title">更改语言设置</string>
@@ -102,8 +103,8 @@
 		<string name="preferences_restore_summary">从备份文件中恢复设置</string>
 
 		<string name="preferences_heading_global_operations">全局操作</string> <!-- heading for things like 'delete all settings' -->
-		<string name="preferences_global_delete_title">清空设置</string>
-		<string name="preferences_global_delete_summary">清空所有应用程序的 PDroid 设置</string>
+		<string name="preferences_global_delete_title">清空规则</string>
+		<string name="preferences_global_delete_summary">清空所有应用程序的 PDroid 规则</string>
 	<!-- end entries in the preferences text list -->
 
 		<string name="preferences_apprestart_title">重新启动应用程序</string>
@@ -304,7 +305,7 @@ XDA-developers: <a href="http://forum.xda-developers.com/member.php?u=3602796">F
 <a href="http://forum.xda-developers.com/showthread.php?t=1357056">PDroid thread at xda-developers.com</a></p>
 
 <h2>请注意：</h2>
-<p>本应用程序<i>不是</i> Syvat、Pastime 和 CollegeDev 的作品，
+<p>本应用程序<i>不是</i> Syvat、Pastime 或 CollegeDev 的作品，
 请<i>不要</i>在他们的帖子中寻求关于 PDroid Manager 的帮助。</p>
 ]]></string>
 
@@ -316,7 +317,7 @@ XDA-developers: <a href="http://forum.xda-developers.com/member.php?u=3602796">F
 <b>首先请检查此问题是否为已知问题：<a href="https://github.com/wsot/pdroid-manager/issues">查看我的 Github 问题列表</a>。</b>如果问题已经被记录，但您有另外的建议和意见，请将您的想法贴到相关问题上。或者，您也可以提交新问题，但请清晰的给出已存在问题的链接。
 <h4>如果您发现了新问题：</h4>
 您可以打开 <a href="https://github.com/wsot/pdroid-manager/issues">我的 Github 问题列表</a>，并提供相关的日志记录: 查看 <a href="http://forum.xda-developers.com/showthread.php?t=1726238">how to get a logcat</a>。
-您也可以贴在 <a href="http://forum.xda-developers.com/showthread.php?p=34190204">XDA</a>，并提供相关的日志记录。
+您也可以贴在 <a href="http://forum.xda-developers.com/showthread.php?p=34190204">XDA 开发者论坛</a>，并提供相关的日志记录。
 
 <h3>Copyright statement</h3>
 <p>Copyright (C) 2012 Simeon J. Morgan (smorgan@digitalfeed.net)
@@ -361,7 +362,7 @@ alternative name, rather than the name pdroid-manager.</p>
 	<string name="pdroid_error_permission"><![CDATA[
 <h4>欢迎使用 <i>PDroid Manager</i>，一个基于 OpenPDroid 或 PDroid 2.0 核心的隐私权限管理软件</h4>
 <p>在 PDroid Manager 操作过程中检测到错误。</p> 
-<h2>PDroid Manager 与 CollegeDev 的 PDroid 2.0 应用程序无法同时存在。</h2>
+<h2>PDroid Manager 与 CollegeDev 的 PDroid 2.0 应用程序无法共存。</h2>
 <p>因为 Android 的权限管理均被 PDroid 调用, 所以 PDroid Manager 与 CollegeDev 的 PDroid 2.0 应用程序不能同时使用。 此问题可以通过对安装包重签名实现，具体方法见 XDA 开发者论坛的相关帖子。</p><p><b>注意：</b>卸载 CollegeDev 的 PDroid 2.0 应用程序<i>不会</i>删除 PDroid 设置，您可以卸载 PDroid 2.0 并安装 PDroid Manager，您的设置会保留。</p>
 <p><i>为解决此问题，您可以卸载 PDroid 2.0，<b>然后卸载并重新安装 PDroid Manager</b>。</i></p>
 ]]></string>
