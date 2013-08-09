@@ -44,22 +44,4 @@
         <item>Sistema</item>
         <item>Todo</item>
     </string-array>
-    
-    <!-- The two arrays below are tied together - the order of each needs to be the same -->
-    <string-array name="language_titles" translatable="false">
-        <item>English</item>
-        <item>Fran&#231;ais</item>
-        <item>Deutsch</item>
-        <item>Русский</item>
-        <item>Magyar</item>
-		<item>Español</item>
-    </string-array>
-    <string-array name="language_codes" translatable="false">
-        <item>en</item>
-        <item>fr</item>
-        <item>de</item>
-        <item>ru</item>
-        <item>hu</item>
-		<item>es</item>
-    </string-array>
 </resources>

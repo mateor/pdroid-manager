@@ -91,8 +91,8 @@
 		<string name="restore_dialog_title">Einstellungen wiederherstellen</string> <!-- Title for the 'restore backup' dialog box -->
 		<!-- restoring backups error messages -->
 		<string name="restore_no_backups">Keine Sicherungen zum Wiederherstellen verf&#252;gbar</string>
-		<string name="restore_invalid_signature">Die digitale Signatur des ausgew&#228;hlten Backups passt nicht zum Backup. M&#246;glicherweise wurde es von einem anderen Programm ver&#228;ndert. Die Neuinstallation von PDroid Manager k&#246;nnte diese Meldung auch hervorrufen.</string>
-		<string name="restore_missing_invalid">F&#252;r die ausgew&#228;hlte Sicherung wurde keine digitale Signatur gefunden. Daher ist es nicht m&#246;glich zu garantieren, dass die Sicherung seit ihrer Erstellung nicht von einem externen Programm modifiziert wurde.</string>
+		<string name="restore_signature_invalid">Die digitale Signatur des ausgew&#228;hlten Backups passt nicht zum Backup. M&#246;glicherweise wurde es von einem anderen Programm ver&#228;ndert. Die Neuinstallation von PDroid Manager k&#246;nnte diese Meldung auch hervorrufen.</string>
+		<string name="restore_signature_missing">F&#252;r die ausgew&#228;hlte Sicherung wurde keine digitale Signatur gefunden. Daher ist es nicht m&#246;glich zu garantieren, dass die Sicherung seit ihrer Erstellung nicht von einem externen Programm modifiziert wurde.</string>
 		<string name="restore_dialog_continue_prompt">Fortfahren mit der Wiederherstellung?</string> <!-- Prompt displayed after error message in restore from backup dialog box -->
 
 		<!-- restoring from backup messages -->
