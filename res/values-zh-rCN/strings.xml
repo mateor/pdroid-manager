@@ -1,0 +1,372 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/**
+ * Copyright (C) 2012 Simeon J. Morgan (smorgan@digitalfeed.net)
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 3 of the License, or (at your option) any later version.
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License along with
+ * this program; if not, see <http://www.gnu.org/licenses>.
+ * The software has the following requirements (GNU GPL version 3 section 7):
+ * You must retain in pdroid-manager, any modifications or derivatives of
+ * pdroid-manager, or any code or components taken from pdroid-manager the author
+ * attribution included in the files.
+ * In pdroid-manager, any modifications or derivatives of pdroid-manager, or any
+ * application utilizing code or components taken from pdroid-manager must include
+ * in any display or listing of its creators, authors, contributors or developers
+ * the names or pseudonyms included in the author attributions of pdroid-manager
+ * or pdroid-manager derived code.
+ * Modified or derivative versions of the pdroid-manager application must use an
+ * alternative name, rather than the name pdroid-manager.
+ */
+ 
+ /**
+ * @author Simeon J. Morgan <smorgan@digitalfeed.net>
+ * @translator xiaoxia <i@xiaoxia.de>
+ */
+-->
+<resources>
+	<string name="app_name">PDroid Manager</string> <!-- the app name as it appears in the launcher -->
+
+	<!-- Names and descriptions of the permissions defined by this app for the Android operating system -->
+	<string name="permission_label_writeprivacysettings">更改 PDroid 规则</string>
+	<string name="permission_description_writeprivacysettings">允许修改 PDroid 相关程序规则。</string>
+	<string name="permission_label_readprivacysettings">读取 PDroid 规则</string>
+	<string name="permission_description_readprivacysettings">允许读取 PDroid 相关程序规则。</string>
+	<string name="permission_label_manageprivacycontrollers">设置 PDroid Manager 应用程序</string>
+	<string name="permission_description_manageprivacycontrollers">允许其它应用程序修改 PDroid 规则。</string>
+
+	<!-- Application list screen -->
+		<!-- action bar options  -->
+		<string name="app_list_menu_search">搜索</string> <!--  the caption for a 'search' option, which will appear in the application list action bar -->
+		<string name="app_list_menu_refresh">重新获取应用程序列表</string> <!-- action bar button to reload the list of apps -->
+		<string name="app_list_menu_preferences">首选项</string> <!-- action bar button to open the preferences screen -->
+		<string name="app_list_menu_filter">过滤</string> <!-- action bar button to open the filtering interface -->
+		<string name="title_activity_main">PDroid Manager</string> <!-- title in the action bar of the app list screen: not visible? -->
+
+		<string name="app_list_app_icon_text">应用程序图标</string>
+		<string name="app_list_has_internet_indicator">网络连接权限指示</string>
+
+		<string name="applist_setting_filter_spinner_all_option_title">全部</string>
+
+		<string name="applist_dialogtext_updating_settings">正在更新规则&#8230;</string>
+		<string name="applist_dialogtext_deleting_settings">正在删除规则&#8230;</string>
+		<string name="applist_dialogtext_generateapplist">正在获取应用程序列表&#8230;</string>
+
+		<string name="applist_popupmenu_set_untrusted_values">全部拒绝</string>
+		<string name="applist_popupmenu_set_trusted_values">全部允许</string>
+		<string name="applist_popupmenu_set_default_values">重置为默认</string>
+		<string name="applist_popupmenu_delete_settings">删除规则</string>
+		<string name="applist_popupmenu_customise_settings">自定义规则</string>
+		
+		<string name="applist_actionbar_selectall">全选</string>
+		<string name="applist_actionbar_deselectall">取消全选</string>
+
+		<!-- Heading for the actionbar when in multiple-select mode (i.e. selecting apps for a batch change) -->
+		<string name="applist_actionbar_batchselect_none">选择应用程序</string> <!-- Shown in the header when no apps selected -->
+		<string name="applist_actionbar_batchselect_singular">1 个应用程序已选择</string> <!-- Shown in header when single app selected -->
+		<string name="applist_actionbar_batchselect_plural">个应用程序已选择</string> <!-- Shown in header when >1 app selected (i.e. shows as "5 apps selected") -->
+
+		<!-- Text for the 'filtering' options -->
+		<string name="applist_filter_summary_prefix">过滤&#160;</string> <!-- prefix before the brief 'filter helper' to let you know what filters you have selected -->
+		<string name="applist_filter_apptype_label">应用程序类型：</string> <!-- label for the 'app type' filter spinner -->
+		<string name="applist_filter_settinggroup_label">相关权限：</string> <!-- label for the 'setting group' filter spinner. I can't think of better text for this, even though what I have put in is bad -->
+		<string name="applist_filter_status_label">状态：</string> <!-- label for the 'status' filter spinner, which will contain 'No settings', 'Trusted' and 'Untrusted' -->
+		
+		<string name="applist_filter_clearfilters">取消过滤</string> <!-- alternate text for the 'clear filters' button -->
+	<!-- end Application list screen -->
+
+	<!-- start Preferences list screen -->
+		<!-- entries in the preferences text list -->
+		<string name="title_activity_preferences_list">首选项</string>
+		<string name="preferences_heading_about">关于</string>
+		<string name="preferences_about_title">关于</string>
+		<string name="preferences_about_summary">应用程序信息和许可</string>
+		<string name="preferences_credits_title">参与制作</string>
+		<string name="preferences_credits_summary">作者与贡献者</string>
+		<string name="preferences_openxdathread_title">在 XDA 开发者论坛上查看</string>
+		<string name="preferences_openxdathread_summary">将在浏览器中打开 XDA 开发者论坛的相关帖子</string>
+
+		<string name="preferences_heading_language">语言</string>
+		<string name="preferences_switchlanguage_title">更改语言设置</string>
+		<string name="preferences_switchlanguage_summary">设置您使用的语言</string>
+		<string name="preferences_usephonelocale_title">取消语言设置</string>
+		<string name="preferences_usephonelocale_summary">使用设备的默认区域设置决定语言</string>
+
+		<string name="preferences_heading_backuprestore">备份与恢复</string>
+		<string name="preferences_backup_title">备份</string>
+		<string name="preferences_backup_summary">创建当前设置的备份文件</string>
+		<string name="preferences_restore_title">恢复</string>
+		<string name="preferences_restore_summary">从备份文件中恢复设置</string>
+
+		<string name="preferences_heading_global_operations">全局操作</string> <!-- heading for things like 'delete all settings' -->
+		<string name="preferences_global_delete_title">清空规则</string>
+		<string name="preferences_global_delete_summary">清空所有应用程序的 PDroid 规则</string>
+	<!-- end entries in the preferences text list -->
+
+		<string name="preferences_apprestart_title">重新启动应用程序</string>
+		<string name="preferences_apprestart_message">PDroid Manager 将重新启动以更新设置</string>
+
+		<string name="preferences_chooselangage_alerttitle">选择语言设置</string> <!-- text for language selection dialog box (when you select 'change language' option)  -->
+
+		<string name="restore_dialog_title">恢复设置</string><!-- Title for the 'restore backup' dialog box -->
+		<!-- restoring backups error messages -->
+		<string name="restore_no_backups">没有可恢复的备份文件</string>
+		<string name="restore_signature_invalid">当前选择的备份文件签名与备份不符。备份文件可能已被其它程序修改，在创建备份文件之后删除并重新安装 PDroid Manager也有可能会造成此问题。</string>
+		<string name="restore_signature_missing">当前选择的备份文件没有签名，无法判断备份文件是否已被其它程序修改。</string>
+		<string name="restore_dialog_continue_prompt">仍然使用此备份文件恢复设置吗？</string> <!-- Prompt displayed after error message in restore from backup dialog box -->
+
+		<!-- restoring from backup messages -->
+		<string name="restore_failed_dialog_title">恢复设置失败</string> <!-- title of 'backup failed' notification dialog box -->
+		<string name="restore_invalid_backup">当前选择的文件丢失、损毁或者不是有效的备份文件。</string>
+		<string name="restore_complete_success">恢复设置完成</string> <!-- This message is displayed in a 'toast' rather than a dialog box -->
+		<string name="restore_complete_fail_invalid">恢复设置失败：当前选择的文件不是有效的备份文件。</string>
+		<string name="restore_complete_fail_reading">恢复设置失败：当前选择的文件无法读取。</string>
+		<string name="restore_complete_fail_other">恢复设置失败：发生未知错误。</string>
+
+		<!-- content of the progress dialog box while restoring from backup -->
+		<string name="restore_progress_dialog_title">从备份文件中恢复设置</string>
+		<string name="restore_progress_dialog_message">正在恢复设置，请稍候&#8230;</string>
+
+		<!-- general error for when the storage is not working - i.e. no SD card, etc -->
+		<string name="storage_error_body">无法访问外置存储：如果您的设备使用 SD 卡，请确保完全插入且被正确格式化。</string>
+
+		<!-- dialog for preparing for backup: entering filename -->
+		<string name="backup_dialog_title">备份设置</string> <!-- dialog title -->
+		<string name="backup_path_text">备份文件位置：</string> <!-- text shown before destination directory -->
+		<string name="backup_filename">备份文件名：</string> <!-- shown beside filename box -->
+		<string name="backup_filename_hint">文件名</string> <!-- Hint text in the 'filename' field -->
+
+		<!-- warning and error messages for creating backup -->
+		<string name="backup_message_file_exists">指定备份文件名已存在，新备份文件将替换当前文件。</string>
+		<string name="backup_dialog_continue_prompt">仍然使用此备份文件名备份设置吗？</string> <!-- prompt shown after warning -->
+		<string name="backup_failed_dialog_title">备份设置失败</string> <!-- title for dialog shown if the backup fails -->
+		<string name="backup_complete_success">备份设置完成</string>
+		<string name="backup_complete_fail_signing">备份设置失败：备份文件签名失败。</string>
+		<string name="backup_complete_fail_writing">备份设置失败：备份文件不可写。</string>
+		<string name="backup_complete_fail_other">备份设置失败：无法生成备份文件。</string>
+		
+		<!-- confirmation and progress dialog for deleting all settings -->
+		<string name="global_delete_confirm_title">清空规则</string>
+		<string name="global_delete_confirm_message">您确定要清空所有应用程序的 PDroid 规则？（备份文件不会被删除）</string>
+		<string name="global_delete_progress_dialog_title">正在清空&#8230;</string>
+		<string name="global_delete_progress_dialog_message">正在清空全部 PDroid 规则&#8230;</string>
+		<string name="global_delete_complete_message">全部 PDroid 规则已被清空</string>
+	<!-- end Preferences list screen -->
+	
+	<!-- application details (i.e. settings) screen;
+	this includes the screen to choose settings for batch updates
+	and will include the screen to choose settings for a 'profile' -->
+		<string name="title_activity_app_detail">应用程序</string>
+		<string name="detail_dialog_saving_title">请稍候</string> <!-- title for dialog box while loading or saving -->
+		<string name="detail_dialog_saving_message">正在保存规则&#8230;</string> <!-- content for dialog box while saving -->
+		<string name="detail_dialog_loading_message">正在读取规则&#8230;</string> <!-- content for dialog box while loading -->
+
+		<string name="detail_actionbar_heading_batch">应用程序规则</string> <!-- the action bar heading displayed when in 'batch' mode -->
+		<string name="detail_actionbar_savebutton_title">保存规则</string>
+		<string name="detail_actionbar_close_title">不保存规则退出</string>
+		<string name="detail_actionbar_delete_title">删除规则</string>
+		
+		<string name="detail_custom_input_OKtext">确定</string>
+
+		<string name="detail_notifyonaccess_text">使用权限时通知</string>
+		<string name="detail_logonaccess_text">记录日志</string>
+		<string name="detail_customvalue_pretext">自定义：</string>
+
+		<string name="detail_setting_option_nochange_contentdescription">无改变</string>
+		<string name="detail_setting_option_allow_contentdescription">允许</string>
+		<string name="detail_setting_option_deny_contentdescription">拒绝</string>
+		<string name="detail_setting_option_random_contentdescription">随机</string>
+		<string name="detail_setting_option_custom_contentdescription">自定义</string>
+		<string name="detail_setting_option_yes_contentdescription">是</string>
+		<string name="detail_setting_option_no_contentdescription">否</string>
+	<!-- end application details screen -->
+
+	<string name="help_dialog_OKtext">确定</string>
+	<string name="button_help_text">帮助</string>
+
+	<!-- general-purpose text for buttons which can be shown on dialog boxes -->
+		<string name="alert_dialog_ok">确定</string>
+		<string name="alert_dialog_yes">是</string>
+		<string name="alert_dialog_no">否</string>
+		<string name="alert_dialog_continue">继续</string>
+		<string name="alert_dialog_cancel">取消</string>
+		<string name="alert_dialog_close">关闭</string>
+
+	<!-- text for the 'access notifications' displayed on-screen -->
+		<string name="notification_toast_text1">访问</string>
+		<string name="notification_toast_text2">为</string>
+		<string name="notification_toast_image_content_description">事件类型图标指示</string> <!-- text alternative for the notification type for accessibility  -->
+		<string name="notification_toast_allowed_text">允许</string>
+		<string name="notification_toast_denied_text">拒绝</string>
+		<string name="notification_toast_random_text">随机</string>
+		<string name="notification_toast_custom_text">自定义</string>
+
+	<!-- Text for notification used in the notification bar (top of the screen)
+	when a new app in installed, or one is updated -->
+		<string name="notification_newinstall_title"> 已安装</string>
+		<string name="notification_newinstall_text">点击设置 PDroid 规则</string>
+		<string name="notification_update_title"> 已更改权限</string>
+		<string name="notification_update_text">点击设置 PDroid 规则</string>
+
+	<!-- Not currently used: essentially replaced by detail_setting_option_*_contentdescription -->
+		<string name="setting_option_allow">允许</string>
+		<string name="setting_option_random">随机</string>
+		<string name="setting_option_custom">自定义</string>
+		<string name="setting_option_deny">拒绝</string>
+		
+	<!-- FUTURE FEATURE STRINGS -->
+	<!-- These strings are included for intended future use, to
+	allow translators to get ahead rather than having to wait for
+	developer(s) to add the actual feature to complete the translations.
+	These relate to specifically planned features. However, not all strings
+	may be used, and other strings may bocem necessary which are not in this section -->
+	
+		<!-- profile features: profiles allow named sets of 'settings' to be created, and then
+		applied to applications as pre-prepared groups of settings -->
+		<!-- profile list screen -->
+			<string name="profile_list_actionbar_title">配置</string> <!-- title for the profiles screen in the action bar -->		
+			<string name="profile_list_actionbar_add">新建配置</string> <!-- action bar button to create a new profile -->
+			
+			<!-- action bar for when one or more profiles are selected -->
+			<string name="profile_list_actionbar_batchselect_none">选择配置</string> <!-- Shown in the header when no profiles selected -->
+			<string name="profile_list_actionbar_batchselect_singular">1 个配置已选择</string> <!-- Shown in header when single profile selected -->
+			<string name="profile_list_actionbar_batchselect_plural">个配置已选择</string> <!-- Shown in header when >1 profiles selected (i.e. shows as "5 profiles selected") -->		
+			<string name="profile_list_actionbar_delete">删除配置</string> <!-- button to delete the selected profiles -->
+			<string name="profile_list_actionbar_duplicate">复制配置</string> <!-- button to duplicate the selected profiles, with a new name ending in 'copy' (or equivalent) -->
+	
+			<!-- dialog boxes for the profile list screen -->
+			<string name="profile_list_delete_confirm_title">删除配置</string> <!-- title for confirmation box when deleting one or more profiles -->
+			<string name="profile_list_delete_confirm_message">您确定要删除已选中配置吗？</string> <!-- body for confirmation box when deleting one or more profiles -->
+			<string name="profile_list_duplicate_confirm_title">复制配置</string> <!-- body for confirmation box when deleting one or more profiles -->
+			<string name="profile_list_duplicate_confirm_message">您确定要复制已选中配置吗？</string> <!-- body for confirmation box when deleting one or more profiles -->
+
+			<string name="profile_list_duplicate_profile_postfix">复制</string> <!-- Text added to the end of the name of a profile when it is duplicated -->
+
+		<!-- stock profiles: these are the names for the 'default' profiles which are automatically created and can not be modified -->
+			<string name="profiles_inbuilt_trusted">已信任</string> <!-- a pre-generated profile made up of all the 'trusted' settings  -->
+			<string name="profiles_inbuilt_untrusted">不信任</string> <!-- a pre-generated profile made up of all the 'trusted' settings  -->
+	
+		<!-- for the other parts of the app -->
+			<!-- for app list: action bar button when doing batch selection -->
+			<string name="applist_actionbar_apply_profile">使用配置</string> <!-- button to apply a profile to the selected apps -->
+			<string name="applist_select_profile_dialog_title">使用配置</string> <!-- title of dialog to select the profile to apply -->
+			<string name="applist_select_profile_dialog_message">选择已选中应用程序将要使用的配置</string> <!-- Text above a spinner listing the available profiles to apply -->
+
+			<!-- for preferences list: selecting a 'default' profile -->
+			<string name="preferences_heading_defaults">默认配置</string>
+			<string name="preferences_default_profile_title">设为默认配置</string>
+			<string name="preferences_default_profile_summary">新安装应用程序将要使用的默认配置</string>
+			<string name="preferences_default_profile_summary_none">没有选中任何配置</string>
+			<string name="preferences_default_profile_summary_selected">当前配置：</string>
+
+	<!-- END FUTURE FEATURE STRINGS -->
+	
+	<!-- dialog boxes for credits/about info which can be opened from the preferences list -->
+	<string name="credits_dialog_title">PDroid Manager 制作人员</string>
+	<string name="credits_dialog_body"><![CDATA[
+<h2>PDroid Manager</h2>
+<p><i>作者：Simeon Morgan &lt;<a href="mailto:smorgan@digitalfeed.net">smorgan@digitalfeed.net</a>&gt;</i><br />
+Github: <a href="https://github.com/wsot/">wsot</a><br />
+XDA-developers: <a href="http://forum.xda-developers.com/member.php?u=3602796">FFU5y</a></p>
+
+<h3>贡献者：</h3>
+<p>
+<i>alceasan</i>  (<a href="https://github.com/alceasan">github</a>): Spanish translation<br />
+<i>appelsson</i> (<a href="https://github.com/appelsson">github</a>): Hungarian translation<br />
+<i>beasty</i> (<a href="http://forum.xda-developers.com/member.php?u=276326">xda</a>): Russian translation<br />
+<i>patrickpr</i> (<a href="https://github.com/patrickpr">github</a>): Initial french translation<br />
+<i>jpeg729</i> (<a href="https://github.com/jpeg729">github</a>): Ongoing french translation<br />
+<i>TamCore</i> (<a href="https://github.com/TamCore">github</a> | <a href="http://forum.xda-developers.com/member.php?u=2728547">xda</a>): Makefile creation, German translation<br />
+<i>TommieNL</i> (<a href="https://github.com/TommieNL">github</a>): Dutch translation
+<i>wbedard</i> (<a href="http://forum.xda-developers.com/member.php?u=2769491">xda</a>): Original English descriptions for the settings<br />
+<i>xLambChopsx</i> (<a href="https://github.com/xLambChopsx">github</a>): Code contributions and bugfixes
+<a href="http://forum.xda-developers.com/showthread.php?p=34190204">PDroid Manager thread at xda-developers.com</a></p>
+</p>
+<h2>PDroid Manager 依赖于 PDroid 的贡献者：</h2>
+<h3>OpenPDroid 核心</h3>
+<p>
+<i>FFU5y (<a href="https://github.com/wsot/">github</a> | <a href="http://forum.xda-developers.com/member.php?u=3602796">xda</a>)</i><br />
+<i>Mateor</i> (<a href="https://github.com/mateor/">github</a> | <a href="http://forum.xda-developers.com/member.php?u=4342828">xda</a>)<br />
+<i>wbedard</i> (<a href="https://github.com/wbedard/">github</a> | <a href="http://forum.xda-developers.com/member.php?u=2769491">xda</a>)<br />
+<a href="http://forum.xda-developers.com/showthread.php?t=2098156">OpenPDroid thread at xda-developers.com</a></p>
+</p>
+<h3>PDroid 2.0 核心</h3>
+<p><i>开发者：CollegeDev (<a href="http://forum.xda-developers.com/member.php?u=4711230">xda</a>)</i><br />
+<a href="http://forum.xda-developers.com/showthread.php?t=1923576">PDroid 2.0 thread at xda-developers.com</a></p>
+<h3>ICS/JB 的 PDroid 接口</h3>
+<p><i>Pastime (<a href="http://forum.xda-developers.com/member.php?u=4005966">xda</a>)</i><br /> 
+<a href="http://forum.xda-developers.com/showthread.php?t=1554960">PDroid ICS/JB thread at xda-developers.com</a></p>
+<h3>PDroid</h3>
+<p><i>开发者：Syvat (<a href="http://forum.xda-developers.com/member.php?u=2605967">xda</a>)</i><br />
+<a href="http://forum.xda-developers.com/showthread.php?t=1357056">PDroid thread at xda-developers.com</a></p>
+
+<h2>请注意：</h2>
+<p>本应用程序<i>不是</i> Syvat、Pastime 或 CollegeDev 的作品，
+请<i>不要</i>在他们的帖子中寻求关于 PDroid Manager 的帮助。</p>
+]]></string>
+
+	<string name="about_dialog_title">关于 PDroid Manager</string>
+	<string name="about_dialog_body"><![CDATA[
+<p><i>PDroid Manager</i> 是一个基于 OpenPDroid 或 PDroid 2.0 核心的隐私权限管理软件，可作为 CollegeDev 的 PDroid 2.0 应用程序的开源替代。</p>
+<h2>PDroid Manager 正在 Alpha 阶段</h2>
+<h3>如果您发现问题：</h3>
+<b>首先请检查此问题是否为已知问题：<a href="https://github.com/wsot/pdroid-manager/issues">查看我的 Github 问题列表</a>。</b>如果问题已经被记录，但您有另外的建议和意见，请将您的想法贴到相关问题上。或者，您也可以提交新问题，但请清晰的给出已存在问题的链接。
+<h4>如果您发现了新问题：</h4>
+您可以打开 <a href="https://github.com/wsot/pdroid-manager/issues">我的 Github 问题列表</a>，并提供相关的日志记录: 查看 <a href="http://forum.xda-developers.com/showthread.php?t=1726238">how to get a logcat</a>。
+您也可以贴在 <a href="http://forum.xda-developers.com/showthread.php?p=34190204">XDA 开发者论坛</a>，并提供相关的日志记录。
+
+<h3>Copyright statement</h3>
+<p>Copyright (C) 2012 Simeon J. Morgan (smorgan@digitalfeed.net)
+This program is free software; you can redistribute it and/or modify it under
+the terms of the GNU General Public License as published by the Free Software
+Foundation; either version 3 of the License, or (at your option) any later version.
+This program is distributed in the hope that it will be useful, but WITHOUT ANY
+WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+PARTICULAR PURPOSE. See the GNU General Public License for more details.
+You should have received a copy of the GNU General Public License along with
+this program; if not, see <http://www.gnu.org/licenses>.
+The software has the following requirements (GNU GPL version 3 section 7):
+You must retain in pdroid-manager, any modifications or derivatives of
+pdroid-manager, or any code or components taken from pdroid-manager the author
+attribution included in the files.
+In pdroid-manager, any modifications or derivatives of pdroid-manager, or any
+application utilizing code or components taken from pdroid-manager must include
+in any display or listing of its creators, authors, contributors or developers
+the names or pseudonyms included in the author attributions of pdroid-manager
+or pdroid-manager derived code.
+Modified or derivative versions of the pdroid-manager application must use an
+alternative name, rather than the name pdroid-manager.</p>
+]]></string>
+	
+	<!-- the following sections of text are 'errors' for when a user loads PDroid Manager,
+	but doesn't have PDroid installed, or some other problem like that.
+	pdroid_error_intro is shown in all cases, and the strings below it only when
+	the error fits the problem -->
+		<string name="pdroid_error_intro"><![CDATA[
+<h4>欢迎使用 <i>PDroid Manager</i>，一个基于 OpenPDroid 或 PDroid 2.0 核心的隐私权限管理软件</h4>
+<p>在读取 PDroid 核心时发生问题，PDroid Manager 无法继续工作。PDroid 核心提供了 PDroid Manager 依赖的 <i>隐私服务</i>，所以 PDroid Manager 无法继续工作。</p>
+]]></string>
+
+		<string name="pdroid_error_conclusion"><![CDATA[<p>应用程序<b>无法</b>自动安装与升级 PDroid 核心，您必须手动为您的 ROM 打 PDroid 2.0 补丁。请求支援：按下面的按钮打开 PDroid Manager 在 XDA 开发者论坛上的相关帖子。</p>]]></string>
+			
+		<string name="pdroid_error_wrong_version"><![CDATA[
+<h2>已在您的设备中检测到 OpenPDroid 或 PDroid 2.0 版本 s%。<br /><i>PDroid Manager</i> 要求 OpenPDroid 或 PDroid 2.0 版本 1.48 或更高版本的程序集成在设备 ROM 中。</h2>]]></string>
+	
+	<string name="pdroid_error_not_installed"><![CDATA[
+<h2>未在您的设备中检测到 PDroid 核心<br /><i>PDroid Manager</i> 要求 OpenPDroid 或 PDroid 2.0 版本 1.48 或更高版本的程序集成在设备 ROM 中。</h2>]]></string>
+
+	<string name="pdroid_error_permission"><![CDATA[
+<h4>欢迎使用 <i>PDroid Manager</i>，一个基于 OpenPDroid 或 PDroid 2.0 核心的隐私权限管理软件</h4>
+<p>在 PDroid Manager 操作过程中检测到错误。</p> 
+<h2>PDroid Manager 与 CollegeDev 的 PDroid 2.0 应用程序无法共存。</h2>
+<p>因为 Android 的权限管理均被 PDroid 调用, 所以 PDroid Manager 与 CollegeDev 的 PDroid 2.0 应用程序不能同时使用。 此问题可以通过对安装包重签名实现，具体方法见 XDA 开发者论坛的相关帖子。</p><p><b>注意：</b>卸载 CollegeDev 的 PDroid 2.0 应用程序<i>不会</i>删除 PDroid 设置，您可以卸载 PDroid 2.0 并安装 PDroid Manager，您的设置会保留。</p>
+<p><i>为解决此问题，您可以卸载 PDroid 2.0，<b>然后卸载并重新安装 PDroid Manager</b>。</i></p>
+]]></string>
+
+	<string name="pdroid_get_support">浏览 PDroid Manager 在 XDA 开发者论坛上的相关帖子。</string>
+
+</resources>

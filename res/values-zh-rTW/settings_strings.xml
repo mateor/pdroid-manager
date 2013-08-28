@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 
+/**
+ * Copyright (C) 2012 Simeon J. Morgan (smorgan@digitalfeed.net)
+ * This program is free software; you can redistribute it and/or modify it under
+ * the terms of the GNU General Public License as published by the Free Software
+ * Foundation; either version 3 of the License, or (at your option) any later version.
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ * You should have received a copy of the GNU General Public License along with
+ * this program; if not, see <http://www.gnu.org/licenses>.
+ * The software has the following requirements (GNU GPL version 3 section 7):
+ * You must retain in pdroid-manager, any modifications or derivatives of
+ * pdroid-manager, or any code or components taken from pdroid-manager the author
+ * attribution included in the files.
+ * In pdroid-manager, any modifications or derivatives of pdroid-manager, or any
+ * application utilizing code or components taken from pdroid-manager must include
+ * in any display or listing of its creators, authors, contributors or developers
+ * the names or pseudonyms included in the author attributions of pdroid-manager
+ * or pdroid-manager derived code.
+ * Modified or derivative versions of the pdroid-manager application must use an
+ * alternative name, rather than the name pdroid-manager.
+ */
+ 
+ /**
+ * @author Simeon J. Morgan <smorgan@digitalfeed.net>
+ * @author wbedard - contributed the bulk of the text for help entries 
+ * @translator xiaoxia <i@xiaoxia.de>
+ */
+-->
+<resources>
+	<string name="SETTING_LABEL_ALLOW_READ_DEVICE_ID">設備 ID</string>
+	<string name="SETTING_HELP_ALLOW_READ_DEVICE_ID">控制返回唯一的設備 ID，包括 GSM 設備的國際行動設備身份碼（IMEI）、CDMA 設備的行動設備識別碼（MEID）或電子序列號（ESN）。此設備 ID 是綁定設備且不可變更的。</string>
+	<string name="SETTING_LABEL_ALLOW_READ_PHONE_NUMBER">電話號碼</string>
+	<string name="SETTING_HELP_ALLOW_READ_PHONE_NUMBER">允許訪問本機電話號碼和語音信箱號碼，即 GSM 設備的行動用戶國際綜合業務數字網路號碼（MSISDN）或 CDMA 設備的行動設備號碼（MDN）。</string>
+	<string name="SETTING_LABEL_ALLOW_READ_SIM_SERIAL">SIM 卡序號</string>
+	<string name="SETTING_HELP_ALLOW_READ_SIM_SERIAL">控制返回唯一的 SIM 卡序號（SSN），也叫做集成電路卡識別碼（ICCID）。</string>
+	<string name="SETTING_LABEL_ALLOW_READ_SUBSCRIBER_ID">用戶 ID</string>
+	<string name="SETTING_HELP_ALLOW_READ_SUBSCRIBER_ID">控制返回唯一的用戶 ID，GSM 設備的國際行動用戶識別碼（IMSI）或 CDMA 設備的行動識別碼（MIN）。</string>
+	<string name="SETTING_LABEL_ALLOW_READ_INCOMING_CALL_NUMBER">撥入電話號碼</string>
+	<string name="SETTING_HELP_ALLOW_READ_INCOMING_CALL_NUMBER">控制對撥入電話號碼的訪問許可權。</string>
+	<string name="SETTING_LABEL_ALLOW_READ_OUTGOING_CALL_NUMBER">撥出電話號碼</string>
+	<string name="SETTING_HELP_ALLOW_READ_OUTGOING_CALL_NUMBER">控制對撥出電話號碼的訪問許可權。</string>
+	<string name="SETTING_LABEL_ALLOW_INITIATE_PHONE_CALL">撥出電話</string>
+	<string name="SETTING_HELP_ALLOW_INITIATE_PHONE_CALL">控制應用程式是否能不經過撥號介面撥打電話，允許時也會拒絕此應用程式撥打緊急號碼。</string>
+	<string name="SETTING_LABEL_ALLOW_READ_NETWORK_LOCATION">網路位置</string>
+	<string name="SETTING_HELP_ALLOW_READ_NETWORK_LOCATION">控制返回設備的 Wifi 位置和行動網路位置信息。</string>
+	<string name="SETTING_LABEL_ALLOW_READ_GPS_LOCATION">GPS 位置</string>
+	<string name="SETTING_HELP_ALLOW_READ_GPS_LOCATION">控制返回設備的 GPS 位置信息。</string>
+	<string name="SETTING_LABEL_ALLOW_USE_ACCOUNT_CREDENTIALS">帳戶憑證</string>
+	<string name="SETTING_HELP_ALLOW_USE_ACCOUNT_CREDENTIALS">控制應用程式是否能使用此程序的認證令牌認證一個服務（例子：Facebook 應用程式使用您的 Facebook 帳戶憑證。)</string>
+	<string name="SETTING_LABEL_ALLOW_READ_ACCOUNTS_LIST">帳戶列表</string>
+	<string name="SETTING_HELP_ALLOW_READ_ACCOUNTS_LIST">控制應用程式是否能訪問當前設備的帳戶列表，不僅包括 Google 帳戶，還包括其它如 Dropbox、Twitter、LinkedIn、Firefox 等應用程式。帳戶的一些私人信息保存在這裡（比如 Gmail 地址）。</string>
+	<string name="SETTING_LABEL_ALLOW_READ_CONTACTS">聯絡人</string>
+	<string name="SETTING_HELP_ALLOW_READ_CONTACTS">控制應用程式是否能訪問聯絡人。</string>
+	<string name="SETTING_LABEL_ALLOW_READ_CALL_LOG">通話記錄</string>
+	<string name="SETTING_HELP_ALLOW_READ_CALL_LOG">控制應用程式是否能訪問通話記錄。</string>
+	<string name="SETTING_LABEL_ALLOW_READ_CALENDAR">日曆</string>
+	<string name="SETTING_HELP_ALLOW_READ_CALENDAR">控制應用程式是否能訪問日曆。</string>
+	<string name="SETTING_LABEL_ALLOW_READ_SMS">讀取簡訊</string>
+	<string name="SETTING_HELP_ALLOW_READ_SMS">控制應用程式是否能讀取簡訊（保存在 SIM 卡上簡訊的除外）。</string>
+	<string name="SETTING_LABEL_ALLOW_SEND_SMS">發送簡訊</string>
+	<string name="SETTING_HELP_ALLOW_SEND_SMS">控制應用程式是否能發送簡訊。</string>
+	<string name="SETTING_LABEL_ALLOW_READ_MMS">讀取 MMS</string>
+	<string name="SETTING_HELP_ALLOW_READ_MMS">控制應用程式是否能讀取 MMS（保存在 SIM 卡上 MMS 的除外）。</string>
+	<string name="SETTING_LABEL_ALLOW_SEND_MMS">發送 MMS</string>
+	<string name="SETTING_HELP_ALLOW_SEND_MMS">控制應用程式是否能發送 MMS。</string>
+	<string name="SETTING_LABEL_ALLOW_RECORD_AUDIO">錄音</string>
+	<string name="SETTING_HELP_ALLOW_RECORD_AUDIO">控制應用程式是否能使用麥克風錄音。</string>
+	<string name="SETTING_LABEL_ALLOW_CAMERA">拍照</string>
+	<string name="SETTING_HELP_ALLOW_CAMERA">控制應用程式是否能使用攝像頭拍照。</string>
+	<string name="SETTING_LABEL_ALLOW_READ_BOOKMARKS_AND_HISTORY">瀏覽歷史與書籤</string>
+	<string name="SETTING_HELP_ALLOW_READ_BOOKMARKS_AND_HISTORY">控制應用程式是否能訪問瀏覽歷史和書籤。</string>
+	<string name="SETTING_LABEL_ALLOW_READ_SYSTEM_LOGS">系統日誌</string>
+	<string name="SETTING_HELP_ALLOW_READ_SYSTEM_LOGS">控制應用程式是否能讀取可能包含個人敏感數據的系統日誌，注意並不能禁止 ROOT 許可權程序對系統日誌的訪問。</string>
+	<string name="SETTING_LABEL_ALLOW_RECEIVE_BOOT_COMPLETED_INTENT">自動啟動</string>
+	<string name="SETTING_HELP_ALLOW_RECEIVE_BOOT_COMPLETED_INTENT">控制應用程式是否能在開機時自動啟動。</string>
+	<string name="SETTING_LABEL_ALLOW_READ_WIFI_INFO">Wifi 信息</string>
+	<string name="SETTING_HELP_ALLOW_READ_WIFI_INFO">控制應用程式是否能訪問當前已配置的 Wifi 網路列表、當前連接的 Wifi 信息、附近的 Wifi 接入點和當前的 IP 地址。</string>
+	<string name="SETTING_LABEL_ALLOW_CHANGE_WIFI_STATE">更改 Wifi 連接</string>
+	<string name="SETTING_HELP_ALLOW_CHANGE_WIFI_STATE">控制應用程式是否能打開、關閉和修改 Wifi 連接。</string>
+	<string name="SETTING_LABEL_ALLOW_CHANGE_MOBILE_DATA_STATE">更改行動網路連接</string>
+	<string name="SETTING_HELP_ALLOW_CHANGE_MOBILE_DATA_STATE">控制應用程式是否能打開或關閉數據連接。</string>
+	<string name="SETTING_LABEL_ALLOW_READ_NETWORK_INFO">網路信息</string>
+	<string name="SETTING_HELP_ALLOW_READ_NETWORK_INFO">控制應用程式是否能訪問行動網路的詳細信息，例如連接狀態、漫遊狀態、DNS 地址、IP 地址等。</string>
+	<string name="SETTING_LABEL_ALLOW_READ_ANDROID_ID">Android ID</string>
+	<string name="SETTING_HELP_ALLOW_READ_ANDROID_ID">控制應用程式是否能訪問設備的唯一 Android ID，Android ID 只在 Android 系統第一次初始化時生成，所以備份和恢復系統不會改變 Android ID。</string>
+	<string name="SETTING_LABEL_ALLOW_READ_SIM_INFO">行動網路信息</string>
+	<string name="SETTING_HELP_ALLOW_READ_SIM_INFO">控制應用程式是否能訪問國家和行動網路運營商信息，一般情況下應用程式不需要任何許可權就可以訪問這些信息。</string>
+	<string name="SETTING_LABEL_ALLOW_ACCESS_IP_TABLES">IPTables</string>
+	<string name="SETTING_HELP_ALLOW_ACCESS_IP_TABLES">控制應用程式是否能執行包含 iptables 命令的腳本。</string>
+	<string name="SETTING_LABEL_ALLOW_READ_ICC_ID">ICC 訪問</string>
+	<string name="SETTING_HELP_ALLOW_READ_ICC_ID">控制應用程式是否能訪問 SIM 卡中的簡訊和聯絡人。</string>
+	<string name="SETTING_LABEL_FAKE_ALWAYS_ONLINE">強制在線</string>
+	<string name="SETTING_HELP_FAKE_ALWAYS_ONLINE">允許時，Android 將總是報告應用程式設備已連接網路。</string>
+
+	<string name="SETTING_GROUP_LABEL_GENERAL">基本</string>
+	<string name="SETTING_GROUP_LABEL_PHONE">電話</string>
+	<string name="SETTING_GROUP_LABEL_MESSAGES">信息</string>
+	<string name="SETTING_GROUP_LABEL_PERSONAL_DATA">個人數據</string>
+	<string name="SETTING_GROUP_LABEL_MEDIA">多媒體</string>
+	<string name="SETTING_GROUP_LABEL_NETWORK">網路</string>
+	<string name="SETTING_GROUP_LABEL_LOCATION">位置</string>
+</resources>
