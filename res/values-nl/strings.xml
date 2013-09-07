@@ -248,7 +248,7 @@
 
 		<!-- stock profiles: these are the names for the 'default' profiles which are automatically created and can not be modified -->
 			<string name="profiles_inbuilt_trusted">Vertrouwd</string> <!-- a pre-generated profile made up of all the 'trusted' settings  -->
-			<string name="profiles_inbuilt_untrusted">Niet vertrouwd</string> <!-- a pre-generated profile made up of all the 'trusted' settings  -->
+			<string name="profiles_inbuilt_untrusted">Onvertrouwd</string> <!-- a pre-generated profile made up of all the 'trusted' settings  -->
 	
 		<!-- for the other parts of the app -->
 			<!-- for app list: action bar button when doing batch selection -->
