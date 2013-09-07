@@ -112,49 +112,49 @@
 
 		<string name="preferences_chooselangage_alerttitle">Kies taal</string> <!-- text for language selection dialog box (when you select 'change language' option)  -->
 
-		<string name="restore_dialog_title">Restore settings</string><!-- Title for the 'restore backup' dialog box -->
+		<string name="restore_dialog_title">Herstel instellingen</string><!-- Title for the 'restore backup' dialog box -->
 		<!-- restoring backups error messages -->
 		<string name="restore_no_backups">Er zijn geen backups beschikbaar om te herstellen.</string>
-		<string name="restore_signature_invalid">The digital signature for the selected backup file does not match the backup. The backup may have been modified by another program. Uninstalling and re-installed PDroid Manager since you created the backup will also cause this message.</string>
-		<string name="restore_signature_missing">No digital signature can be found for the selected backup file. There is no way to verify that the backup file has not been modified by another program since it was created.</string>
-		<string name="restore_dialog_continue_prompt">Continue to restore settings from the file?</string> <!-- Prompt displayed after error message in restore from backup dialog box -->
+		<string name="restore_signature_invalid">De digitale handtekening voor het geselecteerde backup bestand komt niet overeen. De backup kan aangepast zijn door een ander programma. Het opnieuw installeren van PDroid Manager sinds u de backup gemaakt heeft kan dit veroorzaken.</string>
+		<string name="restore_signature_missing">De digitale handtekening voor de backup kan niet gevonden worden. Er is geen manier om te verifieren dat de backup niet is aangepast door een ander programma sinds hij gemaakt is.</string>
+		<string name="restore_dialog_continue_prompt">Doorgaan met herstellen van de instellingen uit dit bestand?</string> <!-- Prompt displayed after error message in restore from backup dialog box -->
 
 		<!-- restoring from backup messages -->
 		<string name="restore_failed_dialog_title">Herstel mislukt</string> <!-- title of 'backup failed' notification dialog box -->
-		<string name="restore_invalid_backup">The selected file is missing, corrupted, or not a valid backup file.</string>
-		<string name="restore_complete_success">Restore complete</string> <!-- This message is displayed in a 'toast' rather than a dialog box -->
-		<string name="restore_complete_fail_invalid">Restore failed: The selected file is not a valid backup file.</string>
-		<string name="restore_complete_fail_reading">Restore failed: The selected file could not be read.</string>
-		<string name="restore_complete_fail_other">Restore failed: An error prevented restoration.</string>
+		<string name="restore_invalid_backup">Het geselecteerde bestand ontbreekt, is corrupt of geen backup bestand.</string>
+		<string name="restore_complete_success">Herstel succesvol</string> <!-- This message is displayed in a 'toast' rather than a dialog box -->
+		<string name="restore_complete_fail_invalid">Herstel mislukt: Het geselecteerd bestand is geen backup bestand.</string>
+		<string name="restore_complete_fail_reading">Herstel mislukt: Het geselecteerde bestand kan niet gelezen worden.</string>
+		<string name="restore_complete_fail_other">Herstel mislukt: Een fout heeft herstel voorkomen.</string>
 
 		<!-- content of the progress dialog box while restoring from backup -->
-		<string name="restore_progress_dialog_title">Restoring from backup</string>
-		<string name="restore_progress_dialog_message">Please wait while your backup is restored</string>
+		<string name="restore_progress_dialog_title">Herstellen van een backup</string>
+		<string name="restore_progress_dialog_message">Een ogenblik terwijl uw backup hersteld wordt</string>
 
 		<!-- general error for when the storage is not working - i.e. no SD card, etc -->
-		<string name="storage_error_body">The external storage cannot be accessed. If you device uses an external SD Card or Micro SD Card please ensure it is inserted and properly formatted.</string>
+		<string name="storage_error_body">Externe opslag kan niet worden gelezen. Als uw apparaat een externe SD kaart gebruikt, controleer dan of deze ingevoerd is en of hij juist geformatteerd is.</string>
 
 		<!-- dialog for preparing for backup: entering filename -->
-		<string name="backup_dialog_title">Backup settings</string> <!-- dialog title -->
-		<string name="backup_path_text">Your backup will be stored in: </string> <!-- text shown before destination directory -->
-		<string name="backup_filename">Filename for backup</string> <!-- shown beside filename box -->
-		<string name="backup_filename_hint">Filename</string> <!-- Hint text in the 'filename' field -->
+		<string name="backup_dialog_title">Backup instellingen</string> <!-- dialog title -->
+		<string name="backup_path_text">Uw backup zal opgeslagen worden in: </string> <!-- text shown before destination directory -->
+		<string name="backup_filename">Bestandsnaam voor de backup</string> <!-- shown beside filename box -->
+		<string name="backup_filename_hint">Bestandsnaam</string> <!-- Hint text in the 'filename' field -->
 
 		<!-- warning and error messages for creating backup -->
-		<string name="backup_message_file_exists">A file with the speficied filename already exists. The new backup will replace the existing file.</string>
-		<string name="backup_dialog_continue_prompt">Continue to backup to the file?</string> <!-- prompt shown after warning -->
-		<string name="backup_failed_dialog_title">Backup failed</string> <!-- title for dialog shown if the backup fails -->
-		<string name="backup_complete_success">Backup complete</string>
-		<string name="backup_complete_fail_signing">Backup failed: Signing of the backup failed</string>
-		<string name="backup_complete_fail_writing">Backup failed: The backup file could not be written</string>
-		<string name="backup_complete_fail_other">Backup failed: The backup file could not be generated</string>
+		<string name="backup_message_file_exists">Een bestand met de gespecificeerde naam bestaat al. De nieuwe backup zal het bestaande bestand vervangen.</string>
+		<string name="backup_dialog_continue_prompt">Verder gaan met de backup naar het bestand?</string> <!-- prompt shown after warning -->
+		<string name="backup_failed_dialog_title">Backup mislukt</string> <!-- title for dialog shown if the backup fails -->
+		<string name="backup_complete_success">Backup succesvol</string>
+		<string name="backup_complete_fail_signing">Backup mislukt: Ondertekenen van de backup is mislukt</string>
+		<string name="backup_complete_fail_writing">Backup mislukt: Het backup bestand kon niet weggeschreven worden</string>
+		<string name="backup_complete_fail_other">Backup mislukt: Het backup bestand kon niet gegenereerd worden</string>
 		
 		<!-- confirmation and progress dialog for deleting all settings -->
-		<string name="global_delete_confirm_title">Delete all settings</string>
-		<string name="global_delete_confirm_message">Are you sure you want to remove all current PDroid settings for all apps on this device? (Note that this does not remove backup files)</string>
-		<string name="global_delete_progress_dialog_title">Deleting&#8230;</string>
-		<string name="global_delete_progress_dialog_message">Deleting all PDroid settings</string>
-		<string name="global_delete_complete_message">All PDroid settings have been deleted</string>
+		<string name="global_delete_confirm_title">Verwijder alle instellingen</string>
+		<string name="global_delete_confirm_message">Bent u zeker dat u alle huidige instellingen in PDroid voor alle apps op dit apparaat wilt verwijderen? (Dit zal backup bestanden niet verwijderen)</string>
+		<string name="global_delete_progress_dialog_title">Aan het verwijderen&#8230;</string>
+		<string name="global_delete_progress_dialog_message">Aan het verwijderen van alle PDroid instellingen</string>
+		<string name="global_delete_complete_message">Alle PDroid instellingen zijn verwijderd</string>
 	<!-- end Preferences list screen -->
 	
 	<!-- application details (i.e. settings) screen;
