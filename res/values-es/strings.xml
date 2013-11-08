@@ -268,9 +268,10 @@
 	<string name="credits_dialog_title">Créditos de PDroid Manager</string>
 	<string name="credits_dialog_body"><![CDATA[
 <h2>PDroid Manager</h2>
-<p><i>Desarrollo: Simeon Morgan &lt;<a href="mailto:smorgan@digitalfeed.net">smorgan@digitalfeed.net</a>&gt;</i><br />
-Github: <a href="https://github.com/wsot/">wsot</a><br />
-XDA-developers: <a href="http://forum.xda-developers.com/member.php?u=3602796">FFU5y</a></p>
+<p><i>Desarrollo: Simeon Morgan y Mateor &lt;<a href="mailto:mateornaut@gmail.com">mateornaut@gmail.com</a>&gt;</i><br />
+Github: <a href="https://github.com/mateor/pdroid-manager/">mateor/pdroid-manager</a><br />
+XDA-developers: <a href="http://forum.xda-developers.com/member.php?u=4342828">mateorod</a></p>
+<a href="https://github.com/OpenPDroid/">OpenPDroid github</a><br />
 
 <h3>Con contribuciones de:</h3>
 <p>
@@ -290,7 +291,7 @@ XDA-developers: <a href="http://forum.xda-developers.com/member.php?u=3602796">F
 <p><i>Desarrollo: CollegeDev (<a href="http://forum.xda-developers.com/member.php?u=4711230">xda</a>)</i><br />
 <a href="http://forum.xda-developers.com/showthread.php?t=1923576">Hilo de PDroid 2.0 en xda-developers.com (en inglés)</a></p>
 <h3>Migración de PDroid a ICS/JB</h3>
-<p><i>Pastime (<a href="http://forum.xda-developers.com/member.php?u=4005966">xda</a>)</i><br /> 
+<p><i>Pastime1971 (<a href="http://forum.xda-developers.com/member.php?u=4005966">xda</a>)</i><br /> 
 <a href="http://forum.xda-developers.com/showthread.php?t=1554960">Hilo de PDroid ICS/JB en xda-developers.com (en inglés)</a></p>
 <h3>PDroid</h3>
 <p><i>Desarrollo: Syvat (<a href="http://forum.xda-developers.com/member.php?u=2605967">xda</a>)</i><br />
@@ -308,7 +309,7 @@ Por favor <i>no</i> busques ayuda para la aplicación PDroid Manager en sus foro
 <h3>Si encuentras un problema:</h3>
 <b>Primero, comprueba si el problema que has descubierto es una incidencia conocida, mediante <a href="https://github.com/wsot/pdroid-manager/issues"> buscando incidencias en mi github</a>.</b> Si ya ha sido notificada, pero tienes información adicional que añadir, entonces adjúntalo a la incidencia en github. De forma alternativa, puedes publicarlo aquí pero por favor haz referencia claramente a la incidencia existente en github cuando lo hagas así.
 <h4>Si no es una incidencia conocida en github:</h4>
-Puedes abrir una <a href="https://github.com/wsot/pdroid-manager/issues">incidencia en mi github</a>, indicando un logcar: mira en <a href="http://forum.xda-developers.com/showthread.php?t=1726238"> cómo obtener un logcat</a>.
+Puedes abrir una <a href="https://github.com/mateor/pdroid-manager/issues">incidencia en mi github</a>, indicando un logcar: mira en <a href="http://forum.xda-developers.com/showthread.php?t=1726238"> cómo obtener un logcat</a>.
 Puedes publicar en <a href="http://forum.xda-developers.com/showthread.php?p=34190204">el hilo de XDA</a>, incluyendo un logcat.
 
 <h3>Información de Copyright</h3>

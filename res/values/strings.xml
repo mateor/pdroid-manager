@@ -223,7 +223,7 @@
 	allow translators to get ahead rather than having to wait for
 	developer(s) to add the actual feature to complete the translations.
 	These relate to specifically planned features. However, not all strings
-	may be used, and other strings may bocem necessary which are not in this section -->
+	may be used, and other strings may become necessary which are not in this section -->
 	
 		<!-- profile features: profiles allow named sets of 'settings' to be created, and then
 		applied to applications as pre-prepared groups of settings -->
@@ -269,9 +269,9 @@
 	<string name="credits_dialog_title">PDroid Manager Credits</string>
 	<string name="credits_dialog_body"><![CDATA[
 <h2>PDroid Manager</h2>
-<p><i>Development: Simeon Morgan &lt;<a href="mailto:smorgan@digitalfeed.net">smorgan@digitalfeed.net</a>&gt;</i><br />
-Github: <a href="https://github.com/wsot/">wsot</a><br />
-XDA-developers: <a href="http://forum.xda-developers.com/member.php?u=3602796">FFU5y</a></p>
+<p><i>Development: Simeon Morgan and Mateor &lt;<a href="mailto:mateornaut@gmail.com">mateornaut@gmail.com</a>&gt;</i><br />
+Github: <a href="https://github.com/mateor/pdroid-manager/">mateor/pdroid-manager</a><br />
+XDA-developers: <a href="http://forum.xda-developers.com/member.php?u=4342828">mateorod</a></p>
 
 <h3>With contributions from:</h3>
 <p>
@@ -289,7 +289,8 @@ XDA-developers: <a href="http://forum.xda-developers.com/member.php?u=3602796">F
 <h2>PDroid Manager relies on the fine work done on the PDroid core by others</h2>
 <h3>OpenPDroid Core</h3>
 <p>
-<i>FFU5y (<a href="https://github.com/wsot/">github</a> | <a href="http://forum.xda-developers.com/member.php?u=3602796">xda</a>)</i><br />
+<a href="https://github.com/OpenPDroid/">OpenPDroid github</a><br />
+<i>FFU5y</i> (<a href="https://github.com/wsot/">github</a> | <a href="http://forum.xda-developers.com/member.php?u=3602796">xda</a>)</i><br />
 <i>Mateor</i> (<a href="https://github.com/mateor/">github</a> | <a href="http://forum.xda-developers.com/member.php?u=4342828">xda</a>)<br />
 <i>wbedard</i> (<a href="https://github.com/wbedard/">github</a> | <a href="http://forum.xda-developers.com/member.php?u=2769491">xda</a>)<br />
 <a href="http://forum.xda-developers.com/showthread.php?t=2098156">OpenPDroid thread at xda-developers.com</a></p>
@@ -298,7 +299,7 @@ XDA-developers: <a href="http://forum.xda-developers.com/member.php?u=3602796">F
 <p><i>Development: CollegeDev (<a href="http://forum.xda-developers.com/member.php?u=4711230">xda</a>)</i><br />
 <a href="http://forum.xda-developers.com/showthread.php?t=1923576">PDroid 2.0 thread at xda-developers.com</a></p>
 <h3>PDroid porting to ICS/JB</h3>
-<p><i>Pastime (<a href="http://forum.xda-developers.com/member.php?u=4005966">xda</a>)</i><br /> 
+<p><i>Pastime1971 (<a href="http://forum.xda-developers.com/member.php?u=4005966">xda</a>)</i><br /> 
 <a href="http://forum.xda-developers.com/showthread.php?t=1554960">PDroid ICS/JB thread at xda-developers.com</a></p>
 <h3>PDroid</h3>
 <p><i>Development: Syvat (<a href="http://forum.xda-developers.com/member.php?u=2605967">xda</a>)</i><br />
@@ -314,9 +315,9 @@ Please <i>do not</i> seek help for the PDroid Manager application on their threa
 <p><i>PDroid Manager</i> is a setting management application for the Privacy service provided by OpenPDroid or PDroid 2.0 Core. It serves as an open-source alternative for the PDroid 2.0 App by CollegeDev.</p>
 <h2>PDroid Manager is currently in alpha</h2>
 <h3>If you find a problem:</h3>
-<b>First, check if the problem you have discovered is a known issue, by <a href="https://github.com/wsot/pdroid-manager/issues">looking at issues on my github</a>.</b> If if has already been lodged, but you have additional information to add, then ideally attach it to the issue in github. Otherwise, you can post it here but please clearly refer to the existing issue in github when doing so.
+<b>First, check if the problem you have discovered is a known issue, by <a href="https://github.com/mateor/pdroid-manager/issues">looking at issues on my github</a>.</b> If if has already been lodged, but you have additional information to add, then ideally attach it to the issue in github. Otherwise, you can post it here but please clearly refer to the existing issue in github when doing so.
 <h4>If it is not a known issue in the github:</h4>
-You can open an <a href="https://github.com/wsot/pdroid-manager/issues">issue on my github</a>, providing a logcat: see <a href="http://forum.xda-developers.com/showthread.php?t=1726238">how to get a logcat</a>.
+You can open an <a href="https://github.com/mateor/pdroid-manager/issues">issue on my github</a>, providing a logcat: see <a href="http://forum.xda-developers.com/showthread.php?t=1726238">how to get a logcat</a>.
 You can post on <a href="http://forum.xda-developers.com/showthread.php?p=34190204">the XDA thread</a>, providing a logcat.
 
 <h3>Copyright statement</h3>

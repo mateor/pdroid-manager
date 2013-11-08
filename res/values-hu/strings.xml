@@ -269,9 +269,9 @@
 	<string name="credits_dialog_title">PDroid Manager Credits</string>
 		<string name="credits_dialog_body"><![CDATA[
 <h2>PDroid Manager</h2>
-<p><i>Fejlesztők: Simeon Morgan &lt;<a href="mailto:smorgan@digitalfeed.net">smorgan@digitalfeed.net</a>&gt;</i><br />
-Github: <a href="https://github.com/wsot/">wsot</a><br />
-XDA-developers: <a href="http://forum.xda-developers.com/member.php?u=3602796">FFU5y</a></p>
+<p><i>Dévelopment: Simeon Morgan, Mateor &lt;<a href="mailto:mateornaut@gmail.com">mateornaut@gmail.com</a>&gt;</i><br />
+Github: <a href="https://github.com/mateor/pdroid-manager/">mateor/pdroid-manager</a><br />
+XDA-developers: <a href="http://forum.xda-developers.com/member.php?u=4342828">mateorod</a></p>
 
 <h3>Együttműködők:</h3>
 <p>
@@ -289,6 +289,7 @@ XDA-developers: <a href="http://forum.xda-developers.com/member.php?u=3602796">F
 <h2>A PDroid Manager a többiek PDroid core részletes munkáján alapszik</h2>
 <h3>OpenPDroid Core</h3>
 <p>
+<a href="https://github.com/OpenPDroid/">OpenPDroid github</a><br />
 <i>FFU5y (<a href="https://github.com/wsot/">github</a> | <a href="http://forum.xda-developers.com/member.php?u=3602796">xda</a>)</i><br />
 <i>Mateor</i> (<a href="https://github.com/mateor/">github</a> | <a href="http://forum.xda-developers.com/member.php?u=4342828">xda</a>)<br />
 <i>wbedard</i> (<a href="https://github.com/wbedard/">github</a> | <a href="http://forum.xda-developers.com/member.php?u=2769491">xda</a>)<br />
