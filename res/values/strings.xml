@@ -131,7 +131,7 @@
 		<string name="restore_progress_dialog_message">Please wait while your backup is restored</string>
 
 		<!-- general error for when the storage is not working - i.e. no SD card, etc -->
-		<string name="storage_error_body">The external storage cannot be accessed. If you device uses an external SD Card or Micro SD Card please ensure it is inserted and properly formatted.</string>
+		<string name="storage_error_body">The external storage cannot be accessed. If your device uses an external SD Card or Micro SD Card please ensure it is inserted and properly formatted.</string>
 
 		<!-- dialog for preparing for backup: entering filename -->
 		<string name="backup_dialog_title">Backup settings</string> <!-- dialog title -->
