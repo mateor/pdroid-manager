@@ -1,7 +1,7 @@
 pdroid-manager  
 ==============  
   
-A replacement for the PDroid 2.0 application by CollegeDev (used to configure the updated PDroid service).   
+Preferred management app for OpenPdroid.
   
 NOTE: THIS SOFTWARE IS PRERELEASE - IT IS CURRENTLY KNOWN TO HAVE BUGS (which you are welcome to fix).  
 Because of the signature protection used in other PDroid applications (e.g. PDroid 2.0 by CollegeDev), it is necessary to uninstall these other apps prior to installing PDroid Manager. I don't like it this way, but right now there is no straightforward and safe way to get around it.  
@@ -29,14 +29,14 @@ Modified or derivative versions of the pdroid-manager application must use an
 alternative name, rather than the name pdroid-manager.  
   
 Contributions:
-alceasan (https://github.com/alceasan): Spanish translation
-appelsson (https://github.com/appelsson): Hungarian Translation    
-Beasty (http://forum.xda-developers.com/member.php?u=276326): Russian translation
-MPage/jpeg729 (https://github.com/jpeg729): Subsequent French transaltion
-patrickpr (https://github.com/patrickpr): Initial french translation    
-TamCore (https://github.com/TamCore): German translation, Android.mk, formatting of the tables in this file    
+[alceasan](https://github.com/alceasan): Spanish translation
+[appelsson](https://github.com/appelsson): Hungarian Translation    
+[Beasty](http://forum.xda-developers.com/member.php?u=276326): Russian translation
+[MPage/jpeg729](https://github.com/jpeg729): Subsequent French transaltion
+[patrickpr](https://github.com/patrickpr): Initial french translation    
+[TamCore](https://github.com/TamCore): German translation, Android.mk, formatting of the tables in this file    
 wbedard: Help text in original English    
- 
+[Joris-NL](https://github.com/Joris-NL): translations and string updates
 
 Permissions are linked to one or more 'settings', which determine which operations may be performed (e.g. what function calls will return what data)  
 The current list of permissions, settings, and affected functions are:  
